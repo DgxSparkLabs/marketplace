@@ -26,6 +26,7 @@ A curated collection of reusable agent skills and rules. Each item is a self-con
 | [act-runner](./act-runner/) | Run GitHub Actions workflows locally with act and podman |
 | [duckduckgo-search](./duckduckgo-search/) | Search DuckDuckGo and return results as structured text |
 | [expose-port](./expose-port/) | Expose a local port via HTTPS (localhost.run) or TCP (bore) |
+| [gemini-chat](./gemini-chat/) | Interactive multi-turn chat with Google Gemini |
 | [github-search](./github-search/) | Search GitHub for repositories, prior art, and implementation inspiration |
 | [google-drive-reader](./google-drive-reader/) | Read Google Docs from personal Drive, extract URLs and conclusions |
 | [send-email](./send-email/) | Send an email to someone using the Resend API |
