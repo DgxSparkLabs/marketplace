@@ -23,6 +23,7 @@ A curated collection of reusable agent skills and rules. Each item is a self-con
 
 | Skill | Description |
 |-------|-------------|
+| [act-runner](./act-runner/) | Run GitHub Actions workflows locally with act and podman |
 | [duckduckgo-search](./duckduckgo-search/) | Search DuckDuckGo and return results as structured text |
 | [expose-port](./expose-port/) | Expose a local port via HTTPS (localhost.run) or TCP (bore) |
 | [github-search](./github-search/) | Search GitHub for repositories, prior art, and implementation inspiration |
