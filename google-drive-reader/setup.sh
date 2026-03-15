@@ -248,7 +248,16 @@ export GOOGLE_DRIVE_TOKEN_FILE="$TOKEN_FILE"
 ok "GOOGLE_DRIVE_CREDENTIALS_FILE set for this session."
 ok "GOOGLE_DRIVE_TOKEN_FILE set for this session."
 
-# Detect shell profile
+# Write a sourceable env file into ~/.auth/ so the variables persist.
+# Shells that source ~/.auth/* on startup (skipping .json) will pick these up.
+ENV_FILE="$AUTH_DIR/google-drive"
+{
+    echo "export GOOGLE_DRIVE_CREDENTIALS_FILE=\"$CREDENTIALS_FILE\""
+    echo "export GOOGLE_DRIVE_TOKEN_FILE=\"$TOKEN_FILE\""
+} > "$ENV_FILE"
+ok "Env file written to $ENV_FILE"
+
+# Also offer to add a sourcing block to the shell profile if not already there.
 SHELL_NAME="$(basename "${SHELL:-/bin/bash}")"
 case "$SHELL_NAME" in
     zsh)  PROFILE="$HOME/.zshrc" ;;
@@ -257,25 +266,35 @@ case "$SHELL_NAME" in
     *)    PROFILE="$HOME/.profile" ;;
 esac
 
-EXPORT_CREDS="export GOOGLE_DRIVE_CREDENTIALS_FILE=\"$CREDENTIALS_FILE\""
-EXPORT_TOKEN="export GOOGLE_DRIVE_TOKEN_FILE=\"$TOKEN_FILE\""
-
-if grep -qF "GOOGLE_DRIVE_CREDENTIALS_FILE" "$PROFILE" 2>/dev/null; then
-    ok "Environment variables already present in $PROFILE"
+if grep -q '\.auth' "$PROFILE" 2>/dev/null; then
+    ok "Shell profile already sources ~/.auth/ files."
 else
-    if ask_yes_no "Add to $PROFILE so they persist across sessions?"; then
+    echo ""
+    echo "  To auto-load env vars on shell startup, add this to $(bold "$PROFILE"):"
+    echo ""
+    echo '    # Source credential env files (skip .json and other data files)'
+    echo '    if [ -d "$HOME/.auth" ]; then'
+    echo '        for f in "$HOME/.auth"/*; do'
+    echo '            case "$f" in *.json) continue ;; esac'
+    echo '            [ -f "$f" ] && . "$f" 2>/dev/null'
+    echo '        done'
+    echo '    fi'
+    echo ""
+    if ask_yes_no "Add this block to $PROFILE now?"; then
         {
             echo ""
-            echo "# google-drive-reader"
-            echo "$EXPORT_CREDS"
-            echo "$EXPORT_TOKEN"
+            echo '# Source credential env files (skip .json and other data files)'
+            echo 'if [ -d "$HOME/.auth" ]; then'
+            echo '    for f in "$HOME/.auth"/*; do'
+            echo '        case "$f" in *.json) continue ;; esac'
+            echo '        [ -f "$f" ] && . "$f" 2>/dev/null'
+            echo '    done'
+            echo 'fi'
         } >> "$PROFILE"
         ok "Added to $PROFILE"
         echo "    Run $(bold "source $PROFILE") or open a new terminal to pick it up."
     else
-        warn "Skipped. You'll need to export them manually each session:"
-        echo "    $EXPORT_CREDS"
-        echo "    $EXPORT_TOKEN"
+        warn "Skipped. Source $ENV_FILE manually or add the block later."
     fi
 fi
 
