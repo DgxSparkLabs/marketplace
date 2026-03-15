@@ -43,3 +43,18 @@ Reddit URLs get special handling via old.reddit.com HTML parsing (no API key nee
 - JavaScript-rendered SPAs won't work (trafilatura fetches static HTML)
 - Paywalled content returns only what's visible without login
 - Some sites block automated requests via user-agent filtering
+
+## As an Agent Skill
+
+Copy this directory into your agent's skills directory:
+
+```bash
+# Global (available everywhere)
+cp -r web-scraper/ ~/.config/cognition/skills/web-scraper/
+# or: cp -r web-scraper/ ~/.windsurf/skills/web-scraper/
+
+# Project-specific
+cp -r web-scraper/ /path/to/project/.cognition/skills/web-scraper/
+```
+
+Then invoke with `/web-scraper` in a session.

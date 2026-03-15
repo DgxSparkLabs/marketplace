@@ -21,15 +21,15 @@ A curated collection of reusable agent skills and rules. Each item is a self-con
 | Skill | Description |
 |-------|-------------|
 | [duckduckgo-search](./duckduckgo-search/) | Search DuckDuckGo and return results as structured text |
-| [expose-port](./expose-port/) | Expose a local port via HTTPS (localhost.run) or TCP tunnel (bore) |
+| [expose-port](./expose-port/) | Expose a local port via HTTPS (localhost.run) or TCP (bore) |
 | [github-search](./github-search/) | Search GitHub for repositories, prior art, and implementation inspiration |
 | [google-drive-reader](./google-drive-reader/) | Read Google Docs from personal Drive, extract URLs and conclusions |
-| [send-email](./send-email/) | Send emails via the Resend API |
-| [ssh-tunnel](./ssh-tunnel/) | Set up SSH port forwarding tunnels (local, remote, SOCKS) |
-| [telegram-notify](./telegram-notify/) | Send Telegram notifications with task summaries |
-| [web-scraper](./web-scraper/) | Fetch web pages and extract clean content (with Reddit support) |
+| [send-email](./send-email/) | Send an email to someone using the Resend API |
+| [ssh-tunnel](./ssh-tunnel/) | Set up SSH port forwarding tunnels (local, remote, SOCKS proxy) |
+| [telegram-notify](./telegram-notify/) | Send a Telegram notification with a task summary |
+| [web-scraper](./web-scraper/) | Fetch a web page and extract its main content as clean readable text |
 | [youtube-search](./youtube-search/) | Search YouTube for technical videos, tutorials, and talks on a topic |
-| [youtube-wisdom](./youtube-wisdom/) | Extract key knowledge from YouTube video transcripts |
+| [youtube-wisdom](./youtube-wisdom/) | Extract key knowledge from a YouTube video transcript |
 
 ## Installing Rules
 
@@ -91,7 +91,8 @@ marketplace/
 └── <skill-name>/           # Skill directories
     ├── SKILL.md
     ├── README.md
-    └── scripts/
+    ├── scripts/
+    └── setup.sh            # Optional — prerequisite installer
 ```
 
 ## Documentation

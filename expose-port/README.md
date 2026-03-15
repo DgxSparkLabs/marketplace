@@ -104,3 +104,18 @@ BORE_SECRET="my-secret"
 ## Setting up a bore server
 
 See [docs/bore-server-setup.md](docs/bore-server-setup.md) for a step-by-step guide to running bore as a systemd service on a VPS or LAN gateway.
+
+## As an Agent Skill
+
+Copy this directory into your agent's skills directory:
+
+```bash
+# Global (available everywhere)
+cp -r expose-port/ ~/.config/cognition/skills/expose-port/
+# or: cp -r expose-port/ ~/.windsurf/skills/expose-port/
+
+# Project-specific
+cp -r expose-port/ /path/to/project/.cognition/skills/expose-port/
+```
+
+Then invoke with `/expose-port` in a session.

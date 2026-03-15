@@ -28,6 +28,7 @@ my-skill/
 ├── SKILL.md            # Required
 ├── README.md           # Required
 ├── scripts/            # Optional
+├── setup.sh            # Optional — prerequisite installer
 └── references/         # Optional
 ```
 
@@ -55,7 +56,7 @@ my-rule/
 ## Conventions
 
 - Directory names: **kebab-case**
-- Script filenames: **snake_case**
+- Script filenames: **snake_case** for Python, **kebab-case** allowed for shell scripts
 - Python scripts: PEP 723, runnable via `uv run`
 - Shell scripts: shebang + `set -euo pipefail`
 - Never commit secrets

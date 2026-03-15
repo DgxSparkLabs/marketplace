@@ -25,6 +25,7 @@ my-skill/
 ├── SKILL.md            # Required — skill definition with YAML frontmatter and prompt
 ├── README.md           # Required — user-facing documentation
 ├── scripts/            # Optional — supporting scripts (Python, shell, etc.)
+├── setup.sh            # Optional — prerequisite installer (e.g., API setup, tool install)
 └── references/         # Optional — reference docs that can be included via @ syntax
 ```
 
@@ -103,7 +104,7 @@ Add a row to the **Rules** table in the `## Catalog` section. Keep it sorted alp
 
 ### Skills
 
-- [ ] `SKILL.md` has valid YAML frontmatter with `name` and `description`
+- [ ] `SKILL.md` has valid YAML frontmatter with `name` and `description` (recommended but technically optional per spec)
 - [ ] `allowed-tools` is set and restricted to only what the skill needs
 - [ ] The prompt body gives clear, actionable instructions
 - [ ] Scripts are self-contained (PEP 723 for Python, no global deps assumed)
