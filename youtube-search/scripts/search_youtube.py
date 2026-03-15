@@ -83,20 +83,6 @@ def technical_score(result: dict) -> float:
         elif dur < 60:        # shorts
             score -= 2.0
 
-    # Boost known technical channels
-    uploader = (result.get("uploader") or "").lower()
-    tech_channels = [
-        "fireship", "computerphile", "3blue1brown", "ben eater",
-        "mit opencourseware", "stanford", "two minute papers",
-        "sentdex", "tech with tim", "traversy media", "the coding train",
-        "freecodecamp", "cs dojo", "neetcode", "arjan codes",
-        "anthonygg", "primeagen", "theo", "hussein nasser",
-    ]
-    for ch in tech_channels:
-        if ch in uploader:
-            score += 2.0
-            break
-
     # Boost videos with high view counts (battle-tested content)
     stats = result.get("statistics") or {}
     views = stats.get("viewCount")
