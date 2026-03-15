@@ -30,6 +30,10 @@ from rich import box
 
 console = Console()
 
+# Key binding hints shown on interactive prompts
+KEYS_CHECKBOX = "(Space: toggle, Enter: confirm, Esc: cancel)"
+KEYS_CONFIRM = "(Enter: confirm, Esc: cancel)"
+
 STYLE = Style([
     ("qmark", "fg:cyan bold"),
     ("question", "bold"),
@@ -405,6 +409,7 @@ def main():
         f"Select agent tools to {mode} ({scope} scope)",
         border_style=mode_color,
     ))
+    console.print("[dim]Navigation: arrows to move, Space to toggle, Enter to confirm, Esc to cancel[/dim]")
     console.print()
 
     # ── Detect platforms ──
@@ -419,9 +424,10 @@ def main():
         choices=[questionary.Choice(info["label"], value=pid, checked=True)
                  for pid, info in platforms.items()],
         style=STYLE,
+        instruction=KEYS_CHECKBOX,
     ).ask()
     if not platform_choices:
-        console.print("[yellow]No platforms selected.[/yellow]")
+        console.print("[yellow]Cancelled.[/yellow]")
         return
 
     # ── Scan marketplace ──
@@ -450,8 +456,10 @@ def main():
         f"MCP servers to {mode}:",
         choices=mcp_choices_list,
         style=STYLE,
+        instruction=KEYS_CHECKBOX,
     ).ask()
     if mcp_choices is None:
+        console.print("[yellow]Cancelled.[/yellow]")
         return
 
     # ── Rules ──
@@ -470,8 +478,10 @@ def main():
         f"Rules to {mode}:",
         choices=rule_choices_list,
         style=STYLE,
+        instruction=KEYS_CHECKBOX,
     ).ask()
     if rule_choices is None:
+        console.print("[yellow]Cancelled.[/yellow]")
         return
 
     # ── Skills ──
@@ -491,8 +501,10 @@ def main():
         f"Skills to {mode}:",
         choices=skill_choices_list,
         style=STYLE,
+        instruction=KEYS_CHECKBOX,
     ).ask()
     if skill_choices is None:
+        console.print("[yellow]Cancelled.[/yellow]")
         return
 
     # ── Confirm ──
@@ -512,7 +524,11 @@ def main():
     summary.add_row("Scope", scope)
     console.print(Panel(summary, title="Summary", border_style=mode_color))
 
-    if not questionary.confirm(f"Proceed with {mode}?", default=True, style=STYLE).ask():
+    proceed = questionary.confirm(
+        f"Proceed with {mode}?", default=True, style=STYLE,
+        instruction=KEYS_CONFIRM,
+    ).ask()
+    if not proceed:
         console.print("[yellow]Cancelled.[/yellow]")
         return
 
