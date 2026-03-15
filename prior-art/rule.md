@@ -19,14 +19,14 @@ Do NOT search when the task is clearly project-specific (renaming a variable, fi
 
 1. **In the codebase first** — search the project for existing utilities, helpers, or patterns that already solve the problem. Check shared/utils directories, existing dependencies, and internal libraries.
 2. **In the project's dependencies** — the library you need may already be installed. Check package.json, Cargo.toml, requirements.txt, go.mod, etc. before adding anything new.
-3. **On the web** — search for established libraries, packages, or well-known approaches. Look for:
+3. **On the web** — search for established libraries, packages, or well-known approaches using the `duckduckgo-search` skill. Look for:
    - Popular, maintained packages on npm/PyPI/crates.io/etc.
    - Stack Overflow answers with high vote counts
    - Official documentation or guides from the framework/language
    - Blog posts or articles describing battle-tested approaches
-   - GitHub repositories with significant stars and recent activity
-   - YouTube tutorials and conference talks — especially useful for understanding architecture, seeing implementation walkthroughs, and learning from the library/framework author directly. Search with the `youtube-search` skill when the topic benefits from visual or step-by-step explanation.
-4. **In documentation** — check if the framework or language has a built-in way to do what you need. Many problems are solved by standard library functions that are easy to overlook.
+4. **On GitHub** — search for repositories with the `github-search` skill. It returns stars, license, language, and last-updated info to help you triage. Explore the top repos by reading their READMEs, browsing source code, and checking issues for known gotchas.
+5. **On YouTube** — search with the `youtube-wisdom` skill when the topic benefits from visual or step-by-step explanation, architecture walkthroughs, or conference talks from library authors.
+6. **In documentation** — check if the framework or language has a built-in way to do what you need. Many problems are solved by standard library functions that are easy to overlook.
 
 ### How to evaluate what you find
 
