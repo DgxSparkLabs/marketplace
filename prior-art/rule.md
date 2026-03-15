@@ -25,7 +25,7 @@ Do NOT search when the task is clearly project-specific (renaming a variable, fi
    - Official documentation or guides from the framework/language
    - Blog posts or articles describing battle-tested approaches
 4. **On GitHub** — search for repositories with the `github-search` skill. It returns stars, license, language, and last-updated info to help you triage. Explore the top repos by reading their READMEs, browsing source code, and checking issues for known gotchas.
-5. **On YouTube** — search with the `youtube-wisdom` skill when the topic benefits from visual or step-by-step explanation, architecture walkthroughs, or conference talks from library authors.
+5. **On YouTube** — search with the `youtube-search` skill when the topic benefits from visual or step-by-step explanation, architecture walkthroughs, or conference talks from library authors.
 6. **In documentation** — check if the framework or language has a built-in way to do what you need. Many problems are solved by standard library functions that are easy to overlook.
 
 ### How to evaluate what you find
