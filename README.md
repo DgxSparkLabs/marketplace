@@ -38,6 +38,21 @@ A curated collection of reusable agent skills and rules. Each item is a self-con
 
 ## Interactive Installer
 
+### One-liner install
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/ForkYoraiLevi/marketplace/main/scripts/install.sh | bash
+```
+
+Installs `uv` if needed, clones the repo, and launches the interactive TUI. Pass arguments through:
+
+```bash
+curl -fsSL ... | bash -s -- --uninstall    # uninstall mode
+curl -fsSL ... | bash -s -- --project      # project-level install
+```
+
+### From a local clone
+
 The easiest way to install everything. Detects your agent platforms, shows checkboxes, installs your selections:
 
 ```bash
