@@ -9,10 +9,10 @@ Unlike a skill (which must be invoked), this is a **rule** — it activates auto
 ```bash
 git clone https://github.com/ForkYoraiLevi/marketplace.git /tmp/marketplace
 
-# Install into current project (all agent formats)
+# Install into current project (AGENTS.md)
 /tmp/marketplace/verify-your-work/install.sh
 
-# Install globally (all projects, all agent formats)
+# Install globally (all projects)
 /tmp/marketplace/verify-your-work/install.sh --global
 
 # Install for a specific tool only
@@ -46,8 +46,6 @@ cp verify-your-work/formats/windsurf.md .windsurf/rules/verify-your-work.md
 mkdir -p .cursor/rules
 cp verify-your-work/formats/cursor.md .cursor/rules/verify-your-work.md
 ```
-
-
 ## What it enforces
 
 - **Test before you ship** — agents must run their code, inspect output, and confirm correctness

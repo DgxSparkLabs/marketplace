@@ -9,10 +9,10 @@ Unlike a skill (which must be invoked), this is a **rule** — it activates auto
 ```bash
 git clone https://github.com/ForkYoraiLevi/marketplace.git /tmp/marketplace
 
-# Install into current project (all agent formats)
+# Install into current project (AGENTS.md)
 /tmp/marketplace/no-ai-credit/install.sh
 
-# Install globally (all projects, all agent formats)
+# Install globally (all projects)
 /tmp/marketplace/no-ai-credit/install.sh --global
 
 # Install for a specific tool only
@@ -46,8 +46,6 @@ cp no-ai-credit/formats/windsurf.md .windsurf/rules/no-ai-credit.md
 mkdir -p .cursor/rules
 cp no-ai-credit/formats/cursor.md .cursor/rules/no-ai-credit.md
 ```
-
-
 ## What it enforces
 
 - No "Co-Authored-By" lines referencing AI agents in git commits

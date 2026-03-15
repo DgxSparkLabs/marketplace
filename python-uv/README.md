@@ -9,7 +9,7 @@ Unlike a skill (which must be invoked), this is a **rule** — it activates auto
 ```bash
 git clone https://github.com/ForkYoraiLevi/marketplace.git /tmp/marketplace
 
-# Install into current project (all agent formats)
+# Install into current project (AGENTS.md)
 /tmp/marketplace/python-uv/install.sh
 
 # Install globally (all projects)
@@ -46,8 +46,6 @@ cp python-uv/formats/windsurf.md .windsurf/rules/python-uv.md
 mkdir -p .cursor/rules
 cp python-uv/formats/cursor.md .cursor/rules/python-uv.md
 ```
-
-
 ## What it enforces
 
 - Use `uv run` with PEP 723 inline metadata for scripts

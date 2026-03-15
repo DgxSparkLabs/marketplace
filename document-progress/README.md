@@ -9,10 +9,10 @@ Unlike a skill (which must be invoked), this is a **rule** — it activates auto
 ```bash
 git clone https://github.com/ForkYoraiLevi/marketplace.git /tmp/marketplace
 
-# Install into current project (all agent formats)
+# Install into current project (AGENTS.md)
 /tmp/marketplace/document-progress/install.sh
 
-# Install globally (all projects, all agent formats)
+# Install globally (all projects)
 /tmp/marketplace/document-progress/install.sh --global
 
 # Install for a specific tool only
@@ -46,8 +46,6 @@ cp document-progress/formats/windsurf.md .windsurf/rules/document-progress.md
 mkdir -p .cursor/rules
 cp document-progress/formats/cursor.md .cursor/rules/document-progress.md
 ```
-
-
 ## What it enforces
 
 - Create a structured task plan (via `structured-handoff` skill or manually) before starting multi-step work
