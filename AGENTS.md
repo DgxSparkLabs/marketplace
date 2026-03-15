@@ -63,6 +63,18 @@ my-rule/
 - Do not add project-level config (`pyproject.toml`, `package.json`, etc.) at root
 - Do not mix skill and rule formats in one directory
 
+## Testing
+
+Run the test suite to validate all skills, rules, and install scripts:
+
+```
+uv run tests/test_marketplace.py        # all tests
+uv run tests/test_marketplace.py -v     # verbose
+uv run tests/test_marketplace.py -k rule  # only rule tests
+```
+
+The test suite checks: directory structure, YAML frontmatter, catalog consistency, PEP 723 metadata, shell script safety, install script behavior (--help, --global, idempotency), format file content parity, and secret scanning. Always run the tests before submitting changes.
+
 ## Verify Your Work
 
 When building new capabilities — skills, tools, scripts, integrations, or any functional artifact — you MUST verify that what you produce actually works before declaring the task complete. Do not assume correctness. Prove it.

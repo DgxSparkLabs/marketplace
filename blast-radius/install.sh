@@ -52,6 +52,7 @@ install_agents() {
         cat "$RULE_FILE" >> "$target"
         echo "  AGENTS.md: appended rule to $target"
     else
+        mkdir -p "$(dirname "$target")"
         cp "$RULE_FILE" "$target"
         echo "  AGENTS.md: created $target"
     fi
