@@ -38,6 +38,10 @@ A curated collection of reusable agent skills and rules. Each item is a self-con
 
 ## Interactive Installer
 
+<p align="center">
+  <img src="docs/installer-screenshot.svg" alt="Marketplace Installer TUI" width="700">
+</p>
+
 ### One-liner install
 
 ```bash
