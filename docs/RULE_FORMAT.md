@@ -88,14 +88,12 @@ Rule content here...
 | `description` only | Agent decides when to apply |
 | None of the above | User must invoke manually |
 
-### AGENTS.md / CLAUDE.md
+### AGENTS.md
 
-These files use plain Markdown with no frontmatter. Content is always active. To install a rule, append the contents of `rule.md` to the existing file:
+This file uses plain Markdown with no frontmatter. Content is always active. To install a rule, append the contents of `rule.md` to the existing file:
 
 ```bash
 cat rule.md >> AGENTS.md
-# or
-cat rule.md >> CLAUDE.md
 ```
 
 ---
@@ -106,29 +104,11 @@ Every rule must include an `install.sh` script that handles installation for all
 
 1. Accept `--global` flag for global installation
 2. Accept `--format <name>` to install a specific format only
-3. Default to installing all formats in the current project
+3. Default to installing the `agents` format (AGENTS.md)
 4. Be idempotent — check if the rule is already installed before appending
 5. Print what was installed and where
-6. Warn about duplication when installing all formats (see below)
 
 Use `no-ai-credit/install.sh` as the reference implementation.
-
-### Avoiding Duplication
-
-Some AI agent tools read from multiple rule sources. For example, a tool that reads both `AGENTS.md` and `CLAUDE.md` will load the same rule twice if you install with `--format all`.
-
-**Best practice:** install only the format your tool uses.
-
-| If your tool reads... | Use |
-|---|---|
-| `AGENTS.md` only | `--format agents` |
-| `.windsurf/rules/` | `--format windsurf` |
-| `.cursor/rules/` | `--format cursor` |
-| `CLAUDE.md` only | `--format claude` |
-| Only one of the above | The matching `--format` flag |
-| Multiple sources | `--format agents` (the universal format, avoids duplication) |
-
-The install scripts print a warning when `--format all` is used to remind users of this.
 
 ---
 

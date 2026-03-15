@@ -2,34 +2,34 @@
 set -euo pipefail
 
 # Install python-uv rule for AI agent tools.
-# Supports: AGENTS.md, Windsurf, Cursor, Claude Code
+# Supports: AGENTS.md, Windsurf, Cursor
 #
 # Usage:
 #   ./install.sh                  # Install into current project
 #   ./install.sh --global         # Install globally (all projects)
 #   ./install.sh --format agents  # Install only AGENTS.md format
 #
-# Formats: agents, windsurf, cursor, claude, all (default)
+# Formats: agents (default), windsurf, cursor, all
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 RULE_FILE="$SCRIPT_DIR/rule.md"
 FORMATS_DIR="$SCRIPT_DIR/formats"
 
 SCOPE="project"
-FORMAT="all"
+FORMAT="agents"
 
 while [[ $# -gt 0 ]]; do
     case "$1" in
         --global|-g) SCOPE="global"; shift ;;
         --format|-f)
-            [[ $# -lt 2 ]] && echo "Error: --format requires a value (agents|windsurf|cursor|claude|all)" && exit 1
+            [[ $# -lt 2 ]] && echo "Error: --format requires a value (agents|windsurf|cursor|all)" && exit 1
             FORMAT="$2"; shift 2 ;;
         --help|-h)
-            echo "Usage: ./install.sh [--global] [--format agents|windsurf|cursor|claude|all]"
+            echo "Usage: ./install.sh [--global] [--format agents|windsurf|cursor|all]"
             echo ""
             echo "Options:"
             echo "  --global, -g     Install globally (all projects)"
-            echo "  --format, -f     Install for a specific tool (default: all)"
+            echo "  --format, -f     Install for a specific tool (default: agents)"
             exit 0
             ;;
         *) echo "Unknown option: $1"; exit 1 ;;
@@ -37,8 +37,8 @@ while [[ $# -gt 0 ]]; do
 done
 
 case "$FORMAT" in
-    all|agents|windsurf|cursor|claude) ;;
-    *) echo "Unknown format: $FORMAT. Valid formats: agents, windsurf, cursor, claude, all"; exit 1 ;;
+    all|agents|windsurf|cursor) ;;
+    *) echo "Unknown format: $FORMAT. Valid formats: agents, windsurf, cursor, all"; exit 1 ;;
 esac
 
 install_agents() {
@@ -72,30 +72,6 @@ install_cursor() {
     echo "  Cursor: installed to $dir/python-uv.md"
 }
 
-install_claude() {
-    local target="$1"
-    if [[ -f "$target" ]]; then
-        if grep -q "Python UV" "$target" 2>/dev/null; then
-            echo "  Claude: already contains python-uv rule, skipping"
-            return
-        fi
-        echo "" >> "$target"
-        cat "$RULE_FILE" >> "$target"
-        echo "  Claude: appended rule to $target"
-    else
-        mkdir -p "$(dirname "$target")"
-        cp "$RULE_FILE" "$target"
-        echo "  Claude: created $target"
-    fi
-}
-
-# Warn about cross-tool duplication
-if [[ "$FORMAT" == "all" ]]; then
-    echo "Note: Some tools read both AGENTS.md and CLAUDE.md. If yours does,"
-    echo "      use --format agents to install only once and avoid duplication."
-    echo ""
-fi
-
 echo "Installing python-uv rule ($SCOPE, format: $FORMAT)"
 echo ""
 
@@ -109,9 +85,6 @@ if [[ "$SCOPE" == "global" ]]; then
     if [[ "$FORMAT" == "all" || "$FORMAT" == "cursor" ]]; then
         install_cursor "$HOME/.cursor/rules"
     fi
-    if [[ "$FORMAT" == "all" || "$FORMAT" == "claude" ]]; then
-        install_claude "$HOME/.claude/CLAUDE.md"
-    fi
 else
     if [[ "$FORMAT" == "all" || "$FORMAT" == "agents" ]]; then
         install_agents "AGENTS.md"
@@ -121,9 +94,6 @@ else
     fi
     if [[ "$FORMAT" == "all" || "$FORMAT" == "cursor" ]]; then
         install_cursor ".cursor/rules"
-    fi
-    if [[ "$FORMAT" == "all" || "$FORMAT" == "claude" ]]; then
-        install_claude "CLAUDE.md"
     fi
 fi
 

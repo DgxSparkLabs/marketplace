@@ -43,19 +43,17 @@ Rules activate automatically — no invocation needed. Each rule includes an ins
 ```bash
 git clone https://github.com/ForkYoraiLevi/marketplace.git /tmp/marketplace
 
-# Install a rule for a specific tool (recommended — avoids duplication)
-/tmp/marketplace/<rule-name>/install.sh --format agents
+# Install a rule into the current project (AGENTS.md only, the default)
+/tmp/marketplace/<rule-name>/install.sh
 
-# Install globally (all projects, single format)
-/tmp/marketplace/<rule-name>/install.sh --global --format agents
-
-# Install for all tools at once (warns about potential duplication)
+# Install globally (all projects)
 /tmp/marketplace/<rule-name>/install.sh --global
+
+# Install for all tools at once (agents + windsurf + cursor)
+/tmp/marketplace/<rule-name>/install.sh --format all
 ```
 
-Supported formats: `agents` (AGENTS.md), `windsurf`, `cursor`, `claude`, `all` (default).
-
-> **Avoiding duplication:** Some tools read from multiple rule files (e.g., both `AGENTS.md` and `CLAUDE.md`). Installing with `--format all` will create duplicate rules. Use `--format agents` if your tool reads `AGENTS.md` — it's the universal format supported by all tools.
+Supported formats: `agents` (AGENTS.md, default), `windsurf`, `cursor`, `all`.
 
 ## Installing Skills
 
