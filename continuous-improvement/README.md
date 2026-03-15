@@ -1,6 +1,6 @@
 # continuous-improvement
 
-An always-on rule that gives AI agents a structured six-phase workflow for finding, planning, validating, implementing, testing, and documenting codebase improvements. Synthesized from Google's code review practices, Nielsen's usability heuristics, and refactoring.guru patterns.
+An always-on rule that gives AI agents a structured seven-phase workflow for finding, planning, validating, implementing, testing, documenting, and self-reviewing codebase improvements. Synthesized from Google's code review practices, Nielsen's usability heuristics, and refactoring.guru patterns.
 
 Unlike a skill (which must be invoked), this is a **rule** — it activates automatically in every session with no user action needed.
 
@@ -58,7 +58,7 @@ cat continuous-improvement/rule.md >> CLAUDE.md
 
 ## What it enforces
 
-The rule defines a mandatory six-phase workflow when an agent is asked to improve a codebase:
+The rule defines a mandatory seven-phase workflow when an agent is asked to improve a codebase:
 
 1. **Discovery** — Systematically audit for code smells, error handling gaps, edge cases, security weaknesses, usability friction, missing tests, documentation gaps, performance issues, and inconsistencies
 2. **Planning** — Organize findings by category and priority, present the plan before implementing
@@ -66,6 +66,7 @@ The rule defines a mandatory six-phase workflow when an agent is asked to improv
 4. **Implementation** — Make minimal, convention-following changes one at a time, applying UX heuristics and defensive programming principles
 5. **Testing** — Write regression tests, run the full suite, verify edge cases, and confirm zero new warnings
 6. **Documentation** — Update docs alongside code, write clear commit messages, document new patterns
+7. **Self-Review** — Critically evaluate your own work: would you approve this in a code review? Fix anything that falls short before declaring done.
 
 ## Sources
 

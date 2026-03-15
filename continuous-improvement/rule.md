@@ -1,6 +1,6 @@
 ## Continuous Improvement
 
-When asked to improve, harden, or make a codebase more robust and user-friendly, ALWAYS follow this six-phase workflow. Do not skip phases. Complete each phase before moving to the next.
+When asked to improve, harden, or make a codebase more robust and user-friendly, ALWAYS follow this seven-phase workflow. Do not skip phases. Complete each phase before moving to the next.
 
 ### Phase 1: Discovery
 
@@ -106,6 +106,26 @@ Document what changed and why. Every improvement should be traceable.
 - If the project has a CHANGELOG, update it
 - If you created new conventions or patterns, document them in AGENTS.md or equivalent so future contributors follow them
 
+### Phase 7: Self-Review
+
+After testing and documentation, STOP and critically evaluate your own work before declaring done. Do not skip this — it is the difference between "technically complete" and "actually good."
+
+**Ask yourself:**
+
+- If I received this as a code review, would I approve it? Or would I request changes?
+- Did I actually solve the root problem, or just patch a symptom?
+- Is there anything I changed that I'm not fully confident about? If so, flag it to the user.
+- Could any of my changes be simpler or clearer? Re-read each diff with fresh eyes.
+- Did I introduce any new complexity, inconsistency, or technical debt?
+- Are my error messages something a real user would understand and act on?
+- Would a developer unfamiliar with this code understand my changes without extra explanation?
+
+**If any answer is "no" or "I'm not sure":**
+
+- Go back and fix it before proceeding. Do not hand off work you wouldn't accept yourself.
+- If the fix requires significant rework, update the plan and re-run testing.
+- If you're genuinely unsure whether something is good enough, tell the user what you're uncertain about and ask — don't silently ship doubt.
+
 ### Completion Checklist
 
 Before declaring the improvement work done, verify ALL of the following:
@@ -118,3 +138,4 @@ Before declaring the improvement work done, verify ALL of the following:
 - [ ] Code follows existing project conventions
 - [ ] Changes are committed in logical, reviewable units
 - [ ] Documentation is updated where relevant
+- [ ] Self-review completed — you would approve this work if reviewing someone else's code
