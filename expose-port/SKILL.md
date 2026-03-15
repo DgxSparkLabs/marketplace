@@ -1,7 +1,7 @@
 ---
 name: expose-port
-description: Expose a local port to a public HTTPS URL so the user can access it
-argument-hint: "<port>"
+description: Expose a local port to a reachable address (HTTPS via localhost.run or any TCP via bore)
+argument-hint: "<port> [--bore SERVER]"
 allowed-tools:
   - exec
   - read
@@ -9,6 +9,7 @@ permissions:
   allow:
     - Exec(bash)
     - Exec(ssh)
+    - Exec(bore)
     - Exec(curl)
     - Exec(ss)
 triggers:
@@ -18,54 +19,56 @@ triggers:
 
 # Expose Port
 
-Expose a local port to a public HTTPS URL using localhost.run. No signup, no install — just SSH.
+Expose a local port so the user (or other machines) can reach it. Two backends:
 
-This is the equivalent of VSCode's automatic port forwarding for remote sessions.
+- **localhost.run** (default) — free, SSH-based, gives a public HTTPS URL. HTTP only.
+- **bore** — self-hosted, any TCP protocol (FTP, SSH, databases, HTTP, anything).
 
 ## When to use this
 
-Use this skill whenever:
-- You start a dev server, preview server, or any HTTP service and the user needs to access it
-- The user asks to see, preview, or test something you're running
-- You're running on a remote machine and need to give the user a URL they can open in their browser
+- You start a dev server, preview, or any service and the user needs to access it
+- The user asks to see, preview, or test something running on a port
+- You need to expose a non-HTTP service (database, FTP, custom TCP)
 
-## Step 1: Start the service
-
-Start whatever service needs to be accessible. For example:
-```
-python3 -m http.server 8080 --directory /path/to/site &
-```
-
-## Step 2: Expose the port
+## Expose via localhost.run (HTTPS, no setup)
 
 ```
 bash expose-port/scripts/expose-port.sh start PORT
 ```
 
-Replace PORT with the port number the service is listening on.
+Returns a URL like `https://abc123.lhr.life`. Only works for HTTP services.
 
-The script will print a public HTTPS URL like `https://abc123.lhr.life` — give this URL to the user.
+## Expose via bore (any TCP protocol)
 
-## Step 3: Tell the user
+```
+bash expose-port/scripts/expose-port.sh start PORT --bore SERVER_IP
+bash expose-port/scripts/expose-port.sh start PORT --bore SERVER_IP --secret SECRET
+bash expose-port/scripts/expose-port.sh start PORT --bore SERVER_IP --bore-port 15432
+```
 
-Present the URL clearly and tell them what it points to. For example:
-> Your dev server is accessible at: https://abc123.lhr.life
+Returns an address like `SERVER_IP:PORT`. Works with any TCP protocol.
+
+If `~/.config/expose-port/config` has `BORE_SERVER` set, the `--bore` flag is not needed:
+```
+bash expose-port/scripts/expose-port.sh start PORT
+```
 
 ## Management
 
 ```
-bash expose-port/scripts/expose-port.sh list          # Show active tunnels with URLs
-bash expose-port/scripts/expose-port.sh stop PID      # Stop a specific tunnel
+bash expose-port/scripts/expose-port.sh list          # Show active tunnels
+bash expose-port/scripts/expose-port.sh stop PID      # Stop a tunnel
 bash expose-port/scripts/expose-port.sh stop all      # Stop all tunnels
-bash expose-port/scripts/expose-port.sh status PORT   # Check if a port is listening
+bash expose-port/scripts/expose-port.sh status PORT   # Check if port is listening
 ```
 
-## Notes
+## Choosing a backend
 
-- URLs are temporary — they change each time you start a new tunnel.
-- The tunnel stays alive as long as the SSH connection is open.
-- Free tier has no bandwidth or time limits but URLs are random hashes.
-- Only works for HTTP/HTTPS services (not raw TCP).
-- The tunnel adds TLS termination automatically — the public URL is always HTTPS even if the local service is HTTP.
+| Need | Backend | Example |
+|------|---------|---------|
+| Share a web app with anyone on the internet | localhost.run | `start 3000` |
+| Access a DB from another LAN machine | bore | `start 5432 --bore 192.168.1.1` |
+| Expose FTP to the network | bore | `start 21 --bore 10.0.0.1` |
+| SSH into this machine from another | bore | `start 22 --bore gateway.local` |
 
 User arguments: $ARGUMENTS
