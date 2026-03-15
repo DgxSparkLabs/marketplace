@@ -18,6 +18,7 @@ A curated collection of reusable agent skills and rules. Each item is a self-con
 
 | Skill | Description |
 |-------|-------------|
+| [duckduckgo-search](./duckduckgo-search/) | Search DuckDuckGo and return results as structured text |
 | [expose-port](./expose-port/) | Expose a local port via HTTPS (localhost.run) or TCP tunnel (bore) |
 | [google-drive-reader](./google-drive-reader/) | Read Google Docs from personal Drive, extract URLs and conclusions |
 | [send-email](./send-email/) | Send emails via the Resend API |
