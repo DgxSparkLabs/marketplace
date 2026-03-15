@@ -12,17 +12,36 @@ set -euo pipefail
 TUNNEL_DIR="${HOME}/.local/share/expose-port"
 mkdir -p "$TUNNEL_DIR"
 
-# Config file for bore defaults (optional)
+# Environment variables (BORE_SERVER, BORE_SECRET) are expected to be set
+# in ~/.auth/bore and sourced by bashrc.  The config file below is a fallback.
 CONF="${HOME}/.config/expose-port/config"
+AUTH="${HOME}/.auth/bore"
 
 _load_config() {
+    # Defaults — environment variables (from ~/.auth/bore) take priority,
+    # then config file, then empty.
+    local env_server="${BORE_SERVER:-}"
+    local env_secret="${BORE_SECRET:-}"
+
     BORE_SERVER=""
     BORE_SECRET=""
     BORE_PORT="0"
+
+    # Source auth file if present (in case we're in a non-login shell)
+    if [[ -f "$AUTH" ]]; then
+        # shellcheck source=/dev/null
+        source "$AUTH"
+    fi
+
+    # Source config file for any extra settings (BORE_PORT, etc.)
     if [[ -f "$CONF" ]]; then
         # shellcheck source=/dev/null
         source "$CONF"
     fi
+
+    # Env vars that were already set before sourcing win
+    [[ -n "$env_server" ]] && BORE_SERVER="$env_server"
+    [[ -n "$env_secret" ]] && BORE_SECRET="$env_secret"
 }
 
 usage() {
@@ -52,10 +71,15 @@ Examples:
   expose-port list
   expose-port stop all
 
-Config file (~/.config/expose-port/config):
-  Set defaults so you don't have to pass --bore every time:
+Environment variables (preferred — set in ~/.auth/bore, sourced by bashrc):
+    export BORE_SERVER="192.168.2.100"
+    export BORE_SECRET="my-secret"
+
+Config file (~/.config/expose-port/config — fallback):
     BORE_SERVER="192.168.2.100"
     BORE_SECRET="my-secret"
+
+Priority: CLI flags > env vars > config file
 EOF
     exit 1
 }

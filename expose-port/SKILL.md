@@ -48,7 +48,7 @@ bash expose-port/scripts/expose-port.sh start PORT --bore SERVER_IP --bore-port 
 
 Returns an address like `SERVER_IP:PORT`. Works with any TCP protocol.
 
-If `~/.config/expose-port/config` has `BORE_SERVER` set, the `--bore` flag is not needed:
+If `BORE_SERVER` is set (via `~/.auth/bore` or env), the `--bore` flag is not needed:
 ```
 bash expose-port/scripts/expose-port.sh start PORT
 ```

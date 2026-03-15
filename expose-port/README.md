@@ -63,17 +63,33 @@ Connects to a self-hosted [bore](https://github.com/ekzhang/bore) server to crea
 
 ## Configuration
 
-Create `~/.config/expose-port/config` to set defaults:
+### Environment variables (preferred)
+
+Set in `~/.auth/bore` and source it from your bashrc:
 
 ```bash
-# Default backend: bore
-BORE_SERVER="myserver.com"
+# ~/.auth/bore
+export BORE_SERVER="myserver.com"
+export BORE_SECRET="my-secret"
+```
 
-# Optional: authentication secret (must match server's --secret)
+```bash
+# ~/.bashrc (add this line)
+[ -f ~/.auth/bore ] && source ~/.auth/bore
+```
+
+With these set, `start PORT` automatically uses bore — no flags needed.
+
+### Config file (fallback)
+
+`~/.config/expose-port/config` is sourced as a fallback for non-login shells:
+
+```bash
+BORE_SERVER="myserver.com"
 BORE_SECRET="my-secret"
 ```
 
-With this config, `start PORT` automatically uses bore instead of localhost.run.
+**Priority:** CLI flags > environment variables > config file.
 
 ## Setting up a bore server
 
