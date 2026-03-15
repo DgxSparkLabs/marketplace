@@ -16,6 +16,7 @@ A curated collection of reusable agent skills and rules. Each item is a self-con
 
 | Skill | Description |
 |-------|-------------|
+| [expose-port](./expose-port/) | Expose a local port to a public HTTPS URL (like VSCode port forwarding) |
 | [google-drive-reader](./google-drive-reader/) | Read Google Docs from personal Drive, extract URLs and conclusions |
 | [send-email](./send-email/) | Send emails via the Resend API |
 | [ssh-tunnel](./ssh-tunnel/) | Set up SSH port forwarding tunnels (local, remote, SOCKS) |
