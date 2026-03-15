@@ -11,6 +11,7 @@ A curated collection of reusable agent skills and rules. Each item is a self-con
 | Rule | Description |
 |------|-------------|
 | [no-ai-credit](./no-ai-credit/) | Prevent AI agents from adding self-attribution to any output |
+| [telegram-on-complete](./telegram-on-complete/) | Send a Telegram notification after completing any task |
 
 ### Skills
 
