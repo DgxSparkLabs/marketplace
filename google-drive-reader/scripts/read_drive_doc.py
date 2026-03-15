@@ -15,6 +15,7 @@ import json
 import os
 import re
 import sys
+import uuid
 from pathlib import Path
 from urllib.parse import unquote
 
@@ -22,6 +23,13 @@ SCOPES = ["https://www.googleapis.com/auth/drive.readonly"]
 AUTH_DIR = Path.home() / ".auth"
 DEFAULT_CREDENTIALS_FILE = AUTH_DIR / "google-drive-credentials.json"
 DEFAULT_TOKEN_FILE = AUTH_DIR / "google-drive-token.json"
+OUTPUT_DIR = Path("/tmp/gdrive-reader")
+
+
+def _unique_output_path(extension: str = ".txt") -> Path:
+    """Generate a unique output file path using a UUID4 prefix."""
+    OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+    return OUTPUT_DIR / f"{uuid.uuid4().hex[:12]}{extension}"
 
 
 # ---------------------------------------------------------------------------
@@ -438,6 +446,15 @@ def main() -> None:
     parser.add_argument("--full-text", action="store_true", help="Include full document text")
     parser.add_argument("--json", action="store_true", dest="as_json", help="Output as JSON")
     parser.add_argument(
+        "--output", "-o",
+        nargs="?",
+        const="auto",
+        default=None,
+        metavar="FILE",
+        help="Save output to a file instead of stdout. "
+             "If no path given, auto-generates a unique filename in /tmp/gdrive-reader/",
+    )
+    parser.add_argument(
         "--credentials",
         default=os.environ.get(
             "GOOGLE_DRIVE_CREDENTIALS_FILE",
@@ -468,32 +485,52 @@ def main() -> None:
         parser.print_help()
         sys.exit(1)
 
-    service = build_service(args.credentials)
+    # --output: redirect stdout to a uniquely-named file
+    output_path = None
+    output_fh = None
+    original_stdout = sys.stdout
+    if args.output is not None:
+        ext = ".json" if args.as_json else ".txt"
+        if args.output == "auto":
+            output_path = _unique_output_path(ext)
+        else:
+            output_path = Path(args.output)
+            output_path.parent.mkdir(parents=True, exist_ok=True)
+        output_fh = open(output_path, "w", encoding="utf-8")
+        sys.stdout = output_fh
 
-    # --list mode
-    if args.list_docs:
-        docs = list_docs(service, query=args.query, max_results=args.max_results)
-        print_list(docs, as_json=args.as_json)
-        return
+    try:
+        service = build_service(args.credentials)
 
-    # Read a specific document
-    doc_id = extract_doc_id(args.document)
-    metadata = get_doc_metadata(service, doc_id)
-    html = export_doc(service, doc_id, "text/html")
+        # --list mode
+        if args.list_docs:
+            docs = list_docs(service, query=args.query, max_results=args.max_results)
+            print_list(docs, as_json=args.as_json)
+            return
 
-    urls = extract_urls(html, self_doc_id=doc_id)
-    conclusions = extract_conclusions(html)
-    full_text = export_doc(service, doc_id, "text/plain") if args.full_text else None
+        # Read a specific document
+        doc_id = extract_doc_id(args.document)
+        metadata = get_doc_metadata(service, doc_id)
+        html = export_doc(service, doc_id, "text/html")
 
-    print_doc(
-        metadata,
-        urls,
-        conclusions,
-        full_text,
-        urls_only=args.urls_only,
-        conclusions_only=args.conclusions_only,
-        as_json=args.as_json,
-    )
+        urls = extract_urls(html, self_doc_id=doc_id)
+        conclusions = extract_conclusions(html)
+        full_text = export_doc(service, doc_id, "text/plain") if args.full_text else None
+
+        print_doc(
+            metadata,
+            urls,
+            conclusions,
+            full_text,
+            urls_only=args.urls_only,
+            conclusions_only=args.conclusions_only,
+            as_json=args.as_json,
+        )
+    finally:
+        if output_fh is not None:
+            output_fh.close()
+            sys.stdout = original_stdout
+            print(str(output_path))
 
 
 if __name__ == "__main__":

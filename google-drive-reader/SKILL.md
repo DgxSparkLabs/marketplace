@@ -68,6 +68,7 @@ uv run google-drive-reader/scripts/read_drive_doc.py "https://docs.google.com/do
 | `--conclusions-only` | Print only the conclusions section              |
 | `--full-text`        | Also include full document text in output       |
 | `--json`             | Output as JSON                                  |
+| `--output`, `-o`     | Save to file (auto-generates unique name if no path given) |
 | `--credentials FILE` | Path to credentials JSON (overrides env var)    |
 
 ## Instructions
@@ -87,10 +88,18 @@ When the user asks you to read a Google Doc, follow these steps:
 
 3. For structured output (e.g. when you need to process the data), use `--json`.
 
-4. Present the extracted **References** (URLs) as a numbered list showing the
+4. To save output to a file with a unique name (avoids conflicts when multiple
+   agents fetch concurrently), add `--output`:
+   ```
+   uv run google-drive-reader/scripts/read_drive_doc.py "<url-or-id>" --json --output
+   ```
+   The script prints the generated file path to stdout. Read that file for the
+   content. You can also pass a specific path: `--output /tmp/my-file.json`.
+
+5. Present the extracted **References** (URLs) as a numbered list showing the
    link text and URL. Present the **Conclusions** as a summary section.
 
-5. If the script reports an authentication error, instruct the user to run the
+6. If the script reports an authentication error, instruct the user to run the
    setup wizard: `bash google-drive-reader/setup.sh`
 
 User arguments: $ARGUMENTS
