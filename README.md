@@ -25,6 +25,7 @@ A curated collection of reusable agent skills and rules. Each item is a self-con
 | [ssh-tunnel](./ssh-tunnel/) | Set up SSH port forwarding tunnels (local, remote, SOCKS) |
 | [telegram-notify](./telegram-notify/) | Send Telegram notifications with task summaries |
 | [web-scraper](./web-scraper/) | Fetch web pages and extract clean content (with Reddit support) |
+| [youtube-search](./youtube-search/) | Search YouTube for technical videos, tutorials, and talks on a topic |
 | [youtube-wisdom](./youtube-wisdom/) | Extract key knowledge from YouTube video transcripts |
 
 ## Installing Rules
