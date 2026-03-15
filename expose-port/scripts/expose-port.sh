@@ -40,8 +40,8 @@ _load_config() {
     fi
 
     # Env vars that were already set before sourcing win
-    [[ -n "$env_server" ]] && BORE_SERVER="$env_server"
-    [[ -n "$env_secret" ]] && BORE_SECRET="$env_secret"
+    [[ -n "$env_server" ]] && BORE_SERVER="$env_server" || true
+    [[ -n "$env_secret" ]] && BORE_SECRET="$env_secret" || true
 }
 
 usage() {
