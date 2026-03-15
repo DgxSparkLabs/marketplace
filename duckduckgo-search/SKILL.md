@@ -35,8 +35,8 @@ uv run duckduckgo-search/scripts/search.py <query> [options]
 ## Instructions
 
 1. Run the search command with the user's query.
-2. Review the results and present a concise summary to the user.
-3. If the user asks for more detail on a specific result, use the `web-scraper` skill to fetch the full page content.
+2. **Always scrape the top results.** Titles and snippets are not enough — you need to read the actual content. Use the `web-scraper` skill to fetch the full page for each relevant result. Scrape multiple pages in parallel when possible.
+3. Synthesize the scraped content into a thorough answer for the user, citing sources.
 4. When the query is ambiguous, prefer broader searches and let the user refine.
 
 ### Error handling
