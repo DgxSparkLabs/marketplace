@@ -36,40 +36,50 @@ A curated collection of reusable agent skills and rules. Each item is a self-con
 | [youtube-search](./youtube-search/) | Search YouTube for technical videos, tutorials, and talks on a topic |
 | [youtube-wisdom](./youtube-wisdom/) | Extract key knowledge from a YouTube video transcript |
 
-## Installing Rules
+## Interactive Installer
+
+The easiest way to install everything. Detects your agent platforms, shows checkboxes, installs your selections:
+
+```bash
+uv run install.py
+```
+
+Supports install and uninstall with a full TUI:
+
+```bash
+uv run install.py              # interactive install (global scope)
+uv run install.py --uninstall  # interactive uninstall
+uv run install.py --project    # install to project-level config
+```
+
+The installer handles MCP servers, rules, and skills across all detected platforms (Devin, Claude Code, Cursor, Windsurf). It shows what's already installed, skips duplicates, and uses the correct format for each platform.
+
+## Manual Installation
+
+### Rules
 
 Rules activate automatically — no invocation needed. Each rule includes an install script and format-specific files for multiple agent tools.
 
 ```bash
-git clone https://github.com/ForkYoraiLevi/marketplace.git /tmp/marketplace
-
 # Install a rule into the current project (AGENTS.md only, the default)
-/tmp/marketplace/<rule-name>/install.sh
+<rule-name>/install.sh
 
 # Install globally (all projects)
-/tmp/marketplace/<rule-name>/install.sh --global
+<rule-name>/install.sh --global
 
 # Install for all tools at once (agents + windsurf + cursor)
-/tmp/marketplace/<rule-name>/install.sh --format all
+<rule-name>/install.sh --format all
 ```
 
 Supported formats: `agents` (AGENTS.md, default), `windsurf`, `cursor`, `all`.
 
-## Installing Skills
+### Skills
 
 Skills are invoked with `/<skill-name>` in an agent session. Copy the skill directory into your agent's skills directory:
 
 ```bash
-git clone https://github.com/ForkYoraiLevi/marketplace.git /tmp/marketplace
-cp -r /tmp/marketplace/<skill-name> ~/.<agent>/skills/<skill-name>
+cp -r <skill-name> ~/.<agent>/skills/<skill-name>
 # e.g. ~/.config/cognition/skills/, ~/.windsurf/skills/, etc.
-```
-
-Or into a project:
-
-```bash
-mkdir -p <project>/.windsurf/skills   # or .cognition/skills
-cp -r /tmp/marketplace/<skill-name> <project>/.windsurf/skills/<skill-name>
 ```
 
 ## Repository Structure
