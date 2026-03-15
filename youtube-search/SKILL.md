@@ -15,14 +15,12 @@ triggers:
 
 # YouTube Search
 
-Find the best YouTube videos, tutorials, conference talks, and technical content for a given topic. Results are ranked by technical relevance — longer, tutorial-style, deep-dive content surfaces first.
+Find the best YouTube videos on a topic — tutorials, conference talks, deep dives, courses. The script pre-ranks results by technical relevance, but **you must still triage** before presenting.
 
-## Step 1 — Search
-
-Run the search script with the user's topic:
+## Usage
 
 ```
-uv run youtube-search/scripts/search_youtube.py $ARGUMENTS
+uv run youtube-search/scripts/search_youtube.py <query> [options]
 ```
 
 ### Options
@@ -33,35 +31,61 @@ uv run youtube-search/scripts/search_youtube.py $ARGUMENTS
 | `-r`, `--region CODE` | Region code, e.g. `us-en`, `wt-wt` (default: `wt-wt`) |
 | `-t`, `--time {d,w,m,y}` | Time range: day, week, month, year |
 | `--json` | Output as JSON |
-| `--scores` | Show technical relevance scores |
+| `--scores` | Show technical relevance scores (useful for debugging) |
 
-## Step 2 — Present results
+## Instructions
 
-Review the results and present them to the user as a curated list:
+### Step 1: Search wide
 
-1. **Highlight the top picks** — call out the 2-3 most relevant videos with a sentence on why each is worth watching (e.g. "full 2-hour course", "conference talk from the library author", "step-by-step build from scratch").
-2. **List the rest** — show remaining results with title, channel, duration, and URL.
-3. **Suggest next steps** — if the user wants to go deeper into a specific video, recommend using the `youtube-wisdom` skill to fetch and analyze its transcript.
+Run the search with `-n 15` to get a broad set of results:
 
-### Tailoring the search
+```
+uv run youtube-search/scripts/search_youtube.py <query> -n 15
+```
 
-- For **broad topics** (e.g. "Kubernetes"), add qualifiers: `uv run youtube-search/scripts/search_youtube.py "Kubernetes" -n 15`
-- For **recent content**, use time filters: `-t w` for past week, `-t m` for past month
-- If results seem weak, try **rephrasing** — e.g. "React server components deep dive" instead of just "React".
+### Step 2: Triage — pick which videos to recommend
 
-## Step 3 — Deep dive (optional)
+You now have up to 15 titles, channels, durations, and descriptions. **Do not just dump all 15.** Read them carefully and select **3-7 videos** to actually recommend based on these preferences (in priority order):
 
-If the user asks to learn more about a specific video from the results, use the `youtube-wisdom` skill:
+1. **Creator authority over production value.** Prefer videos from the library/framework author, a core contributor, a conference speaker who built the thing, or a respected educator. A low-production talk by the actual creator beats a polished video from a content mill.
+2. **Technical depth over surface coverage.** A 45-min deep dive with code walkthrough beats a 5-min "Top 10 things about X". Look for signals like "deep dive", "internals", "from scratch", "implementation", "under the hood", "live coding" in titles and descriptions.
+3. **Duration as signal.** Conference talks (30-60 min) and full courses (1+ hr) are usually high substance. Tutorials in the 10-30 min range are solid for focused topics. Videos under 5 min rarely have depth — skip them unless they're from an exceptional source (e.g. Fireship, 3Blue1Brown).
+4. **Channel diversity.** Pick videos from different creators and perspectives. Don't recommend 4 videos from the same channel. Mix conference talks, independent tutorials, official channels, and community educators.
+5. **Recency vs fundamentals.** For fast-moving topics (frameworks, AI, cloud), prefer recent content. For fundamentals (algorithms, OS internals, networking), older videos from great educators are often better than recent rehashes.
+6. **Specificity to the query.** Match the video type to what the user needs. "How to build X" → hands-on tutorials. "What is X" → explainer/overview. "X best practices" → conference talks. "X vs Y" → comparison deep dives or benchmarks.
+7. **Skip low-signal videos.** Skip results that are clearly clickbait, reaction/commentary videos, shorts compilations, or videos where the description is all affiliate links and no substance.
+
+### Step 3: Present curated results
+
+For each selected video, present:
+
+- **Title** and **URL**
+- **Why it's worth watching** — one sentence explaining what makes this pick valuable (e.g. "conference talk by the library author", "full 2-hour project build from scratch", "best visual explanation of the concept")
+- **Duration** and **channel** for context
+
+Group them: lead with the top 2-3 picks (with brief reasoning), then list the rest.
+
+### Step 4: Deep dive (if the user wants to go deeper)
+
+If the user asks to learn from a specific video, use the `youtube-wisdom` skill to fetch and analyze its transcript:
 
 ```
 uv run youtube-wisdom/scripts/fetch_transcript.py "<video-url>"
 ```
 
-Then analyze the transcript to extract key insights, actionable takeaways, and notable quotes.
+Then extract: core thesis, key technical points, actionable takeaways, and notable quotes.
 
-## Error handling
+### Tailoring the search
 
-- If no results are found, try broadening the query or removing overly specific terms.
+- For **broad topics** (e.g. "Kubernetes"), add qualifiers to the query itself: "Kubernetes networking internals" or "Kubernetes production setup"
+- For **recent content**, use time filters: `-t w` for past week, `-t m` for past month
+- For **channel-specific searches**, just use the channel name as the query: "Fireship" or "0xSero"
+- If results seem weak, try **rephrasing** — "React server components deep dive" instead of just "React"
+- Run **multiple searches** with different angles if the first set doesn't fully cover the topic
+
+### Error handling
+
+- If the search returns no results, try rephrasing the query or broadening the terms.
 - If the script fails, retry once. If it still fails, report the error to the user.
 - The search uses DuckDuckGo — no API key needed.
 
