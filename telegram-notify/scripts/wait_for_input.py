@@ -18,6 +18,10 @@ import time
 import urllib.request
 import urllib.error
 
+# Hard limits — never wait forever, never skip the wait entirely.
+MIN_TIMEOUT = 10
+MAX_TIMEOUT = 600  # 10 minutes
+
 
 def get_updates(token: str, offset: int | None = None, timeout: int = 30) -> dict:
     """Long-poll the Telegram Bot API for new messages."""
@@ -99,12 +103,21 @@ def main():
         "--timeout", "-t",
         type=int,
         default=180,
-        help="Max seconds to wait (default: 180 = 3 minutes)",
+        help="Max seconds to wait (default: 180, range: 10–600)",
     )
     parser.add_argument("--json", action="store_true", dest="as_json", help="Output as JSON")
     parser.add_argument("--chat-id", help="Override TELEGRAM_CHAT_ID env var")
     parser.add_argument("--token", help="Override TELEGRAM_BOT_TOKEN env var")
     args = parser.parse_args()
+
+    # Clamp timeout to safe bounds — never wait forever.
+    timeout = max(MIN_TIMEOUT, min(args.timeout, MAX_TIMEOUT))
+    if timeout != args.timeout:
+        print(
+            f"Timeout clamped to {timeout}s (requested {args.timeout}s, "
+            f"allowed range: {MIN_TIMEOUT}–{MAX_TIMEOUT}s)",
+            file=sys.stderr,
+        )
 
     token = args.token or os.environ.get("TELEGRAM_BOT_TOKEN")
     if not token:
@@ -124,9 +137,9 @@ def main():
             print(f"Failed to send prompt: {e}", file=sys.stderr)
             sys.exit(1)
 
-    print(f"Waiting for reply (timeout: {args.timeout}s)...", file=sys.stderr)
+    print(f"Waiting for reply (timeout: {timeout}s)...", file=sys.stderr)
 
-    text = wait_for_message(token, chat_id, args.timeout)
+    text = wait_for_message(token, chat_id, timeout)
 
     AUTONOMOUS_PROMPT = (
         "No reply received — the user is likely away. Continue autonomously.\n"
