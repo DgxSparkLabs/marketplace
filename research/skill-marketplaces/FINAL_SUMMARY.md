@@ -1,5 +1,7 @@
 # Skill Marketplaces: Comprehensive Deep Research Report
 
+> **Archival.** This is the R1-R9 round synthesis. The canonical master summary is [`research/SUMMARY_AND_CONCLUSIONS.md`](../SUMMARY_AND_CONCLUSIONS.md). This file is preserved for provenance — it contains detailed regulatory, blockchain, and enterprise data not yet fully merged into the canonical file.
+
 *Compiled March 16, 2026 | 9 research rounds | 58 files | ~15,500+ lines of raw research*
 *Sources: GitHub, Twitter/X, Reddit, arXiv, Kaggle, Industry/Web, DuckDuckGo web scraping*
 

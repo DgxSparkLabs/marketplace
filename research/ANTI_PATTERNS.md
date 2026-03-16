@@ -93,14 +93,24 @@ Upwork and Fiverr are structurally conflicted — AI agents threaten to replace 
 ### Star count inflation
 
 Star counts evolve across research rounds and are not always reliable:
-- `phuryn/pm-skills`: 7,312 (old) → 7,317 (R9) → 7,322 (R12) — normal growth
-- `VoltAgent/awesome-openclaw-skills`: 38,090 in new findings vs 38,102 in R12 — 12 fewer stars is suspicious (stars don't decrease normally)
+- `phuryn/pm-skills`: 7,312 (old) → 7,317 (R9) → 7,322 (R12) → 7,382 (verified March 2026) — normal growth
+- `VoltAgent/awesome-openclaw-skills`: 38,090 → 38,102 (R12) → 38,269 (verified March 2026) — the apparent 12-star decrease between rounds was measurement timing, not real; repo is growing normally
 
 **Rule:** When citing star counts, note the research round and date. Never present them as current without live verification.
 
-### Hallucinated GitHub repos
+### Previously flagged "hallucinated" repos — correction
 
-Prior research rounds contain repos with specific star counts that cannot be traced to any earlier round. At least 5 repos (`WordPress/agent-skills`, `docker/mcp-registry`, `archestra-ai/archestra`, `iflytek/skillhub`, `xpack-ai/XPack`) appeared in a rejected rewrite with detailed metadata but no source in any of the 12 research rounds.
+A prior review flagged 5 repos as likely fabricated because they appeared in a rejected rewrite without provenance in any research round. **Live verification (March 2026) shows 4 of 5 exist:**
+
+| Repo | Status | Actual Stars | Notes |
+|------|--------|-------------|-------|
+| `WordPress/agent-skills` | Exists | 905 | Real repo, no provenance in research rounds |
+| `docker/mcp-registry` | Exists | 453 | Real repo, no provenance in research rounds |
+| `archestra-ai/archestra` | Exists | 3,547 | Real repo, no provenance in research rounds |
+| `iflytek/skillhub` | Exists | 225 | Real repo, no provenance in research rounds |
+| `xpack-ai/XPack` | **Not Found** | — | Confirmed nonexistent |
+
+The original issue was lack of provenance trail, not fabrication. However, the star counts in the rejected rewrite may still have been wrong (we don't have the original claimed values to compare). The rule stands: verify before citing.
 
 **Rule:** If a repo has no provenance trail through the research rounds, treat it as unverified. Check it on live GitHub before including in any canonical file.
 

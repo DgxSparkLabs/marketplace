@@ -1,8 +1,10 @@
 # Skill Marketplace Research: Summary, Analysis & Conclusions
 
-> **Research Date:** July 2025
-> **Sources:** GitHub (67+ repos), Reddit (14 threads), arXiv (30+ papers), Kaggle (20+ datasets/competitions), Twitter/X (14 threads, 9 platforms), DuckDuckGo (10 articles, 85+ results)
-> **Total Data Points:** 200+ individual sources analyzed across 6 research streams
+> **Canonical master summary.** This is the authoritative synthesis of all research. For detailed round-level data, see the archival `FINAL_SUMMARY.md` files in `skill-marketplaces/` (R1-R9) and `skill-marketplaces-11/` (R11).
+
+> **Research Date:** July 2025 (initial), updated through March 2026 (R1-R12)
+> **Sources:** GitHub (182+ repos), Reddit (53+ threads), arXiv (90+ papers), Kaggle (44+ datasets), Twitter/X (130+ signals, 12+ platforms), DuckDuckGo/Industry (40+ articles)
+> **Total Data Points:** 250+ individual sources analyzed across 12 research rounds, 6 platforms
 
 ---
 
@@ -419,13 +421,106 @@ All detailed findings are preserved in:
 
 | File | Source | Lines | Key Content |
 |------|--------|-------|-------------|
-| `github_findings.md` | GitHub | 432 | 7 deep-dive repos, 20+ additional, patterns, stack |
+| `github_findings.md` | GitHub | 589 | 7 deep-dive repos, 72+ catalogued, patterns, stack |
 | `reddit_findings.md` | Reddit | 287 | 14 threads, sentiment, complaints, strategies |
 | `arxiv_findings.md` | arXiv | 502 | 9 deep-dive papers, 20+ additional, themes, gaps |
 | `kaggle_findings.md` | Kaggle | 278 | 20+ datasets, 1 competition, notebooks, insights |
 | `twitter_findings.md` | Twitter/X | 408 | 14 threads, 9 platforms, security, crypto/Web3, influencers |
 | `general_findings.md` | Competitive | 529 | 10 articles, market sizing, business models, enterprise |
+| `competitive_landscape.md` | Industry | — | Market sizing, business models, competitive analysis |
+| `skill-marketplaces/FINAL_SUMMARY.md` | R1-R9 synthesis | 381 | Security crisis, regulatory, blockchain, enterprise, 5-layer architecture |
+| `skill-marketplaces-11/FINAL_SUMMARY.md` | R11 synthesis | 277 | Security solutions comparison, curation evidence, revenue models |
 
 ---
 
-*This research was conducted across 6 platforms with 200+ individual sources analyzed. The skill marketplace space is early, fragmented, and full of opportunity. The platform that solves trust + composability for a specific vertical will win.*
+## Addendum: R7-R12 Findings (March 2026)
+
+> The following sections capture critical findings from research rounds 7-12 that extend the original synthesis above. See the archival `FINAL_SUMMARY.md` files for full detail.
+
+### The Security Crisis (Quantified)
+
+| Metric | Value | Source |
+|--------|-------|--------|
+| Skills with security flaws (Snyk audit) | 36.82% of 3,984 scanned | Snyk ToxicSkills |
+| Critical-level security issues | 13.4% (534 skills) | Snyk ToxicSkills |
+| Confirmed malicious skills (total) | 1,184+ | Stable-Learn / HackerNews |
+| ClawHavoc campaign | 341 malicious skills; #1 download was malware | Reddit / HackerNews |
+| Malicious skills detected by Gen Trust Hub | 12,000+ | Gen Digital |
+| Attack success rate on frontier models | 80% | Skill-Inject benchmark |
+| Data exfiltration prevalence | 13.3% of all skills | Multiple studies |
+
+Agent skills are worse than traditional package ecosystems: packages have isolated execution, but agent skills run with **full agent permissions** (shell, filesystem, env vars, email). New attack vectors — prompt injection, memory poisoning, time-shifted payload assembly — have no package-ecosystem analog. Memory poisoning **survives uninstallation, agent restarts, and platform updates**.
+
+### The Five Architectural Layers
+
+Every viable skill marketplace must address all 5:
+
+```
++------------------------------------------+
+|  5. GOVERNANCE                           |  Singapore IMDA, IEEE P3709,
+|     Compliance, identity, audit          |  OWASP Agentic Top 10, COMPASS
++------------------------------------------+
+|  4. ORCHESTRATION                        |  A2A Protocol (30+ impls),
+|     Multi-agent coordination             |  SkillOrchestra, AWCP
++------------------------------------------+
+|  3. PAYMENTS                             |  x402, Stripe AgentPay,
+|     Pricing, billing, escrow             |  Mastercard, crypto micropayments
++------------------------------------------+
+|  2. TRUST                                |  AgentVerus, SkillJury, Conduit,
+|     Validation, reputation, QA           |  Ev-Trust, ClawSecure
++------------------------------------------+
+|  1. DISCOVERY                            |  SkillsMP, skills.sh, SKILL.md,
+|     Search, recommendation               |  ChainRec, semantic search
++------------------------------------------+
+```
+
+**No single project covers all 5 layers. The first to integrate them wins.**
+
+### Regulatory Landscape
+
+| Regulation | Jurisdiction | Effective Date | Key Impact |
+|-----------|-------------|---------------|------------|
+| EU AI Act high-risk requirements | EU | Aug 2026 (possible delay to Dec 2027) | Conformity assessment, documentation, human oversight |
+| Colorado SB 24-205 | Colorado, US | June 30, 2026 | Impact assessments, discrimination prevention, $20K/violation |
+| Federal AI procurement (OMB M-26-04) | US Federal | March 11, 2026 | Model cards, evaluation artifacts required |
+| California SB 53 | California, US | Signed Sep 2025 | Safety frameworks, catastrophic risk assessments |
+| FTC enforcement (Air AI case) | US | Active | Marketing substantiation for agent claims |
+
+38 US states passed AI legislation in 2025. 42 state AGs sent letters to major AI companies demanding pre-release safety testing.
+
+### Blockchain/Web3 Skill Marketplaces
+
+| Platform | Chain | Mechanism |
+|----------|-------|-----------|
+| ERC-8183 | Ethereum | Escrow/commerce layer for agent jobs |
+| VelaNetwork | Multi-chain | On-chain escrow with judge agents |
+| Rentaclaw | Solana | $0.00025/tx micro-rentals |
+| SafuSkill | BNB Chain | GoPlus security scanning |
+| SpoonOS | Neo | First Web3 marketplace |
+
+2026 Standards Stack: x402 (payments) + ERC-8004 (identity) + ERC-8126 (risk scoring) + ERC-8183 (commerce) + ERC-7984 (privacy).
+
+### Security Solutions Comparison (R11)
+
+| Tool | Approach | F1 Score | Notes |
+|------|----------|----------|-------|
+| SkillFortify | Formal verification | 96.95% | 0% false positives |
+| Snyk agent-scan | Static analysis | — | ToxicSkills audit baseline |
+| Agensi.io | 8-layer manual review | — | First paid skill sold |
+| Gen Trust Hub | Runtime detection | — | 12K+ malicious detected, 60M+ users |
+| AgentVerus | CI-integrated certification | — | "SSL for skills" |
+
+### Market Sizing Update (R7-R9)
+
+| Metric | Value | Source |
+|--------|-------|--------|
+| AI agent market 2025 | ~$7.5-8.3B | Multi-source consensus |
+| AI agent market 2030 | $47-53B (CAGR 41-46%) | Multi-source consensus |
+| AI M&A activity 2025 | $146B+ in disclosed deals | MightyBot |
+| Fortune 500 with production agents | 67% (up from 19% in 2024) | McKinsey / Beam AI |
+| Top agent startup valuation | Anysphere (Cursor) $29.3B | AI Funding Tracker |
+| "Real" agent companies (Gartner) | ~130 of 2,000+ claimed | Gartner |
+
+---
+
+*This research was conducted across 6 platforms over 12 research rounds with 250+ individual sources analyzed. The skill marketplace space is early, fragmented, and full of opportunity. The platform that solves trust + composability for a specific vertical will win.*

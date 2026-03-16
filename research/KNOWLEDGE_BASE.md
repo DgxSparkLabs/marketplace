@@ -242,7 +242,7 @@ Skills are not static artifacts. They have a lifecycle that requires active mana
 
 **Enterprise entrants:** Block (Goose), Microsoft, HashiCorp, AWS Labs, Binance, Oracle, Salesforce
 
-**Official platforms:** Anthropic (`anthropics/skills`, 75K+ stars), OpenAI (`openai/skills` + agents/openai.yaml)
+**Official platforms:** Anthropic (`anthropics/skills`, 94K+ stars — verified March 2026), OpenAI (`openai/skills` + agents/openai.yaml)
 
 **What's missing from all of them:**
 1. No hybrid human+AI marketplace

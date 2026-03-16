@@ -90,12 +90,13 @@ Each `skill-marketplaces-N/` subdirectory contains one research iteration. These
 | AI agent skills indexed (SkillsGate) | 45,000+ | GitHub |
 | AI agent skills claimed (SkillsMP) | 500,000+ | Twitter/X |
 | SkillNet academic repository | 200,000+ | arXiv |
-| Top GitHub repo stars (phuryn/pm-skills) | 7,317 | GitHub |
-| Community skills with vulnerabilities | 26.1% | arXiv |
+| Top GitHub repo stars (anthropics/skills) | 94,879 (verified March 2026) | GitHub |
+| Top community repo stars (phuryn/pm-skills) | 7,382 (verified March 2026) | GitHub |
+| Community skills with vulnerabilities | 26.1–36.82% | arXiv, Snyk ToxicSkills |
 | Malicious skills in ClawHavoc attack | ~1,200 | arXiv (SoK) |
 | Competing platforms identified | 15+ | All sources |
-| AI agent market by 2030 | $52.62B | Competitive landscape |
-| Academic papers (2024–2026) | 30+ | arXiv |
+| AI agent market by 2030 | $47–53B (CAGR 41–46%) | Multi-source consensus |
+| Academic papers (2024–2026) | 90+ | arXiv |
 | Freelance contracts dataset | 1.3M entries | Kaggle |
 
 ---

@@ -1,5 +1,7 @@
 # SKILL MARKETPLACE: DEEP RESEARCH FINAL REPORT (Round 11)
 
+> **Archival.** This is the Round 11 synthesis. The canonical master summary is [`research/SUMMARY_AND_CONCLUSIONS.md`](../SUMMARY_AND_CONCLUSIONS.md). This file is preserved for provenance — it contains security solutions comparison data and curation evidence not yet fully merged into the canonical file.
+
 > **Date:** March 16, 2026
 > **Research Scope:** GitHub, Twitter/X, Reddit, arXiv, Kaggle + 10 prior research rounds
 > **Total Sources Analyzed:** 250+ across 11 research rounds, 6 platforms

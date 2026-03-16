@@ -112,20 +112,24 @@ marketplace/
 ├── AGENTS.md               # Agent-facing instructions for contributing
 ├── README.md               # This file — catalog
 ├── CONTRIBUTING.md          # Contribution guide
+├── install.py              # Interactive TUI installer (uv run install.py)
 ├── docs/
+│   ├── ONBOARDING.md       # Quick-start for new agents
 │   ├── SKILL_FORMAT.md     # SKILL.md format reference
 │   └── RULE_FORMAT.md      # Rule format reference
+├── research/               # 200+ sources of market intelligence
+│   ├── README.md           # Navigation index and reading order
+│   ├── KNOWLEDGE_BASE.md   # Distilled insights by topic
+│   ├── ANTI_PATTERNS.md    # Noise catalog and dead ends
+│   └── METHODOLOGY.md      # How research was done
+├── tests/                  # 104 automated tests
+├── scripts/                # Repo-level install scripts
 ├── _template/              # Starter template for new skills
-│   ├── SKILL.md
-│   ├── README.md
-│   └── scripts/
 ├── <rule-name>/            # Rule directories
 │   ├── rule.md             # Rule content (AGENTS.md format)
 │   ├── README.md           # Documentation
 │   ├── install.sh          # Install script
 │   └── formats/            # Tool-specific rule files
-│       ├── windsurf.md
-│       └── cursor.md
 └── <skill-name>/           # Skill directories
     ├── SKILL.md
     ├── README.md

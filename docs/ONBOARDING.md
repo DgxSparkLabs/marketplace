@@ -94,3 +94,14 @@ These are the most important things we've learned from 200+ sources:
 - **Search before building.** Check the research, check existing skills, check the prior-art rule. Someone may have already solved your problem.
 - **Keep it simple.** Skills should do one thing well. Rules should be concise checklists, not essays. Scripts should use PEP 723 and `uv run` for zero-install.
 - **Don't reinvent findings.** The research library contains hard-won insights from 200+ sources. Read `KNOWLEDGE_BASE.md` before making strategic decisions about what to build.
+
+## Good First Contributions
+
+If you're looking for a place to start, here are high-value, low-risk tasks:
+
+1. **Add a skill from the research.** The research identified tools agents need (web scraping, data analysis, code review). Pick one, build it following `_template/`, run the tests.
+2. **Verify a research claim.** Pick an unverified entry from `research/METHODOLOGY.md` (the "Reported" tier) and check it against live sources. Update the verification tier.
+3. **Improve a README.** Some skills have minimal documentation. Compare against `send-email/README.md` (the reference) and add missing sections.
+4. **Port a rule to a new format.** Some rules only have `windsurf.md` and `cursor.md` formats. Add support for other agent platforms.
+5. **Write a missing test.** Read `tests/test_marketplace.py` and look for edge cases not covered. The test suite is the quality gate — making it stronger benefits everyone.
+6. **Extend `ANTI_PATTERNS.md`.** If you encounter a dead-end, noise source, or mistake while working, document it so the next agent doesn't repeat it.

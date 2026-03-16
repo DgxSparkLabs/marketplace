@@ -126,12 +126,48 @@ Add a row to the **Rules** table in the `## Catalog` section. Keep it sorted alp
 
 ---
 
+## Testing
+
+This project has an automated test suite that validates all skills, rules, and install scripts. **All tests must pass before any changes are submitted.**
+
+### Running tests
+
+```bash
+uv run tests/test_marketplace.py        # all tests (104)
+uv run tests/test_marketplace.py -v     # verbose output
+uv run tests/test_marketplace.py -k skill  # only skill tests
+uv run tests/test_marketplace.py -k rule   # only rule tests
+```
+
+### What the tests check
+
+- Directory structure (required files present, correct naming)
+- YAML frontmatter (valid syntax, required fields)
+- Catalog consistency (README.md table matches actual directories)
+- PEP 723 metadata (Python scripts have inline dependency declarations)
+- Shell script safety (shebang, `set -euo pipefail`)
+- Install script behavior (`--help`, `--global`, idempotency)
+- Format file content parity (Windsurf/Cursor files match rule.md)
+- Secret scanning (no API keys, tokens, or credentials committed)
+
+### Running CI locally
+
+Use [act](https://github.com/nektos/act) with podman to run the full GitHub Actions workflow:
+
+```bash
+./tests/run-ci-local.sh          # run the full CI workflow locally
+./tests/run-ci-local.sh -n       # dry-run (no container)
+```
+
+---
+
 ## Submitting
 
 1. Fork this repository
 2. Add your skill or rule directory at the repo root
 3. Update the catalog in `README.md`
-4. Open a pull request
+4. Run `uv run tests/test_marketplace.py` — all tests must pass
+5. Open a pull request
 
 Commit message format:
 ```
@@ -150,3 +186,4 @@ Add <name> skill|rule
 - **No hardcoded paths.** Use environment variables or arguments for all configuration.
 - **Document prerequisites.** If something needs an API key, a CLI tool, or a service, say so in both the SKILL.md/rule.md and README.md.
 - **Test before submitting.** Install the skill/rule and verify it works in a real agent session.
+- **Read AGENTS.md first.** It contains project conventions, research directory rules, and verification requirements.

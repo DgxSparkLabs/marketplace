@@ -198,9 +198,11 @@ research/
 
 | Tier | Definition | Example |
 |------|-----------|---------|
-| **Verified** | Checked against live source, cross-referenced | phuryn/pm-skills: 7,317 stars (verified on GitHub) |
+| **Verified** | Checked against live source, cross-referenced | phuryn/pm-skills: 7,382 stars (verified March 2026), anthropics/skills: 94,879 stars (verified March 2026) |
 | **Corroborated** | Appears in 2+ research rounds with consistent data | 26.1% vulnerability rate (arXiv + Snyk audit) |
-| **Reported** | Appears in one research round, not independently verified | VoltAgent: 38K+ stars (R12 data, unverified) |
-| **Suspect** | Inconsistent across rounds or no provenance trail | Repos that appear in one file but no research round |
+| **Reported** | Appears in one research round, not independently verified | Single-round data without live verification |
+| **Suspect** | Inconsistent across rounds or no provenance trail | xpack-ai/XPack (confirmed nonexistent March 2026) |
+
+**Verified repos (March 2026 GitHub API check):** phuryn/pm-skills (7,382), anthropics/skills (94,879), obra/superpowers (87,967), VoltAgent/awesome-openclaw-skills (38,269), VoltAgent/awesome-agent-skills (11,458), numman-ali/openskills (9,035), daymade/claude-code-skills (656), binance/binance-skills-hub (465), sickn33/antigravity-awesome-skills (24,861), vercel-labs/agent-skills (23,107), kepano/obsidian-skills (14,303), agentskills/agentskills (13,261), WordPress/agent-skills (905), docker/mcp-registry (453), archestra-ai/archestra (3,547), iflytek/skillhub (225).
 
 When extending research, aim for Verified or Corroborated tier. Note the tier when adding to canonical files.
