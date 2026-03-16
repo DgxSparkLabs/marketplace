@@ -30,6 +30,7 @@ A curated collection of reusable agent skills and rules. Each item is a self-con
 | [github-search](./github-search/) | Search GitHub for repositories, prior art, and implementation inspiration |
 | [google-drive-reader](./google-drive-reader/) | Read Google Docs from personal Drive, extract URLs and conclusions |
 | [send-email](./send-email/) | Send an email to someone using the Resend API |
+| [session-history](./session-history/) | Query past Devin CLI conversations from the local session database |
 | [ssh-tunnel](./ssh-tunnel/) | Set up SSH port forwarding tunnels (local, remote, SOCKS proxy) |
 | [structured-handoff](./structured-handoff/) | Generate structured task files for autonomous agent sessions |
 | [telegram-notify](./telegram-notify/) | Send a Telegram notification with a task summary |
