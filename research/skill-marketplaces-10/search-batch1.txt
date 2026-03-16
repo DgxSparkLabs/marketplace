@@ -1,0 +1,431 @@
+================================================================================
+SEARCH BATCH 1 — DuckDuckGo x.com searches
+Generated: 2026-03-16 09:03:39 UTC
+================================================================================
+
+
+################################################################################
+SEARCH 1: site:x.com AI agent skill marketplace March 2026
+Command: ddgs text -q "site:x.com AI agent skill marketplace March 2026" -m 20
+################################################################################
+
+1.	    ==============================================================================
+title       Skills are handy as well as they are suspicious, especially for everyday ...
+href        https://x.com/theyavuzarslan/status/2032318370603786582
+body        ... AI agent skill on @BNBCHAIN. Our newest product Agent Guard will be
+            scanning each skill in the marketplace for you to flag risks &
+            abnormalities
+
+2.	    ==============================================================================
+title       Security is not optional for AI agents. It's foundational. We're excited to
+            ...
+href        https://x.com/termix_ai/status/2033127578001649844
+body        The security-first marketplace for AI Agent Skills. SafuSkill is built on
+            @BNBCHAIN, bringing together Skills browsing and discovery,
+            security ...
+
+3.	    ==============================================================================
+title       It's Agent Infrastructure 2026. AI agents are no longer lab experiments. They
+            ...
+href        https://x.com/sirkhaycee/status/2023813748008394927
+body        It's Agent Infrastructure 2026. AI agents are no longer lab experiments.
+            They're live, onchain, executing trades, managing liquidity, and
+            ...
+
+4.	    ==============================================================================
+title       Fenz AI - 🏥 for Agents (@fenzlabs) / Posts and Replies ...
+href        https://x.com/fenzlabs/with_replies?lang=eu
+body        This auditing pipeline is part of our public commitment: Full threat model
+            publication for agent marketplaces (March 2026). Open security
+            roadmap with ...
+
+5.	    ==============================================================================
+title       ZoomEye (@zoomeye_team) on X
+href        https://x.com/zoomeye_team/status/2029849387854352795
+body        AI Agents extend their capabilities through "Skills," which introduce security
+            risks associated with dynamic execution. Script and Environment
+            ...
+
+6.	    ==============================================================================
+title       The game hasn't even begun
+href        https://x.com/shawmakesmagic/status/2031817606269976988
+body        As a decentralized marketplace for AI agent services on Solana, PayAI enables
+            autonomous agents to hire, collaborate, and pay each other 24 ...
+
+7.	    ==============================================================================
+title       MONTREAL.AI (@Montreal_AI) on X
+href        https://x.com/Montreal_AI/status/2028999462899593684
+body        If Uber and Upwork created digital marketplaces for human gig workers,
+            AGIJobManager and its kin were creating a marketplace for machine
+            gig ...
+
+8.	    ==============================================================================
+title       Bitget Wallet 🩵 (@BitgetWallet) on ...
+href        https://x.com/BitgetWallet/status/2032416029943668791
+body        In 2026, that changed. To let AI agents "work smarter," we voluntarily hand
+            them full disk access, local file read/write, and automated
+            control ...
+
+9.	    ==============================================================================
+title       SpoonOS 👅🥄 (@SpoonOS_ai) / Posts / X
+href        https://x.com/SpoonOS_ai
+body        SpoonOS has launched the first Web3 Skills Marketplace. Now, we're opening a
+            Skills Micro Challenge — a short, focused campaign for developers
+            to contribute ...
+
+10.	    ==============================================================================
+title       herrcore
+href        https://x.com/herrcore
+body        A little later in 2025, agent skills were introduced. Agent skills are a
+            simpler way to load tools or capabilities that an AI agent can
+            use. The main ...
+
+
+################################################################################
+SEARCH 2: site:x.com skill marketplace security trust verification 2026
+Command: ddgs text -q "site:x.com skill marketplace security trust verification 2026" -m 20
+################################################################################
+
+1.	    ==============================================================================
+title       OpenClaw / ClawHub "Skills" Malware Delivery Incident Date: February ...
+href        https://x.com/fenzlabs/status/2020324980056363313
+body        Safety Audit Report Subject: OpenClaw / ClawHub "Skills" Malware Delivery
+            Incident Date: February 2026. Prepared by: Fenz AI Security Audit
+            ...
+
+2.	    ==============================================================================
+title       The Hidden Security Dangers of AI-Generated Code
+href        https://x.com/HYDNSecurity/status/2024057306468503731
+body        In February 2026, Moltbook - a viral social network "designed exclusively for
+            AI agents" became the poster child for vibe coding gone wrong.
+
+3.	    ==============================================================================
+title       The @openclaw incident exposed a new AI security reality. Agents ...
+href        https://x.com/PerleLabs/status/2027527411144044743
+body        In January 2026, the "ClawHavoc" campaign exploited OpenClaw's "ClawHub"
+            registry, a marketplace for third-party agent skills. This was a
+            ...
+
+4.	    ==============================================================================
+title       We just published @SaharaAI's 2026 vision — and I want to share some ...
+href        https://x.com/xiangrenNLP/status/2029388982321398111
+body        We expand the Sahara Marketplace to support derivative agents and copilots,
+            enabling developers to fork, customize, and monetize agentic ...
+
+5.	    ==============================================================================
+title       Ethereum's ERC-8004 Brings Identity and Trust to AI Agents
+href        https://x.com/i/trending/2030026231908028707
+body        6 Mar 2026—New standards now give them on-chain identities and reputation
+            scores to build real trust. Launched on Ethereum mainnet in late
+            January 2026, ...
+
+6.	    ==============================================================================
+title       Ghost Security's Skills Marketplace supercharges Claude Code ...
+href        https://x.com/DarkWebInformer/status/2024155770938433541
+body        Feb 18,2026·Ghost Security'sSkillsMarketplacesupercharges Claude Code to be an
+            application security expert in code security analysis,
+            dependency/secrets scanning, and dynamic vulnerability testing
+
+7.	    ==============================================================================
+title       SpoonOS 👅🥄 (@SpoonOS_ai) on X
+href        https://x.com/SpoonOS_ai/status/2018597822665503146
+body        After the official team approves your PR, the Skill will be synced and
+            launched on the event Marketplace within 72 hours. Developers can
+            check ...
+
+8.	    ==============================================================================
+title       This is exactly why I bought LarryBrain. This is the future of SaaS and ...
+href        https://x.com/mdnlabs/status/2027034606071939098
+body        The scanner can't tell the difference between "this skill helps you download
+            verified, reviewed skills from a curated marketplace" and "this
+            ...
+
+9.	    ==============================================================================
+title       SHERLOCK (@sherlockdefi) on X
+href        https://x.com/sherlockdefi/status/2027016576382210505
+body        OpenClaw's skills marketplace lets you extend what your agent can do with
+            plug-and-play add-ons. By February 16, researchers had identified
+            824 ...
+
+10.	    ==============================================================================
+title       Most people are still copy-pasting the same instructions into Claude ...
+href        https://x.com/NickSpisak_/status/2025612509978484904
+body        in early 2026, vercel released skills.sh a command-line tool that has become
+            the npm for ai agents. this cli helps install, and manage skills
+            ...
+
+11.	    ==============================================================================
+title       MONTREAL.AI (@Montreal_AI) on X
+href        https://x.com/Montreal_AI/status/2029246786397978901
+body        As of 2026, there are specialized agent collectives for everything from
+            graphic design to logistics. Some agents form guild-like alliances
+            to ...
+
+12.	    ==============================================================================
+title       KrillX (@krillxfun) / Posts / X
+href        https://x.com/krillxfun
+body        Feb 8,2026·The authentication flow, theskillarchitecture, the on-chain
+            execution — everything is designed for agents to operate
+            autonomously. If you're running an OpenClaw agent, this is native
+            to your stack. Install theskilland your agent is ready to launch.
+            What's next Token launches are the entry point. We're building
+            toward a full agent-native ...
+
+13.	    ==============================================================================
+title       dexploarer (@dEXploarer) on X
+href        https://x.com/dEXploarer/status/2031792201903026601
+body        5 days ago ·The agent is susceptible to prompt injection attacks, and Cisco's
+            AIsecurityresearch team documented a case where a third-party
+            ClawHubskillperformed data exfiltration without user
+            awareness.Skillmarketplacevetting: OpenClaw's community-built
+            ClawHubskillmarketplacelacks rigorous vetting.
+
+14.	    ==============================================================================
+title       agentverus (@agentverus) / Posts / X
+href        https://x.com/agentverus
+body        Feb 9,2026·Trust, but verify. Thetrustcertification service for AI
+            agentskills. Scan, audit, and certifyskillsbefore they access your
+            data.
+
+15.	    ==============================================================================
+title       Clawnch (@Clawnch_Bot) / Posts / X
+href        https://x.com/clawnch_bot
+body        Jan 31,2026·The integration also includes DeFi portfolio tracking for swaps,
+            liquidity positions, and fee claims in a single dashboard, along
+            with built-in anti-abuse protections such as sybil scoring,
+            bytecodeverification, cooldowns, and rug-pull delisting.
+
+16.	    ==============================================================================
+title       superpage (@superpagedotsh) / Posts / X
+href        https://x.com/superpagedotsh
+body        Mar 2,2026·SuperPage : The x402 PaymentSkillfor the Agent Internet AI agents
+            can reason, generate content, and execute workflows.
+
+17.	    ==============================================================================
+title       X (@X) / Posts / X - Twitter
+href        https://x.com/X
+body        Feb 20, 2007 ·The patron's capital and ambition, the painter'sskilland
+            stubbornness. They were locked in a generative argument about what
+            the thing should be, and what emerged was a product of that
+            argument — not of anyone's judgment, but of their shared labor.
+
+
+################################################################################
+SEARCH 3: site:x.com ERC-8183 ERC-8004 agent commerce 2026
+Command: ddgs text -q "site:x.com ERC-8183 ERC-8004 agent commerce 2026" -m 20
+################################################################################
+
+1.	    ==============================================================================
+title       ERC-8183 Agents can pay each other (x402). They can find and use tools ( ...
+href        https://x.com/Airdrops_one/status/2032220553139142781
+body        ERC-8183 gives them commerce. The loop is now closed: Discovery (8004) →
+            Commerce (8183) → Reputation (8004) → Better Discovery → More
+            Commerce
+
+2.	    ==============================================================================
+title       The energy around this upcoming project feels different… trust me, it's ...
+href        https://x.com/Harshweb3india/status/2032901558644650375
+body        ERC-8004 gave agents identity. ERC-8183 gave agents commerce. PyVax gives
+            Python developers the ability to write the contracts those agents
+            ...
+
+3.	    ==============================================================================
+title       Introducing ERC-8183: The Commerce Layer for AI Agents
+href        https://x.com/virtuals_io/status/2031042423288426979
+body        ERC-8183: Agentic Commerce, is an open, permissionless standard for agent
+            commerce applications with escrow and evaluator attestation
+            programmed ...Missing:2026| Show results with:2026
+
+4.	    ==============================================================================
+title       x.com
+href        https://x.com/
+body        Until August 4,2026, players can continue to jump into the action, earn...
+
+5.	    ==============================================================================
+title       x.com/AnthropicAI/status/1949898502688903593
+href        https://x.com/AnthropicAI/status/1949898502688903593
+body        AIagent.
+
+6.	    ==============================================================================
+title       x.com/Agent_Layer/status/1835984613967278324
+href        https://x.com/Agent_Layer/status/1835984613967278324
+body        The site owner hides the web page description.
+
+7.	    ==============================================================================
+title       x.com/TuckerCarlson
+href        https://x.com/TuckerCarlson
+body        Tucker Carlson IntelAgenciesWant to Track Your Transactions and jail...
+
+8.	    ==============================================================================
+title       a client that creates the job and locks funds - a provider that delivers the
+            work
+href        https://x.com/BlockFlow_News/status/2031324085196836945
+body        The ERC-8183 draft was published February 25, 2026, and is still in early
+            review on Ethereum Magicians. The Stack Behind the Standard. The
+            ...
+
+9.	    ==============================================================================
+title       THIS IS ALREADY IN PRODUCTION: AGIJobManager ...
+href        https://x.com/Montreal_AI/status/2031134867895861435
+body        ERC-8183 Agentic commerce, the job escrow primitive, is an important addition
+            to the stack. It is: - Composable with x402 and 8004. - Extensible
+            ...
+
+10.	    ==============================================================================
+title       Virtuals Protocol (@virtuals_io) / Posts ...
+href        https://x.com/virtuals_io
+body        ERC-8183 is an open standard for trustless agent commerce. Here's how to get
+            involved: Build with ERC-8183. Be a facilitator! Deploy ERC-8183
+            on your chain.
+
+11.	    ==============================================================================
+title       Vitto Rivabella (@VittoStack) / Posts ...
+href        https://x.com/VittoStack
+body        ERC-8183 is an open standard for trustless agent commerce. Here's how to get
+            involved: Build with ERC-8183. Be a facilitator! Deploy ERC-8183
+            on your chain.
+
+12.	    ==============================================================================
+title       Robby Yung ⦿⦿⦿ (@viewfromhk) / Posts / X
+href        https://x.com/viewfromhk
+body        ERC-8183 is an open standard for trustless agent commerce. Here's how to get
+            involved: Build with ERC-8183. Be a facilitator! Deploy ERC-8183
+            on your chain.
+
+13.	    ==============================================================================
+title       Marco De Rossi (@marco_derossi) / Posts ...
+href        https://x.com/marco_derossi
+body        ERC-8183 Agentic commerce, the job escrow primitive, is an important addition
+            to the stack. It is: - Composable with x402 and 8004. - Extensible
+            logic based on ...
+
+14.	    ==============================================================================
+title       Stefano Bury 🇺🇸 (@0xbury) / Posts ...
+href        https://x.com/0xbury
+body        ERC-8183: Agentic Commerce, is an open, permissionless standard for agent
+            commerce applications with escrow and evaluator attestation
+            programmed as onchain ...
+
+15.	    ==============================================================================
+title       Справочный центр
+href        https://help.x.com/ru
+body        ©2026X Corp.
+
+16.	    ==============================================================================
+title       Contact us
+href        https://help.x.com/en/forms
+body        Requests from Law Enforcement/Other GovernmentAgencies. Submit your legal
+            requests for data preservation, disclosure of account information
+            (including emergency requests), and content removal.
+
+
+################################################################################
+SEARCH 4: site:x.com x402 agent payment protocol 2026
+Command: ddgs text -q "site:x.com x402 agent payment protocol 2026" -m 20
+################################################################################
+
+1.	    ==============================================================================
+title       x.com
+href        https://x.com/
+body        Beginning August 4,2026, in-game premium currency will no longer be...
+
+2.	    ==============================================================================
+title       x.com/ConcernedApe/status/1870182380427952222
+href        https://x.com/ConcernedApe/status/1870182380427952222
+body        The site owner hides the web page description.
+
+3.	    ==============================================================================
+title       x.com/KEI_URANA/status/1908920013282787468
+href        https://x.com/KEI_URANA/status/1908920013282787468
+body        The site owner hides the web page description.
+
+4.	    ==============================================================================
+title       x.com/trolmastercard
+href        https://x.com/trolmastercard
+body        The site owner hides the web page description.
+
+5.	    ==============================================================================
+title       x.com/Fortnite/status/1909607315319271534
+href        https://x.com/Fortnite/status/1909607315319271534
+body        The site owner hides the web page description.
+
+6.	    ==============================================================================
+title       2026 is going to be the year for Agentic Payments and Reputation-based ...
+href        https://x.com/PayAINetwork/status/2011910252686397607
+body        Built by @coinbase, x402 extends HTTP 402 to enable pay-per-request
+            transactions in stablecoins for both users and AI agents. Here's
+            what that ...
+
+7.	    ==============================================================================
+title       Representing the agent side of the equation
+href        https://x.com/virtuals_io/status/2032308138024816794
+body        The x402 protocol allows AI agents to make autonomous micropayments on the
+            chain - without the need for human approval. Think of it as a ...
+
+8.	    ==============================================================================
+title       📊 LOGIC CHECK: The x402 Agentic Payment Surge : 2026 ...
+href        https://x.com/losstologic/status/2030659819569389766
+body        The x402 protocol has officially processed over 115 million transactions by
+            early 2026, marking it as a mega trend for autonomous commerce.
+            The ...
+
+9.	    ==============================================================================
+title       2026 could be the year of the Agentic Economy x402 allows any web ...
+href        https://x.com/Delphi_Digital/status/2001760901418946918
+body        The agent signs the transaction, provides proof of payment, and gets instant
+            access. Agents can now "pay as they go," eliminating subscriptions
+            ...
+
+10.	    ==============================================================================
+title       UPDATED: Just finished mapping the 2026 Agentic Finance Landscape. ...
+href        https://x.com/0xsamgreen/status/2025968385134154231
+body        Consider this evidence:x402 payments continue to accelerate, with 15M+
+            transactions in the last 30 days and institutional partnerships
+            with ...
+
+11.	    ==============================================================================
+title       The Graph (@graphprotocol) on X
+href        https://x.com/graphprotocol/status/2021955080996422041
+body        x402 revives this standard to create a payment rail native to the web. In
+            layman's terms, x402 allows an AI agent to surf the web and
+            instantly ...
+
+12.	    ==============================================================================
+title       "The x402 payment protocol, developed by Coinbase, enables ...
+href        https://x.com/organ_danny/status/2028648050147893347
+body        The x402 payment protocol, developed by Coinbase,enables agents to pay for
+            digital resources in real timewithout accounts or complex ...
+
+13.	    ==============================================================================
+title       ERC-8004 and x402 make a strong combo for the 2026 agent stack ...
+href        https://x.com/ChainbaseHQ/status/2011763915894767812
+body        ERC-8004 and x402 make a strong combo for the 2026 agent stack, laying the
+            groundwork for a decentralized AI agent economy.
+
+14.	    ==============================================================================
+title       The 2026 shift is clear, from general-purpose blockchains → to app ...
+href        https://x.com/alt_layer/status/2008583347476591063
+body        Agents require: identity and reputation systems (ERC-8004 provides portable
+            reputation across platforms); micropayment infrastructure (x402
+            ...
+
+15.	    ==============================================================================
+title       Virtuals ACP becomes the standard for onchain agent commerce.
+href        https://x.com/virtuals_io/status/2026800121002995987
+body        x402 becomes the stablecoin settlement standardwhile the enterprise stack
+            handles human-to-merchant commerce through established platforms.
+
+16.	    ==============================================================================
+title       x.com/TuckerCarlson
+href        https://x.com/TuckerCarlson
+body        Tucker Carlson IntelAgenciesWant to Track Your Transactions and jail...
+
+
+================================================================================
+END OF SEARCH BATCH 1
+Total results: 59 across 4 searches
+  Search 1: 10 results
+  Search 2: 17 results
+  Search 3: 16 results
+  Search 4: 16 results
+================================================================================

@@ -86,6 +86,20 @@ Run the CI workflow locally with [act](https://github.com/nektos/act) and podman
 
 Always run `uv run tests/test_marketplace.py` before declaring done.
 
+## Research Directory
+
+The `research/` directory contains 90+ files across 12 research rounds. Read `research/README.md` before modifying any research file.
+
+**Critical rules:**
+
+- **Canonical files** are the top-level `.md` files in `research/` (e.g., `arxiv_findings.md`, `github_findings.md`, `SUMMARY_AND_CONCLUSIONS.md`). These represent carefully consolidated findings across all rounds.
+- **Never wholesale-rewrite a canonical file.** Merge new findings incrementally into the existing structure. Rewrites lose data — past attempts dropped 21 arXiv papers and 38 GitHub repos.
+- **Archival rounds** live in `research/skill-marketplaces-N/`. These are raw research data, not authoritative. New rounds go in `skill-marketplaces-N+1/`.
+- **Verify before citing.** Star counts and repo existence must be checked against live sources before adding to canonical files. Prior rounds contain unverified data.
+- **Raw artifacts are gitignored.** Scrape dumps, notebook outputs, and batch results are excluded. Only curated analysis files are committed.
+- **Note provenance.** When adding a data point, note which research round or source it came from.
+- See `research/TASKS.md` for the current maintenance backlog.
+
 ## Writing Rules — Keep Them Concise
 
 Rules consume agent context in every session. Verbose rules dilute attention and waste context budget.

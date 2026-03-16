@@ -3,3 +3,14 @@ __pycache__/
 .venv/
 .DS_Store
 .env
+
+# Research raw artifacts (intermediate data, not canonical)
+research/raw_scrape_*.txt
+research/raw_kaggle_full_output.txt
+research/nb*_content.txt
+research/batch*_results.md
+research/fetch_notebooks.py
+research/scrape_*.md
+research/scraped_*.md
+results.json
+text_*.json
