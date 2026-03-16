@@ -62,6 +62,39 @@ uv run telegram-notify/scripts/send_telegram.py -m "Build finished successfully"
 uv run telegram-notify/scripts/send_telegram.py -m "Deploy *complete* for \`main\`" --parse-mode Markdown
 ```
 
+## Waiting for User Input
+
+Send a prompt and block until the user replies via Telegram:
+
+```bash
+uv run telegram-notify/scripts/wait_for_input.py --prompt "What should I do next?"
+```
+
+The script long-polls the Telegram Bot API and prints the user's reply to stdout when it arrives.
+
+### Options
+
+| Flag | Required | Description |
+|------|----------|-------------|
+| `--prompt` / `-p` | No | Message to send before waiting |
+| `--timeout` / `-t` | No | Max seconds to wait (default: 300) |
+| `--json` | No | Output as JSON |
+| `--chat-id` | No | Override `TELEGRAM_CHAT_ID` env var |
+| `--token` | No | Override `TELEGRAM_BOT_TOKEN` env var |
+
+### Examples
+
+```bash
+# Ask a question and wait up to 5 minutes
+uv run telegram-notify/scripts/wait_for_input.py -p "Need API key for deploy. Paste it here:"
+
+# Wait with JSON output
+uv run telegram-notify/scripts/wait_for_input.py -p "Pick an option: A, B, or C" --json
+
+# Silent wait (no prompt, just listen for the next message)
+uv run telegram-notify/scripts/wait_for_input.py --timeout 120
+```
+
 ## As an Agent Skill
 
 Copy the `telegram-notify/` directory into your agent's skills directory:

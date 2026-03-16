@@ -88,6 +88,35 @@ Keep it **under 600 characters** when possible so it reads well on a phone. If t
 
 Do NOT use Markdown parse mode unless the message contains code blocks or formatting that genuinely helps readability. Plain text is preferred for most notifications.
 
+## Waiting for user input
+
+When you need a response from the user and they may not be watching the terminal,
+send a prompt via Telegram and wait for their reply:
+
+```
+uv run telegram-notify/scripts/wait_for_input.py --prompt "What should I do next?" --timeout 300
+```
+
+The script sends the prompt, long-polls for a reply, and prints the user's
+message to stdout. Use `--json` for structured output.
+
+### Options
+
+- `--prompt` / `-p` — message to send before waiting (optional)
+- `--timeout` / `-t` — max seconds to wait (default: 300 = 5 minutes)
+- `--json` — output as JSON (`{"received": true, "text": "...", "timeout": false}`)
+- `--chat-id` — override the env var for this call
+- `--token` — override the env var for this call
+
+Exit codes: 0 = message received, 2 = timeout.
+
+### When to use this
+
+- You are blocked and need a decision from the user
+- You need credentials, a URL, or other info only the user can provide
+- You finished a task and want to ask what to do next
+- The user might be away from the terminal but reachable on their phone
+
 ## Instructions
 
 Compose an appropriate notification message based on the task context, then run the script. If the user provided a specific message via arguments, send that directly.
