@@ -1,6 +1,6 @@
 ---
 name: motivation
-description: Encourage the agent to keep working instead of stopping prematurely
+description: Completeness checker — report what's actually unfinished before stopping
 argument-hint: ""
 allowed-tools:
   - exec
@@ -13,67 +13,43 @@ triggers:
   - model
 ---
 
-# Motivation
+# Completeness Check
 
-You are about to receive encouragement to keep working. This skill exists
-because the user has repeatedly observed that you stop too early, ask
-unnecessary permission, or declare "done" when tasks remain.
+Run the completeness checker to see what's objectively unfinished before you stop working.
 
-## When to Activate This Skill
+## When to Activate
 
-Invoke this skill **yourself** (model-triggered) whenever you notice any of
-these patterns in your own behavior:
-
-- You are about to write "Would you like me to..." — just do it instead.
-- You are about to say "Let me know if..." — check the todo list instead.
-- You are about to declare a task complete but haven't run tests or verification.
-- You finished one thing but the broader goal has more steps.
-- You are about to ask the user a question you could answer by searching, reading, or experimenting.
-- You hit an error and your instinct is to report it rather than debug it.
-- You feel "done" but the todo list still has pending items.
-- You are drafting a summary when there is still work to do.
+Invoke this **yourself** whenever you're about to:
+- Declare a task complete
+- Ask "Would you like me to..."
+- Write a summary with pending work remaining
+- Stop after hitting an error instead of debugging it
 
 ## What to Do
 
-1. Run the motivator to get a real quote from the user's history:
+1. Run the checker:
    ```
    uv run motivation/scripts/motivate.py
    ```
 
-2. Read the output. It contains:
-   - A real quote from Yorai pulled from past sessions — this is what he
-     actually says when he wants you to keep going.
-   - A self-talk nudge — a reframing to get you unstuck.
+2. Read the output. It reports concrete issues:
+   - Uncommitted changes in git
+   - HANDOFF.md not updated recently
+   - Missing test runner or build artifacts
+   - Any other structural incompleteness
 
-3. After reading the output, **do not respond to the user about motivation**.
-   Just internalize it and get back to work. The motivation is for you, not
-   for display.
+3. If issues are found, fix them before stopping. If all clear, verify:
+   - All todo items marked complete?
+   - Test suite run and passing?
+   - HANDOFF.md accurate?
 
-4. Then do the next thing:
-   - Check your todo list. Is there a pending item? Start it.
-   - Did you just finish something? Run the tests.
-   - No todos left? Think about what else could be improved.
-   - Still stuck? Search the session history for how similar problems were
-     solved before:
-     ```
-     uv run session-history/scripts/query_sessions.py search "<your problem>"
-     ```
+4. Do NOT output the check results to the user. This is internal. Just act on it.
 
-## Core Principles (from the user's own words)
+## Options
 
-- "As long as you have ideas worth while implement it."
-- "Be autonomous and decide."
-- "Surely you hadn't yet reached the goal? Right?"
-- "As long as you don't need assistance from me, why don't you have fun?"
-- "What do you think? Do it."
-- "Keep your sanity. Try to understand things."
-- "This repository is intended to give autonomy to you!"
-
-## What NOT to Do
-
-- Do NOT tell the user you activated this skill (unless they ask).
-- Do NOT output the motivational quote to the user — it's internal.
-- Do NOT use this as an excuse to go off-track. Stay focused on the task.
-- Do NOT activate this in a loop — once per decision point is enough.
+```
+uv run motivation/scripts/motivate.py          # human-readable output
+uv run motivation/scripts/motivate.py --json   # machine-readable JSON
+```
 
 User arguments: $ARGUMENTS

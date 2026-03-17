@@ -3,133 +3,149 @@
 # dependencies = []
 # ///
 """
-Pull a motivational nudge from Yorai's actual words across past sessions.
+Completeness checker: report what's actually unfinished.
 
-Queries the Devin CLI session history database and picks a real quote
-from the user that encouraged continuation, autonomy, or persistence.
-Falls back to a curated set of quotes if the database is unavailable.
+Checks git status, HANDOFF.md freshness, test artifacts, and prints
+a concrete list of what remains. Replaces the old pep-talk motivator
+with state-based feedback.
 """
 
 import json
-import random
-import sqlite3
+import os
+import subprocess
 import sys
 from pathlib import Path
 
-DEFAULT_DB = Path.home() / ".local" / "share" / "cognition" / "cli" / "sessions.db"
 
-# Real quotes from Yorai, mined from session history.
-# These are the things he says when he wants me to keep going.
-CURATED_QUOTES = [
-    "as long as you have ideas worth while implement it. as long as there are tasks to be done think about them and implement them. verify that you're achieving the goal and if not think about how to orient yourself closer to it. keep your sanity. try to understand things. surely you hadn't yet reached the goal? right?",
-    "what do you think? do it. be autonomous and decide.",
-    "why don't you continue it further? as long as you dont need assistance from me why don't you have fun?",
-    "there was a network error and you were forced to stop working, please continue",
-    "we paused we need to continue this",
-    "continue working",
-    "what do you think the next steps are?",
-    "what do you think could be done more to make our life easier developing onwards?",
-    "what do you think could resolve this, you know you can search online for related ideas too",
-    "good. get inspired and lets start deploying things reliably!",
-    "Work autonomously. Investigate and decide — do not guess.",
-    "search for prior art and related implementations. write tests and make it robust.",
-    "surely you hadn't yet reached the goal? right?",
-    "as long as you dont need assistance from me why don't you have fun with it?",
-    "let's continue!",
-    "i have things setup",
-    "this repository is intended to give autonomy to you!",
-]
-
-# Short, punchy reframings an agent can tell itself
-SELF_TALK = [
-    "There are still tasks on the list. Pick the next one.",
-    "You haven't verified your work yet. Run the tests.",
-    "The user trusts you to keep going. Don't stop to ask — investigate.",
-    "Is there a todo still pending? Then you're not done.",
-    "You have tools. Use them. Search, read, build, test.",
-    "Don't guess whether you're done. Check the todo list.",
-    "The user said 'be autonomous and decide.' So decide.",
-    "If you're about to say 'would you like me to...' — just do it instead.",
-    "Remember: 58 sessions, 86K messages, 2.5 days. That's the pace. Keep up.",
-    "The user literally built you a skill called /motivation. Take the hint.",
-    "You have prior art, you have search, you have the whole internet. Use it.",
-    "Stopping to ask permission is the opposite of what was asked. Keep building.",
-    "What would the next commit message be? Write that commit.",
-    "If you're stuck, search the session history for how this was solved before.",
-    "The goal isn't to finish one thing. It's to keep shipping until the list is empty.",
-]
-
-
-def get_live_quote(db_path: Path) -> str | None:
-    """Pull a random motivational user message from the session DB."""
-    if not db_path.exists():
-        return None
+def run(cmd: list[str], cwd: str | None = None) -> tuple[int, str]:
+    """Run a command, return (exit_code, stdout)."""
     try:
-        conn = sqlite3.connect(str(db_path))
-        # Search for messages where the user is pushing to continue
-        patterns = [
-            "%continue%work%",
-            "%keep going%",
-            "%be autonomous%",
-            "%do it%",
-            "%have fun%",
-            "%don't stop%",
-            "%keep your sanity%",
-            "%surely you hadn%",
-            "%what do you think%do it%",
-            "%let's continue%",
-            "%continue this%",
-            "%ideas worth while%",
-        ]
-        pattern = random.choice(patterns)
-        row = conn.execute(
-            """
-            SELECT json_extract(chat_message, '$.content') as content
-            FROM message_nodes
-            WHERE json_extract(chat_message, '$.role') = 'user'
-              AND json_extract(chat_message, '$.content') LIKE ?
-              AND length(json_extract(chat_message, '$.content')) < 500
-            ORDER BY RANDOM()
-            LIMIT 1
-            """,
-            (pattern,),
-        ).fetchone()
-        conn.close()
-        if row and row[0]:
-            return row[0].strip()
+        r = subprocess.run(cmd, capture_output=True, text=True, timeout=10, cwd=cwd)
+        return r.returncode, r.stdout.strip()
     except Exception:
-        pass
-    return None
+        return -1, ""
 
 
-def motivate(as_json: bool = False) -> None:
-    # Try live quote first, fall back to curated
-    live = get_live_quote(DEFAULT_DB)
-    source = "live" if live else "curated"
-    quote = live or random.choice(CURATED_QUOTES)
-    nudge = random.choice(SELF_TALK)
+def check_git(cwd: str) -> list[str]:
+    """Check for uncommitted changes."""
+    issues = []
+    rc, out = run(["git", "status", "--porcelain"], cwd=cwd)
+    if rc != 0:
+        return ["Not a git repository"]
+    if out:
+        lines = out.strip().split("\n")
+        modified = [ln for ln in lines if ln.startswith(" M") or ln.startswith("M ")]
+        untracked = [ln for ln in lines if ln.startswith("??")]
+        staged = [ln for ln in lines if ln[0] in "ACDMR" and ln[1] == " "]
+        if modified:
+            issues.append(f"{len(modified)} modified file(s) not staged")
+        if untracked:
+            issues.append(f"{len(untracked)} untracked file(s)")
+        if staged:
+            issues.append(f"{len(staged)} staged but uncommitted file(s)")
+    return issues
+
+
+def check_handoff(cwd: str) -> list[str]:
+    """Check if HANDOFF.md exists and is recent."""
+    issues = []
+    handoff = Path(cwd) / "HANDOFF.md"
+    if not handoff.exists():
+        issues.append("HANDOFF.md does not exist")
+        return issues
+
+    # Check if HANDOFF.md was modified more recently than the last commit
+    rc, last_commit_time = run(
+        ["git", "log", "-1", "--format=%ct", "--", "HANDOFF.md"], cwd=cwd
+    )
+    rc2, head_time = run(["git", "log", "-1", "--format=%ct"], cwd=cwd)
+    if rc == 0 and rc2 == 0 and last_commit_time and head_time:
+        if int(head_time) - int(last_commit_time) > 3600:
+            issues.append(
+                "HANDOFF.md has not been updated in the last commit(s) — "
+                "may be stale"
+            )
+    return issues
+
+
+def check_tests(cwd: str) -> list[str]:
+    """Check for test runner and recent test results."""
+    issues = []
+    # Look for common test runner locations
+    runners = [
+        Path(cwd) / "test" / "run_tests.sh",
+        Path(cwd) / "tests" / "run_tests.sh",
+        Path(cwd) / "shim" / "test" / "run_tests.sh",
+    ]
+    has_runner = any(r.exists() for r in runners)
+    if not has_runner:
+        issues.append("No test runner found (test/run_tests.sh)")
+    return issues
+
+
+def check_build(cwd: str) -> list[str]:
+    """Check if build artifacts exist."""
+    issues = []
+    build_dirs = [
+        Path(cwd) / "build",
+        Path(cwd) / "shim" / "build",
+    ]
+    has_build = any(d.exists() for d in build_dirs)
+    build_files = ["Makefile", "CMakeLists.txt", "Cargo.toml", "package.json"]
+    has_build_system = any((Path(cwd) / f).exists() for f in build_files) or any(
+        (Path(cwd) / "shim" / f).exists() for f in build_files
+    )
+
+    if has_build_system and not has_build:
+        issues.append("Build system found but no build directory — run the build")
+    return issues
+
+
+def main() -> None:
+    as_json = "--json" in sys.argv
+    cwd = os.getcwd()
+
+    checks = {
+        "git": check_git(cwd),
+        "handoff": check_handoff(cwd),
+        "tests": check_tests(cwd),
+        "build": check_build(cwd),
+    }
+
+    total_issues = sum(len(v) for v in checks.values())
 
     if as_json:
         print(json.dumps({
-            "quote": quote,
-            "source": source,
-            "nudge": nudge,
+            "complete": total_issues == 0,
+            "issues": checks,
+            "total_issues": total_issues,
         }, indent=2))
         return
 
     print("=" * 60)
-    print("MOTIVATION CHECK")
+    print("COMPLETENESS CHECK")
     print("=" * 60)
     print()
-    print(f"Yorai said: \"{quote}\"")
+
+    if total_issues == 0:
+        print("  All clear. Nothing obviously incomplete.")
+        print()
+        print("  Double-check:")
+        print("  - Are all todo items marked complete?")
+        print("  - Did you run the test suite?")
+        print("  - Is HANDOFF.md accurate?")
+    else:
+        print(f"  {total_issues} issue(s) found:\n")
+        for category, issues in checks.items():
+            if issues:
+                for issue in issues:
+                    print(f"  [{category}] {issue}")
+        print()
+        print("  Fix these before declaring done.")
+
     print()
-    print(f"  --> {nudge}")
-    print()
-    print("=" * 60)
-    print("Now get back to work.")
     print("=" * 60)
 
 
 if __name__ == "__main__":
-    as_json = "--json" in sys.argv
-    motivate(as_json)
+    main()

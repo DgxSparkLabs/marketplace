@@ -17,7 +17,7 @@ A curated collection of reusable agent skills and rules. Each item is a self-con
 | [no-ai-credit](./no-ai-credit/) | Prevent AI agents from adding self-attribution to any output |
 | [prior-art](./prior-art/) | Search for existing solutions before building custom code |
 | [python-uv](./python-uv/) | Use uv for all Python operations — never pip, venv, conda, or poetry |
-| [stay-motivated](./stay-motivated/) | Prevent the agent from stopping prematurely — keep working until truly done |
+| [stay-motivated](./stay-motivated/) | Completeness checklist — verify done conditions before stopping |
 | [task-formation](./task-formation/) | Concrete pass conditions, code references by name, session-sized tasks |
 | [telegram-on-complete](./telegram-on-complete/) | Send a Telegram notification after completing any task |
 | [verification-ladder](./verification-ladder/) | Five-layer automated testing: compile, unit, integration, perf, e2e |
@@ -33,7 +33,7 @@ A curated collection of reusable agent skills and rules. Each item is a self-con
 | [gemini-chat](./gemini-chat/) | Interactive multi-turn chat with Google Gemini |
 | [github-search](./github-search/) | Search GitHub for repositories, prior art, and implementation inspiration |
 | [google-drive-reader](./google-drive-reader/) | Read Google Docs from personal Drive, extract URLs and conclusions |
-| [motivation](./motivation/) | Encourage the agent to keep working instead of stopping prematurely |
+| [motivation](./motivation/) | Completeness checker — report what's actually unfinished before stopping |
 | [send-email](./send-email/) | Send an email to someone using the Resend API |
 | [session-history](./session-history/) | Query past Devin CLI conversations from the local session database |
 | [ssh-tunnel](./ssh-tunnel/) | Set up SSH port forwarding tunnels (local, remote, SOCKS proxy) |
