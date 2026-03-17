@@ -15,6 +15,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import math
 import shutil
 import sys
 from pathlib import Path
@@ -443,7 +444,7 @@ Screen {
 
 #banner {
     width: 100%;
-    height: auto;
+    height: 10;
     content-align: center middle;
     text-align: left;
     padding: 0 2;
@@ -673,26 +674,43 @@ ConfirmScreen, PreviewScreen, ResultsScreen {
 }
 """
 
-BANNER_TEXT = (
-    "[bold cyan]⠀⠀⠀⠀⠀⠀⠀⠀⢠⡷⡄⠀⠀⣀⠀⣠⣶⠀⠀⠀⠀⠀⠀⠀[/]\n"
-    "[bold cyan]⠀⠀⠀⠀⠀⠀⠀⠀⣾⣧⠟⢰⠋⢘⣜⣷⣾⡇⠀⠀⠀⠀⠀⠀[/]\n"
-    "[bold deep_sky_blue1]⠀⠀⠀⠀⠀⠀⠀⡾⠙⣿⣠⣏⢥⢸⣿⣿⣿⢧⡀⠀⠀⠀⠀⠀[/]  [bold cyan]╔═╗╦╔═╦╦  ╦  ╔═╗[/]\n"
-    "[bold deep_sky_blue1]⠀⠀⠀⠀⠀⠀⢸⡇⣰⣿⣿⡉⠀⠘⢻⣿⣿⣬⠱⠀⠀⠀⠀⠀[/]  [bold cyan]╚═╗╠╩╗║║  ║  ╚═╗[/]\n"
-    "[bold dodger_blue1]⠀⠀⠀⠀⠀⠀⢸⣇⣿⡷⠀⠹⣷⣦⠀⣸⣿⣿⠀⠃⠀⠀⠀⠀[/]  [bold cyan]╚═╝╩ ╩╩╩═╝╩═╝╚═╝[/]\n"
-    "[bold dodger_blue1]⠀⠀⠀⠀⠀⠀⠸⣿⣿⣷⣤⡄⠀⢐⢰⣿⣿⣿⡄⠀⠀⠀⠀⠀[/]\n"
-    "[bold dodger_blue2]⠀⠀⠀⠀⠀⠀⠀⣿⣿⣿⣿⢁⠤⡶⣾⣿⣿⣿⣧⠁⠀⠀⠀⠀[/]  [bold medium_purple1]╔╦╗╔═╗╦═╗╦╔═╔═╗╔╦╗[/]\n"
-    "[bold dodger_blue2]⠀⠀⠀⠀⠀⠰⣾⣿⣿⣿⡟⠀⠀⣀⣸⢿⣿⣿⣿⣷⠀⠀⠀⠀[/]  [bold medium_purple1]║║║╠═╣╠╦╝╠╩╗║╣  ║[/]\n"
-    "[bold medium_purple1]⠀⠀⠀⠀⠀⠀⣾⣿⣿⣿⣿⣶⣤⣿⣿⣾⣿⣿⣿⡏⠀⠀⠀⠀[/]  [bold medium_purple1]╩ ╩╩ ╩╩╚═╩ ╩╚═╝ ╩[/]\n"
-    "[bold medium_purple1]⠀⠀⠀⠀⠀⠀⠨⢻⣿⣿⠏⠙⠛⠛⠛⢛⣷⣿⣿⡆⠀⠀⠀⠀[/]\n"
-    "[bold blue]⠀⠀⠀⠀⠀⠀⠀⣼⣿⣿⡀⣷⣾⢸⣿⣿⣿⣿⣿⡇⠀⠀⠀⠀[/]  [bold deep_sky_blue1]✦[/] [bold white]Agent Tools[/] [bold deep_sky_blue1]✦[/]\n"
-    "[bold blue]⠀⠀⠀⠀⠀⠀⠃⣿⣿⣿⠇⣿⣿⢸⣿⢯⣿⣿⣿⡇⠀⠀⠀⠀[/]\n"
-    "[bold medium_blue]⠀⠀⠀⠀⠀⠀⠀⣿⣿⣿⣰⣿⡏⣼⣿⢸⣿⣿⣿⣷⠀⠀⠀⠀[/]\n"
-    "[bold medium_blue]⠀⠀⠀⠀⠀⠀⢰⣿⣿⣿⢻⣿⠀⣿⡟⠘⣿⣿⣿⣿⣧⢠⠀⠀[/]\n"
-    "[bold slate_blue1]⠀⠀⢀⡄⢀⡄⡠⠟⠋⠁⢸⡏⢰⣿⠃⠀⠉⠉⠉⠉⠛⣦⢣⠀[/]\n"
-    "[bold slate_blue1]⠀⠐⠒⠩⠾⠡⠇⠀⠀⠀⣿⣿⣸⣿⠀⠀⠀⠀⠀⠀⠀⠻⠈⠁[/]\n"
-    "[bold magenta]⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢿⣿⣿⣿⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀[/]\n"
-    "[bold magenta]⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠻⠿⠇⠀⠀⠀⠀⠀⠀⠀⠀⠀[/]"
-)
+_CUBE_V = [
+    (-1, -1, -1), (-1, -1, 1), (-1, 1, -1), (-1, 1, 1),
+    (1, -1, -1), (1, -1, 1), (1, 1, -1), (1, 1, 1),
+]
+_CUBE_E = [
+    (0, 1), (0, 2), (0, 4), (1, 3), (1, 5), (2, 3),
+    (2, 6), (3, 7), (4, 5), (4, 6), (5, 7), (6, 7),
+]
+_OCT_V = [
+    (1.4, 0, 0), (-1.4, 0, 0), (0, 1.4, 0),
+    (0, -1.4, 0), (0, 0, 1.4), (0, 0, -1.4),
+]
+_OCT_E = [
+    (0, 2), (0, 3), (0, 4), (0, 5), (1, 2), (1, 3),
+    (1, 4), (1, 5), (2, 4), (2, 5), (3, 4), (3, 5),
+]
+_BRAILLE = [
+    (0, 0, 0x01), (1, 0, 0x02), (2, 0, 0x04), (3, 0, 0x40),
+    (0, 1, 0x08), (1, 1, 0x10), (2, 1, 0x20), (3, 1, 0x80),
+]
+_GEO_COLORS = [
+    "cyan", "deep_sky_blue1", "dodger_blue1", "dodger_blue2",
+    "medium_purple1", "medium_purple1", "blue", "medium_blue",
+    "slate_blue1", "magenta",
+]
+_GEO_TEXT = [
+    "",
+    "  [bold cyan]\u2550\u2550\u2550[/] [bold deep_sky_blue1]\u2726[/] [bold white]SKILLS[/] [bold deep_sky_blue1]\u2726[/] [bold cyan]\u2550\u2550\u2550[/]",
+    "",
+    "  [bold medium_purple1]\u2550\u2550[/] [bold medium_purple1]\u2726[/] [bold white]MARKETPLACE[/] [bold medium_purple1]\u2726[/] [bold medium_purple1]\u2550\u2550[/]",
+    "",
+    "",
+    "  [dim]\u250c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2510[/]",
+    "  [dim]\u2502[/] [bold deep_sky_blue1]\u2726[/] [bold white]Agent Tools[/] [bold deep_sky_blue1]\u2726[/]  [dim]\u2502[/]",
+    "  [dim]\u2514\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2518[/]",
+    "",
+]
 
 
 def _categorize_items(items: list[dict], families: dict) -> dict:
@@ -754,6 +772,81 @@ def main():
     )
     from textual.widgets.selection_list import Selection
     from rich.text import Text
+
+    # ── Animated 3D wireframe banner ──
+    class AnimatedBanner(Static):
+        """Spinning wireframe cube + octahedron rendered in braille."""
+        _GW, _GH = 50, 40  # pixel grid → 25 braille chars × 10 lines
+
+        def on_mount(self):
+            self._a = 0.0
+            self._render_geo()
+            self.set_interval(1 / 12, self._tick)
+
+        def _tick(self):
+            self._a += 0.05
+            self._render_geo()
+
+        @staticmethod
+        def _line(g, x0, y0, x1, y1, W, H):
+            dx, dy = abs(x1 - x0), abs(y1 - y0)
+            sx = 1 if x0 < x1 else -1
+            sy = 1 if y0 < y1 else -1
+            e = dx - dy
+            while True:
+                if 0 <= x0 < W and 0 <= y0 < H:
+                    g[y0][x0] = True
+                if x0 == x1 and y0 == y1:
+                    break
+                e2 = 2 * e
+                if e2 > -dy:
+                    e -= dy
+                    x0 += sx
+                if e2 < dx:
+                    e += dx
+                    y0 += sy
+
+        def _render_geo(self):
+            W, H = self._GW, self._GH
+            g = [[False] * W for _ in range(H)]
+            a = self._a
+            ca, sa = math.cos(a), math.sin(a)
+            cb, sb = math.cos(a * 0.7), math.sin(a * 0.7)
+
+            def xf(x, y, z):
+                x2 = x * ca - z * sa
+                z2 = x * sa + z * ca
+                y2 = y * cb - z2 * sb
+                z3 = y * sb + z2 * cb
+                return x2, y2, z3
+
+            def pj(x, y, z):
+                f = 4.0
+                s = f / (z + f)
+                return int(W / 2 + x * s * W / 5), int(H / 2 + y * s * H / 5)
+
+            for edges, verts in [(_CUBE_E, _CUBE_V), (_OCT_E, _OCT_V)]:
+                for i, j in edges:
+                    p1, p2 = pj(*xf(*verts[i])), pj(*xf(*verts[j]))
+                    self._line(g, *p1, *p2, W, H)
+
+            blines = []
+            for y in range(0, H, 4):
+                row = ""
+                for x in range(0, W, 2):
+                    v = 0x2800
+                    for dy, dx, bit in _BRAILLE:
+                        if y + dy < H and x + dx < W and g[y + dy][x + dx]:
+                            v |= bit
+                    row += chr(v)
+                blines.append(row)
+
+            parts = []
+            for i, bl in enumerate(blines):
+                c = _GEO_COLORS[i] if i < len(_GEO_COLORS) else "magenta"
+                t = _GEO_TEXT[i] if i < len(_GEO_TEXT) else ""
+                parts.append(f"[bold {c}]{bl}[/]{t}")
+            self.update("\n".join(parts))
 
     # Free up Space on CollapsibleTitle for section-level selection toggle.
     # Enter still collapses/expands.
@@ -884,7 +977,7 @@ def main():
 
         def compose(self) -> ComposeResult:
             yield Header(show_clock=False)
-            yield Static(BANNER_TEXT, id="banner")
+            yield AnimatedBanner(id="banner")
             with Horizontal(id="main-area"):
                 left = VerticalScroll(id="left-panel")
                 left.can_focus = False
