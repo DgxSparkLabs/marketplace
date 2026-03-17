@@ -701,15 +701,15 @@ _GEO_COLORS = [
 ]
 _GEO_TEXT = [
     "",
-    "  [bold cyan]\u2550\u2550\u2550[/] [bold deep_sky_blue1]\u2726[/] [bold white]SKILLS[/] [bold deep_sky_blue1]\u2726[/] [bold cyan]\u2550\u2550\u2550[/]",
+    "  [bold bright_cyan]╔═╗ ╦╔═ ╦ ╦   ╦   ╔═╗[/]",
+    "  [bold cyan]╚═╗ ╠╩╗ ║ ║   ║   ╚═╗[/]",
+    "  [bold deep_sky_blue1]╚═╝ ╩ ╩ ╩ ╩═╝ ╩═╝ ╚═╝[/]",
     "",
-    "  [bold medium_purple1]\u2550\u2550[/] [bold medium_purple1]\u2726[/] [bold white]MARKETPLACE[/] [bold medium_purple1]\u2726[/] [bold medium_purple1]\u2550\u2550[/]",
-    "",
-    "",
-    "  [dim]\u250c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2510[/]",
-    "  [dim]\u2502[/] [bold deep_sky_blue1]\u2726[/] [bold white]Agent Tools[/] [bold deep_sky_blue1]\u2726[/]  [dim]\u2502[/]",
-    "  [dim]\u2514\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2518[/]",
-    "",
+    "  [bold medium_purple1]╔╦╗ ╔═╗ ╦═╗ ╦╔═ ╔═╗ ╔╦╗[/]",
+    "  [bold medium_purple1]║║║ ╠═╣ ╠╦╝ ╠╩╗ ║╣   ║[/]",
+    "  [bold blue]╩ ╩ ╩ ╩ ╩╚═ ╩ ╩ ╚═╝  ╩[/]",
+    "  [dim]──────────────────────────[/]",
+    "  [bold deep_sky_blue1]✦[/] [bold white]Agent Tools Installer[/] [bold deep_sky_blue1]✦[/]",
 ]
 
 
