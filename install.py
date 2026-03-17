@@ -445,11 +445,10 @@ Screen {
     width: 100%;
     height: auto;
     content-align: center middle;
-    text-align: center;
-    padding: 0 0;
+    text-align: left;
+    padding: 0 2;
     background: $panel;
     color: $primary;
-    text-style: bold;
 }
 
 #main-area {
@@ -675,19 +674,23 @@ ConfirmScreen, PreviewScreen, ResultsScreen {
 """
 
 BANNER_TEXT = (
-    "[bold cyan]          ⠀⠀⠀⠀⠀⠀⠀⣀⣤⣤⣄⡀[/]\n"
-    "[bold cyan]          ⠀⠀⠀⠀⠀⢀⣴⠟⠋⠁⠀⠙⢷⡀       [/][bold white]╔═╗╦╔═╦╦  ╦  ╔═╗[/]\n"
-    "[bold deep_sky_blue1]          ⠀⠀⠀⠀⣠⡿⠁⠀⠀⠀⠀⠈⢿⡄      [/][bold white]╚═╗╠╩╗║║  ║  ╚═╗[/]\n"
-    "[bold deep_sky_blue1]          ⠀⠀⠀⢠⡿⠁⠀⠀⢀⣀⠀⠀⠘⣿      [/][bold white]╚═╝╩⠀╩╩╩═╝╩═╝╚═╝[/]\n"
-    "[bold dodger_blue2]          ⠀⠀⠀⣾⡇⠀⠀⢠⣿⣿⡆⠀⢸⣿[/]\n"
-    "[bold dodger_blue2]          ⠀⠀⢰⣿⠀⠀⠀⠘⠻⠟⠁⠀⣸⡇      [/][bold medium_purple1]╔╦╗╔═╗╦═╗╦╔═╔═╗╔╦╗[/]\n"
-    "[bold blue]          ⠀⠀⠀⢿⣇⠀⠀⠀⠀⠀⠀⣰⡿       [/][bold medium_purple1]║║║╠═╣╠╦╝╠╩╗║╣  ║[/]\n"
-    "[bold blue]          ⠀⠀⣷⠈⠻⣦⣀⠀⠀⣀⣴⠟⠁⣾⡀      [/][bold medium_purple1]╩ ╩╩ ╩╩╚═╩ ╩╚═╝ ╩[/]\n"
-    "[bold medium_blue]          ⠀⢸⣿⡄⠀⠉⠛⠛⠋⠁⠀⣠⣿⡇[/]\n"
-    "[bold medium_blue]          ⠀⣿⣿⣿⣦⣄⣀⣀⣀⣤⣾⣿⣿⣿      [/][bold deep_sky_blue1]✦[/] [bold white]SKILLS MARKETPLACE[/] [bold deep_sky_blue1]✦[/]\n"
-    "[bold medium_purple1]          ⠀⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿      [/][dim]Agent Tools Installer[/]\n"
-    "[bold medium_purple1]          ⠀⢿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿[/]\n"
-    "[bold magenta]          ⠀⠀⠙⠿⣿⣿⣿⣿⣿⣿⠿⠋[/]"
+    "[bold cyan]⠀⠀⠀⠀⠀⠀⢀⣴⠄⣠⣶⣿⣿⣿⣿⣿⣿⣷⣦⡀⠀⠀⠀⠀⠀⠀⠀[/]\n"
+    "[bold cyan]⠀⠀⠀⠀⠀⠀⣿⡏⣰⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⡀⠀⠀⠀⠀⠀⠀[/]\n"
+    "[bold deep_sky_blue1]⠀⠀⠀⠀⠀⣴⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣆⠀⠀⠀⠀⠀[/]\n"
+    "[bold deep_sky_blue1]⠀⠀⠀⠀⠸⣿⣿⣿⣿⣿⣿⠿⣉⠀⠀⠈⡹⣿⣿⣿⣿⣿⠀⠀⠀⠀⠀[/]  [bold cyan]╔═╗╦╔═╦╦  ╦  ╔═╗[/]\n"
+    "[bold dodger_blue1]⠀⠀⠀⠀⠀⢹⣿⣿⣿⣿⡟⣤⣿⣷⢰⣤⣿⡞⣿⣿⣿⣿⡀⠀⠀⠀⠀[/]  [bold cyan]╚═╗╠╩╗║║  ║  ╚═╗[/]\n"
+    "[bold dodger_blue1]⠀⠀⠀⠀⢠⣿⣿⣿⣿⣿⡇⠈⠛⠁⠄⠙⠋⠀⣿⣿⣿⣿⣿⣦⠀⠀⠀[/]  [bold cyan]╚═╝╩ ╩╩╩═╝╩═╝╚═╝[/]\n"
+    "[bold dodger_blue2]⠀⠀⠀⠀⠘⢿⣿⣿⡿⠋⠀⠀⣤⣵⣮⣥⡄⠀⠈⠻⣿⣿⣿⠟⠀⠀⠀[/]\n"
+    "[bold dodger_blue2]⠀⠀⠀⠀⠀⣤⣿⣿⠀⣠⣶⣶⣿⠿⠿⢿⣷⣶⣦⡀⣼⣿⣧⡄⠀⠀⠀[/]  [bold medium_purple1]╔╦╗╔═╗╦═╗╦╔═╔═╗╔╦╗[/]\n"
+    "[bold medium_purple1]⠀⠀⠀⠀⢸⣿⣿⡟⣾⣿⣿⣿⣿⡄⠀⣼⣿⣿⣿⣿⣿⣿⣿⣷⠀⠀⠀[/]  [bold medium_purple1]║║║╠═╣╠╦╝╠╩╗║╣  ║[/]\n"
+    "[bold medium_purple1]⠀⠀⠀⢀⣿⣿⣿⡇⣿⣿⣿⣿⣿⣧⢠⣿⣿⣿⣿⣿⣿⣿⣿⣿⡄⠀⠀[/]  [bold medium_purple1]╩ ╩╩ ╩╩╚═╩ ╩╚═╝ ╩[/]\n"
+    "[bold medium_purple1]⠀⠀⠀⣼⣿⣿⣿⠃⠿⠿⠿⠿⠿⠿⠾⠿⠿⠿⠿⠿⢿⣿⣿⣿⣷⠀⠀[/]\n"
+    "[bold blue]⠀⠀⣼⣿⣿⣿⣿⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⣿⣿⣿⣿⡆⠀[/]  [bold deep_sky_blue1]✦[/] [bold white]Agent Tools[/] [bold deep_sky_blue1]✦[/]\n"
+    "[bold blue]⠀⣰⣿⣿⣿⣿⡿⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠸⣿⣿⣿⣿⣷⠀[/]\n"
+    "[bold medium_blue]⠀⣿⣿⣿⣿⣿⡇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣿⣿⣿⣿⣿⡆[/]\n"
+    "[bold medium_blue]⣸⣿⣿⣿⣿⣿⠇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢿⣿⣿⣿⣿⣷[/]\n"
+    "[bold magenta]⣿⣿⣿⣿⣿⣿⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⣿⣿⣿⣿⣯[/]\n"
+    "[bold magenta]⠉⠉⠙⠛⠛⠇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠟⠛⠋⠉⠉[/]"
 )
 
 
