@@ -29,8 +29,8 @@ import yaml
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 
-# Directories that are NOT items (skills or rules)
-EXCLUDED_DIRS = {"docs", "_template", ".git", ".github", "tests", "scripts", "__pycache__", "research"}
+SKILLS_DIR = REPO_ROOT / "skills"
+RULES_DIR = REPO_ROOT / "rules"
 
 # --------------------------------------------------------------------------- #
 # Helpers
@@ -39,11 +39,14 @@ EXCLUDED_DIRS = {"docs", "_template", ".git", ".github", "tests", "scripts", "__
 
 def _iter_items() -> list[Path]:
     """Return sorted list of item directories (skills + rules)."""
-    return sorted(
-        p
-        for p in REPO_ROOT.iterdir()
-        if p.is_dir() and p.name not in EXCLUDED_DIRS and not p.name.startswith(".")
-    )
+    items = []
+    for parent in (SKILLS_DIR, RULES_DIR):
+        if parent.is_dir():
+            items.extend(
+                p for p in parent.iterdir()
+                if p.is_dir() and not p.name.startswith(("_", "."))
+            )
+    return sorted(items)
 
 
 def _is_skill(item: Path) -> bool:
@@ -126,7 +129,7 @@ class TestMarketplaceStructure(unittest.TestCase):
         for rule in RULES:
             with self.subTest(rule=rule.name):
                 self.assertIn(
-                    f"[{rule.name}]",
+                    f"[{rule.name}](./rules/{rule.name}/)",
                     catalog,
                     f"Rule {rule.name} missing from root README.md catalog",
                 )
@@ -136,7 +139,7 @@ class TestMarketplaceStructure(unittest.TestCase):
         for skill in SKILLS:
             with self.subTest(skill=skill.name):
                 self.assertIn(
-                    f"[{skill.name}]",
+                    f"[{skill.name}](./skills/{skill.name}/)",
                     catalog,
                     f"Skill {skill.name} missing from root README.md catalog",
                 )

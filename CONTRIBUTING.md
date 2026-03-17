@@ -13,7 +13,7 @@ This repo contains two types of items: **skills** (invoked on demand) and **rule
 ### 1. Copy the template
 
 ```bash
-cp -r _template/ my-skill/
+cp -r _template/ skills/my-skill/
 ```
 
 Replace all `REPLACE` placeholders in the copied files.
@@ -48,7 +48,7 @@ See [docs/SKILL_FORMAT.md](./docs/SKILL_FORMAT.md) for the full field reference.
 
 ### 5. Write the skill README.md
 
-Include: one-line description, setup/prerequisites, usage examples, options table, installation instructions. Use [send-email/README.md](./send-email/README.md) as a reference.
+Include: one-line description, setup/prerequisites, usage examples, options table, installation instructions. Use [skills/send-email/README.md](./skills/send-email/README.md) as a reference.
 
 ### 6. Update the root README.md
 
@@ -63,7 +63,7 @@ Add a row to the **Skills** table in the `## Catalog` section. Keep it sorted al
 Use `no-ai-credit/` as a starting point:
 
 ```bash
-cp -r no-ai-credit/ my-rule/
+cp -r rules/no-ai-credit/ rules/my-rule/
 ```
 
 ### 2. Rule directory structure
@@ -92,7 +92,7 @@ Update the install script to use your rule name and check for your rule's identi
 
 ### 6. Write the rule README.md
 
-Include: what it enforces, quick install commands, manual install for each format, how-it-works table. Use [no-ai-credit/README.md](./no-ai-credit/README.md) as a reference.
+Include: what it enforces, quick install commands, manual install for each format, how-it-works table. Use [rules/no-ai-credit/README.md](./rules/no-ai-credit/README.md) as a reference.
 
 ### 7. Update the root README.md
 
@@ -164,7 +164,7 @@ Use [act](https://github.com/nektos/act) with podman to run the full GitHub Acti
 ## Submitting
 
 1. Fork this repository
-2. Add your skill or rule directory at the repo root
+2. Add your skill directory under `skills/` or rule directory under `rules/`
 3. Update the catalog in `README.md`
 4. Run `uv run tests/test_marketplace.py` — all tests must pass
 5. Open a pull request

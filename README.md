@@ -10,39 +10,39 @@ A curated collection of reusable agent skills and rules. Each item is a self-con
 
 | Rule | Description |
 |------|-------------|
-| [blast-radius](./blast-radius/) | Scope changes by blast radius — prefer small atomic edits over large risky rewrites |
-| [continuous-improvement](./continuous-improvement/) | Structured seven-phase workflow for finding, planning, and implementing codebase improvements |
-| [document-lifecycle](./document-lifecycle/) | Three-tier documentation: rules, reference, history — no sprawl |
-| [document-progress](./document-progress/) | Write progress to disk using todo lists and HANDOFF.md so nothing is lost between sessions |
-| [improve-the-process](./improve-the-process/) | Fix friction structurally — every session should improve the workflow |
-| [no-ai-credit](./no-ai-credit/) | Prevent AI agents from adding self-attribution to any output |
-| [prior-art](./prior-art/) | Search for existing solutions before building custom code |
-| [python-uv](./python-uv/) | Use uv for all Python operations — never pip, venv, conda, or poetry |
-| [stay-motivated](./stay-motivated/) | Completeness checklist — verify done conditions before stopping |
-| [task-formation](./task-formation/) | Concrete pass conditions, code references by name, session-sized tasks |
-| [telegram-on-complete](./telegram-on-complete/) | Send a Telegram notification after completing any task |
-| [verification-ladder](./verification-ladder/) | Five-layer automated testing: compile, unit, integration, perf, e2e |
-| [verify-your-work](./verify-your-work/) | Require agents to test and verify their work before declaring tasks complete |
+| [blast-radius](./rules/blast-radius/) | Scope changes by blast radius — prefer small atomic edits over large risky rewrites |
+| [continuous-improvement](./rules/continuous-improvement/) | Structured seven-phase workflow for finding, planning, and implementing codebase improvements |
+| [document-lifecycle](./rules/document-lifecycle/) | Three-tier documentation: rules, reference, history — no sprawl |
+| [document-progress](./rules/document-progress/) | Write progress to disk using todo lists and HANDOFF.md so nothing is lost between sessions |
+| [improve-the-process](./rules/improve-the-process/) | Fix friction structurally — every session should improve the workflow |
+| [no-ai-credit](./rules/no-ai-credit/) | Prevent AI agents from adding self-attribution to any output |
+| [prior-art](./rules/prior-art/) | Search for existing solutions before building custom code |
+| [python-uv](./rules/python-uv/) | Use uv for all Python operations — never pip, venv, conda, or poetry |
+| [stay-motivated](./rules/stay-motivated/) | Completeness checklist — verify done conditions before stopping |
+| [task-formation](./rules/task-formation/) | Concrete pass conditions, code references by name, session-sized tasks |
+| [telegram-on-complete](./rules/telegram-on-complete/) | Send a Telegram notification after completing any task |
+| [verification-ladder](./rules/verification-ladder/) | Five-layer automated testing: compile, unit, integration, perf, e2e |
+| [verify-your-work](./rules/verify-your-work/) | Require agents to test and verify their work before declaring tasks complete |
 
 ### Skills
 
 | Skill | Description |
 |-------|-------------|
-| [act-runner](./act-runner/) | Run GitHub Actions workflows locally with act and podman |
-| [duckduckgo-search](./duckduckgo-search/) | Search DuckDuckGo and return results as structured text |
-| [expose-port](./expose-port/) | Expose a local port via HTTPS (localhost.run) or TCP (bore) |
-| [gemini-chat](./gemini-chat/) | Interactive multi-turn chat with Google Gemini |
-| [github-search](./github-search/) | Search GitHub for repositories, prior art, and implementation inspiration |
-| [google-drive-reader](./google-drive-reader/) | Read Google Docs from personal Drive, extract URLs and conclusions |
-| [motivation](./motivation/) | Completeness checker — report what's actually unfinished before stopping |
-| [send-email](./send-email/) | Send an email to someone using the Resend API |
-| [session-history](./session-history/) | Query past Devin CLI conversations from the local session database |
-| [ssh-tunnel](./ssh-tunnel/) | Set up SSH port forwarding tunnels (local, remote, SOCKS proxy) |
-| [structured-handoff](./structured-handoff/) | Generate structured task files for autonomous agent sessions |
-| [telegram-notify](./telegram-notify/) | Send a Telegram notification with a task summary |
-| [web-scraper](./web-scraper/) | Fetch a web page and extract its main content as clean readable text |
-| [youtube-search](./youtube-search/) | Search YouTube for technical videos, tutorials, and talks on a topic |
-| [youtube-wisdom](./youtube-wisdom/) | Extract key knowledge from a YouTube video transcript |
+| [act-runner](./skills/act-runner/) | Run GitHub Actions workflows locally with act and podman |
+| [duckduckgo-search](./skills/duckduckgo-search/) | Search DuckDuckGo and return results as structured text |
+| [expose-port](./skills/expose-port/) | Expose a local port via HTTPS (localhost.run) or TCP (bore) |
+| [gemini-chat](./skills/gemini-chat/) | Interactive multi-turn chat with Google Gemini |
+| [github-search](./skills/github-search/) | Search GitHub for repositories, prior art, and implementation inspiration |
+| [google-drive-reader](./skills/google-drive-reader/) | Read Google Docs from personal Drive, extract URLs and conclusions |
+| [motivation](./skills/motivation/) | Completeness checker — report what's actually unfinished before stopping |
+| [send-email](./skills/send-email/) | Send an email to someone using the Resend API |
+| [session-history](./skills/session-history/) | Query past Devin CLI conversations from the local session database |
+| [ssh-tunnel](./skills/ssh-tunnel/) | Set up SSH port forwarding tunnels (local, remote, SOCKS proxy) |
+| [structured-handoff](./skills/structured-handoff/) | Generate structured task files for autonomous agent sessions |
+| [telegram-notify](./skills/telegram-notify/) | Send a Telegram notification with a task summary |
+| [web-scraper](./skills/web-scraper/) | Fetch a web page and extract its main content as clean readable text |
+| [youtube-search](./skills/youtube-search/) | Search YouTube for technical videos, tutorials, and talks on a topic |
+| [youtube-wisdom](./skills/youtube-wisdom/) | Extract key knowledge from a YouTube video transcript |
 
 ## Interactive Installer
 
@@ -89,13 +89,13 @@ Rules activate automatically — no invocation needed. Each rule includes an ins
 
 ```bash
 # Install a rule into the current project (AGENTS.md only, the default)
-<rule-name>/install.sh
+rules/<rule-name>/install.sh
 
 # Install globally (all projects)
-<rule-name>/install.sh --global
+rules/<rule-name>/install.sh --global
 
 # Install for all tools at once (agents + windsurf + cursor)
-<rule-name>/install.sh --format all
+rules/<rule-name>/install.sh --format all
 ```
 
 Supported formats: `agents` (AGENTS.md, default), `windsurf`, `cursor`, `all`.
@@ -105,7 +105,7 @@ Supported formats: `agents` (AGENTS.md, default), `windsurf`, `cursor`, `all`.
 Skills are invoked with `/<skill-name>` in an agent session. Copy the skill directory into your agent's skills directory:
 
 ```bash
-cp -r <skill-name> ~/.<agent>/skills/<skill-name>
+cp -r skills/<skill-name> ~/.<agent>/skills/<skill-name>
 # e.g. ~/.config/cognition/skills/, ~/.windsurf/skills/, etc.
 ```
 
@@ -126,19 +126,21 @@ marketplace/
 │   ├── KNOWLEDGE_BASE.md   # Distilled insights by topic
 │   ├── ANTI_PATTERNS.md    # Noise catalog and dead ends
 │   └── METHODOLOGY.md      # How research was done
-├── tests/                  # 104 automated tests
+├── tests/                  # Automated tests
 ├── scripts/                # Repo-level install scripts
 ├── _template/              # Starter template for new skills
-├── <rule-name>/            # Rule directories
-│   ├── rule.md             # Rule content (AGENTS.md format)
-│   ├── README.md           # Documentation
-│   ├── install.sh          # Install script
-│   └── formats/            # Tool-specific rule files
-└── <skill-name>/           # Skill directories
-    ├── SKILL.md
-    ├── README.md
-    ├── scripts/
-    └── setup.sh            # Optional — prerequisite installer
+├── rules/                  # Rule directories
+│   └── <rule-name>/
+│       ├── rule.md         # Rule content (AGENTS.md format)
+│       ├── README.md       # Documentation
+│       ├── install.sh      # Install script
+│       └── formats/        # Tool-specific rule files
+└── skills/                 # Skill directories
+    └── <skill-name>/
+        ├── SKILL.md
+        ├── README.md
+        ├── scripts/
+        └── setup.sh        # Optional — prerequisite installer
 ```
 
 ## Documentation

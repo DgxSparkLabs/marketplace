@@ -4,7 +4,7 @@ This is a skills and rules marketplace. Not a software project — no build syst
 
 **New here?** Read `docs/ONBOARDING.md` for a 3-minute orientation. For market intelligence, start with `research/KNOWLEDGE_BASE.md`.
 
-Each top-level directory (except `docs/`, `_template/`, dotfiles) is a skill or rule.
+Skills live under `skills/` and rules under `rules/`.
 - Has `SKILL.md` → skill
 - Has `rule.md` + `install.sh` → rule
 
@@ -16,9 +16,11 @@ marketplace/
 │   ├── SKILL_FORMAT.md         # Full SKILL.md spec
 │   └── RULE_FORMAT.md          # Full rule spec
 ├── _template/                  # Starter for new skills
-├── no-ai-credit/               # Reference rule
-├── send-email/                 # Reference skill
-└── <new-item>/
+├── rules/
+│   └── no-ai-credit/           # Reference rule
+├── skills/
+│   └── send-email/             # Reference skill
+└── ...
 ```
 
 ## Adding a Skill
@@ -40,7 +42,7 @@ my-skill/
 
 ## Adding a Rule
 
-Use `no-ai-credit/` as a reference. Full spec in `docs/RULE_FORMAT.md`.
+Use `rules/no-ai-credit/` as a reference. Full spec in `docs/RULE_FORMAT.md`.
 
 ```
 my-rule/
@@ -52,7 +54,7 @@ my-rule/
     └── cursor.md       # alwaysApply: true
 ```
 
-- Copy and adapt `no-ai-credit/install.sh`
+- Copy and adapt `rules/no-ai-credit/install.sh`
 - Update the **Rules** table in root `README.md` (alphabetical)
 
 ## Conventions

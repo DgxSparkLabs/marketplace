@@ -187,7 +187,7 @@ def is_rule_installed(pid: str, rule_name: str, paths: dict) -> bool:
         if target.exists():
             content = target.read_text()
             # Read actual heading from rule.md instead of guessing from dir name
-            rule_path = find_marketplace() / rule_name / "rule.md"
+            rule_path = find_marketplace() / "rules" / rule_name / "rule.md"
             if rule_path.exists():
                 for line in rule_path.read_text().splitlines():
                     if line.startswith("## "):
@@ -216,7 +216,10 @@ def find_marketplace() -> Path:
 
 def scan_rules(marketplace: Path) -> list[dict]:
     rules = []
-    for d in sorted(marketplace.iterdir()):
+    rules_dir = marketplace / "rules"
+    if not rules_dir.is_dir():
+        return rules
+    for d in sorted(rules_dir.iterdir()):
         if not d.is_dir() or not (d / "rule.md").exists() or d.name.startswith(("_", ".")):
             continue
         desc = ""
@@ -237,7 +240,10 @@ def scan_rules(marketplace: Path) -> list[dict]:
 
 def scan_skills(marketplace: Path) -> list[dict]:
     skills = []
-    for d in sorted(marketplace.iterdir()):
+    skills_dir = marketplace / "skills"
+    if not skills_dir.is_dir():
+        return skills
+    for d in sorted(skills_dir.iterdir()):
         if not d.is_dir() or not (d / "SKILL.md").exists() or d.name.startswith(("_", ".")):
             continue
         desc = ""

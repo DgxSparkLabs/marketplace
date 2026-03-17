@@ -24,17 +24,19 @@ marketplace/
 ├── docs/                   ← Format specs (SKILL_FORMAT.md, RULE_FORMAT.md)
 ├── _template/              ← Copy this to start a new skill
 ├── research/               ← 200+ sources of market intelligence (see below)
-├── tests/                  ← 104 automated tests
-├── <skill-name>/           ← Each skill is a self-contained directory
-└── <rule-name>/            ← Each rule is a self-contained directory
+├── tests/                  ← Automated tests
+├── rules/                  ← Each rule is a self-contained directory
+│   └── <rule-name>/
+└── skills/                 ← Each skill is a self-contained directory
+    └── <skill-name>/
 ```
 
 ## Your First 5 Minutes
 
 1. **Read `AGENTS.md`** — conventions, testing, how to add skills/rules
 2. **Scan `README.md`** — catalog of everything available (15 skills, 9 rules)
-3. **Read one skill** (try `duckduckgo-search/SKILL.md`) — see how skills work
-4. **Read one rule** (try `blast-radius/rule.md`) — see how rules work
+3. **Read one skill** (try `skills/duckduckgo-search/SKILL.md`) — see how skills work
+4. **Read one rule** (try `rules/blast-radius/rule.md`) — see how rules work
 5. **Run the tests** — `uv run tests/test_marketplace.py` (must pass before any changes)
 
 ## The Research Library
@@ -53,7 +55,7 @@ Do NOT read the raw `skill-marketplaces-N/` directories unless you need to trace
 
 ### Adding a Skill
 
-1. Copy `_template/` to `your-skill-name/`
+1. Copy `_template/` to `skills/your-skill-name/`
 2. Write `SKILL.md` (YAML frontmatter + prompt body) — see `docs/SKILL_FORMAT.md`
 3. Write scripts in `scripts/` using PEP 723 inline metadata (zero-install via `uv run`)
 4. Set `allowed-tools` to the minimum needed
@@ -62,7 +64,7 @@ Do NOT read the raw `skill-marketplaces-N/` directories unless you need to trace
 
 ### Adding a Rule
 
-1. Use `no-ai-credit/` as your reference
+1. Use `rules/no-ai-credit/` as your reference
 2. Write `rule.md` (plain Markdown, no frontmatter)
 3. Create `formats/windsurf.md` and `formats/cursor.md`
 4. Adapt `install.sh` from the reference
