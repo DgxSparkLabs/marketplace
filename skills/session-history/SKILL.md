@@ -21,7 +21,7 @@ search for topics discussed, and review what was done in previous sessions.
 ## Prerequisites
 
 - **uv** installed
-- Devin CLI sessions database at `~/.local/share/cognition/cli/sessions.db`
+- Devin CLI sessions database at `~/.local/share/devin/cli/sessions.db`
 
 ## Usage
 

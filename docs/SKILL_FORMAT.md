@@ -121,7 +121,7 @@ Full user input: $ARGUMENTS
 
 #### 2. File inclusion
 
-Include the contents of a file using `@` syntax. Paths are **relative to the config directory** (e.g., `.windsurf/`, `.cognition/`, or `~/.config/cognition/`), not relative to the skill directory.
+Include the contents of a file using `@` syntax. Paths are **relative to the config directory** (e.g., `.windsurf/`, `.devin/`, or `~/.config/devin/`), not relative to the skill directory.
 
 ```markdown
 Check the code against our style guide:

@@ -4,7 +4,7 @@ Query past Devin CLI conversations from the local session database. Search for t
 
 ## Setup
 
-No external dependencies or API keys needed. The skill reads the local Devin CLI database at `~/.local/share/cognition/cli/sessions.db`.
+No external dependencies or API keys needed. The skill reads the local Devin CLI database at `~/.local/share/devin/cli/sessions.db`.
 
 Requires:
 - `uv` installed
@@ -68,10 +68,10 @@ Copy this directory into your agent's skills directory:
 
 ```bash
 # Global (available everywhere)
-cp -r session-history/ ~/.config/cognition/skills/session-history/
+cp -r session-history/ ~/.config/devin/skills/session-history/
 
 # Project-specific
-cp -r session-history/ /path/to/project/.cognition/skills/session-history/
+cp -r session-history/ /path/to/project/.devin/skills/session-history/
 ```
 
 Then invoke with `/session-history` in a session, or the agent can use it autonomously when past context is needed.

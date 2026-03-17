@@ -55,7 +55,7 @@ uv run github-search/scripts/search.py "markdown parser" --json
 Install into Devin or any compatible agent:
 
 ```bash
-cp -r github-search ~/.config/cognition/skills/github-search
+cp -r github-search ~/.config/devin/skills/github-search
 ```
 
 Once installed, the agent can invoke it via `/github-search` or autonomously before implementing non-trivial features to find prior art and inspiration.

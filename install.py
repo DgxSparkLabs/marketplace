@@ -25,14 +25,14 @@ PLATFORMS = {
     "devin": {
         "label": "Devin CLI",
         "global": {
-            "config": Path.home() / ".config" / "cognition" / "config.json",
-            "rules": Path.home() / ".config" / "cognition" / "AGENTS.md",
-            "skills": Path.home() / ".config" / "cognition" / "skills",
+            "config": Path.home() / ".config" / "devin" / "config.json",
+            "rules": Path.home() / ".config" / "devin" / "AGENTS.md",
+            "skills": Path.home() / ".config" / "devin" / "skills",
         },
         "project": {
-            "config": Path(".cognition") / "config.json",
+            "config": Path(".devin") / "config.json",
             "rules": Path("AGENTS.md"),
-            "skills": Path(".cognition") / "skills",
+            "skills": Path(".devin") / "skills",
         },
         "rule_fmt": "agents",
     },

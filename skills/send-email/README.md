@@ -48,11 +48,11 @@ Copy the `send-email/` directory into your agent's skills directory:
 
 ```bash
 # Global (available everywhere)
-cp -r send-email/ ~/.config/cognition/skills/send-email/
+cp -r send-email/ ~/.config/devin/skills/send-email/
 # or: cp -r send-email/ ~/.windsurf/skills/send-email/
 
 # Project-specific
-cp -r send-email/ /path/to/project/.cognition/skills/send-email/
+cp -r send-email/ /path/to/project/.devin/skills/send-email/
 # or: cp -r send-email/ /path/to/project/.windsurf/skills/send-email/
 ```
 

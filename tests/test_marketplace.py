@@ -380,7 +380,7 @@ class TestRuleInstallIdempotent(unittest.TestCase):
                         capture_output=True, text=True, timeout=10,
                         env=env,
                     )
-                    agents_file = Path(tmpdir) / ".config" / "cognition" / "AGENTS.md"
+                    agents_file = Path(tmpdir) / ".config" / "devin" / "AGENTS.md"
                     if agents_file.exists():
                         content = agents_file.read_text()
                         rule_text = (rule / "rule.md").read_text().strip().splitlines()[0]
@@ -413,7 +413,7 @@ class TestRuleInstallGlobal(unittest.TestCase):
                         result.returncode, 0,
                         f"{rule.name}: --global --format all failed: {result.stderr}",
                     )
-                    agents = Path(tmpdir) / ".config" / "cognition" / "AGENTS.md"
+                    agents = Path(tmpdir) / ".config" / "devin" / "AGENTS.md"
                     windsurf = Path(tmpdir) / ".windsurf" / "rules" / f"{rule.name}.md"
                     cursor = Path(tmpdir) / ".cursor" / "rules" / f"{rule.name}.md"
                     self.assertTrue(agents.exists(), f"{rule.name}: AGENTS.md not created")

@@ -44,11 +44,11 @@ Copy this directory into your agent's skills directory:
 
 ```bash
 # Global (available everywhere)
-cp -r _template/ ~/.config/cognition/skills/_template/
+cp -r _template/ ~/.config/devin/skills/_template/
 # or: cp -r _template/ ~/.windsurf/skills/_template/
 
 # Project-specific
-cp -r _template/ /path/to/project/.cognition/skills/_template/
+cp -r _template/ /path/to/project/.devin/skills/_template/
 # or: cp -r _template/ /path/to/project/.windsurf/skills/_template/
 ```
 

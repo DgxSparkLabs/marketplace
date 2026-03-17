@@ -50,11 +50,11 @@ Copy this directory into your agent's skills directory:
 
 ```bash
 # Global (available everywhere)
-cp -r ssh-tunnel/ ~/.config/cognition/skills/ssh-tunnel/
+cp -r ssh-tunnel/ ~/.config/devin/skills/ssh-tunnel/
 # or: cp -r ssh-tunnel/ ~/.windsurf/skills/ssh-tunnel/
 
 # Project-specific
-cp -r ssh-tunnel/ /path/to/project/.cognition/skills/ssh-tunnel/
+cp -r ssh-tunnel/ /path/to/project/.devin/skills/ssh-tunnel/
 ```
 
 Then invoke with `/ssh-tunnel` in a session.

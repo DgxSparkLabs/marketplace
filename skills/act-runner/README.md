@@ -107,11 +107,11 @@ Copy this directory into your agent's skills directory:
 
 ```bash
 # Global (available everywhere)
-cp -r act-runner/ ~/.config/cognition/skills/act-runner/
+cp -r act-runner/ ~/.config/devin/skills/act-runner/
 # or: cp -r act-runner/ ~/.windsurf/skills/act-runner/
 
 # Project-specific
-cp -r act-runner/ /path/to/project/.cognition/skills/act-runner/
+cp -r act-runner/ /path/to/project/.devin/skills/act-runner/
 # or: cp -r act-runner/ /path/to/project/.windsurf/skills/act-runner/
 ```
 

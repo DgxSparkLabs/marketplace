@@ -227,10 +227,10 @@ Copy the `google-drive-reader` directory into your agent's skills folder:
 
 ```bash
 # Global install
-cp -r google-drive-reader ~/.config/cognition/skills/google-drive-reader
+cp -r google-drive-reader ~/.config/devin/skills/google-drive-reader
 
 # Project-level install
-cp -r google-drive-reader .cognition/skills/google-drive-reader
+cp -r google-drive-reader .devin/skills/google-drive-reader
 ```
 
 Then invoke it with `/google-drive-reader <doc-url>` or let the agent use it

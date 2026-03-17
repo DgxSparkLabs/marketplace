@@ -112,7 +112,7 @@ echo ""
 if [[ "$SCOPE" == "global" ]]; then
     if [[ "$FORMAT" == "all" || "$FORMAT" == "agents" ]]; then
         check_scope_collision "AGENTS.md" "project"
-        install_agents "$HOME/.config/cognition/AGENTS.md"
+        install_agents "$HOME/.config/devin/AGENTS.md"
     fi
     if [[ "$FORMAT" == "all" || "$FORMAT" == "windsurf" ]]; then
         install_format_file "Windsurf" "windsurf" "$HOME/.windsurf/rules"
@@ -122,7 +122,7 @@ if [[ "$SCOPE" == "global" ]]; then
     fi
 else
     if [[ "$FORMAT" == "all" || "$FORMAT" == "agents" ]]; then
-        check_scope_collision "$HOME/.config/cognition/AGENTS.md" "global"
+        check_scope_collision "$HOME/.config/devin/AGENTS.md" "global"
         install_agents "AGENTS.md"
     fi
     if [[ "$FORMAT" == "all" || "$FORMAT" == "windsurf" ]]; then

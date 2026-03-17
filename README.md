@@ -107,7 +107,7 @@ Skills are invoked with `/<skill-name>` in an agent session. Copy the skill dire
 
 ```bash
 cp -r skills/<skill-name> ~/.<agent>/skills/<skill-name>
-# e.g. ~/.config/cognition/skills/, ~/.windsurf/skills/, etc.
+# e.g. ~/.config/devin/skills/, ~/.windsurf/skills/, etc.
 ```
 
 ## Repository Structure

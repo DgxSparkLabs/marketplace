@@ -59,7 +59,7 @@ cp document-progress/formats/cursor.md .cursor/rules/document-progress.md
 This rule is designed to work with the [structured-handoff](../structured-handoff/) skill, which generates the `.tasks/` directory structure automatically. Install both for the full workflow:
 
 ```bash
-cp -r /tmp/marketplace/structured-handoff ~/.config/cognition/skills/structured-handoff
+cp -r /tmp/marketplace/structured-handoff ~/.config/devin/skills/structured-handoff
 /tmp/marketplace/document-progress/install.sh --global
 ```
 

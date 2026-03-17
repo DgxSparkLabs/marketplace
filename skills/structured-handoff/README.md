@@ -46,11 +46,11 @@ Copy this directory into your agent's skills directory:
 
 ```bash
 # Global (available everywhere)
-cp -r structured-handoff/ ~/.config/cognition/skills/structured-handoff/
+cp -r structured-handoff/ ~/.config/devin/skills/structured-handoff/
 # or: cp -r structured-handoff/ ~/.windsurf/skills/structured-handoff/
 
 # Project-specific
-cp -r structured-handoff/ /path/to/project/.cognition/skills/structured-handoff/
+cp -r structured-handoff/ /path/to/project/.devin/skills/structured-handoff/
 # or: cp -r structured-handoff/ /path/to/project/.windsurf/skills/structured-handoff/
 ```
 

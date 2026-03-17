@@ -26,7 +26,7 @@ git clone https://github.com/ForkYoraiLevi/marketplace.git /tmp/marketplace
 Don't forget to also install the skill:
 
 ```bash
-cp -r /tmp/marketplace/telegram-notify/ ~/.config/cognition/skills/telegram-notify/
+cp -r /tmp/marketplace/telegram-notify/ ~/.config/devin/skills/telegram-notify/
 ```
 
 ## Manual Install

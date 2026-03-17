@@ -111,11 +111,11 @@ Copy this directory into your agent's skills directory:
 
 ```bash
 # Global (available everywhere)
-cp -r expose-port/ ~/.config/cognition/skills/expose-port/
+cp -r expose-port/ ~/.config/devin/skills/expose-port/
 # or: cp -r expose-port/ ~/.windsurf/skills/expose-port/
 
 # Project-specific
-cp -r expose-port/ /path/to/project/.cognition/skills/expose-port/
+cp -r expose-port/ /path/to/project/.devin/skills/expose-port/
 ```
 
 Then invoke with `/expose-port` in a session.

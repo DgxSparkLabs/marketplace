@@ -41,11 +41,11 @@ uv run youtube-wisdom/scripts/fetch_transcript.py "https://www.youtube.com/watch
 
 ```bash
 # Global
-cp -r youtube-wisdom/ ~/.config/cognition/skills/youtube-wisdom/
+cp -r youtube-wisdom/ ~/.config/devin/skills/youtube-wisdom/
 # or: cp -r youtube-wisdom/ ~/.windsurf/skills/youtube-wisdom/
 
 # Project-specific
-cp -r youtube-wisdom/ .cognition/skills/youtube-wisdom/
+cp -r youtube-wisdom/ .devin/skills/youtube-wisdom/
 ```
 
 Then invoke with:

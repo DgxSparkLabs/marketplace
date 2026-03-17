@@ -50,11 +50,11 @@ Copy this directory into your agent's skills directory:
 
 ```bash
 # Global (available everywhere)
-cp -r web-scraper/ ~/.config/cognition/skills/web-scraper/
+cp -r web-scraper/ ~/.config/devin/skills/web-scraper/
 # or: cp -r web-scraper/ ~/.windsurf/skills/web-scraper/
 
 # Project-specific
-cp -r web-scraper/ /path/to/project/.cognition/skills/web-scraper/
+cp -r web-scraper/ /path/to/project/.devin/skills/web-scraper/
 ```
 
 Then invoke with `/web-scraper` in a session.

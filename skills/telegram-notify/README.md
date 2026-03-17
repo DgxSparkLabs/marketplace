@@ -101,11 +101,11 @@ Copy the `telegram-notify/` directory into your agent's skills directory:
 
 ```bash
 # Global (available everywhere)
-cp -r telegram-notify/ ~/.config/cognition/skills/telegram-notify/
+cp -r telegram-notify/ ~/.config/devin/skills/telegram-notify/
 # or: cp -r telegram-notify/ ~/.windsurf/skills/telegram-notify/
 
 # Project-specific
-cp -r telegram-notify/ /path/to/project/.cognition/skills/telegram-notify/
+cp -r telegram-notify/ /path/to/project/.devin/skills/telegram-notify/
 # or: cp -r telegram-notify/ /path/to/project/.windsurf/skills/telegram-notify/
 ```
 

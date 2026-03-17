@@ -64,7 +64,7 @@ uv run motivation/scripts/motivate.py --json
 ## As an Agent Skill
 
 ```bash
-cp -r motivation/ ~/.config/cognition/skills/motivation/
+cp -r motivation/ ~/.config/devin/skills/motivation/
 ```
 
 The skill is both user-triggered (`/motivation`) and model-triggered. The agent invokes it before stopping to verify nothing is incomplete.

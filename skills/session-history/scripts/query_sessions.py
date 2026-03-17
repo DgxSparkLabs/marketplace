@@ -8,7 +8,7 @@ Query the Devin CLI session history database.
 Supports listing sessions, searching messages, reading full conversations,
 and summarizing session activity.
 
-The database is at ~/.local/share/cognition/cli/sessions.db
+The database is at ~/.local/share/devin/cli/sessions.db
 """
 
 import argparse
@@ -17,7 +17,7 @@ import sqlite3
 import sys
 from pathlib import Path
 
-DEFAULT_DB = Path.home() / ".local" / "share" / "cognition" / "cli" / "sessions.db"
+DEFAULT_DB = Path.home() / ".local" / "share" / "devin" / "cli" / "sessions.db"
 
 
 def get_db(db_path: str | None) -> sqlite3.Connection:
