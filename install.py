@@ -435,7 +435,7 @@ def show_platform_table(platforms: dict, scope: str):
 
 APP_CSS = """
 Screen {
-    background: #0d1117;
+    background: $surface;
 }
 
 #banner {
@@ -444,8 +444,9 @@ Screen {
     content-align: center middle;
     text-align: center;
     padding: 0;
-    color: #58a6ff;
-    background: #161b22;
+    background: $panel;
+    color: $primary;
+    text-style: bold;
 }
 
 #main-area {
@@ -455,21 +456,17 @@ Screen {
 
 #left-panel {
     width: 2fr;
-    border: round #30363d;
-    border-title-color: #58a6ff;
-    border-title-style: bold;
+    border: round $primary 30%;
     padding: 0 1;
-    background: #0d1117;
+    background: $surface;
     overflow-y: auto;
 }
 
 #right-panel {
     width: 1fr;
-    border: round #30363d;
-    border-title-color: #bc8cff;
-    border-title-style: bold;
+    border: round $secondary 30%;
     padding: 1 1;
-    background: #0d1117;
+    background: $surface;
 }
 
 .section-header {
@@ -496,15 +493,15 @@ SelectionList > .selection-list--button {
 }
 
 SelectionList:focus > .selection-list--button-highlighted {
-    background: #161b22;
+    background: $boost;
 }
 
 SelectionList > .selection-list--button-highlighted {
-    background: #161b22;
+    background: $surface;
 }
 
 SelectionList > .selection-list--button-selected {
-    color: #3fb950;
+    color: $success;
 }
 
 Collapsible {
@@ -516,58 +513,47 @@ Collapsible {
 
 CollapsibleTitle {
     padding: 0;
-    color: #8b949e;
+    color: $text-muted;
     text-style: italic;
     width: 100%;
     background: transparent;
 }
 
 CollapsibleTitle:hover {
-    color: #58a6ff;
+    color: $primary;
     text-style: bold italic;
 }
 
 CollapsibleTitle:focus {
-    color: #58a6ff;
+    color: $primary;
     text-style: bold;
-}
-
-#right-panel-content {
-    height: auto;
-}
-
-#preview-header {
-    text-align: center;
-    text-style: bold;
-    color: #bc8cff;
-    padding: 0 0 1 0;
 }
 
 #preview-body {
     padding: 1 0;
-    color: #c9d1d9;
+    color: $text;
 }
 
 #status-bar {
     dock: bottom;
     height: 1;
-    background: #161b22;
-    color: #8b949e;
+    background: $panel;
+    color: $text-muted;
     text-align: center;
     padding: 0 2;
 }
 
 Footer {
-    background: #161b22;
+    background: $panel;
 }
 
 Footer > .footer--key {
-    background: #21262d;
-    color: #58a6ff;
+    background: $surface;
+    color: $primary;
 }
 
 Footer > .footer--description {
-    color: #8b949e;
+    color: $text-muted;
 }
 
 /* Modal screens */
@@ -578,24 +564,24 @@ ConfirmScreen, PreviewScreen, ResultsScreen {
 #confirm-dialog {
     width: 70;
     max-height: 80%;
-    border: heavy #30363d;
-    background: #0d1117;
+    border: heavy $primary;
+    background: $surface;
     padding: 1 2;
 }
 
 #preview-dialog {
     width: 90%;
     height: 90%;
-    border: heavy #bc8cff;
-    background: #0d1117;
+    border: heavy $secondary;
+    background: $surface;
     padding: 1 2;
 }
 
 #results-dialog {
     width: 80%;
     max-height: 90%;
-    border: heavy #3fb950;
-    background: #0d1117;
+    border: heavy $success;
+    background: $surface;
     padding: 1 2;
 }
 
@@ -603,7 +589,7 @@ ConfirmScreen, PreviewScreen, ResultsScreen {
     text-align: center;
     text-style: bold;
     padding: 0 0 1 0;
-    color: #58a6ff;
+    color: $primary;
     width: 100%;
 }
 
@@ -611,7 +597,7 @@ ConfirmScreen, PreviewScreen, ResultsScreen {
     height: 1fr;
     overflow-y: auto;
     padding: 1 1;
-    color: #c9d1d9;
+    color: $text;
 }
 
 #modal-actions {
@@ -626,40 +612,38 @@ ConfirmScreen, PreviewScreen, ResultsScreen {
 }
 
 .btn-install {
-    background: #238636;
-    color: #ffffff;
+    background: $success;
+    color: $text;
     text-style: bold;
 }
 
 .btn-install:hover {
-    background: #2ea043;
+    background: $success-darken-1;
 }
 
 .btn-cancel {
-    background: #21262d;
-    color: #c9d1d9;
-    border: tall #30363d;
+    background: $surface;
+    color: $text;
 }
 
 .btn-cancel:hover {
-    background: #30363d;
+    background: $panel;
 }
 
 .btn-close {
-    background: #21262d;
-    color: #c9d1d9;
-    border: tall #30363d;
+    background: $surface;
+    color: $text;
 }
 
 .btn-done {
-    background: #238636;
-    color: #ffffff;
+    background: $success;
+    color: $text;
     text-style: bold;
 }
 """
 
 BANNER_TEXT = """\
-[bold #58a6ff]\u2550\u2550\u2550[/] [bold #bc8cff]\u2726[/] [bold #e2e4e8]SKILLS MARKETPLACE[/] [bold #bc8cff]\u2726[/] [bold #58a6ff]\u2550\u2550\u2550[/]  [dim #8b949e]Agent Tools Installer[/]\
+[bold dodger_blue2]\u2550\u2550\u2550[/] [bold medium_purple1]\u2726[/] [bold white]SKILLS MARKETPLACE[/] [bold medium_purple1]\u2726[/] [bold dodger_blue2]\u2550\u2550\u2550[/]  [dim]Agent Tools Installer[/]\
 """
 
 
@@ -761,7 +745,7 @@ def main():
         def compose(self) -> ComposeResult:
             with Vertical(id="preview-dialog"):
                 yield Static(
-                    f"[bold #bc8cff]\u2500\u2500 {self._title} \u2500\u2500[/]",
+                    f"[bold medium_purple1]\u2500\u2500 {self._title} \u2500\u2500[/]",
                     id="modal-title",
                 )
                 yield VerticalScroll(
@@ -786,7 +770,7 @@ def main():
 
         def compose(self) -> ComposeResult:
             with Vertical(id="confirm-dialog"):
-                yield Static(f"[bold #58a6ff]\u2500\u2500 Confirm {self._mode_label} \u2500\u2500[/]", id="modal-title")
+                yield Static(f"[bold dodger_blue2]\u2500\u2500 Confirm {self._mode_label} \u2500\u2500[/]", id="modal-title")
                 yield Static(self._summary, id="modal-body")
                 with Horizontal(id="modal-actions"):
                     yield Button(f"{self._mode_label}", variant="success", classes="modal-btn btn-install", id="confirm-yes")
@@ -813,7 +797,7 @@ def main():
 
         def compose(self) -> ComposeResult:
             with Vertical(id="results-dialog"):
-                yield Static("[bold #3fb950]\u2500\u2500 Results \u2500\u2500[/]", id="modal-title")
+                yield Static("[bold green]\u2500\u2500 Results \u2500\u2500[/]", id="modal-title")
                 yield VerticalScroll(Static(self._results), id="modal-body")
                 with Horizontal(id="modal-actions"):
                     yield Button("Done [Enter]", variant="success", classes="modal-btn btn-done", id="results-done")
@@ -845,37 +829,47 @@ def main():
             yield Header(show_clock=False)
             yield Static(BANNER_TEXT, id="banner")
             with Horizontal(id="main-area"):
-                with VerticalScroll(id="left-panel"):
+                left = VerticalScroll(id="left-panel")
+                left.can_focus = False
+                with left:
                     yield from self._build_left_panel()
                 with Vertical(id="right-panel"):
                     yield Static(
-                        "[bold #bc8cff]Preview[/]\n\n"
-                        "[dim #8b949e]Navigate to any item and press "
-                        "[bold #58a6ff]P[/bold #58a6ff] to show its full content.\n\n"
+                        "[bold medium_purple1]Preview[/]\n\n"
+                        "[dim]Navigate to any item and press "
+                        "[bold]P[/bold] to show its full content.\n\n"
                         "Use [bold]Space[/bold] to toggle selections.\n"
                         "Use [bold]Tab[/bold] to move between sections.\n"
-                        "Use [bold]I[/bold] to install selected items.[/dim #8b949e]",
+                        "Use [bold]I[/bold] to install selected items.[/dim]",
                         id="preview-body",
                     )
             yield Static(
-                f"[bold #8b949e]{mode_verb} mode \u2502 {scope} scope \u2502 "
+                f"[bold]{mode_verb} mode \u2502 {scope} scope \u2502 "
                 f"0 items selected[/]",
                 id="status-bar",
             )
             yield Footer()
 
+        def on_mount(self) -> None:
+            """Focus the first SelectionList so arrow keys work immediately."""
+            try:
+                first_sl = self.query_one("#sl-platforms", SelectionList)
+                first_sl.focus()
+            except Exception:
+                pass
+
         def _build_left_panel(self):
             """Generator helper that yields all widgets for the left panel."""
             # ── Platforms ──
             yield Static(
-                "[bold #58a6ff]\u2588\u2588 PLATFORMS[/]",
+                "[bold dodger_blue2]\u2588\u2588 PLATFORMS[/]",
                 classes="section-header",
             )
             plat_selections = []
             for pid, info in platforms.items():
                 cfg = info[scope]["config"]
                 detected = cfg.exists()
-                status = "[#3fb950]\u2713 config found[/]" if detected else "[#8b949e]dir exists[/]"
+                status = "[green]\u2713 config found[/]" if detected else "[dim]dir exists[/]"
                 label = Text.from_markup(
                     f"[bold]{info['label']}[/]  {status}"
                 )
@@ -890,14 +884,14 @@ def main():
 
             # ── MCP Servers ──
             yield Static(
-                "[bold #da3633]\u2588\u2588 MCP SERVERS[/]  "
-                "[dim #8b949e]External tool connections[/]",
+                "[bold red]\u2588\u2588 MCP SERVERS[/]  "
+                "[dim]External tool connections[/]",
                 classes="section-header",
             )
             mcp_selections = []
             for name, srv in MCP_SERVERS.items():
                 is_inst = name in primary_mcps
-                status = " [#3fb950]\u2713[/]" if is_inst else ""
+                status = " [green]\u2713[/]" if is_inst else ""
                 label = Text.from_markup(
                     f"[bold]{name}[/]{status}  [dim]{srv['description']}[/]"
                 )
@@ -915,8 +909,8 @@ def main():
 
             # ── Rules ──
             yield Static(
-                "[bold #d29922]\u2588\u2588 RULES[/]  "
-                "[dim #8b949e]Always-on agent behaviors[/]",
+                "[bold yellow]\u2588\u2588 RULES[/]  "
+                "[dim]Always-on agent behaviors[/]",
                 classes="section-header",
             )
             for fname, fdata in rule_families.items():
@@ -927,7 +921,7 @@ def main():
                 family_selections = []
                 for item in fdata["items"]:
                     is_inst = is_rule_installed(primary_pid, item["name"], primary_paths)
-                    status = " [#3fb950]\u2713[/]" if is_inst else ""
+                    status = " [green]\u2713[/]" if is_inst else ""
                     label = Text.from_markup(
                         f"[bold]{item['name']}[/]{status}  [dim]{item['description']}[/]"
                     )
@@ -956,8 +950,8 @@ def main():
 
             # ── Skills ──
             yield Static(
-                "[bold #a371f7]\u2588\u2588 SKILLS[/]  "
-                "[dim #8b949e]On-demand /skill-name commands[/]",
+                "[bold medium_purple1]\u2588\u2588 SKILLS[/]  "
+                "[dim]On-demand /skill-name commands[/]",
                 classes="section-header",
             )
             for fname, fdata in skill_families.items():
@@ -968,7 +962,7 @@ def main():
                 family_selections = []
                 for item in fdata["items"]:
                     is_inst = is_skill_installed(item["name"], primary_paths)
-                    status = " [#3fb950]\u2713[/]" if is_inst else ""
+                    status = " [green]\u2713[/]" if is_inst else ""
                     label = Text.from_markup(
                         f"[bold]{item['name']}[/]{status}  [dim]{item['description']}[/]"
                     )
@@ -1013,8 +1007,8 @@ def main():
             count = self._count_selected()
             bar = self.query_one("#status-bar", Static)
             bar.update(
-                f"[bold #8b949e]{mode_verb} mode \u2502 {scope} scope \u2502 "
-                f"[bold #58a6ff]{count}[/bold #58a6ff] items selected[/]"
+                f"[bold]{mode_verb} mode \u2502 {scope} scope \u2502 "
+                f"[bold green]{count}[/bold green] items selected[/]"
             )
 
         @on(SelectionList.SelectionToggled)
@@ -1034,24 +1028,24 @@ def main():
             desc = meta.get("description", "")
             item_type = meta.get("type", "")
             installed = meta.get("installed", False)
-            inst_str = "[#3fb950]installed[/]" if installed else "[dim]not installed[/]"
+            inst_str = "[green]installed[/]" if installed else "[dim]not installed[/]"
 
             lines = [
-                f"[bold #e2e4e8]{name}[/]",
+                f"[bold]{name}[/]",
                 "",
-                f"[#c9d1d9]{desc}[/]",
+                f"{desc}",
                 "",
                 f"[dim]Status:[/] {inst_str}",
-                f"[dim]Type:[/] [#8b949e]{item_type}[/]",
+                f"[dim]Type:[/] {item_type}",
             ]
             if item_type == "mcp":
-                lines.append(f"\n[dim]Config:[/]\n[#8b949e]{meta.get('config', '')}[/]")
+                lines.append(f"\n[dim]Config:[/]\n{meta.get('config', '')}")
             if item_type == "rule":
                 fmts = meta.get("formats", [])
                 if fmts:
-                    lines.append(f"[dim]Formats:[/] [#8b949e]{', '.join(fmts)}[/]")
+                    lines.append(f"[dim]Formats:[/] {', '.join(fmts)}")
             lines.append(
-                "\n[dim #565f89]Press [bold #58a6ff]P[/bold #58a6ff] to view full content[/]"
+                "\n[dim]Press [bold]P[/bold] to view full content[/]"
             )
             preview = self.query_one("#preview-body", Static)
             preview.update("\n".join(lines))
@@ -1129,7 +1123,7 @@ def main():
                 return
 
             summary_lines = [
-                f"[bold]Action:[/] [bold #58a6ff]{mode_verb}[/]",
+                f"[bold]Action:[/] [bold dodger_blue2]{mode_verb}[/]",
                 f"[bold]Scope:[/] {scope}",
                 f"[bold]Platforms:[/] {', '.join(PLATFORMS[p]['label'] for p in selected_platforms)}",
                 "",
@@ -1180,7 +1174,7 @@ def main():
                         res = install_mcp(name, MCP_SERVERS[name], paths["config"])
                     else:
                         res = uninstall_mcp(name, paths["config"])
-                    color = "#3fb950" if res in ("installed", "removed") else "#8b949e"
+                    color = "green" if res in ("installed", "removed") else "dim"
                     result_lines.append(
                         f"  [{color}]\u2502[/] {plabel:<14s} [bold]MCP[/]    {name:<24s} [{color}]{res}[/]"
                     )
@@ -1194,7 +1188,7 @@ def main():
                         res = install_rule(rule, pid, paths)
                     else:
                         res = uninstall_rule(rule, pid, paths)
-                    color = "#3fb950" if res in ("installed", "removed") else "#8b949e"
+                    color = "green" if res in ("installed", "removed") else "dim"
                     result_lines.append(
                         f"  [{color}]\u2502[/] {plabel:<14s} [bold]Rule[/]   {name:<24s} [{color}]{res}[/]"
                     )
@@ -1209,7 +1203,7 @@ def main():
                         res = install_skill(skill, skills_dir)
                     else:
                         res = uninstall_skill(name, skills_dir)
-                    color = "#3fb950" if res in ("installed", "removed") else "#8b949e"
+                    color = "green" if res in ("installed", "removed") else "dim"
                     result_lines.append(
                         f"  [{color}]\u2502[/] {plabel:<14s} [bold]Skill[/]  {name:<24s} [{color}]{res}[/]"
                     )
@@ -1217,7 +1211,7 @@ def main():
 
             past = "installed" if install_mode else "uninstalled"
             header = (
-                f"[bold #3fb950]\u2714 Done![/] {total_count} items {past} "
+                f"[bold green]\u2714 Done![/] {total_count} items {past} "
                 f"across {len(selected_platforms)} platform(s).\n"
                 "[dim]Restart agent sessions to pick up changes.[/]\n"
             )
