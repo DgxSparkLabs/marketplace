@@ -7,7 +7,7 @@ alwaysApply: true
 
 For tasks with 3+ steps or 2+ files, write progress to disk. Context compacts and sessions end — files survive.
 
-- **Before starting:** Create `PROGRESS.md` listing what you plan to do.
-- **After each step:** Append what was done, what files changed, what's next. Then commit.
-- **Do NOT rely on conversation memory.** Write state to files.
-- If the `structured-handoff` skill is available, use it to generate a `.tasks/` directory.
+- **Before starting:** Plan what you'll do in the todo list.
+- **After each step:** Mark the todo complete. Update `HANDOFF.md` if behavior changed. Commit.
+- **Do NOT rely on conversation memory.** The todo list and `HANDOFF.md` are your memory.
+- Never create append-only logs that grow unboundedly. `HANDOFF.md` is edited in-place to reflect current state. History goes in `CHANGELOG.md`.

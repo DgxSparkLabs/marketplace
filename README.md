@@ -12,12 +12,15 @@ A curated collection of reusable agent skills and rules. Each item is a self-con
 |------|-------------|
 | [blast-radius](./blast-radius/) | Scope changes by blast radius — prefer small atomic edits over large risky rewrites |
 | [continuous-improvement](./continuous-improvement/) | Structured seven-phase workflow for finding, planning, and implementing codebase improvements |
-| [document-progress](./document-progress/) | Plan large tasks upfront with structured-handoff and write progress to disk so nothing is lost |
+| [document-lifecycle](./document-lifecycle/) | Three-tier documentation: rules, reference, history — no sprawl |
+| [document-progress](./document-progress/) | Write progress to disk using todo lists and HANDOFF.md so nothing is lost between sessions |
 | [no-ai-credit](./no-ai-credit/) | Prevent AI agents from adding self-attribution to any output |
 | [prior-art](./prior-art/) | Search for existing solutions before building custom code |
 | [python-uv](./python-uv/) | Use uv for all Python operations — never pip, venv, conda, or poetry |
 | [stay-motivated](./stay-motivated/) | Prevent the agent from stopping prematurely — keep working until truly done |
+| [task-formation](./task-formation/) | Concrete pass conditions, code references by name, session-sized tasks |
 | [telegram-on-complete](./telegram-on-complete/) | Send a Telegram notification after completing any task |
+| [verification-ladder](./verification-ladder/) | Five-layer automated testing: compile, unit, integration, perf, e2e |
 | [verify-your-work](./verify-your-work/) | Require agents to test and verify their work before declaring tasks complete |
 
 ### Skills
