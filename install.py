@@ -974,6 +974,12 @@ def main():
             super().__init__()
             self._item_metadata: dict[str, dict] = {}
 
+        def action_screenshot(self, filename=None, path=None):
+            """Ensure download dir exists before taking a screenshot."""
+            dl = Path.home() / "Downloads"
+            dl.mkdir(parents=True, exist_ok=True)
+            super().action_screenshot(filename, path)
+
         def compose(self) -> ComposeResult:
             yield Header(show_clock=False)
             yield AnimatedBanner(id="banner")
