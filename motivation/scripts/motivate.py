@@ -80,6 +80,35 @@ def check_tests(cwd: str) -> list[str]:
     has_runner = any(r.exists() for r in runners)
     if not has_runner:
         issues.append("No test runner found (test/run_tests.sh)")
+
+    # Check for test result artifacts
+    result_files = [
+        Path(cwd) / "build" / ".test_results",
+        Path(cwd) / "shim" / "build" / ".test_results",
+    ]
+    result_file = next((f for f in result_files if f.exists()), None)
+    if has_runner and not result_file:
+        issues.append("No test results artifact — tests may not have been run")
+    elif result_file:
+        try:
+            data = dict(
+                ln.split("=", 1)
+                for ln in result_file.read_text().strip().split("\n")
+                if "=" in ln
+            )
+            if data.get("result") == "FAIL":
+                issues.append(
+                    f"Last test run FAILED (pass={data.get('pass', '?')}, "
+                    f"fail={data.get('fail', '?')})"
+                )
+            import time
+
+            ts = int(data.get("timestamp", "0"))
+            if ts and (time.time() - ts) > 3600:
+                age_min = int((time.time() - ts) / 60)
+                issues.append(f"Test results are {age_min} minutes old")
+        except Exception:
+            pass
     return issues
 
 
