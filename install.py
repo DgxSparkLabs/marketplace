@@ -443,10 +443,10 @@ Screen {
 
 #banner {
     width: 100%;
-    height: 1;
+    height: auto;
     content-align: center middle;
     text-align: center;
-    padding: 0;
+    padding: 0 0;
     background: $panel;
     color: $primary;
     text-style: bold;
@@ -674,9 +674,21 @@ ConfirmScreen, PreviewScreen, ResultsScreen {
 }
 """
 
-BANNER_TEXT = """\
-[bold dodger_blue2]\u2550\u2550\u2550[/] [bold medium_purple1]\u2726[/] [bold white]SKILLS MARKETPLACE[/] [bold medium_purple1]\u2726[/] [bold dodger_blue2]\u2550\u2550\u2550[/]  [dim]Agent Tools Installer[/]\
-"""
+BANNER_TEXT = (
+    "[bold cyan]          ⠀⠀⠀⠀⠀⠀⠀⣀⣤⣤⣄⡀[/]\n"
+    "[bold cyan]          ⠀⠀⠀⠀⠀⢀⣴⠟⠋⠁⠀⠙⢷⡀       [/][bold white]╔═╗╦╔═╦╦  ╦  ╔═╗[/]\n"
+    "[bold deep_sky_blue1]          ⠀⠀⠀⠀⣠⡿⠁⠀⠀⠀⠀⠈⢿⡄      [/][bold white]╚═╗╠╩╗║║  ║  ╚═╗[/]\n"
+    "[bold deep_sky_blue1]          ⠀⠀⠀⢠⡿⠁⠀⠀⢀⣀⠀⠀⠘⣿      [/][bold white]╚═╝╩⠀╩╩╩═╝╩═╝╚═╝[/]\n"
+    "[bold dodger_blue2]          ⠀⠀⠀⣾⡇⠀⠀⢠⣿⣿⡆⠀⢸⣿[/]\n"
+    "[bold dodger_blue2]          ⠀⠀⢰⣿⠀⠀⠀⠘⠻⠟⠁⠀⣸⡇      [/][bold medium_purple1]╔╦╗╔═╗╦═╗╦╔═╔═╗╔╦╗[/]\n"
+    "[bold blue]          ⠀⠀⠀⢿⣇⠀⠀⠀⠀⠀⠀⣰⡿       [/][bold medium_purple1]║║║╠═╣╠╦╝╠╩╗║╣  ║[/]\n"
+    "[bold blue]          ⠀⠀⣷⠈⠻⣦⣀⠀⠀⣀⣴⠟⠁⣾⡀      [/][bold medium_purple1]╩ ╩╩ ╩╩╚═╩ ╩╚═╝ ╩[/]\n"
+    "[bold medium_blue]          ⠀⢸⣿⡄⠀⠉⠛⠛⠋⠁⠀⣠⣿⡇[/]\n"
+    "[bold medium_blue]          ⠀⣿⣿⣿⣦⣄⣀⣀⣀⣤⣾⣿⣿⣿      [/][bold deep_sky_blue1]✦[/] [bold white]SKILLS MARKETPLACE[/] [bold deep_sky_blue1]✦[/]\n"
+    "[bold medium_purple1]          ⠀⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿      [/][dim]Agent Tools Installer[/]\n"
+    "[bold medium_purple1]          ⠀⢿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿[/]\n"
+    "[bold magenta]          ⠀⠀⠙⠿⣿⣿⣿⣿⣿⣿⠿⠋[/]"
+)
 
 
 def _categorize_items(items: list[dict], families: dict) -> dict:
