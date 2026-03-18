@@ -845,7 +845,7 @@ def main():
                 rgb = f"rgb({int(r*255)},{int(g*255)},{int(b*255)})"
                 t = _GEO_TEXT[i] if i < len(_GEO_TEXT) else ""
                 parts.append(f"[bold {rgb}]{bl}[/]{t}")
-            self.update("\n".join(parts))
+            self.update("\n".join(parts), layout=False)
 
     # Free up Space on CollapsibleTitle for section-level selection toggle.
     # Enter still collapses/expands.

@@ -350,7 +350,7 @@ class AnimatedBanner(Static):
 
     def _render_frame(self):
         # Compute content from self._angle, then:
-        self.update(markup_string)
+        self.update(markup_string, layout=False)  # layout=False: dimensions are fixed by CSS
 ```
 
 Fix banner height in CSS to prevent layout jitter: `#banner { height: 10; }`
@@ -395,6 +395,7 @@ def action_screenshot(self, filename=None, path=None):
 - **Modal return types**: `ModalScreen[bool]` needs `self.dismiss(True/False)`. Forgetting the type parameter means callbacks get `None`.
 - **Rich markup in SelectionList**: Use `Text.from_markup()` for labels, not raw strings with `[bold]` tags.
 - **Animation layout jitter**: Use fixed `height` in CSS for animated widgets; `auto` causes layout recalc every frame.
+- **Animation rendering corruption**: `Static.update()` defaults to `layout=True`, which triggers a full layout recalculation on every call. For animated widgets with fixed CSS dimensions, always pass `layout=False` — e.g. `self.update(content, layout=False)`. Without this, repeated layout passes can cause the compositor to miscalculate dirty regions, leading to braille/color artifacts bleeding into adjacent widgets over time.
 - **Named color jumps**: Use `rgb()` via HSV interpolation for smooth gradients; named color palettes look choppy when cycling.
 - **Screenshot fails silently**: `~/Downloads` may not exist on headless/server systems — always mkdir first.
 
