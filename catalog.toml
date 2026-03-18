@@ -114,7 +114,7 @@ members = ["act-runner", "expose-port", "ssh-tunnel"]
 [skill_families."Productivity & Meta"]
 icon = "\u2B50"
 description = "Session management, handoffs, and skill development"
-members = ["motivation", "session-history", "structured-handoff", "skill-creator", "sync-rules", "textual-tui-guide"]
+members = ["motivation", "pitfall-check", "project-bootstrap", "session-history", "session-wrapup", "structured-handoff", "skill-creator", "sync-rules", "textual-tui-guide"]
 
 [skill_families."AI & External Services"]
 icon = "\U0001F916"
@@ -128,7 +128,7 @@ members = ["gemini-chat", "google-drive-reader"]
 [rule_families."Quality & Verification"]
 icon = "\u2714"
 description = "Enforce code quality, testing, and review standards"
-members = ["blast-radius", "prior-art", "verification-ladder", "verify-your-work"]
+members = ["blast-radius", "pitfalls-discipline", "prior-art", "verification-ladder", "verify-your-work"]
 
 [rule_families."Documentation & Progress"]
 icon = "\U0001F4DD"
@@ -138,7 +138,7 @@ members = ["document-lifecycle", "document-progress"]
 [rule_families."Workflow & Process"]
 icon = "\u2699"
 description = "Shape how agents approach and execute tasks"
-members = ["continuous-improvement", "improve-the-process", "stay-motivated", "task-formation"]
+members = ["continuous-improvement", "improve-the-process", "session-resilience", "stay-motivated", "task-formation"]
 
 [rule_families."Environment & Conventions"]
 icon = "\U0001F527"

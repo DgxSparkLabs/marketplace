@@ -228,8 +228,9 @@ def install_rule(rule: dict, pid: str, paths: dict) -> str:
         if target.exists() and title and title in target.read_text():
             return "already installed"
         target.parent.mkdir(parents=True, exist_ok=True)
+        needs_separator = target.exists() and target.stat().st_size > 0
         with open(target, "a") as f:
-            if target.exists() and target.stat().st_size > 0:
+            if needs_separator:
                 f.write("\n")
             f.write(content)
         return "installed"
@@ -1097,6 +1098,13 @@ def main():
     all_rules = scan_rules(marketplace)
     all_skills = scan_skills(marketplace)
 
+    if not platforms and not PLATFORMS:
+        from rich.console import Console
+        Console().print(
+            "[red]Error: No platforms configured.[/red]\n"
+            "Ensure catalog.toml exists and has a [platforms] section."
+        )
+        raise SystemExit(1)
     primary_pid = list(platforms.keys())[0] if platforms else list(PLATFORMS.keys())[0]
     primary_paths = PLATFORMS[primary_pid]["global"]
     primary_mcps = read_mcp_servers(primary_paths["config"]) if platforms else {}
@@ -1818,11 +1826,13 @@ def main():
             for r in selected_rules:
                 key = f"rule:{r}"
                 scope = self._item_scopes.get(key, "global")
-                target = workspace_items_list if scope == "workspace" else global_items
-                target.append(f"Rule: {r}")
-                # Note forced workspace items
+                # If scope is global but platform forces workspace, show in workspace list only
                 if scope == "global" and has_forced_ws:
                     workspace_items_list.append(f"Rule: {r} [forced by platform]")
+                elif scope == "workspace":
+                    workspace_items_list.append(f"Rule: {r}")
+                else:
+                    global_items.append(f"Rule: {r}")
             for s in selected_skills:
                 key = f"skill:{s}"
                 scope = self._item_scopes.get(key, "global")
