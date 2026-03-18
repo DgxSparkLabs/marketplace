@@ -535,7 +535,7 @@ Footer > .footer--description {
 
 .path-dropdown {
     height: auto;
-    max-height: 10;
+    max-height: 16;
     display: none;
     border: tall $primary 40%;
     background: $surface;
@@ -699,11 +699,11 @@ _BRAILLE = [
 ]
 _GEO_TEXT = [
     "",
-    "  [bold bright_cyan]\u2554\u2550\u2557 \u2566\u2550\u2557 \u2566 \u2566   \u2566   \u2554\u2550\u2557[/]",
+    "  [bold bright_cyan]\u2554\u2550\u2557 \u2566 \u2566 \u2566 \u2566   \u2566   \u2554\u2550\u2557[/]",
     "  [bold cyan]\u255a\u2550\u2557 \u2560\u2569\u2557 \u2551 \u2551   \u2551   \u255a\u2550\u2557[/]",
     "  [bold deep_sky_blue1]\u255a\u2550\u255d \u2569 \u2569 \u2569 \u2569\u2550\u255d \u2569\u2550\u255d \u255a\u2550\u255d[/]",
     "",
-    "  [bold medium_purple1]\u2554\u2566\u2557 \u2554\u2550\u2557 \u2566\u2550\u2557 \u2566\u2550\u2557 \u2554\u2550\u2557 \u2554\u2566\u2557[/]",
+    "  [bold medium_purple1]\u2554\u2566\u2557 \u2554\u2550\u2557 \u2566\u2550\u2557 \u2566 \u2566 \u2554\u2550\u2557 \u2554\u2566\u2557[/]",
     "  [bold medium_purple1]\u2551\u2551\u2551 \u2560\u2550\u2563 \u2560\u2566\u255d \u2560\u2569\u2557 \u2551\u2563   \u2551[/]",
     "  [bold blue]\u2569 \u2569 \u2569 \u2569 \u2569\u255a\u2550 \u2569 \u2569 \u255a\u2550\u255d  \u2569[/]",
     "  [dim]\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500[/]",
@@ -795,7 +795,7 @@ def _get_path_completions(partial: str) -> list[str]:
             if uses_tilde and resolved.startswith(home_str):
                 resolved = "~" + resolved[len(home_str):]
             entries.append(resolved)
-        return entries[:20]
+        return entries
     except PermissionError:
         return []
 
@@ -1108,6 +1108,22 @@ def main():
     primary_pid = list(platforms.keys())[0] if platforms else list(PLATFORMS.keys())[0]
     primary_paths = PLATFORMS[primary_pid]["global"]
     primary_mcps = read_mcp_servers(primary_paths["config"]) if platforms else {}
+
+    def _is_rule_installed_any(rule_name: str) -> bool:
+        """Check if a rule is installed on ANY detected platform (global scope)."""
+        for pid in platforms:
+            paths = PLATFORMS[pid]["global"]
+            if is_rule_installed(pid, rule_name, paths):
+                return True
+        return False
+
+    def _is_skill_installed_any(skill_name: str) -> bool:
+        """Check if a skill is installed on ANY detected platform (global scope)."""
+        for pid in platforms:
+            paths = PLATFORMS[pid]["global"]
+            if is_skill_installed(skill_name, paths):
+                return True
+        return False
 
     rule_families = _categorize_items(all_rules, RULE_FAMILIES)
     skill_families = _categorize_items(all_skills, SKILL_FAMILIES)
@@ -1435,7 +1451,7 @@ def main():
                     sel_count = 0
                     family_selections = []
                     for item in fdata["items"]:
-                        is_inst = is_rule_installed(primary_pid, item["name"], primary_paths) if platforms else False
+                        is_inst = _is_rule_installed_any(item["name"]) if platforms else False
                         indicator = "[green]\u25cf[/] " if is_inst else "[dim]\u25cb[/] "
                         default_scope = "workspace" if item["name"] in WORKSPACE_SCOPE_DEFAULTS else "global"
                         scope_tag = "[W]" if default_scope == "workspace" else "[G]"
@@ -1486,7 +1502,7 @@ def main():
                     sel_count = 0
                     family_selections = []
                     for item in fdata["items"]:
-                        is_inst = is_skill_installed(item["name"], primary_paths) if platforms else False
+                        is_inst = _is_skill_installed_any(item["name"]) if platforms else False
                         indicator = "[green]\u25cf[/] " if is_inst else "[dim]\u25cb[/] "
                         default_scope = "workspace" if item["name"] in WORKSPACE_SCOPE_DEFAULTS else "global"
                         scope_tag = "[W]" if default_scope == "workspace" else "[G]"
@@ -1826,10 +1842,7 @@ def main():
             for r in selected_rules:
                 key = f"rule:{r}"
                 scope = self._item_scopes.get(key, "global")
-                # If scope is global but platform forces workspace, show in workspace list only
-                if scope == "global" and has_forced_ws:
-                    workspace_items_list.append(f"Rule: {r} [forced by platform]")
-                elif scope == "workspace":
+                if scope == "workspace":
                     workspace_items_list.append(f"Rule: {r}")
                 else:
                     global_items.append(f"Rule: {r}")
@@ -1837,6 +1850,13 @@ def main():
                 key = f"skill:{s}"
                 scope = self._item_scopes.get(key, "global")
                 (workspace_items_list if scope == "workspace" else global_items).append(f"Skill: {s}")
+
+            # Identify platforms that force rules to workspace
+            forced_ws_labels = [
+                PLATFORMS[pid]["label"]
+                for pid in selected_platforms
+                if pid in PLATFORMS and PLATFORMS[pid]["global"].get("rules") is None
+            ] if has_forced_ws else []
 
             summary_lines = [
                 f"[bold]Action:[/] [bold dodger_blue2]{mode_verb}[/]",
@@ -1846,6 +1866,11 @@ def main():
                 summary_lines.append(f"\n[bold]Global scope[/] ({len(global_items)} items):")
                 for item in global_items:
                     summary_lines.append(f"  \u2022 {item}")
+            if forced_ws_labels and selected_rules:
+                summary_lines.append(
+                    f"\n[dim]Note: {', '.join(forced_ws_labels)} will install rules "
+                    f"to workspace (no global rules support)[/]"
+                )
             if workspace_items_list:
                 wp_display = ", ".join(ws_paths) if ws_paths else "(none)"
                 summary_lines.append(
