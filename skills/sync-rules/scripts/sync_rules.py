@@ -261,19 +261,26 @@ def find_conflicts(incoming: list[dict], existing: list[dict]) -> tuple[list[dic
 def slugify(name: str) -> str:
     """Turn a rule name into a kebab-case filename."""
     slug = name.lower().replace(" ", "-")
-    slug = "".join(c for c in slug if c.isalnum() or c == "-").strip("-")
+    slug = "".join(c for c in slug if c.isalnum() or c == "-")
+    while "--" in slug:
+        slug = slug.replace("--", "-")
+    slug = slug.strip("-")
     return slug or "rule"
 
 
 def unique_path(dest: Path, taken: set[Path]) -> Path:
-    """Return *dest* if unused, otherwise append -2, -3, ... until unique."""
-    if dest not in taken:
+    """Return *dest* if unused, otherwise append -2, -3, ... until unique.
+
+    *taken* must include both paths chosen earlier in the current batch
+    AND paths that already exist on disk.
+    """
+    if dest not in taken and not dest.exists():
         return dest
     stem, suffix = dest.stem, dest.suffix
     n = 2
     while True:
         candidate = dest.with_name(f"{stem}-{n}{suffix}")
-        if candidate not in taken:
+        if candidate not in taken and not candidate.exists():
             return candidate
         n += 1
 
