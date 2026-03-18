@@ -1,9 +1,22 @@
 ---
-description: "Concrete pass conditions, code references by name, session-sized tasks"
+description: "Decompose requests into goals with intent, then into actionable session-sized tasks"
 alwaysApply: true
 ---
 
 ## Task Formation
+
+### Decompose First
+
+When you receive a request, break it down before coding:
+
+1. **Identify goals** — what are we trying to achieve and why? State the intent, not just the action.
+2. **Break into tasks** — each goal becomes actionable tasks with concrete steps.
+3. **Write it in the todo list** — the list is the plan. If it's not in the list, it doesn't exist.
+4. **Order by dependency** — what must happen first? What's parallel?
+
+Every goal has a "why." Every task has a "done" condition.
+
+### Writing Tasks
 
 - **Define "done"** as one concrete command with one observable outcome before writing any code.
 - **Reference code by name, not line number.** "After the declaration of `g_handle_map`" not "after line ~2113."

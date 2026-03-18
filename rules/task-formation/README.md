@@ -1,6 +1,6 @@
 # task-formation
 
-Concrete pass conditions, code references by name, session-sized tasks
+Decompose requests into goals with intent, then into actionable session-sized tasks
 
 ## Install
 
@@ -18,7 +18,7 @@ task-formation/install.sh --format cursor
 
 ## What it does
 
-Enforces disciplined task definition — every task gets a concrete pass condition before work starts, code is referenced by name not line number, and tasks are sized to fit a single session.
+Enforces decomposition-first planning — break requests into goals (with intent/why), then into actionable tasks with concrete pass conditions. Code is referenced by name not line number, and tasks are sized to fit a single session.
 
 ## See also
 

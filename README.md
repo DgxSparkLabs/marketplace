@@ -19,7 +19,7 @@ A curated collection of reusable agent skills and rules. Each item is a self-con
 | [prior-art](./rules/prior-art/) | Search for existing solutions before building custom code |
 | [python-uv](./rules/python-uv/) | Use uv for all Python operations — never pip, venv, conda, or poetry |
 | [stay-motivated](./rules/stay-motivated/) | Completeness checklist — verify done conditions before stopping |
-| [task-formation](./rules/task-formation/) | Concrete pass conditions, code references by name, session-sized tasks |
+| [task-formation](./rules/task-formation/) | Decompose requests into goals with intent, then into actionable session-sized tasks |
 | [telegram-on-complete](./rules/telegram-on-complete/) | Send a Telegram notification after completing any task |
 | [verification-ladder](./rules/verification-ladder/) | Five-layer automated testing: compile, unit, integration, perf, e2e |
 | [verify-your-work](./rules/verify-your-work/) | Require agents to test and verify their work before declaring tasks complete |
