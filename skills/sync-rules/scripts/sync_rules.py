@@ -261,7 +261,33 @@ def find_conflicts(incoming: list[dict], existing: list[dict]) -> tuple[list[dic
 def slugify(name: str) -> str:
     """Turn a rule name into a kebab-case filename."""
     slug = name.lower().replace(" ", "-")
-    return "".join(c for c in slug if c.isalnum() or c == "-").strip("-")
+    slug = "".join(c for c in slug if c.isalnum() or c == "-").strip("-")
+    return slug or "rule"
+
+
+def unique_path(dest: Path, taken: set[Path]) -> Path:
+    """Return *dest* if unused, otherwise append -2, -3, ... until unique."""
+    if dest not in taken:
+        return dest
+    stem, suffix = dest.stem, dest.suffix
+    n = 2
+    while True:
+        candidate = dest.with_name(f"{stem}-{n}{suffix}")
+        if candidate not in taken:
+            return candidate
+        n += 1
+
+
+def yaml_escape(value: str) -> str:
+    """Escape a string for use as a double-quoted YAML value."""
+    return value.replace("\\", "\\\\").replace('"', '\\"')
+
+
+def rule_description(rule: dict) -> str:
+    """Extract a short description from a rule's content, safe for YAML frontmatter."""
+    first_line = rule["content"].split("\n")[0].strip()
+    desc = first_line[:77] + "..." if len(first_line) > 80 else first_line
+    return yaml_escape(desc)
 
 
 def write_agents_md(rules: list[dict], workspace: Path) -> Path:
@@ -291,13 +317,13 @@ def write_cursor(rules: list[dict], workspace: Path) -> list[Path]:
     """Write rules as separate .md files to .cursor/rules/."""
     rules_dir = workspace / ".cursor" / "rules"
     rules_dir.mkdir(parents=True, exist_ok=True)
+    taken: set[Path] = set()
     paths: list[Path] = []
     for rule in rules:
         slug = slugify(rule["name"])
-        dest = rules_dir / f"{slug}.md"
-        # Extract a short description (first sentence of content)
-        first_line = rule["content"].split("\n")[0].strip()
-        desc = first_line[:77] + "..." if len(first_line) > 80 else first_line
+        dest = unique_path(rules_dir / f"{slug}.md", taken)
+        taken.add(dest)
+        desc = rule_description(rule)
         text = f"---\ndescription: \"{desc}\"\nalwaysApply: true\n---\n\n{rule['content']}\n"
         dest.write_text(text, encoding="utf-8")
         paths.append(dest)
@@ -308,12 +334,13 @@ def write_windsurf(rules: list[dict], workspace: Path) -> list[Path]:
     """Write rules as separate .md files to .windsurf/rules/."""
     rules_dir = workspace / ".windsurf" / "rules"
     rules_dir.mkdir(parents=True, exist_ok=True)
+    taken: set[Path] = set()
     paths: list[Path] = []
     for rule in rules:
         slug = slugify(rule["name"])
-        dest = rules_dir / f"{slug}.md"
-        first_line = rule["content"].split("\n")[0].strip()
-        desc = first_line[:77] + "..." if len(first_line) > 80 else first_line
+        dest = unique_path(rules_dir / f"{slug}.md", taken)
+        taken.add(dest)
+        desc = rule_description(rule)
         text = f"---\ntrigger: always_on\ndescription: \"{desc}\"\n---\n\n{rule['content']}\n"
         dest.write_text(text, encoding="utf-8")
         paths.append(dest)
