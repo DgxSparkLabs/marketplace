@@ -12,6 +12,7 @@ Skills live under `skills/` and rules under `rules/`.
 
 ```
 marketplace/
+├── catalog.toml                # TUI installer configuration (platforms, families, MCP)
 ├── docs/
 │   ├── SKILL_FORMAT.md         # Full SKILL.md spec
 │   └── RULE_FORMAT.md          # Full rule spec

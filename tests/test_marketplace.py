@@ -730,6 +730,77 @@ class TestCatalogConsistency(unittest.TestCase):
 
 
 # --------------------------------------------------------------------------- #
+# Test: catalog.toml consistency
+# --------------------------------------------------------------------------- #
+
+
+class TestCatalogToml(unittest.TestCase):
+    """catalog.toml is valid and references real marketplace items."""
+
+    CATALOG_PATH = REPO_ROOT / "catalog.toml"
+
+    def test_catalog_toml_exists(self):
+        self.assertTrue(self.CATALOG_PATH.exists(), "catalog.toml not found at repo root")
+
+    def test_catalog_toml_parses(self):
+        import tomllib
+        with open(self.CATALOG_PATH, "rb") as f:
+            cat = tomllib.load(f)
+        self.assertIsInstance(cat, dict)
+
+    def _load(self) -> dict:
+        import tomllib
+        with open(self.CATALOG_PATH, "rb") as f:
+            return tomllib.load(f)
+
+    def test_platforms_have_required_fields(self):
+        cat = self._load()
+        required = {"label", "rule_format", "global_config", "project_config", "project_rules"}
+        for pid, p in cat.get("platforms", {}).items():
+            with self.subTest(platform=pid):
+                missing = required - set(p.keys())
+                self.assertEqual(missing, set(), f"{pid} missing fields: {missing}")
+
+    def test_skills_disabled_by_default_exist(self):
+        cat = self._load()
+        actual = {s.name for s in SKILLS}
+        for name in cat.get("skills_disabled_by_default", []):
+            with self.subTest(skill=name):
+                self.assertIn(name, actual, f"skills_disabled_by_default references nonexistent skill: {name}")
+
+    def test_workspace_scope_defaults_exist(self):
+        cat = self._load()
+        actual_rules = {r.name for r in RULES}
+        actual_skills = {s.name for s in SKILLS}
+        all_names = actual_rules | actual_skills
+        for name in cat.get("workspace_scope_defaults", []):
+            with self.subTest(item=name):
+                self.assertIn(name, all_names, f"workspace_scope_defaults references nonexistent item: {name}")
+
+    def test_skill_family_members_exist(self):
+        cat = self._load()
+        actual = {s.name for s in SKILLS}
+        for fname, fdata in cat.get("skill_families", {}).items():
+            for member in fdata.get("members", []):
+                with self.subTest(family=fname, skill=member):
+                    self.assertIn(member, actual, f"Skill family '{fname}' references nonexistent skill: {member}")
+
+    def test_rule_family_members_exist(self):
+        cat = self._load()
+        actual = {r.name for r in RULES}
+        for fname, fdata in cat.get("rule_families", {}).items():
+            for member in fdata.get("members", []):
+                with self.subTest(family=fname, rule=member):
+                    self.assertIn(member, actual, f"Rule family '{fname}' references nonexistent rule: {member}")
+
+    def test_devin_has_no_global_rules(self):
+        """Devin doesn't support global rules — global_rules must be empty."""
+        cat = self._load()
+        devin = cat.get("platforms", {}).get("devin", {})
+        self.assertEqual(devin.get("global_rules", ""), "", "Devin should have empty global_rules")
+
+
+# --------------------------------------------------------------------------- #
 # Test: Linting (ruff)
 # --------------------------------------------------------------------------- #
 

@@ -15,7 +15,6 @@ set -euo pipefail
 #
 # Pass arguments through to install.py:
 #   curl ... | bash -s -- --uninstall
-#   curl ... | bash -s -- --project
 
 REPO="https://github.com/ForkYoraiLevi/marketplace.git"
 BRANCH="main"

@@ -1,0 +1,151 @@
+# catalog.toml — TUI installer configuration
+#
+# Edit this file to control what appears in the installer.
+# Run: uv run install.py
+#
+# ─────────────────────────────────────────────────────────────────────────────
+
+# Items that default to workspace scope (all others default to global).
+# Toggle individual items with the S key in the TUI.
+workspace_scope_defaults = []
+
+# Skills unchecked by default in install mode (e.g. require API keys).
+skills_disabled_by_default = ["web-scraper", "expose-port", "gemini-chat", "google-drive-reader"]
+
+
+# ── Platforms ────────────────────────────────────────────────────────────────
+# Each platform defines where skills, rules, and configs get installed.
+# Paths starting with ~ are expanded at runtime.
+# Leave global_rules or global_skills empty ("") if not supported.
+
+[platforms.devin]
+label = "Devin CLI"
+rule_format = "agents"
+global_config = "~/.config/devin/config.json"
+global_rules  = ""                              # Devin doesn't support global rules
+global_skills = "~/.config/devin/skills"
+project_config = ".devin/config.json"
+project_rules  = "AGENTS.md"
+project_skills = ".devin/skills"
+
+[platforms.claude-code]
+label = "Claude Code"
+rule_format = "agents"
+global_config = "~/.claude/settings.json"
+global_rules  = "~/.claude/CLAUDE.md"
+global_skills = "~/.claude/skills"
+project_config = ".claude/settings.local.json"
+project_rules  = "CLAUDE.md"
+project_skills = ".claude/skills"
+
+[platforms.cursor]
+label = "Cursor"
+rule_format = "cursor"
+global_config = "~/.cursor/mcp.json"
+global_rules  = "~/.cursor/rules"
+global_skills = "~/.cursor/skills"
+project_config = ".cursor/mcp.json"
+project_rules  = ".cursor/rules"
+project_skills = ".cursor/skills"
+
+[platforms.windsurf]
+label = "Windsurf"
+rule_format = "windsurf"
+global_config = "~/.codeium/windsurf/mcp_config.json"
+global_rules  = "~/.windsurf/rules"
+global_skills = "~/.windsurf/skills"
+project_config = ".windsurf/mcp.json"
+project_rules  = ".windsurf/rules"
+project_skills = ".windsurf/skills"
+
+
+# ── MCP Servers ──────────────────────────────────────────────────────────────
+# External tool connections. Each entry appears as a checkbox in the TUI.
+
+[mcp_servers.fetch]
+description = "Fetch web pages and return content"
+config = { command = "uvx", args = ["mcp-server-fetch"] }
+
+[mcp_servers.github]
+description = "GitHub API — issues, PRs, repos, search"
+config = { command = "npx", args = ["-y", "@github/mcp-server"] }
+
+[mcp_servers.playwright]
+description = "Browser automation for web testing"
+config = { command = "npx", args = ["-y", "@playwright/mcp-server"] }
+
+[mcp_servers.filesystem]
+description = "Read/write/search local files"
+config = { command = "npx", args = ["-y", "@modelcontextprotocol/server-filesystem"] }
+
+[mcp_servers.sqlite]
+description = "Query and manage SQLite databases"
+config = { command = "uvx", args = ["mcp-server-sqlite"] }
+
+[mcp_servers.brave-search]
+description = "Web search via Brave Search API"
+config = { command = "npx", args = ["-y", "@anthropic/mcp-server-brave-search"] }
+
+[mcp_servers.memory]
+description = "Persistent knowledge graph memory"
+config = { command = "npx", args = ["-y", "@anthropic/mcp-server-memory"] }
+
+
+# ── Skill Families ───────────────────────────────────────────────────────────
+# Organize skills into collapsible groups in the TUI.
+# Add a skill's directory name to "members" to place it in a family.
+# Skills not listed in any family appear under "Other".
+
+[skill_families."Search & Research"]
+icon = "\U0001F50D"
+description = "Find information across web, code repos, and video"
+members = ["duckduckgo-search", "github-search", "web-scraper", "youtube-search", "youtube-wisdom"]
+
+[skill_families."Communication"]
+icon = "\u2709"
+description = "Send emails, messages, and notifications"
+members = ["send-email", "telegram-notify"]
+
+[skill_families."DevOps & Infrastructure"]
+icon = "\U0001F680"
+description = "Run CI locally, expose ports, manage tunnels"
+members = ["act-runner", "expose-port", "ssh-tunnel"]
+
+[skill_families."Productivity & Meta"]
+icon = "\u2B50"
+description = "Session management, handoffs, and skill development"
+members = ["motivation", "session-history", "structured-handoff", "skill-creator", "sync-rules", "textual-tui-guide"]
+
+[skill_families."AI & External Services"]
+icon = "\U0001F916"
+description = "Connect to AI models and cloud APIs"
+members = ["gemini-chat", "google-drive-reader"]
+
+
+# ── Rule Families ────────────────────────────────────────────────────────────
+# Same as skill families, but for rules.
+
+[rule_families."Quality & Verification"]
+icon = "\u2714"
+description = "Enforce code quality, testing, and review standards"
+members = ["blast-radius", "prior-art", "verification-ladder", "verify-your-work"]
+
+[rule_families."Documentation & Progress"]
+icon = "\U0001F4DD"
+description = "Track work, document decisions, maintain project history"
+members = ["document-lifecycle", "document-progress"]
+
+[rule_families."Workflow & Process"]
+icon = "\u2699"
+description = "Shape how agents approach and execute tasks"
+members = ["continuous-improvement", "improve-the-process", "stay-motivated", "task-formation"]
+
+[rule_families."Environment & Conventions"]
+icon = "\U0001F527"
+description = "Technical environment rules and output conventions"
+members = ["no-ai-credit", "python-uv"]
+
+[rule_families."Notifications"]
+icon = "\U0001F514"
+description = "Alert you when important events happen"
+members = ["telegram-on-complete"]

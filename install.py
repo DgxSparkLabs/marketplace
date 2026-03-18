@@ -8,8 +8,6 @@ Marketplace interactive installer — install and uninstall agent tools.
 Usage:
     uv run install.py                    # interactive mode
     uv run install.py --uninstall        # uninstall mode
-    uv run install.py --global           # install to global config (default)
-    uv run install.py --project          # install to project-level config
 """
 from __future__ import annotations
 
@@ -17,164 +15,74 @@ import argparse
 import colorsys
 import json
 import math
+import os
 import shutil
-import sys
+import tomllib
 from pathlib import Path
 
-# ── Platform Definitions ────────────────────────────────────────────────────
+# ── Catalog Loader ──────────────────────────────────────────────────────────
+# All TUI configuration lives in catalog.toml next to this script.
 
-PLATFORMS = {
-    "devin": {
-        "label": "Devin CLI",
-        "global": {
-            "config": Path.home() / ".config" / "devin" / "config.json",
-            "rules": Path.home() / ".config" / "devin" / "AGENTS.md",
-            "skills": Path.home() / ".config" / "devin" / "skills",
-        },
-        "project": {
-            "config": Path(".devin") / "config.json",
-            "rules": Path("AGENTS.md"),
-            "skills": Path(".devin") / "skills",
-        },
-        "rule_fmt": "agents",
-    },
-    "claude-code": {
-        "label": "Claude Code",
-        "global": {
-            "config": Path.home() / ".claude" / "settings.json",
-            "rules": Path.home() / ".claude" / "CLAUDE.md",
-            "skills": None,
-        },
-        "project": {
-            "config": Path(".claude") / "settings.local.json",
-            "rules": Path("CLAUDE.md"),
-            "skills": None,
-        },
-        "rule_fmt": "agents",
-    },
-    "cursor": {
-        "label": "Cursor",
-        "global": {
-            "config": Path.home() / ".cursor" / "mcp.json",
-            "rules": Path.home() / ".cursor" / "rules",
-            "skills": None,
-        },
-        "project": {
-            "config": Path(".cursor") / "mcp.json",
-            "rules": Path(".cursor") / "rules",
-            "skills": None,
-        },
-        "rule_fmt": "cursor",
-    },
-    "windsurf": {
-        "label": "Windsurf",
-        "global": {
-            "config": Path.home() / ".codeium" / "windsurf" / "mcp_config.json",
-            "rules": Path.home() / ".windsurf" / "rules",
-            "skills": Path.home() / ".windsurf" / "skills",
-        },
-        "project": {
-            "config": Path(".windsurf") / "mcp.json",
-            "rules": Path(".windsurf") / "rules",
-            "skills": Path(".windsurf") / "skills",
-        },
-        "rule_fmt": "windsurf",
-    },
-}
+def _load_catalog() -> dict:
+    """Load catalog.toml from the marketplace root."""
+    path = Path(__file__).parent.resolve() / "catalog.toml"
+    if not path.exists():
+        return {}
+    with open(path, "rb") as f:
+        return tomllib.load(f)
 
-MCP_SERVERS = {
-    "fetch": {
-        "description": "Fetch web pages and return content",
-        "config": {"command": "uvx", "args": ["mcp-server-fetch"]},
-    },
-    "github": {
-        "description": "GitHub API — issues, PRs, repos, search",
-        "config": {"command": "npx", "args": ["-y", "@github/mcp-server"]},
-    },
-    "playwright": {
-        "description": "Browser automation for web testing",
-        "config": {"command": "npx", "args": ["-y", "@playwright/mcp-server"]},
-    },
-    "filesystem": {
-        "description": "Read/write/search local files",
-        "config": {"command": "npx", "args": ["-y", "@modelcontextprotocol/server-filesystem", str(Path.home())]},
-    },
-    "sqlite": {
-        "description": "Query and manage SQLite databases",
-        "config": {"command": "uvx", "args": ["mcp-server-sqlite"]},
-    },
-    "brave-search": {
-        "description": "Web search via Brave Search API",
-        "config": {"command": "npx", "args": ["-y", "@anthropic/mcp-server-brave-search"]},
-    },
-    "memory": {
-        "description": "Persistent knowledge graph memory",
-        "config": {"command": "npx", "args": ["-y", "@anthropic/mcp-server-memory"]},
-    },
-}
 
-# ── Category Families ───────────────────────────────────────────────────────
-# To add a new skill or rule to the installer, just add its name to the
-# appropriate family below.  Items not listed go into "Other".
+def _build_platforms(catalog: dict) -> dict:
+    """Convert catalog TOML platforms into the runtime PLATFORMS dict."""
+    platforms = {}
+    for pid, p in catalog.get("platforms", {}).items():
+        platforms[pid] = {
+            "label": p["label"],
+            "global": {
+                "config": Path(p["global_config"]).expanduser(),
+                "rules": Path(p["global_rules"]).expanduser() if p.get("global_rules") else None,
+                "skills": Path(p["global_skills"]).expanduser() if p.get("global_skills") else None,
+            },
+            "project": {
+                "config": Path(p["project_config"]),
+                "rules": Path(p["project_rules"]),
+                "skills": Path(p["project_skills"]) if p.get("project_skills") else None,
+            },
+            "rule_fmt": p["rule_format"],
+        }
+    return platforms
 
-RULE_FAMILIES = {
-    "Quality & Verification": {
-        "icon": "\u2714",
-        "description": "Enforce code quality, testing, and review standards",
-        "members": ["blast-radius", "prior-art", "verification-ladder", "verify-your-work"],
-    },
-    "Documentation & Progress": {
-        "icon": "\U0001f4dd",
-        "description": "Track work, document decisions, maintain project history",
-        "members": ["document-lifecycle", "document-progress"],
-    },
-    "Workflow & Process": {
-        "icon": "\u2699",
-        "description": "Shape how agents approach and execute tasks",
-        "members": ["continuous-improvement", "improve-the-process", "stay-motivated", "task-formation"],
-    },
-    "Environment & Conventions": {
-        "icon": "\U0001f527",
-        "description": "Technical environment rules and output conventions",
-        "members": ["no-ai-credit", "python-uv"],
-    },
-    "Notifications": {
-        "icon": "\U0001f514",
-        "description": "Alert you when important events happen",
-        "members": ["telegram-on-complete"],
-    },
-}
 
-SKILL_FAMILIES = {
-    "Search & Research": {
-        "icon": "\U0001f50d",
-        "description": "Find information across web, code repos, and video",
-        "members": ["duckduckgo-search", "github-search", "web-scraper", "youtube-search", "youtube-wisdom"],
-    },
-    "Communication": {
-        "icon": "\u2709",
-        "description": "Send emails, messages, and notifications",
-        "members": ["send-email", "telegram-notify"],
-    },
-    "DevOps & Infrastructure": {
-        "icon": "\U0001f680",
-        "description": "Run CI locally, expose ports, manage tunnels",
-        "members": ["act-runner", "expose-port", "ssh-tunnel"],
-    },
-    "Productivity & Meta": {
-        "icon": "\u2b50",
-        "description": "Session management, handoffs, and skill development",
-        "members": ["motivation", "session-history", "structured-handoff", "skill-creator", "sync-rules", "textual-tui-guide"],
-    },
-    "AI & External Services": {
-        "icon": "\U0001f916",
-        "description": "Connect to AI models and cloud APIs",
-        "members": ["gemini-chat", "google-drive-reader"],
-    },
-}
+def _build_mcp_servers(catalog: dict) -> dict:
+    """Convert catalog TOML mcp_servers into the runtime dict."""
+    servers = {}
+    for name, s in catalog.get("mcp_servers", {}).items():
+        servers[name] = {
+            "description": s.get("description", ""),
+            "config": s.get("config", {}),
+        }
+    return servers
 
-# Skills unchecked by default in install mode (require API keys or complex setup)
-SKILLS_DISABLED_BY_DEFAULT = {"web-scraper", "expose-port", "gemini-chat", "google-drive-reader"}
+
+def _build_families(catalog: dict, key: str) -> dict:
+    """Convert catalog TOML families (skill_families / rule_families)."""
+    families = {}
+    for fname, f in catalog.get(key, {}).items():
+        families[fname] = {
+            "icon": f.get("icon", "\u2022"),
+            "description": f.get("description", ""),
+            "members": f.get("members", []),
+        }
+    return families
+
+
+_CATALOG = _load_catalog()
+PLATFORMS = _build_platforms(_CATALOG)
+MCP_SERVERS = _build_mcp_servers(_CATALOG)
+SKILL_FAMILIES = _build_families(_CATALOG, "skill_families")
+RULE_FAMILIES = _build_families(_CATALOG, "rule_families")
+SKILLS_DISABLED_BY_DEFAULT: set[str] = set(_CATALOG.get("skills_disabled_by_default", []))
+WORKSPACE_SCOPE_DEFAULTS: set[str] = set(_CATALOG.get("workspace_scope_defaults", []))
 
 
 # ── Detection Helpers ───────────────────────────────────────────────────────
@@ -200,21 +108,19 @@ def read_mcp_servers(config_path: Path) -> dict:
 def is_rule_installed(pid: str, rule_name: str, paths: dict) -> bool:
     fmt = PLATFORMS[pid]["rule_fmt"]
     target = paths["rules"]
+    if not target:
+        return False
     if fmt == "agents":
-        # Rules appended to a single file
         if target.exists():
             content = target.read_text()
-            # Read actual heading from rule.md instead of guessing from dir name
             rule_path = find_marketplace() / "rules" / rule_name / "rule.md"
             if rule_path.exists():
                 for line in rule_path.read_text().splitlines():
                     if line.startswith("## "):
                         return line[3:].strip() in content
-            # Fallback: check if dir name appears in any ## heading
             return f"## {rule_name}" in content.lower().replace(" ", "-")
         return False
     else:
-        # Rules as separate .md files in a directory
         return target.is_dir() and (target / f"{rule_name}.md").exists()
 
 
@@ -233,7 +139,7 @@ def find_marketplace() -> Path:
 
 
 def scan_rules(marketplace: Path) -> list[dict]:
-    rules = []
+    rules: list[dict] = []
     rules_dir = marketplace / "rules"
     if not rules_dir.is_dir():
         return rules
@@ -257,7 +163,7 @@ def scan_rules(marketplace: Path) -> list[dict]:
 
 
 def scan_skills(marketplace: Path) -> list[dict]:
-    skills = []
+    skills: list[dict] = []
     skills_dir = marketplace / "skills"
     if not skills_dir.is_dir():
         return skills
@@ -309,6 +215,8 @@ def uninstall_mcp(name: str, config_path: Path) -> str:
 def install_rule(rule: dict, pid: str, paths: dict) -> str:
     fmt = PLATFORMS[pid]["rule_fmt"]
     target = paths["rules"]
+    if not target:
+        return "not supported"
 
     if fmt == "agents":
         content = (rule["path"] / "rule.md").read_text()
@@ -321,7 +229,6 @@ def install_rule(rule: dict, pid: str, paths: dict) -> str:
             return "already installed"
         target.parent.mkdir(parents=True, exist_ok=True)
         with open(target, "a") as f:
-            # Only add separator newline if file already has content
             if target.exists() and target.stat().st_size > 0:
                 f.write("\n")
             f.write(content)
@@ -332,7 +239,6 @@ def install_rule(rule: dict, pid: str, paths: dict) -> str:
             return f"no {fmt} format"
         target.mkdir(parents=True, exist_ok=True)
         dest = target / f"{rule['name']}.md"
-        # Skip if already identical
         if dest.exists() and dest.read_text() == src.read_text():
             return "already installed"
         shutil.copy2(src, dest)
@@ -342,13 +248,14 @@ def install_rule(rule: dict, pid: str, paths: dict) -> str:
 def uninstall_rule(rule: dict, pid: str, paths: dict) -> str:
     fmt = PLATFORMS[pid]["rule_fmt"]
     target = paths["rules"]
+    if not target:
+        return "not supported"
 
     if fmt == "agents":
         if not target.exists():
             return "not found"
         content = target.read_text()
         rule_content = (rule["path"] / "rule.md").read_text().strip()
-        # Try to find and remove the rule block
         title = ""
         for line in rule_content.splitlines():
             if line.startswith("## "):
@@ -356,14 +263,12 @@ def uninstall_rule(rule: dict, pid: str, paths: dict) -> str:
                 break
         if not title or title not in content:
             return "not installed"
-        # Remove from the next occurrence of the heading to the next ## heading or EOF
         lines = content.splitlines(keepends=True)
-        new_lines = []
+        new_lines: list[str] = []
         skipping = False
         for line in lines:
             if line.strip() == title:
                 skipping = True
-                # Also remove a leading blank line
                 if new_lines and new_lines[-1].strip() == "":
                     new_lines.pop()
                 continue
@@ -384,6 +289,7 @@ def uninstall_rule(rule: dict, pid: str, paths: dict) -> str:
 def install_skill(skill: dict, skills_dir: Path) -> str:
     if not skills_dir:
         return "not supported"
+    skills_dir.mkdir(parents=True, exist_ok=True)
     dest = skills_dir / skill["name"]
     if dest.exists():
         shutil.rmtree(dest)
@@ -401,6 +307,30 @@ def uninstall_skill(skill_name: str, skills_dir: Path) -> str:
     return "removed"
 
 
+# ── Path Resolution ─────────────────────────────────────────────────────────
+
+def resolve_paths(pid: str, scope: str, workspace_dir: str | None = None) -> dict:
+    """Get install paths for a platform, resolving workspace paths."""
+    info = PLATFORMS[pid]
+    if scope == "global":
+        return dict(info["global"])
+    if workspace_dir:
+        base = Path(workspace_dir).expanduser().resolve()
+    else:
+        base = Path.cwd()
+    project = {}
+    for key, val in info["project"].items():
+        project[key] = base / val if val else None
+    return project
+
+
+def _resolve_user_path(path_str: str) -> Path:
+    """Resolve a user-typed path, handling ~, ., .., and symlinks."""
+    if not path_str:
+        return Path.cwd()
+    return Path(path_str).expanduser().resolve()
+
+
 # ── UI Helpers ──────────────────────────────────────────────────────────────
 
 def status_badge(installed: bool) -> str:
@@ -413,27 +343,6 @@ def action_badge(result: str) -> str:
     if result in ("already installed", "not installed", "not found"):
         return f"[dim]{result}[/dim]"
     return f"[yellow]{result}[/yellow]"
-
-
-def show_platform_table(platforms: dict, scope: str):
-    from rich.console import Console
-    from rich.table import Table
-    from rich import box
-    console = Console()
-    table = Table(box=box.ROUNDED, title="Detected Platforms", title_style="bold cyan",
-                  border_style="cyan", padding=(0, 1))
-    table.add_column("Platform", style="bold")
-    table.add_column("Status")
-    table.add_column("Config")
-    for pid, info in PLATFORMS.items():
-        if pid in platforms:
-            cfg = info[scope]["config"]
-            exists = "config found" if cfg.exists() else "dir exists"
-            table.add_row(info["label"], f"[green]{exists}[/green]", str(cfg))
-        else:
-            table.add_row(info["label"], "[dim]not detected[/dim]", "")
-    console.print(table)
-    console.print()
 
 
 # ── TUI ─────────────────────────────────────────────────────────────────────
@@ -542,6 +451,10 @@ Collapsible.section-collapsible > CollapsibleTitle {
     color: dodgerblue;
 }
 
+#section-scope > CollapsibleTitle {
+    color: green;
+}
+
 #section-mcps > CollapsibleTitle {
     color: red;
 }
@@ -589,8 +502,75 @@ Footer > .footer--description {
     color: $text-muted;
 }
 
+/* Workspace entries */
+#workspace-paths-label {
+    margin: 0 0 0 2;
+    color: $text-muted;
+}
+
+#workspace-entries {
+    height: auto;
+    margin: 0;
+}
+
+.ws-row {
+    height: auto;
+    margin: 0 0 0 2;
+    width: 100%;
+}
+
+.ws-path-input {
+    width: 1fr;
+}
+
+.path-input-box {
+    height: auto;
+    width: 1fr;
+}
+
+.path-input-box Input {
+    width: 100%;
+}
+
+.path-dropdown {
+    height: auto;
+    max-height: 10;
+    display: none;
+    border: tall $primary 40%;
+    background: $surface;
+    padding: 0;
+    margin: 0;
+    scrollbar-size: 1 1;
+}
+
+.path-dropdown.visible {
+    display: block;
+}
+
+.path-dropdown:focus {
+    border: tall $primary;
+}
+
+.ws-browse-btn {
+    width: auto;
+    min-width: 10;
+    margin: 0 0 0 1;
+}
+
+.ws-remove-btn {
+    width: auto;
+    min-width: 5;
+    margin: 0 0 0 1;
+    color: $error;
+}
+
+#ws-add-btn {
+    margin: 1 0 0 2;
+    width: auto;
+}
+
 /* Modal screens */
-ConfirmScreen, PreviewScreen, ResultsScreen {
+ConfirmScreen, PreviewScreen, ResultsScreen, PathPickerScreen {
     align: center middle;
 }
 
@@ -616,6 +596,19 @@ ConfirmScreen, PreviewScreen, ResultsScreen {
     border: heavy $success;
     background: $surface;
     padding: 1 2;
+}
+
+#path-picker-dialog {
+    width: 80%;
+    height: 70%;
+    border: heavy $primary;
+    background: $surface;
+    padding: 1 2;
+}
+
+#path-tree {
+    height: 1fr;
+    margin: 1 0;
 }
 
 #modal-title {
@@ -673,7 +666,15 @@ ConfirmScreen, PreviewScreen, ResultsScreen {
     color: $text;
     text-style: bold;
 }
+
+.empty-notice {
+    margin: 1 0 0 2;
+    color: $text-muted;
+    text-style: italic;
+}
 """
+
+# ── 3D Wireframe Data ───────────────────────────────────────────────────────
 
 _CUBE_V = [
     (-1, -1, -1), (-1, -1, 1), (-1, 1, -1), (-1, 1, 1),
@@ -697,15 +698,15 @@ _BRAILLE = [
 ]
 _GEO_TEXT = [
     "",
-    "  [bold bright_cyan]╔═╗ ╦╔═ ╦ ╦   ╦   ╔═╗[/]",
-    "  [bold cyan]╚═╗ ╠╩╗ ║ ║   ║   ╚═╗[/]",
-    "  [bold deep_sky_blue1]╚═╝ ╩ ╩ ╩ ╩═╝ ╩═╝ ╚═╝[/]",
+    "  [bold bright_cyan]\u2554\u2550\u2557 \u2566\u2550\u2557 \u2566 \u2566   \u2566   \u2554\u2550\u2557[/]",
+    "  [bold cyan]\u255a\u2550\u2557 \u2560\u2569\u2557 \u2551 \u2551   \u2551   \u255a\u2550\u2557[/]",
+    "  [bold deep_sky_blue1]\u255a\u2550\u255d \u2569 \u2569 \u2569 \u2569\u2550\u255d \u2569\u2550\u255d \u255a\u2550\u255d[/]",
     "",
-    "  [bold medium_purple1]╔╦╗ ╔═╗ ╦═╗ ╦╔═ ╔═╗ ╔╦╗[/]",
-    "  [bold medium_purple1]║║║ ╠═╣ ╠╦╝ ╠╩╗ ║╣   ║[/]",
-    "  [bold blue]╩ ╩ ╩ ╩ ╩╚═ ╩ ╩ ╚═╝  ╩[/]",
-    "  [dim]──────────────────────────[/]",
-    "  [bold deep_sky_blue1]✦[/] [bold white]Agent Tools Installer[/] [bold deep_sky_blue1]✦[/]",
+    "  [bold medium_purple1]\u2554\u2566\u2557 \u2554\u2550\u2557 \u2566\u2550\u2557 \u2566\u2550\u2557 \u2554\u2550\u2557 \u2554\u2566\u2557[/]",
+    "  [bold medium_purple1]\u2551\u2551\u2551 \u2560\u2550\u2563 \u2560\u2566\u255d \u2560\u2569\u2557 \u2551\u2563   \u2551[/]",
+    "  [bold blue]\u2569 \u2569 \u2569 \u2569 \u2569\u255a\u2550 \u2569 \u2569 \u255a\u2550\u255d  \u2569[/]",
+    "  [dim]\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500[/]",
+    "  [bold deep_sky_blue1]\u2726[/] [bold white]Agent Tools Installer[/] [bold deep_sky_blue1]\u2726[/]",
 ]
 
 
@@ -748,10 +749,54 @@ def _read_item_content(item: dict, item_type: str) -> str:
         rule_md = path / "rule.md"
         if rule_md.exists():
             return rule_md.read_text()
-    readme = path / "README.md"
-    if readme.exists():
-        return readme.read_text()
+        readme = path / "README.md"
+        if readme.exists():
+            return readme.read_text()
     return "No content available."
+
+
+# ── Path Autocomplete ───────────────────────────────────────────────────────
+
+def _get_path_completions(partial: str) -> list[str]:
+    """Return directory completions for a partial path string."""
+    if not partial:
+        return []
+    uses_tilde = partial.startswith("~")
+    home_str = str(Path.home())
+    try:
+        expanded = str(Path(partial).expanduser()) if uses_tilde else partial
+    except RuntimeError:
+        return []
+    p = Path(expanded)
+    try:
+        if p.is_dir():
+            parent = p.resolve()
+            prefix = ""
+        else:
+            parent = p.parent.resolve()
+            prefix = p.name
+        if not parent.is_dir():
+            return []
+        entries: list[str] = []
+        if not prefix:
+            current = str(parent) + os.sep
+            if uses_tilde and current.startswith(home_str):
+                current = "~" + current[len(home_str):]
+            entries.append(current)
+        for child in sorted(parent.iterdir()):
+            if child.name.startswith("."):
+                continue
+            if not child.is_dir():
+                continue
+            if prefix and not child.name.startswith(prefix):
+                continue
+            resolved = str(child.resolve()) + os.sep
+            if uses_tilde and resolved.startswith(home_str):
+                resolved = "~" + resolved[len(home_str):]
+            entries.append(resolved)
+        return entries[:20]
+    except PermissionError:
+        return []
 
 
 # ── TUI App ─────────────────────────────────────────────────────────────────
@@ -763,16 +808,202 @@ def main():
     from textual.containers import Horizontal, Vertical, VerticalScroll
     from textual.screen import ModalScreen
     from textual.widgets import (
-        Button, Collapsible, Footer, Header,
-        Markdown, SelectionList, Static,
+        Button, Collapsible, DirectoryTree, Footer, Header, Input,
+        Markdown, OptionList, SelectionList, Static,
     )
     from textual.widgets.selection_list import Selection
     from rich.text import Text
 
+    # ── Characters forbidden in a single path ──
+    _PATH_REJECT = set(",;|\t\n\r")
+
+    # ── Click-to-focus SelectionList ──
+    class MarketplaceList(SelectionList):
+        """First click on a new item only highlights it; second click or
+        Enter/Space toggles selection."""
+
+        _mouse_down_idx: int | None = None
+        _is_mouse_toggle: bool = False
+
+        def on_mouse_down(self, event) -> None:
+            self._mouse_down_idx = self.highlighted
+            self._is_mouse_toggle = True
+
+        def _toggle_highlighted_selection(self) -> None:
+            if self._is_mouse_toggle:
+                self._is_mouse_toggle = False
+                if self._mouse_down_idx != self.highlighted:
+                    return
+            super()._toggle_highlighted_selection()
+
+    # ── Path input with dropdown autocomplete ──
+    class PathInput(Vertical):
+        """Input + dropdown OptionList for filesystem path completions.
+
+        Design: focus never leaves the Input.  Arrow keys drive the
+        dropdown highlight programmatically so there are no focus-
+        transfer issues.  The dropdown is purely visual.
+        """
+
+        DEFAULT_CSS = """
+        PathInput { height: auto; }
+        """
+
+        def __init__(self, entry_id: str, value: str = "", **kwargs):
+            super().__init__(classes="path-input-box", **kwargs)
+            self._entry_id = entry_id
+            self._initial = value
+            self._accepting = False
+
+        def compose(self) -> ComposeResult:
+            yield Input(
+                value=self._initial,
+                placeholder="Enter workspace path, e.g. ~/my-project",
+                id=f"ws-input-{self._entry_id}",
+                classes="ws-path-input",
+            )
+            ol = OptionList(id=f"ws-dd-{self._entry_id}", classes="path-dropdown")
+            ol.can_focus = False
+            yield ol
+
+        @property
+        def input(self) -> Input:
+            return self.query_one(f"#ws-input-{self._entry_id}", Input)
+
+        @property
+        def dropdown(self) -> OptionList:
+            return self.query_one(f"#ws-dd-{self._entry_id}", OptionList)
+
+        @property
+        def value(self) -> str:
+            return self.input.value
+
+        @value.setter
+        def value(self, v: str) -> None:
+            self._accepting = True
+            self.input.value = v
+            self.input.action_end()
+            self._accepting = False
+
+        def _refresh_dropdown(self, text: str) -> None:
+            dd = self.dropdown
+            dd.clear_options()
+            completions = _get_path_completions(text)
+            if not completions:
+                dd.remove_class("visible")
+                return
+            for c in completions:
+                dd.add_option(c)
+            dd.highlighted = 0
+            dd.add_class("visible")
+
+        def _hide_dropdown(self) -> None:
+            self.dropdown.remove_class("visible")
+
+        @property
+        def _dd_visible(self) -> bool:
+            return self.dropdown.has_class("visible")
+
+        def _accept_highlighted(self) -> None:
+            dd = self.dropdown
+            idx = dd.highlighted
+            if idx is None:
+                self._hide_dropdown()
+                return
+            try:
+                opt = dd.get_option_at_index(idx)
+            except Exception:
+                self._hide_dropdown()
+                return
+            path = str(opt.prompt)
+            self._accepting = True
+            self.input.value = path
+            self.input.action_end()
+            self._accepting = False
+            self._refresh_dropdown(path)
+
+        def _move_highlight(self, delta: int) -> None:
+            dd = self.dropdown
+            if not self._dd_visible:
+                return
+            idx = dd.highlighted
+            if idx is None:
+                dd.highlighted = 0
+                return
+            new = idx + delta
+            if new < 0 or new >= dd.option_count:
+                return
+            dd.highlighted = new
+            dd.scroll_to_highlight()
+
+        @on(Input.Changed)
+        def _on_input_changed(self, event: Input.Changed) -> None:
+            if self._accepting:
+                return
+            cleaned = "".join(c for c in event.value if c not in _PATH_REJECT)
+            if cleaned != event.value:
+                self._accepting = True
+                self.input.value = cleaned
+                self.input.action_end()
+                self._accepting = False
+            self._refresh_dropdown(cleaned)
+
+        @on(OptionList.OptionSelected)
+        def _on_dd_selected(self, event) -> None:
+            self._accept_highlighted()
+            self.input.focus()
+
+        @on(Input.Submitted)
+        def _on_input_submitted(self, event) -> None:
+            if self._dd_visible:
+                self._accept_highlighted()
+                event.prevent_default()
+                event.stop()
+
+        def on_key(self, event) -> None:
+            if not self._dd_visible:
+                if event.key == "down":
+                    self._refresh_dropdown(self.input.value)
+                    event.prevent_default()
+                    event.stop()
+                return
+
+            if event.key == "down":
+                self._move_highlight(1)
+                event.prevent_default()
+                event.stop()
+            elif event.key == "up":
+                dd = self.dropdown
+                if dd.highlighted is not None and dd.highlighted == 0:
+                    self._hide_dropdown()
+                else:
+                    self._move_highlight(-1)
+                event.prevent_default()
+                event.stop()
+            elif event.key == "escape":
+                self._hide_dropdown()
+                event.prevent_default()
+                event.stop()
+            elif event.key == "tab":
+                self._accept_highlighted()
+                event.prevent_default()
+                event.stop()
+            elif event.key == "enter":
+                self._accept_highlighted()
+                event.prevent_default()
+                event.stop()
+
+    # ── Directory-only tree for path picker ──
+    class DirOnlyTree(DirectoryTree):
+        """DirectoryTree that only shows directories, not files."""
+
+        def filter_paths(self, paths):
+            return [p for p in paths if p.is_dir()]
+
     # ── Animated 3D wireframe banner ──
     class AnimatedBanner(Static):
         """Spinning wireframe cube + octahedron rendered in braille."""
-        _GW, _GH = 50, 40  # pixel grid → 25 braille chars × 10 lines
+        _GW, _GH = 50, 40
 
         def on_mount(self):
             self._a = 0.0
@@ -848,7 +1079,6 @@ def main():
             self.update("\n".join(parts), layout=False)
 
     # Free up Space on CollapsibleTitle for section-level selection toggle.
-    # Enter still collapses/expands.
     try:
         from textual.widgets._collapsible import CollapsibleTitle
         CollapsibleTitle.BINDINGS = [Binding("enter", "toggle", "Toggle")]
@@ -856,30 +1086,62 @@ def main():
         pass
 
     parser = argparse.ArgumentParser(description="Marketplace interactive installer")
-    parser.add_argument("--global", dest="scope", action="store_const", const="global", default="global")
-    parser.add_argument("--project", dest="scope", action="store_const", const="project")
     parser.add_argument("--uninstall", action="store_true", help="Uninstall mode")
     args = parser.parse_args()
-    scope = args.scope
     install_mode = not args.uninstall
     mode_verb = "Install" if install_mode else "Uninstall"
 
     platforms = detect_platforms()
-    if not platforms:
-        from rich.console import Console
-        Console().print("[red]No agent platforms detected.[/red]")
-        sys.exit(1)
 
     marketplace = find_marketplace()
     all_rules = scan_rules(marketplace)
     all_skills = scan_skills(marketplace)
 
-    primary_pid = list(platforms.keys())[0]
-    primary_paths = PLATFORMS[primary_pid][scope]
-    primary_mcps = read_mcp_servers(primary_paths["config"])
+    primary_pid = list(platforms.keys())[0] if platforms else list(PLATFORMS.keys())[0]
+    primary_paths = PLATFORMS[primary_pid]["global"]
+    primary_mcps = read_mcp_servers(primary_paths["config"]) if platforms else {}
 
     rule_families = _categorize_items(all_rules, RULE_FAMILIES)
     skill_families = _categorize_items(all_skills, SKILL_FAMILIES)
+
+    # ── Path Picker Modal ──
+    class PathPickerScreen(ModalScreen[str | None]):
+        BINDINGS = [Binding("escape", "cancel", "Cancel")]
+
+        def __init__(self, start_path: str = ""):
+            super().__init__()
+            self._start = start_path or str(Path.home())
+
+        def compose(self) -> ComposeResult:
+            with Vertical(id="path-picker-dialog"):
+                yield Static(
+                    "[bold dodger_blue2]\u2500\u2500 Select Workspace Directory \u2500\u2500[/]",
+                    id="modal-title",
+                )
+                yield DirOnlyTree(self._start, id="path-tree")
+                with Horizontal(id="modal-actions"):
+                    yield Button("Select", variant="success",
+                                 classes="modal-btn btn-install", id="path-select")
+                    yield Button("Cancel", variant="default",
+                                 classes="modal-btn btn-cancel", id="path-cancel")
+
+        @on(Button.Pressed, "#path-select")
+        def _select(self, _event) -> None:
+            tree = self.query_one("#path-tree", DirOnlyTree)
+            node = tree.cursor_node
+            if node and node.data:
+                p = node.data if isinstance(node.data, Path) else getattr(node.data, "path", None)
+                if p and Path(p).is_dir():
+                    self.dismiss(str(Path(p).resolve()))
+                    return
+            self.notify("Select a directory first", severity="warning")
+
+        @on(Button.Pressed, "#path-cancel")
+        def _cancel(self, _event=None) -> None:
+            self.dismiss(None)
+
+        def action_cancel(self) -> None:
+            self.dismiss(None)
 
     # ── Preview Modal ──
     class PreviewScreen(ModalScreen):
@@ -901,7 +1163,8 @@ def main():
                     id="modal-body",
                 )
                 with Horizontal(id="modal-actions"):
-                    yield Button("Close [Esc]", variant="default", classes="modal-btn btn-close", id="preview-close")
+                    yield Button("Close [Esc]", variant="default",
+                                 classes="modal-btn btn-close", id="preview-close")
 
         @on(Button.Pressed, "#preview-close")
         def close(self, _event) -> None:
@@ -918,11 +1181,16 @@ def main():
 
         def compose(self) -> ComposeResult:
             with Vertical(id="confirm-dialog"):
-                yield Static(f"[bold dodger_blue2]\u2500\u2500 Confirm {self._mode_label} \u2500\u2500[/]", id="modal-title")
+                yield Static(
+                    f"[bold dodger_blue2]\u2500\u2500 Confirm {self._mode_label} \u2500\u2500[/]",
+                    id="modal-title",
+                )
                 yield Static(self._summary, id="modal-body")
                 with Horizontal(id="modal-actions"):
-                    yield Button(f"{self._mode_label}", variant="success", classes="modal-btn btn-install", id="confirm-yes")
-                    yield Button("Cancel", variant="default", classes="modal-btn btn-cancel", id="confirm-no")
+                    yield Button(f"{self._mode_label}", variant="success",
+                                 classes="modal-btn btn-install", id="confirm-yes")
+                    yield Button("Cancel", variant="default",
+                                 classes="modal-btn btn-cancel", id="confirm-no")
 
         @on(Button.Pressed, "#confirm-yes")
         def confirm(self, _event) -> None:
@@ -937,7 +1205,10 @@ def main():
 
     # ── Results Modal ──
     class ResultsScreen(ModalScreen):
-        BINDINGS = [Binding("escape", "dismiss_screen", "Done"), Binding("enter", "dismiss_screen", "Done")]
+        BINDINGS = [
+            Binding("escape", "dismiss_screen", "Done"),
+            Binding("enter", "dismiss_screen", "Done"),
+        ]
 
         def __init__(self, results_text: str):
             super().__init__()
@@ -948,7 +1219,8 @@ def main():
                 yield Static("[bold green]\u2500\u2500 Results \u2500\u2500[/]", id="modal-title")
                 yield VerticalScroll(Static(self._results), id="modal-body")
                 with Horizontal(id="modal-actions"):
-                    yield Button("Done [Enter]", variant="success", classes="modal-btn btn-done", id="results-done")
+                    yield Button("Done [Enter]", variant="success",
+                                 classes="modal-btn btn-done", id="results-done")
 
         @on(Button.Pressed, "#results-done")
         def done(self, _event) -> None:
@@ -967,15 +1239,17 @@ def main():
             Binding("i", "do_install", f"{mode_verb}"),
             Binding("a", "select_all", "All"),
             Binding("n", "select_none", "None"),
+            Binding("s", "toggle_scope", "Scope"),
             Binding("space", "toggle_section", "Toggle", show=False),
         ]
 
         def __init__(self):
             super().__init__()
             self._item_metadata: dict[str, dict] = {}
+            self._item_scopes: dict[str, str] = {}
+            self._ws_counter = 0
 
         def action_screenshot(self, filename=None, path=None):
-            """Ensure download dir exists before taking a screenshot."""
             dl = Path.home() / "Downloads"
             dl.mkdir(parents=True, exist_ok=True)
             super().action_screenshot(filename, path)
@@ -994,62 +1268,119 @@ def main():
                         "[dim]Navigate to any item and press "
                         "[bold]P[/bold] to show its full content.\n\n"
                         "Use [bold]Space[/bold] to toggle selections.\n"
-                        "Use [bold]Space[/bold] on a section header to\n"
-                        "toggle all items in that group.\n"
+                        "Use [bold]S[/bold] to toggle scope (global/workspace).\n"
                         "Use [bold]Tab[/bold] to move between sections.\n"
                         "Use [bold]Enter[/bold] to collapse/expand.\n"
                         "Use [bold]I[/bold] to install selected items.[/dim]",
                         id="preview-body",
                     )
             yield Static(
-                f"[bold]{mode_verb} mode \u2502 {scope} scope \u2502 "
-                f"0 items selected[/]",
+                f"[bold]{mode_verb} mode \u2502 "
+                f"0 items selected \u2502 0 workspace-scoped[/]",
                 id="status-bar",
             )
             yield Footer()
 
         def on_mount(self) -> None:
-            """Focus the first SelectionList so arrow keys work immediately."""
+            self._mount_workspace_row()
             try:
                 first_sl = self.query_one("#sl-platforms", SelectionList)
                 first_sl.focus()
             except Exception:
                 pass
 
+        def _mount_workspace_row(self, path: str = "") -> None:
+            self._ws_counter += 1
+            entry_id = str(self._ws_counter)
+            try:
+                container = self.query_one("#workspace-entries", Vertical)
+            except Exception:
+                return
+            row = Horizontal(
+                PathInput(entry_id, value=path),
+                Button("Browse", id=f"ws-browse-{entry_id}", classes="ws-browse-btn"),
+                Button("\u2715", id=f"ws-remove-{entry_id}", classes="ws-remove-btn"),
+                id=f"ws-row-{entry_id}",
+                classes="ws-row",
+            )
+            container.mount(row)
+
+        def _get_workspace_paths(self) -> list[str]:
+            paths = []
+            try:
+                for inp in self.query(".ws-path-input"):
+                    if isinstance(inp, Input) and inp.value.strip():
+                        resolved = str(_resolve_user_path(inp.value.strip()))
+                        if resolved not in paths:
+                            paths.append(resolved)
+            except Exception:
+                pass
+            return paths
+
         def _build_left_panel(self):
-            """Generator helper that yields all widgets for the left panel."""
             # ── Platforms ──
             plat_selections = []
-            for pid, info in platforms.items():
-                cfg = info[scope]["config"]
-                detected = cfg.exists()
-                indicator = "[green]\u25cf[/] " if detected else "[dim]\u25cb[/] "
-                status = "[green]config found[/]" if detected else "[dim]dir exists[/]"
-                label = Text.from_markup(
-                    f"{indicator}[bold]{info['label']}[/]  {status}"
-                )
-                plat_selections.append(
-                    Selection(label, pid, initial_state=True)
-                )
-                self._item_metadata[pid] = {
-                    "type": "platform", "name": info["label"],
-                    "description": f"Config: {cfg}\nDetected: {'yes' if detected else 'no'}",
-                }
+            if platforms:
+                for pid, info in platforms.items():
+                    cfg = info["global"]["config"]
+                    detected = cfg.exists()
+                    indicator = "[green]\u25cf[/] " if detected else "[dim]\u25cb[/] "
+                    status = "[green]config found[/]" if detected else "[dim]dir exists[/]"
+                    label = Text.from_markup(
+                        f"{indicator}[bold]{info['label']}[/]  {status}"
+                    )
+                    plat_selections.append(
+                        Selection(label, pid, initial_state=True)
+                    )
+                    self._item_metadata[pid] = {
+                        "type": "platform", "name": info["label"],
+                        "description": f"Config: {cfg}\nDetected: {'yes' if detected else 'no'}",
+                    }
+            else:
+                for pid, info in PLATFORMS.items():
+                    cfg = info["global"]["config"]
+                    indicator = "[dim]\u25cb[/] "
+                    label = Text.from_markup(
+                        f"{indicator}[bold]{info['label']}[/]  [dim]not detected[/]"
+                    )
+                    plat_selections.append(
+                        Selection(label, pid, initial_state=True)
+                    )
+                    self._item_metadata[pid] = {
+                        "type": "platform", "name": info["label"],
+                        "description": f"Config: {cfg}\nDetected: no",
+                    }
+
             with Collapsible(
                 title="\u2588\u2588 PLATFORMS",
                 collapsed=False,
                 id="section-platforms",
                 classes="section-collapsible",
             ):
-                yield SelectionList(*plat_selections, id="sl-platforms")
+                yield MarketplaceList(*plat_selections, id="sl-platforms")
+
+            # ── Workspace Paths ──
+            with Collapsible(
+                title="\u2588\u2588 WORKSPACE PATHS  \u2014 For [W] scoped items",
+                collapsed=False,
+                id="section-scope",
+                classes="section-collapsible",
+            ):
+                yield Static(
+                    "[dim]Items marked [W] install here. Toggle scope with S key. Tab accepts suggestion.[/]",
+                    id="workspace-paths-label",
+                )
+                yield Vertical(id="workspace-entries")
+                yield Button("+ Add Workspace Path", id="ws-add-btn", variant="default")
 
             # ── MCP Servers ──
             mcp_selections = []
             for name, srv in MCP_SERVERS.items():
                 is_inst = name in primary_mcps
                 indicator = "[green]\u25cf[/] " if is_inst else "[dim]\u25cb[/] "
+                scope_tag = "[W]" if name in WORKSPACE_SCOPE_DEFAULTS else "[G]"
                 label = Text.from_markup(
-                    f"{indicator}[bold]{name}[/]  [dim]{srv['description']}[/]"
+                    f"{indicator}[dim]{scope_tag}[/] [bold]{name}[/]  [dim]{srv['description']}[/]"
                 )
                 default_checked = (not is_inst) if install_mode else is_inst
                 mcp_selections.append(
@@ -1061,21 +1392,34 @@ def main():
                     "installed": is_inst,
                     "config": json.dumps(srv["config"], indent=2),
                 }
+                self._item_scopes[f"mcp:{name}"] = "workspace" if name in WORKSPACE_SCOPE_DEFAULTS else "global"
             with Collapsible(
                 title="\u2588\u2588 MCP SERVERS  \u2014  External tool connections",
                 collapsed=False,
                 id="section-mcps",
                 classes="section-collapsible",
             ):
-                yield SelectionList(*mcp_selections, id="sl-mcps")
+                if mcp_selections:
+                    yield MarketplaceList(*mcp_selections, id="sl-mcps")
+                else:
+                    yield Static(
+                        "[dim italic]No MCP servers configured. Add entries to catalog.toml.[/]",
+                        classes="empty-notice",
+                    )
 
             # ── Rules ──
+            has_rules = any(fdata["items"] for fdata in rule_families.values())
             with Collapsible(
                 title="\u2588\u2588 RULES  \u2014  Always-on agent behaviors",
                 collapsed=False,
                 id="section-rules",
                 classes="section-collapsible",
             ):
+                if not has_rules:
+                    yield Static(
+                        "[dim italic]No rules yet. Add rules under rules/ to see them here.[/]",
+                        classes="empty-notice",
+                    )
                 for fname, fdata in rule_families.items():
                     if not fdata["items"]:
                         continue
@@ -1083,10 +1427,12 @@ def main():
                     sel_count = 0
                     family_selections = []
                     for item in fdata["items"]:
-                        is_inst = is_rule_installed(primary_pid, item["name"], primary_paths)
+                        is_inst = is_rule_installed(primary_pid, item["name"], primary_paths) if platforms else False
                         indicator = "[green]\u25cf[/] " if is_inst else "[dim]\u25cb[/] "
+                        default_scope = "workspace" if item["name"] in WORKSPACE_SCOPE_DEFAULTS else "global"
+                        scope_tag = "[W]" if default_scope == "workspace" else "[G]"
                         label = Text.from_markup(
-                            f"{indicator}[bold]{item['name']}[/]  [dim]{item['description']}[/]"
+                            f"{indicator}[dim]{scope_tag}[/] [bold]{item['name']}[/]  [dim]{item['description']}[/]"
                         )
                         default_checked = (not is_inst) if install_mode else is_inst
                         if default_checked:
@@ -1101,23 +1447,30 @@ def main():
                             "formats": item.get("formats", []),
                             "path": item["path"],
                         }
+                        self._item_scopes[f"rule:{item['name']}"] = default_scope
                     slug = fname.lower().replace(" ", "-").replace("&", "and")
                     with Collapsible(
                         title=f"{icon}  {fname}  \u2014  {fdata['description']}  ({sel_count}/{len(fdata['items'])})",
                         collapsed=False,
                     ):
-                        yield SelectionList(
+                        yield MarketplaceList(
                             *family_selections,
                             id=f"sl-rules-{slug}",
                         )
 
             # ── Skills ──
+            has_skills = any(fdata["items"] for fdata in skill_families.values())
             with Collapsible(
                 title="\u2588\u2588 SKILLS  \u2014  On-demand /skill-name commands",
                 collapsed=False,
                 id="section-skills",
                 classes="section-collapsible",
             ):
+                if not has_skills:
+                    yield Static(
+                        "[dim italic]No skills yet. Add skills under skills/ to see them here.[/]",
+                        classes="empty-notice",
+                    )
                 for fname, fdata in skill_families.items():
                     if not fdata["items"]:
                         continue
@@ -1125,10 +1478,12 @@ def main():
                     sel_count = 0
                     family_selections = []
                     for item in fdata["items"]:
-                        is_inst = is_skill_installed(item["name"], primary_paths)
+                        is_inst = is_skill_installed(item["name"], primary_paths) if platforms else False
                         indicator = "[green]\u25cf[/] " if is_inst else "[dim]\u25cb[/] "
+                        default_scope = "workspace" if item["name"] in WORKSPACE_SCOPE_DEFAULTS else "global"
+                        scope_tag = "[W]" if default_scope == "workspace" else "[G]"
                         label = Text.from_markup(
-                            f"{indicator}[bold]{item['name']}[/]  [dim]{item['description']}[/]"
+                            f"{indicator}[dim]{scope_tag}[/] [bold]{item['name']}[/]  [dim]{item['description']}[/]"
                         )
                         if install_mode:
                             default_checked = False if item["name"] in SKILLS_DISABLED_BY_DEFAULT else (not is_inst)
@@ -1145,18 +1500,18 @@ def main():
                             "installed": is_inst,
                             "path": item["path"],
                         }
+                        self._item_scopes[f"skill:{item['name']}"] = default_scope
                     slug = fname.lower().replace(" ", "-").replace("&", "and")
                     with Collapsible(
                         title=f"{icon}  {fname}  \u2014  {fdata['description']}  ({sel_count}/{len(fdata['items'])})",
                         collapsed=False,
                     ):
-                        yield SelectionList(
+                        yield MarketplaceList(
                             *family_selections,
                             id=f"sl-skills-{slug}",
                         )
 
         def _get_all_selection_lists(self) -> list:
-            """Get all SelectionList widgets."""
             try:
                 return list(self.query(SelectionList))
             except Exception:
@@ -1172,22 +1527,41 @@ def main():
 
         def _update_status_bar(self) -> None:
             count = self._count_selected()
+            ws_count = sum(1 for s in self._item_scopes.values() if s == "workspace")
             bar = self.query_one("#status-bar", Static)
             bar.update(
-                f"[bold]{mode_verb} mode \u2502 {scope} scope \u2502 "
-                f"[bold green]{count}[/bold green] items selected[/]"
+                f"[bold]{mode_verb} mode \u2502 "
+                f"[bold green]{count}[/bold green] items selected \u2502 "
+                f"{ws_count} workspace-scoped[/]"
             )
 
         @on(SelectionList.SelectionToggled)
         def _on_toggle(self, _event) -> None:
             self._update_status_bar()
 
+        def watch_focused(self, focused) -> None:
+            if not isinstance(focused, SelectionList):
+                return
+            idx = focused.highlighted
+            if idx is None:
+                if focused.option_count > 0:
+                    focused.highlighted = 0
+                    idx = 0
+                else:
+                    return
+            try:
+                option = focused.get_option_at_index(idx)
+            except Exception:
+                return
+            self._on_highlight_refresh(option.value)
+
         @on(SelectionList.SelectionHighlighted)
         def _on_highlight(self, event) -> None:
-            """Update the preview panel when cursor moves."""
             if event.selection is None:
                 return
-            value = event.selection.value
+            self._on_highlight_refresh(event.selection.value)
+
+        def _on_highlight_refresh(self, value: str) -> None:
             meta = self._item_metadata.get(value, {})
             if not meta:
                 return
@@ -1196,7 +1570,8 @@ def main():
             item_type = meta.get("type", "")
             installed = meta.get("installed", False)
             inst_str = "[green]installed[/]" if installed else "[dim]not installed[/]"
-
+            scope = self._item_scopes.get(value, "global")
+            scope_str = f"[bold green]{scope}[/]" if scope == "global" else f"[bold yellow]{scope}[/]"
             lines = [
                 f"[bold]{name}[/]",
                 "",
@@ -1204,6 +1579,7 @@ def main():
                 "",
                 f"[dim]Status:[/] {inst_str}",
                 f"[dim]Type:[/] {item_type}",
+                f"[dim]Scope:[/] {scope_str}",
             ]
             if item_type == "mcp":
                 lines.append(f"\n[dim]Config:[/]\n{meta.get('config', '')}")
@@ -1212,16 +1588,53 @@ def main():
                 if fmts:
                     lines.append(f"[dim]Formats:[/] {', '.join(fmts)}")
             lines.append(
-                "\n[dim]Press [bold]P[/bold] to view full content[/]"
+                "\n[dim]Press [bold]P[/bold] to view full content\n"
+                "Press [bold]S[/bold] to toggle scope[/]"
             )
-            preview = self.query_one("#preview-body", Static)
-            preview.update("\n".join(lines))
+            try:
+                preview = self.query_one("#preview-body", Static)
+                preview.update("\n".join(lines))
+            except Exception:
+                pass
+
+        # ── Workspace path handlers ──
+
+        @on(Button.Pressed, "#ws-add-btn")
+        def _on_add_workspace(self, _event) -> None:
+            self._mount_workspace_row()
+
+        @on(Button.Pressed, ".ws-remove-btn")
+        def _on_remove_workspace(self, event) -> None:
+            entry_id = event.button.id.replace("ws-remove-", "")
+            try:
+                rows = list(self.query(".ws-row"))
+                if len(rows) <= 1:
+                    self.notify("At least one workspace path is required", severity="warning")
+                    return
+                row = self.query_one(f"#ws-row-{entry_id}")
+                row.remove()
+            except Exception:
+                pass
+
+        @on(Button.Pressed, ".ws-browse-btn")
+        def _on_browse_workspace(self, event) -> None:
+            entry_id = event.button.id.replace("ws-browse-", "")
+            try:
+                input_widget = self.query_one(f"#ws-input-{entry_id}", Input)
+            except Exception:
+                return
+            current = input_widget.value.strip()
+            start = str(_resolve_user_path(current)) if current else str(Path.home())
+
+            def _on_path_selected(path: str | None) -> None:
+                if path:
+                    input_widget.value = path
+            self.push_screen(PathPickerScreen(start), callback=_on_path_selected)
 
         def action_quit_app(self) -> None:
             self.exit()
 
         def action_preview(self) -> None:
-            """Show full SKILL.md or rule.md in a modal."""
             focused = self.focused
             if not isinstance(focused, SelectionList):
                 self.notify("Focus a selection list first", severity="warning")
@@ -1234,7 +1647,7 @@ def main():
             meta = self._item_metadata.get(value, {})
             if not meta:
                 return
-            name = meta.get("name", value)
+            name = str(meta.get("name", value))
             item_type = meta.get("type", "")
             if item_type in ("skill", "rule") and "path" in meta:
                 item_dict = {"path": meta["path"]}
@@ -1250,12 +1663,6 @@ def main():
             self.push_screen(PreviewScreen(name, content))
 
         def _selection_lists_in_scope(self) -> list:
-            """Get SelectionLists based on what's focused.
-
-            - Focused on a SelectionList → just that list
-            - Focused on a CollapsibleTitle → all lists inside that Collapsible
-            - Otherwise → empty
-            """
             focused = self.focused
             if isinstance(focused, SelectionList):
                 return [focused]
@@ -1279,7 +1686,6 @@ def main():
             self._update_status_bar()
 
         def action_toggle_section(self) -> None:
-            """Space on a CollapsibleTitle toggles all selections in it."""
             focused = self.focused
             if focused is None:
                 return
@@ -1304,8 +1710,38 @@ def main():
                     sl.select_all()
             self._update_status_bar()
 
+        def action_toggle_scope(self) -> None:
+            focused = self.focused
+            if not isinstance(focused, SelectionList):
+                self.notify("Focus a selection list item to toggle scope", severity="warning")
+                return
+            idx = focused.highlighted
+            if idx is None:
+                return
+            option = focused.get_option_at_index(idx)
+            value = option.value
+            if value in self._item_scopes:
+                current = self._item_scopes[value]
+                new_scope = "workspace" if current == "global" else "global"
+                self._item_scopes[value] = new_scope
+                meta = self._item_metadata.get(value, {})
+                name = meta.get("name", value)
+                desc = meta.get("description", "")
+                installed = meta.get("installed", False)
+                indicator = "[green]\u25cf[/] " if installed else "[dim]\u25cb[/] "
+                scope_tag = "[W]" if new_scope == "workspace" else "[G]"
+                new_label = Text.from_markup(
+                    f"{indicator}[dim]{scope_tag}[/] [bold]{name}[/]  [dim]{desc}[/]"
+                )
+                try:
+                    focused.replace_option_prompt_at_index(idx, new_label)
+                except Exception:
+                    pass
+                self.notify(f"{name}: scope \u2192 {new_scope}", severity="information")
+                self._on_highlight_refresh(value)
+                self._update_status_bar()
+
         def action_do_install(self) -> None:
-            """Gather selections and show confirmation."""
             plat_list = self.query_one("#sl-platforms", SelectionList)
             selected_platforms = list(plat_list.selected)
             if not selected_platforms:
@@ -1332,28 +1768,88 @@ def main():
                 self.notify("Nothing selected", severity="warning")
                 return
 
+            # Determine if workspace paths are needed:
+            # 1) Any item explicitly [W]
+            # 2) Any selected platform lacks global rules AND rules are selected
+            has_explicit_ws = any(
+                self._item_scopes.get(f"mcp:{n}", "global") == "workspace"
+                for n in selected_mcps
+            ) or any(
+                self._item_scopes.get(f"rule:{n}", "global") == "workspace"
+                for n in selected_rules
+            ) or any(
+                self._item_scopes.get(f"skill:{n}", "global") == "workspace"
+                for n in selected_skills
+            )
+            has_forced_ws = selected_rules and any(
+                PLATFORMS[pid]["global"].get("rules") is None
+                for pid in selected_platforms if pid in PLATFORMS
+            )
+            needs_ws = has_explicit_ws or has_forced_ws
+
+            ws_paths = self._get_workspace_paths()
+            if needs_ws:
+                if not ws_paths:
+                    self.notify(
+                        "Enter at least one workspace path for workspace-scoped items",
+                        severity="error",
+                    )
+                    return
+                for wp in ws_paths:
+                    p = Path(wp)
+                    if not p.exists():
+                        self.notify(f"Workspace path does not exist: {wp}", severity="error")
+                        return
+                    if not p.is_dir():
+                        self.notify(f"Workspace path is not a directory: {wp}", severity="error")
+                        return
+
+            plat_labels = [
+                PLATFORMS[p]["label"] for p in selected_platforms if p in PLATFORMS
+            ]
+
+            # Group items by scope for summary
+            global_items: list[str] = []
+            workspace_items_list: list[str] = []
+            for m in selected_mcps:
+                key = f"mcp:{m}"
+                scope = self._item_scopes.get(key, "global")
+                (workspace_items_list if scope == "workspace" else global_items).append(f"MCP: {m}")
+            for r in selected_rules:
+                key = f"rule:{r}"
+                scope = self._item_scopes.get(key, "global")
+                target = workspace_items_list if scope == "workspace" else global_items
+                target.append(f"Rule: {r}")
+                # Note forced workspace items
+                if scope == "global" and has_forced_ws:
+                    workspace_items_list.append(f"Rule: {r} [forced by platform]")
+            for s in selected_skills:
+                key = f"skill:{s}"
+                scope = self._item_scopes.get(key, "global")
+                (workspace_items_list if scope == "workspace" else global_items).append(f"Skill: {s}")
+
             summary_lines = [
                 f"[bold]Action:[/] [bold dodger_blue2]{mode_verb}[/]",
-                f"[bold]Scope:[/] {scope}",
-                f"[bold]Platforms:[/] {', '.join(PLATFORMS[p]['label'] for p in selected_platforms)}",
-                "",
-                f"[bold]MCP Servers:[/] {len(selected_mcps)}",
+                f"[bold]Platforms:[/] {', '.join(plat_labels)}",
             ]
-            for m in selected_mcps:
-                summary_lines.append(f"  \u2022 {m}")
-            summary_lines.append(f"\n[bold]Rules:[/] {len(selected_rules)}")
-            for r in selected_rules:
-                summary_lines.append(f"  \u2022 {r}")
-            summary_lines.append(f"\n[bold]Skills:[/] {len(selected_skills)}")
-            for s in selected_skills:
-                summary_lines.append(f"  \u2022 {s}")
+            if global_items:
+                summary_lines.append(f"\n[bold]Global scope[/] ({len(global_items)} items):")
+                for item in global_items:
+                    summary_lines.append(f"  \u2022 {item}")
+            if workspace_items_list:
+                wp_display = ", ".join(ws_paths) if ws_paths else "(none)"
+                summary_lines.append(
+                    f"\n[bold]Workspace scope[/] \u2192 {wp_display} ({len(workspace_items_list)} items):"
+                )
+                for item in workspace_items_list:
+                    summary_lines.append(f"  \u2022 {item}")
             summary_lines.append(f"\n[bold]Total:[/] {total} items")
 
             def handle_confirm(confirmed: bool | None) -> None:
                 if confirmed:
                     self._execute_install(
                         selected_platforms, selected_mcps,
-                        selected_rules, selected_skills,
+                        selected_rules, selected_skills, ws_paths,
                     )
 
             self.push_screen(
@@ -1361,12 +1857,23 @@ def main():
                 callback=handle_confirm,
             )
 
+        def _get_install_targets(
+            self, pid: str, scope: str, ws_paths: list[str],
+        ) -> list[tuple[dict, str]]:
+            if scope == "global":
+                return [(resolve_paths(pid, "global"), "global")]
+            return [
+                (resolve_paths(pid, "workspace", wp), f"workspace: {wp}")
+                for wp in ws_paths
+            ]
+
         def _execute_install(
             self,
             selected_platforms: list[str],
             selected_mcps: list[str],
             selected_rules: list[str],
             selected_skills: list[str],
+            ws_paths: list[str],
         ) -> None:
             rules_by_name = {r["name"]: r for r in all_rules}
             skills_by_name = {s["name"]: s for s in all_skills}
@@ -1376,48 +1883,61 @@ def main():
 
             for pid in selected_platforms:
                 info = PLATFORMS[pid]
-                paths = info[scope]
                 plabel = info["label"]
+                no_global_rules = info["global"].get("rules") is None
 
                 for name in selected_mcps:
-                    if install_mode:
-                        res = install_mcp(name, MCP_SERVERS[name], paths["config"])
-                    else:
-                        res = uninstall_mcp(name, paths["config"])
-                    color = "green" if res in ("installed", "removed") else "dim"
-                    result_lines.append(
-                        f"  [{color}]\u2502[/] {plabel:<14s} [bold]MCP[/]    {name:<24s} [{color}]{res}[/]"
-                    )
-                    total_count += 1
+                    key = f"mcp:{name}"
+                    scope = self._item_scopes.get(key, "global")
+                    for paths, target_label in self._get_install_targets(pid, scope, ws_paths):
+                        if install_mode:
+                            res = install_mcp(name, MCP_SERVERS[name], paths["config"])
+                        else:
+                            res = uninstall_mcp(name, paths["config"])
+                        color = "green" if res in ("installed", "removed") else "dim"
+                        result_lines.append(
+                            f"  [{color}]\u2502[/] {plabel:<14s} [bold]MCP[/]    {name:<24s} [{color}]{res}[/] ({target_label})"
+                        )
+                        total_count += 1
 
                 for name in selected_rules:
                     rule = rules_by_name.get(name)
                     if not rule:
                         continue
-                    if install_mode:
-                        res = install_rule(rule, pid, paths)
-                    else:
-                        res = uninstall_rule(rule, pid, paths)
-                    color = "green" if res in ("installed", "removed") else "dim"
-                    result_lines.append(
-                        f"  [{color}]\u2502[/] {plabel:<14s} [bold]Rule[/]   {name:<24s} [{color}]{res}[/]"
-                    )
-                    total_count += 1
+                    key = f"rule:{name}"
+                    scope = self._item_scopes.get(key, "global")
+                    # Platform override: force workspace if platform lacks global rules
+                    effective_scope = "workspace" if (scope == "global" and no_global_rules) else scope
+                    for paths, target_label in self._get_install_targets(pid, effective_scope, ws_paths):
+                        if install_mode:
+                            res = install_rule(rule, pid, paths)
+                        else:
+                            res = uninstall_rule(rule, pid, paths)
+                        color = "green" if res in ("installed", "removed") else "dim"
+                        result_lines.append(
+                            f"  [{color}]\u2502[/] {plabel:<14s} [bold]Rule[/]   {name:<24s} [{color}]{res}[/] ({target_label})"
+                        )
+                        total_count += 1
 
-                skills_dir = paths.get("skills")
                 for name in selected_skills:
                     skill = skills_by_name.get(name)
                     if not skill:
                         continue
-                    if install_mode:
-                        res = install_skill(skill, skills_dir)
-                    else:
-                        res = uninstall_skill(name, skills_dir)
-                    color = "green" if res in ("installed", "removed") else "dim"
-                    result_lines.append(
-                        f"  [{color}]\u2502[/] {plabel:<14s} [bold]Skill[/]  {name:<24s} [{color}]{res}[/]"
-                    )
-                    total_count += 1
+                    key = f"skill:{name}"
+                    scope = self._item_scopes.get(key, "global")
+                    for paths, target_label in self._get_install_targets(pid, scope, ws_paths):
+                        skills_dir = paths.get("skills")
+                        if not skills_dir:
+                            continue
+                        if install_mode:
+                            res = install_skill(skill, skills_dir)
+                        else:
+                            res = uninstall_skill(name, skills_dir)
+                        color = "green" if res in ("installed", "removed") else "dim"
+                        result_lines.append(
+                            f"  [{color}]\u2502[/] {plabel:<14s} [bold]Skill[/]  {name:<24s} [{color}]{res}[/] ({target_label})"
+                        )
+                        total_count += 1
 
             past = "installed" if install_mode else "uninstalled"
             header = (
