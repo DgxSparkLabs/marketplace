@@ -1109,21 +1109,33 @@ def main():
     primary_paths = PLATFORMS[primary_pid]["global"]
     primary_mcps = read_mcp_servers(primary_paths["config"]) if platforms else {}
 
-    def _is_rule_installed_any(rule_name: str) -> bool:
-        """Check if a rule is installed on ANY detected platform (global scope)."""
+    def _rule_install_status(rule_name: str) -> tuple[bool, bool]:
+        """Return (installed_on_any, installed_on_all) for a rule across detected platforms."""
+        if not platforms:
+            return False, False
+        any_installed = False
+        all_installed = True
         for pid in platforms:
             paths = PLATFORMS[pid]["global"]
             if is_rule_installed(pid, rule_name, paths):
-                return True
-        return False
+                any_installed = True
+            else:
+                all_installed = False
+        return any_installed, all_installed
 
-    def _is_skill_installed_any(skill_name: str) -> bool:
-        """Check if a skill is installed on ANY detected platform (global scope)."""
+    def _skill_install_status(skill_name: str) -> tuple[bool, bool]:
+        """Return (installed_on_any, installed_on_all) for a skill across detected platforms."""
+        if not platforms:
+            return False, False
+        any_installed = False
+        all_installed = True
         for pid in platforms:
             paths = PLATFORMS[pid]["global"]
             if is_skill_installed(skill_name, paths):
-                return True
-        return False
+                any_installed = True
+            else:
+                all_installed = False
+        return any_installed, all_installed
 
     rule_families = _categorize_items(all_rules, RULE_FAMILIES)
     skill_families = _categorize_items(all_skills, SKILL_FAMILIES)
@@ -1451,14 +1463,19 @@ def main():
                     sel_count = 0
                     family_selections = []
                     for item in fdata["items"]:
-                        is_inst = _is_rule_installed_any(item["name"]) if platforms else False
-                        indicator = "[green]\u25cf[/] " if is_inst else "[dim]\u25cb[/] "
+                        any_inst, all_inst = _rule_install_status(item["name"]) if platforms else (False, False)
+                        if all_inst:
+                            indicator = "[green]\u25cf[/] "
+                        elif any_inst:
+                            indicator = "[yellow]\u25d0[/] "
+                        else:
+                            indicator = "[dim]\u25cb[/] "
                         default_scope = "workspace" if item["name"] in WORKSPACE_SCOPE_DEFAULTS else "global"
                         scope_tag = "[W]" if default_scope == "workspace" else "[G]"
                         label = Text.from_markup(
                             f"{indicator}[dim]{scope_tag}[/] [bold]{item['name']}[/]  [dim]{item['description']}[/]"
                         )
-                        default_checked = (not is_inst) if install_mode else is_inst
+                        default_checked = (not all_inst) if install_mode else any_inst
                         if default_checked:
                             sel_count += 1
                         family_selections.append(
@@ -1467,7 +1484,8 @@ def main():
                         self._item_metadata[f"rule:{item['name']}"] = {
                             "type": "rule", "name": item["name"],
                             "description": item["description"],
-                            "installed": is_inst,
+                            "installed_any": any_inst,
+                            "installed_all": all_inst,
                             "formats": item.get("formats", []),
                             "path": item["path"],
                         }
@@ -1502,17 +1520,22 @@ def main():
                     sel_count = 0
                     family_selections = []
                     for item in fdata["items"]:
-                        is_inst = _is_skill_installed_any(item["name"]) if platforms else False
-                        indicator = "[green]\u25cf[/] " if is_inst else "[dim]\u25cb[/] "
+                        any_inst, all_inst = _skill_install_status(item["name"]) if platforms else (False, False)
+                        if all_inst:
+                            indicator = "[green]\u25cf[/] "
+                        elif any_inst:
+                            indicator = "[yellow]\u25d0[/] "
+                        else:
+                            indicator = "[dim]\u25cb[/] "
                         default_scope = "workspace" if item["name"] in WORKSPACE_SCOPE_DEFAULTS else "global"
                         scope_tag = "[W]" if default_scope == "workspace" else "[G]"
                         label = Text.from_markup(
                             f"{indicator}[dim]{scope_tag}[/] [bold]{item['name']}[/]  [dim]{item['description']}[/]"
                         )
                         if install_mode:
-                            default_checked = False if item["name"] in SKILLS_DISABLED_BY_DEFAULT else (not is_inst)
+                            default_checked = False if item["name"] in SKILLS_DISABLED_BY_DEFAULT else (not all_inst)
                         else:
-                            default_checked = is_inst
+                            default_checked = any_inst
                         if default_checked:
                             sel_count += 1
                         family_selections.append(
@@ -1521,7 +1544,8 @@ def main():
                         self._item_metadata[f"skill:{item['name']}"] = {
                             "type": "skill", "name": item["name"],
                             "description": item["description"],
-                            "installed": is_inst,
+                            "installed_any": any_inst,
+                            "installed_all": all_inst,
                             "path": item["path"],
                         }
                         self._item_scopes[f"skill:{item['name']}"] = default_scope
@@ -1592,8 +1616,14 @@ def main():
             name = meta.get("name", "")
             desc = meta.get("description", "")
             item_type = meta.get("type", "")
-            installed = meta.get("installed", False)
-            inst_str = "[green]installed[/]" if installed else "[dim]not installed[/]"
+            installed_all = meta.get("installed_all", meta.get("installed", False))
+            installed_any = meta.get("installed_any", installed_all)
+            if installed_all:
+                inst_str = "[green]installed[/]"
+            elif installed_any:
+                inst_str = "[yellow]partially installed[/] [dim](missing on some platforms)[/]"
+            else:
+                inst_str = "[dim]not installed[/]"
             scope = self._item_scopes.get(value, "global")
             scope_str = f"[bold green]{scope}[/]" if scope == "global" else f"[bold yellow]{scope}[/]"
             lines = [
@@ -1751,8 +1781,14 @@ def main():
                 meta = self._item_metadata.get(value, {})
                 name = meta.get("name", value)
                 desc = meta.get("description", "")
-                installed = meta.get("installed", False)
-                indicator = "[green]\u25cf[/] " if installed else "[dim]\u25cb[/] "
+                installed_all = meta.get("installed_all", meta.get("installed", False))
+                installed_any = meta.get("installed_any", installed_all)
+                if installed_all:
+                    indicator = "[green]\u25cf[/] "
+                elif installed_any:
+                    indicator = "[yellow]\u25d0[/] "
+                else:
+                    indicator = "[dim]\u25cb[/] "
                 scope_tag = "[W]" if new_scope == "workspace" else "[G]"
                 new_label = Text.from_markup(
                     f"{indicator}[dim]{scope_tag}[/] [bold]{name}[/]  [dim]{desc}[/]"
