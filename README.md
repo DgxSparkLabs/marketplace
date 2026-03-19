@@ -31,6 +31,7 @@ A curated collection of reusable agent skills and rules. Each item is a self-con
 | Skill | Description |
 |-------|-------------|
 | [act-runner](./skills/act-runner/) | Run GitHub Actions workflows locally with act and podman |
+| [check](./skills/check/) | Mid-session course correction — stop, review rules, and realign |
 | [duckduckgo-search](./skills/duckduckgo-search/) | Search DuckDuckGo and return results as structured text |
 | [expose-port](./skills/expose-port/) | Expose a local port via HTTPS (localhost.run) or TCP (bore) |
 | [gemini-chat](./skills/gemini-chat/) | Interactive multi-turn chat with Google Gemini |
@@ -39,6 +40,7 @@ A curated collection of reusable agent skills and rules. Each item is a self-con
 | [motivation](./skills/motivation/) | Completeness checker — report what's actually unfinished before stopping |
 | [pitfall-check](./skills/pitfall-check/) | Search PITFALLS.md and git log for known issues before starting work |
 | [project-bootstrap](./skills/project-bootstrap/) | Initialize project docs — AGENTS.md, HANDOFF.md, CHANGELOG.md, PITFALLS.md |
+| [recall-rules](./skills/recall-rules/) | Re-read global rules and thinking framework to realign mid-session |
 | [send-email](./skills/send-email/) | Send an email to someone using the Resend API |
 | [session-history](./skills/session-history/) | Query past Devin CLI conversations from the local session database |
 | [session-wrapup](./skills/session-wrapup/) | End-of-session audit — check docs, commits, and readiness for the next agent |

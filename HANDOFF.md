@@ -4,7 +4,7 @@
 
 A **skills and rules marketplace** for AI coding agents. Not a software project — the "product" is the skills, rules, and research themselves. Cross-platform: Devin CLI, Claude Code, Cursor, Windsurf.
 
-- **Skills** = on-demand capabilities invoked with `/skill-name` (22 skills)
+- **Skills** = on-demand capabilities invoked with `/skill-name` (24 skills)
 - **Rules** = always-on behavioral guidelines loaded every session (15 rules)
 - **Research** = 250+ sources across 12 rounds of market intelligence
 - **TUI installer** = interactive terminal UI for installing everything (`install.py`)
@@ -36,7 +36,7 @@ marketplace/
 │   ├── ONBOARDING.md        ← 3-minute orientation for new agents
 │   ├── SKILL_FORMAT.md      ← Full SKILL.md spec
 │   └── RULE_FORMAT.md       ← Full rule spec
-├── skills/                  ← 22 skill directories
+├── skills/                  ← 24 skill directories
 ├── rules/                   ← 15 rule directories
 ├── research/                ← 90+ files, 12 research rounds
 └── tests/
@@ -46,11 +46,12 @@ marketplace/
 
 ## Inventory
 
-### Skills (22)
+### Skills (24)
 
 | Skill | What it does | Key deps |
 |-------|-------------|----------|
 | act-runner | Run GitHub Actions locally with act+podman | podman, act |
+| check | Mid-session course correction — stop, review rules, realign | none |
 | duckduckgo-search | Search DuckDuckGo, triage, scrape results | web-scraper skill |
 | expose-port | Expose local port via HTTPS or TCP | ssh, bore (optional) |
 | gemini-chat | Multi-turn chat with Google Gemini | GEMINI_API_KEY |
@@ -59,6 +60,7 @@ marketplace/
 | motivation | Completeness checker before stopping | none |
 | pitfall-check | Search PITFALLS.md and git log for known issues | none |
 | project-bootstrap | Init AGENTS.md, HANDOFF.md, CHANGELOG.md, PITFALLS.md | none |
+| recall-rules | Re-read global rules and thinking framework mid-session | none |
 | send-email | Send email via Resend API | RESEND_API_KEY |
 | session-history | Query past Devin CLI conversations | Devin sessions.db |
 | session-wrapup | End-of-session audit for handoff readiness | none |
