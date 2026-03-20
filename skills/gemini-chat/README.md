@@ -41,6 +41,35 @@ uv run gemini-chat/scripts/chat.py --search
 - Python 3.11+
 - `GEMINI_API_KEY` environment variable ([get one free](https://aistudio.google.com/apikey))
 
+## Options
+
+| Flag | Required | Description |
+|------|----------|-------------|
+| `-m`, `--message` | No | Single message (non-interactive mode) |
+| `--model` | No | Model name (default: `gemini-2.5-flash`) |
+| `-s`, `--system` | No | System instruction for the conversation |
+| `--history` | No | JSON file to load/save conversation history |
+| `--no-stream` | No | Disable streaming output |
+| `--search` | No | Enable Google Search grounding (like AI Mode) |
+| `--json` | No | Output as JSON (single-message mode only) |
+| `--check` | No | Validate `GEMINI_API_KEY` and exit |
+
+## As an Agent Skill
+
+Copy the `gemini-chat/` directory into your agent's skills directory:
+
+```bash
+# Global (available everywhere)
+cp -r gemini-chat/ ~/.config/devin/skills/gemini-chat/
+# or: cp -r gemini-chat/ ~/.windsurf/skills/gemini-chat/
+
+# Project-specific
+cp -r gemini-chat/ /path/to/project/.devin/skills/gemini-chat/
+# or: cp -r gemini-chat/ /path/to/project/.windsurf/skills/gemini-chat/
+```
+
+Then invoke with `/gemini-chat` in a session, or let the agent call it autonomously.
+
 ## Prior Art
 
 - [google-gemini/gemini-cli](https://github.com/google-gemini/gemini-cli) — Google's official Node.js CLI

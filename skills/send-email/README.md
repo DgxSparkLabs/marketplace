@@ -31,6 +31,7 @@ uv run send-email/scripts/send_email.py --to "recipient@example.com" --subject "
 | `--body` | Yes | Plain text email body |
 | `--html` | No | HTML email body (overrides `--body`) |
 | `--from` | No | Sender address (default: `onboarding@resend.dev`) |
+| `--check` | No | Validate `RESEND_API_KEY` and exit (no email sent) |
 
 ### Examples
 
