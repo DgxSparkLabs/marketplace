@@ -37,6 +37,10 @@ uv run youtube-wisdom/scripts/fetch_transcript.py "https://www.youtube.com/watch
 | `--lang` | No | Preferred transcript language code (e.g. `en`, `es`) |
 | `--json` | No | Output as JSON instead of timestamped text |
 
+### Output files
+
+Transcripts are automatically saved to `agent-fetched/youtube-wisdom/` in the current directory. For outputs over 500 characters, only the file path and size are printed. Smaller results are printed to stdout as usual.
+
 ### As an agent skill
 
 ```bash

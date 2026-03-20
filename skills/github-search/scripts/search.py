@@ -6,9 +6,11 @@
 
 import argparse
 import json
+import re
 import subprocess
 import sys
 from datetime import datetime
+from pathlib import Path
 
 
 JSON_FIELDS = "name,owner,description,stargazersCount,forksCount,language,license,updatedAt,url"
@@ -108,6 +110,21 @@ def search_repos(
     return "\n".join(lines)
 
 
+def _save_and_emit(output: str, skill_name: str, label: str, ext: str = ".txt") -> None:
+    """Save output to agent-fetched/<skill_name>/ and print path or content."""
+    slug = re.sub(r"[^\w\-.]", "_", label)[:80].strip("_")
+    ts = datetime.now().strftime("%Y%m%d_%H%M%S")
+    out_dir = Path("agent-fetched") / skill_name
+    out_dir.mkdir(parents=True, exist_ok=True)
+    out_path = out_dir / f"{ts}_{slug}{ext}"
+    out_path.write_text(output, encoding="utf-8")
+    if len(output) > 500:
+        size_kb = len(output.encode("utf-8")) / 1024
+        print(f"Results saved to {out_path} ({len(output):,} chars, {size_kb:.1f} KB)")
+    else:
+        print(output)
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(
         description="Search GitHub repositories for prior work",
@@ -160,7 +177,8 @@ def main() -> None:
             topic=args.topic,
             output_json=args.json,
         )
-        print(output)
+        ext = ".json" if args.json else ".txt"
+        _save_and_emit(output, "github-search", query, ext)
     except RuntimeError as e:
         print(f"Error: {e}", file=sys.stderr)
         sys.exit(1)

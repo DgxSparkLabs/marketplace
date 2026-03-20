@@ -31,6 +31,10 @@ uv run web-scraper/scripts/scrape.py https://reddit.com/r/programming/top/?t=wee
 | `--language XX` | Filter to a target language |
 | `--json` | Output as structured JSON |
 
+## Output files
+
+Scraped content is automatically saved to `agent-fetched/web-scraper/` in the current directory. For outputs over 500 characters, only the file path and size are printed. Smaller results are printed to stdout as usual.
+
 ## Reddit support
 
 Reddit URLs get special handling via old.reddit.com HTML parsing (no API key needed):

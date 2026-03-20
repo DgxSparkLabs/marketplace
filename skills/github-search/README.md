@@ -31,6 +31,10 @@ uv run github-search/scripts/search.py "your search query"
 | `--topic TOPIC` | Filter by repository topic |
 | `--json` | Output results as JSON |
 
+### Output files
+
+Results are automatically saved to `agent-fetched/github-search/` in the current directory. For outputs over 500 characters, only the file path and size are printed. Smaller results are printed to stdout as usual.
+
 ### Examples
 
 ```bash

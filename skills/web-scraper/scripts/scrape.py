@@ -13,7 +13,9 @@ import json
 import re
 import sys
 import urllib.request
+from datetime import datetime
 from html import unescape
+from pathlib import Path
 
 import trafilatura
 
@@ -323,8 +325,50 @@ def scrape(url: str, *, include_links: bool = False, include_images: bool = Fals
 
 
 # ---------------------------------------------------------------------------
+# File saving
+# ---------------------------------------------------------------------------
+
+def _save_and_emit(output: str, skill_name: str, label: str, ext: str = ".txt") -> None:
+    """Save output to agent-fetched/<skill_name>/ and print path or content."""
+    slug = re.sub(r"[^\w\-.]", "_", label)[:80].strip("_")
+    ts = datetime.now().strftime("%Y%m%d_%H%M%S")
+    out_dir = Path("agent-fetched") / skill_name
+    out_dir.mkdir(parents=True, exist_ok=True)
+    out_path = out_dir / f"{ts}_{slug}{ext}"
+    out_path.write_text(output, encoding="utf-8")
+    if len(output) > 500:
+        size_kb = len(output.encode("utf-8")) / 1024
+        print(f"Results saved to {out_path} ({len(output):,} chars, {size_kb:.1f} KB)")
+    else:
+        print(output)
+
+
+# ---------------------------------------------------------------------------
 # CLI
 # ---------------------------------------------------------------------------
+
+def _format_text(result: dict) -> str:
+    """Format a scrape result dict as readable text."""
+    parts: list[str] = []
+    if result.get("title"):
+        parts.append(f"# {result['title']}")
+        parts.append("")
+    meta_parts = []
+    if result.get("author"):
+        meta_parts.append(f"By: {result['author']}")
+    if result.get("date"):
+        meta_parts.append(f"Date: {result['date']}")
+    if result.get("sitename"):
+        meta_parts.append(f"Source: {result['sitename']}")
+    if meta_parts:
+        parts.append(" | ".join(meta_parts))
+        parts.append("")
+    if result.get("description"):
+        parts.append(f"> {result['description']}")
+        parts.append("")
+    parts.append(result["content"])
+    return "\n".join(parts)
+
 
 def main():
     parser = argparse.ArgumentParser(
@@ -360,25 +404,13 @@ def main():
         sys.exit(1)
 
     if args.as_json:
-        print(json.dumps(result, indent=2, ensure_ascii=False))
+        output = json.dumps(result, indent=2, ensure_ascii=False)
+        ext = ".json"
     else:
-        if result.get("title"):
-            print(f"# {result['title']}")
-            print()
-        meta_parts = []
-        if result.get("author"):
-            meta_parts.append(f"By: {result['author']}")
-        if result.get("date"):
-            meta_parts.append(f"Date: {result['date']}")
-        if result.get("sitename"):
-            meta_parts.append(f"Source: {result['sitename']}")
-        if meta_parts:
-            print(" | ".join(meta_parts))
-            print()
-        if result.get("description"):
-            print(f"> {result['description']}")
-            print()
-        print(result["content"])
+        output = _format_text(result)
+        ext = ".txt"
+
+    _save_and_emit(output, "web-scraper", args.url, ext)
 
 
 if __name__ == "__main__":

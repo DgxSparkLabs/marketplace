@@ -45,6 +45,10 @@ uv run youtube-search/scripts/search_youtube.py "WebAssembly" --scores
 | `--json` | Output results as JSON |
 | `--scores` | Show technical relevance scores |
 
+### Output files
+
+Results are automatically saved to `agent-fetched/youtube-search/` in the current directory. For outputs over 500 characters, only the file path and size are printed. Smaller results are printed to stdout as usual.
+
 ## Pairs well with
 
 - **youtube-wisdom** — once you find a promising video, use youtube-wisdom to fetch and analyze its transcript

@@ -8,6 +8,7 @@ allowed-tools:
 permissions:
   allow:
     - Exec(uv run)
+    - Write(agent-fetched/**)
 triggers:
   - user
   - model
@@ -24,6 +25,13 @@ uv run $SKILL_DIR/scripts/fetch_transcript.py "$1"
 ```
 
 If that fails, try with `--lang en`. If transcripts are disabled or unavailable, tell the user.
+
+## Output files
+
+Transcripts are automatically saved to `agent-fetched/youtube-wisdom/` relative to the current working directory. Files are named `<timestamp>_<video-id>.txt` (or `.json` with `--json`).
+
+- **Large results (>500 chars):** Only the file path and size are printed to stdout. Use `read` to view the file.
+- **Small results (<=500 chars):** Content is printed to stdout normally.
 
 ## Step 2: Analyze
 

@@ -9,6 +9,7 @@ permissions:
   allow:
     - Exec(uv run)
     - Exec(gh)
+    - Write(agent-fetched/**)
 triggers:
   - user
   - model
@@ -38,6 +39,13 @@ uv run $SKILL_DIR/scripts/search.py <query> [options]
 ### Prerequisites
 
 The `gh` CLI must be installed and authenticated (`gh auth login`).
+
+## Output files
+
+Results are automatically saved to `agent-fetched/github-search/` relative to the current working directory. Files are named `<timestamp>_<query>.txt` (or `.json` with `--json`).
+
+- **Large results (>500 chars):** Only the file path and size are printed to stdout. Use `read` to view the file.
+- **Small results (<=500 chars):** Content is printed to stdout normally.
 
 ## Instructions
 

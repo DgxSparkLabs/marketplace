@@ -8,6 +8,7 @@ allowed-tools:
 permissions:
   allow:
     - Exec(uv run)
+    - Write(agent-fetched/**)
 triggers:
   - user
   - model
@@ -32,6 +33,13 @@ uv run $SKILL_DIR/scripts/scrape.py "$1"
 - `--json` — output structured JSON instead of plain text
 
 For multiple URLs, run the command once per URL.
+
+## Output files
+
+Scraped content is automatically saved to `agent-fetched/web-scraper/` relative to the current working directory. Files are named `<timestamp>_<url-slug>.txt` (or `.json` with `--json`).
+
+- **Large results (>500 chars):** Only the file path and size are printed to stdout. Use `read` to view the file.
+- **Small results (<=500 chars):** Content is printed to stdout normally.
 
 ## Step 2: Present the content
 

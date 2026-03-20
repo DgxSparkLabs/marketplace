@@ -9,7 +9,9 @@ import json
 import re
 import sys
 import urllib.request
+from datetime import datetime
 from html import unescape
+from pathlib import Path
 
 from youtube_transcript_api import YouTubeTranscriptApi
 
@@ -84,6 +86,21 @@ def format_timestamp(seconds: float) -> str:
     return f"{m}:{s:02d}"
 
 
+def _save_and_emit(output: str, skill_name: str, label: str, ext: str = ".txt") -> None:
+    """Save output to agent-fetched/<skill_name>/ and print path or content."""
+    slug = re.sub(r"[^\w\-.]", "_", label)[:80].strip("_")
+    ts = datetime.now().strftime("%Y%m%d_%H%M%S")
+    out_dir = Path("agent-fetched") / skill_name
+    out_dir.mkdir(parents=True, exist_ok=True)
+    out_path = out_dir / f"{ts}_{slug}{ext}"
+    out_path.write_text(output, encoding="utf-8")
+    if len(output) > 500:
+        size_kb = len(output.encode("utf-8")) / 1024
+        print(f"Results saved to {out_path} ({len(output):,} chars, {size_kb:.1f} KB)")
+    else:
+        print(output)
+
+
 def main():
     parser = argparse.ArgumentParser(description="Fetch YouTube video transcript")
     parser.add_argument("url", help="YouTube URL or video ID")
@@ -101,18 +118,22 @@ def main():
         sys.exit(1)
 
     if args.as_json:
-        output = {
+        data = {
             "video_id": video_id,
             "title": title,
             "segments": [{"timestamp": s.start, "text": s.text} for s in segments],
         }
-        print(json.dumps(output, ensure_ascii=False, indent=2))
+        output = json.dumps(data, ensure_ascii=False, indent=2)
+        _save_and_emit(output, "youtube-wisdom", video_id, ".json")
     else:
+        lines: list[str] = []
         if title:
-            print(f"# {title}\n")
+            lines.append(f"# {title}\n")
         for segment in segments:
             ts = format_timestamp(segment.start)
-            print(f"[{ts}] {segment.text}")
+            lines.append(f"[{ts}] {segment.text}")
+        output = "\n".join(lines)
+        _save_and_emit(output, "youtube-wisdom", video_id, ".txt")
 
 
 if __name__ == "__main__":

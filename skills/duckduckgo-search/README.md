@@ -21,6 +21,10 @@ uv run duckduckgo-search/scripts/search.py "your search query"
 | `-t`, `--time {d,w,m,y}` | Time range: `d`=day, `w`=week, `m`=month, `y`=year |
 | `--json` | Output results as JSON |
 
+### Output files
+
+Results are automatically saved to `agent-fetched/duckduckgo-search/` in the current directory. For outputs over 500 characters, only the file path and size are printed. Smaller results are printed to stdout as usual.
+
 ### Examples
 
 ```bash

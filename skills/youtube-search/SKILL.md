@@ -8,6 +8,7 @@ allowed-tools:
 permissions:
   allow:
     - Exec(uv run)
+    - Write(agent-fetched/**)
 triggers:
   - user
   - model
@@ -32,6 +33,13 @@ uv run $SKILL_DIR/scripts/search_youtube.py <query> [options]
 | `-t`, `--time {d,w,m,y}` | Time range: day, week, month, year |
 | `--json` | Output as JSON |
 | `--scores` | Show technical relevance scores (useful for debugging) |
+
+## Output files
+
+Results are automatically saved to `agent-fetched/youtube-search/` relative to the current working directory. Files are named `<timestamp>_<query>.txt` (or `.json` with `--json`).
+
+- **Large results (>500 chars):** Only the file path and size are printed to stdout. Use `read` to view the file.
+- **Small results (<=500 chars):** Content is printed to stdout normally.
 
 ## Instructions
 

@@ -8,9 +8,12 @@
 
 import argparse
 import json
+import re
 import sys
 import textwrap
 import time
+from datetime import datetime
+from pathlib import Path
 
 MAX_RETRIES = 3
 RETRY_DELAYS = [1, 3, 5]
@@ -258,6 +261,21 @@ def format_results(videos: list[dict], *, show_scores: bool = False) -> str:
     return "\n".join(lines)
 
 
+def _save_and_emit(output: str, skill_name: str, label: str, ext: str = ".txt") -> None:
+    """Save output to agent-fetched/<skill_name>/ and print path or content."""
+    slug = re.sub(r"[^\w\-.]", "_", label)[:80].strip("_")
+    ts = datetime.now().strftime("%Y%m%d_%H%M%S")
+    out_dir = Path("agent-fetched") / skill_name
+    out_dir.mkdir(parents=True, exist_ok=True)
+    out_path = out_dir / f"{ts}_{slug}{ext}"
+    out_path.write_text(output, encoding="utf-8")
+    if len(output) > 500:
+        size_kb = len(output.encode("utf-8")) / 1024
+        print(f"Results saved to {out_path} ({len(output):,} chars, {size_kb:.1f} KB)")
+    else:
+        print(output)
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(
         description="Search YouTube for technical videos and tutorials",
@@ -320,9 +338,11 @@ def main() -> None:
         if args.json:
             # Strip internal scoring field for clean output
             clean = [{k: v for k, v in vid.items() if not k.startswith("_")} for vid in videos]
-            print(json.dumps(clean, indent=2, ensure_ascii=False))
+            output = json.dumps(clean, indent=2, ensure_ascii=False)
+            _save_and_emit(output, "youtube-search", query, ".json")
         else:
-            print(format_results(videos, show_scores=args.scores))
+            output = format_results(videos, show_scores=args.scores)
+            _save_and_emit(output, "youtube-search", query, ".txt")
 
     except Exception as e:
         print(f"Error: {e}", file=sys.stderr)
