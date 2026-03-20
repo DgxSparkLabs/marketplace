@@ -204,8 +204,8 @@ uv run google-drive-reader/scripts/read_drive_doc.py 1aBcDeFgHiJkLmNoPqRsTuVwXyZ
 | `--max-results N`    | Max items when listing (default 20)          |
 | `--urls-only`        | Output only the extracted reference URLs     |
 | `--conclusions-only` | Output only the conclusions section          |
-| `--full-text`        | Include full document text in output         |
 | `--json`             | Output as JSON                               |
+| `--output`, `-o`     | Save output to file (auto-generates path if none given) |
 | `--credentials FILE` | Path to credentials JSON (overrides env var) |
 
 ### Examples
@@ -217,8 +217,8 @@ uv run google-drive-reader/scripts/read_drive_doc.py "https://docs.google.com/do
 # Get conclusions from a doc
 uv run google-drive-reader/scripts/read_drive_doc.py 1aBcDe... --conclusions-only
 
-# Full document dump with references and conclusions
-uv run google-drive-reader/scripts/read_drive_doc.py 1aBcDe... --full-text
+# Save output to a file
+uv run google-drive-reader/scripts/read_drive_doc.py 1aBcDe... -o /tmp/doc-output.txt
 ```
 
 ## As an Agent Skill

@@ -49,8 +49,7 @@ uv run telegram-notify/scripts/send_telegram.py --message "Hello from the termin
 |------|----------|-------------|
 | `--message` / `-m` | Yes | Message text to send (max 4096 chars, auto-truncated) |
 | `--parse-mode` | No | `Markdown`, `MarkdownV2`, or `HTML` (default: plain text) |
-| `--chat-id` | No | Override `TELEGRAM_CHAT_ID` env var |
-| `--token` | No | Override `TELEGRAM_BOT_TOKEN` env var |
+| `--check` | No | Validate credentials and exit (no message sent) |
 
 ### Examples
 
@@ -79,8 +78,6 @@ If a reply arrives, it's printed to stdout. If no reply arrives within the timeo
 | `--prompt` / `-p` | No | Message to send before waiting |
 | `--timeout` / `-t` | No | Max seconds to wait (default: 180 = 3 min) |
 | `--json` | No | Output as JSON (includes `autonomous_prompt` on timeout) |
-| `--chat-id` | No | Override `TELEGRAM_CHAT_ID` env var |
-| `--token` | No | Override `TELEGRAM_BOT_TOKEN` env var |
 
 ### Examples
 
