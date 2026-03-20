@@ -1856,10 +1856,24 @@ def main():
             ws_paths = self._get_workspace_paths()
             if needs_ws:
                 if not ws_paths:
-                    self.notify(
-                        "Enter at least one workspace path for workspace-scoped items",
-                        severity="error",
-                    )
+                    if has_forced_ws:
+                        forced_labels = [
+                            PLATFORMS[pid]["label"]
+                            for pid in selected_platforms
+                            if pid in PLATFORMS and PLATFORMS[pid]["global"].get("rules") is None
+                        ]
+                        self.notify(
+                            f"{', '.join(forced_labels)} ha{'s' if len(forced_labels) == 1 else 've'}"
+                            " no global rules support — enter a workspace path above"
+                            " or deselect rules",
+                            severity="error",
+                        )
+                    else:
+                        self.notify(
+                            "Some items are scoped to [W] workspace"
+                            " — enter a workspace path above or toggle them to [G] with S",
+                            severity="error",
+                        )
                     return
                 for wp in ws_paths:
                     p = Path(wp)
