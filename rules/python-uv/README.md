@@ -51,6 +51,7 @@ cp python-uv/formats/cursor.md .cursor/rules/python-uv.md
 - Use `uv run` with PEP 723 inline metadata for scripts
 - Use `uv add` / `uv remove` for project dependencies
 - Use `uv venv` instead of `python -m venv` or `virtualenv`
+- Use `uv run pytest` for running tests (add pytest with `uv add --dev pytest`)
 - Use `uv tool install` instead of `pip install --user` or `pipx`
 - Never `pip install`, `pip freeze`, or `requirements.txt` for new projects
 - Respect existing pip/requirements.txt projects — do not migrate without asking
