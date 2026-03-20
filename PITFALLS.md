@@ -29,3 +29,9 @@
 - **Symptom:** Confusing logic: `target.exists()` checked after `open(target, "a")` which always creates the file.
 - **Cause:** The append-mode open creates the file, making the exists check always True.
 - **Fix:** Capture `needs_separator` before opening. Commit `d6f254a`.
+
+## telegram-notify skill leaks secrets via agent echo
+
+- **Symptom:** SKILL.md told the agent to run `echo "$TELEGRAM_BOT_TOKEN" "$TELEGRAM_CHAT_ID"` to check config, printing raw secrets into the conversation context. Also, `setup.py` printed the full bot token in a URL during fallback.
+- **Cause:** Env var validation was delegated to the agent (via shell echo) instead of to the script. The setup script interpolated the token into a user-facing URL.
+- **Fix:** Added `--check` flag to `send_telegram.py` that validates env vars and tests the token against the API without revealing secret values. Updated SKILL.md to use `--check`. Masked the token in setup.py's fallback URL.

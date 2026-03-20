@@ -198,7 +198,8 @@ def main() -> None:
         if not chat_id:
             print("\n  Could not detect a chat ID automatically.")
             print("  You can find it manually by visiting:")
-            print(f"    https://api.telegram.org/bot{token}/getUpdates")
+            print("    https://api.telegram.org/bot<YOUR_TOKEN>/getUpdates")
+            print("  (Replace <YOUR_TOKEN> with your bot token.)")
             print("  Look for \"chat\":{\"id\": NUMBER} in the response.\n")
             chat_id = prompt("  Enter your chat ID manually")
 

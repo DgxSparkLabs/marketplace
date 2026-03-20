@@ -20,34 +20,23 @@ Send a Telegram message to the user summarizing what was accomplished.
 
 ## First-time setup
 
-Before sending any notification, you MUST verify the skill is ready. Check both env vars:
+Before sending any notification, you MUST verify the skill is ready:
 
 ```
-echo "$TELEGRAM_BOT_TOKEN" "$TELEGRAM_CHAT_ID"
+uv run ~/.config/devin/skills/telegram-notify/scripts/send_telegram.py --check
 ```
 
-If **either is empty or unset**, the skill is not configured yet. Do NOT try to send a message — it will fail. Instead:
+**Do NOT echo, print, or log `TELEGRAM_BOT_TOKEN` or `TELEGRAM_CHAT_ID`.** The `--check` flag validates that credentials are set and the bot token is valid, without revealing secret values.
 
-1. Tell the user Telegram notifications aren't set up yet and you need to walk them through it.
-2. Run the interactive setup script. It is an interactive script — **run it in an interactive shell** and let the user respond to each prompt:
-   ```
-   uv run ~/.config/devin/skills/telegram-notify/scripts/setup.py
-   ```
-3. The setup script handles everything step by step:
-   - Asks the user to create a bot via @BotFather on Telegram and paste the token
-   - Validates the token against the Telegram API
-   - Asks the user to message the bot, then auto-detects their chat ID
-   - Sends a test message so the user can confirm it arrived
-   - Offers to save credentials to their shell profile
-4. After setup completes, verify the env vars are now set before proceeding.
-
-If both env vars **are set**, send a quick test message to make sure the connection still works before relying on it:
+If `--check` reports missing or invalid credentials, run the interactive setup script in an interactive shell:
 
 ```
-uv run ~/.config/devin/skills/telegram-notify/scripts/send_telegram.py -m "telegram-notify is connected"
+uv run ~/.config/devin/skills/telegram-notify/scripts/setup.py
 ```
 
-If the test fails (expired token, bot deleted, etc.), re-run the setup script.
+The setup script handles everything: bot creation via @BotFather, token validation, chat ID discovery, test message, and saving credentials to the shell profile.
+
+After setup completes, run `--check` again to confirm.
 
 ## Sending a notification
 

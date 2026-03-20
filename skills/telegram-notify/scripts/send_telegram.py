@@ -35,16 +35,67 @@ def send_message(token: str, chat_id: str, text: str, parse_mode: str | None = N
         raise RuntimeError(f"Telegram API error {e.code}: {detail}") from e
 
 
+def check_config() -> None:
+    """Verify env vars are set and the bot token is valid, without printing secrets."""
+    token = os.environ.get("TELEGRAM_BOT_TOKEN")
+    chat_id = os.environ.get("TELEGRAM_CHAT_ID")
+
+    if not token and not chat_id:
+        print("TELEGRAM_BOT_TOKEN: not set", file=sys.stderr)
+        print("TELEGRAM_CHAT_ID: not set", file=sys.stderr)
+        print("Run the setup script to configure.", file=sys.stderr)
+        sys.exit(1)
+    if not token:
+        print("TELEGRAM_BOT_TOKEN: not set", file=sys.stderr)
+        print("TELEGRAM_CHAT_ID: set", file=sys.stderr)
+        sys.exit(1)
+    if not chat_id:
+        print("TELEGRAM_BOT_TOKEN: set", file=sys.stderr)
+        print("TELEGRAM_CHAT_ID: not set", file=sys.stderr)
+        sys.exit(1)
+
+    # Validate the token against the Telegram API
+    url = f"https://api.telegram.org/bot{token}/getMe"
+    req = urllib.request.Request(url)
+    try:
+        with urllib.request.urlopen(req, timeout=10) as resp:
+            data = json.loads(resp.read())
+            bot_name = data.get("result", {}).get("username", "unknown")
+            print(f"TELEGRAM_BOT_TOKEN: valid (bot: @{bot_name})")
+            print("TELEGRAM_CHAT_ID: set")
+    except urllib.error.HTTPError:
+        print("TELEGRAM_BOT_TOKEN: set but INVALID (API rejected it)", file=sys.stderr)
+        print("TELEGRAM_CHAT_ID: set", file=sys.stderr)
+        print("Re-run the setup script to fix.", file=sys.stderr)
+        sys.exit(1)
+    except Exception as e:
+        print(f"TELEGRAM_BOT_TOKEN: set but could not validate ({e})", file=sys.stderr)
+        print("TELEGRAM_CHAT_ID: set", file=sys.stderr)
+        sys.exit(1)
+
+
 def main():
     parser = argparse.ArgumentParser(description="Send a Telegram message via the Bot API")
-    parser.add_argument("--message", "-m", required=True, help="Message text to send")
+    parser.add_argument("--message", "-m", help="Message text to send")
     parser.add_argument(
         "--parse-mode",
         choices=["Markdown", "MarkdownV2", "HTML"],
         default=None,
         help="Message formatting mode (default: plain text)",
     )
+    parser.add_argument(
+        "--check",
+        action="store_true",
+        help="Check that credentials are configured and valid, then exit",
+    )
     args = parser.parse_args()
+
+    if args.check:
+        check_config()
+        sys.exit(0)
+
+    if not args.message:
+        parser.error("--message is required (unless using --check)")
 
     token = os.environ.get("TELEGRAM_BOT_TOKEN")
     if not token:
@@ -55,9 +106,7 @@ def main():
     chat_id = os.environ.get("TELEGRAM_CHAT_ID")
     if not chat_id:
         print("Error: TELEGRAM_CHAT_ID environment variable is not set.", file=sys.stderr)
-        print("Message your bot, then visit:", file=sys.stderr)
-        print("  https://api.telegram.org/bot<YOUR_TOKEN>/getUpdates", file=sys.stderr)
-        print("Find your chat.id in the response.", file=sys.stderr)
+        print("Run the setup script to configure.", file=sys.stderr)
         sys.exit(1)
 
     message = args.message
