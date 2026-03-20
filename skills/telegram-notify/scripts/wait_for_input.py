@@ -17,10 +17,16 @@ import sys
 import time
 import urllib.request
 import urllib.error
+from pathlib import Path
 
 # Hard limits — never wait forever, never skip the wait entirely.
 MIN_TIMEOUT = 10
 MAX_TIMEOUT = 600  # 10 minutes
+
+SETUP_HINT = (
+    "Run the setup script: uv run "
+    + str(Path(__file__).resolve().parent / "setup.py")
+)
 
 
 def get_updates(token: str, offset: int | None = None, timeout: int = 30) -> dict:
@@ -119,12 +125,14 @@ def main():
 
     token = os.environ.get("TELEGRAM_BOT_TOKEN")
     if not token:
-        print("Error: TELEGRAM_BOT_TOKEN not set.", file=sys.stderr)
+        print("Error: TELEGRAM_BOT_TOKEN is not set.", file=sys.stderr)
+        print(SETUP_HINT, file=sys.stderr)
         sys.exit(1)
 
     chat_id = os.environ.get("TELEGRAM_CHAT_ID")
     if not chat_id:
-        print("Error: TELEGRAM_CHAT_ID not set.", file=sys.stderr)
+        print("Error: TELEGRAM_CHAT_ID is not set.", file=sys.stderr)
+        print(SETUP_HINT, file=sys.stderr)
         sys.exit(1)
 
     if args.prompt:

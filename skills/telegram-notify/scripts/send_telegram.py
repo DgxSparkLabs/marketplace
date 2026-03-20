@@ -10,8 +10,14 @@ import os
 import sys
 import urllib.request
 import urllib.error
+from pathlib import Path
 
 MAX_MESSAGE_LENGTH = 4096
+
+SETUP_HINT = (
+    "Run the setup script: uv run "
+    + str(Path(__file__).resolve().parent / "setup.py")
+)
 
 
 def send_message(token: str, chat_id: str, text: str, parse_mode: str | None = None) -> dict:
@@ -43,15 +49,17 @@ def check_config() -> None:
     if not token and not chat_id:
         print("TELEGRAM_BOT_TOKEN: not set", file=sys.stderr)
         print("TELEGRAM_CHAT_ID: not set", file=sys.stderr)
-        print("Run the setup script to configure.", file=sys.stderr)
+        print(SETUP_HINT, file=sys.stderr)
         sys.exit(1)
     if not token:
         print("TELEGRAM_BOT_TOKEN: not set", file=sys.stderr)
         print("TELEGRAM_CHAT_ID: set", file=sys.stderr)
+        print(SETUP_HINT, file=sys.stderr)
         sys.exit(1)
     if not chat_id:
         print("TELEGRAM_BOT_TOKEN: set", file=sys.stderr)
         print("TELEGRAM_CHAT_ID: not set", file=sys.stderr)
+        print(SETUP_HINT, file=sys.stderr)
         sys.exit(1)
 
     # Validate the token against the Telegram API
@@ -66,7 +74,7 @@ def check_config() -> None:
     except urllib.error.HTTPError:
         print("TELEGRAM_BOT_TOKEN: set but INVALID (API rejected it)", file=sys.stderr)
         print("TELEGRAM_CHAT_ID: set", file=sys.stderr)
-        print("Re-run the setup script to fix.", file=sys.stderr)
+        print(SETUP_HINT, file=sys.stderr)
         sys.exit(1)
     except Exception as e:
         print(f"TELEGRAM_BOT_TOKEN: set but could not validate ({e})", file=sys.stderr)
@@ -99,14 +107,14 @@ def main():
 
     token = os.environ.get("TELEGRAM_BOT_TOKEN")
     if not token:
-        print("Error: TELEGRAM_BOT_TOKEN environment variable is not set.", file=sys.stderr)
-        print("Create a bot via @BotFather on Telegram to get a token.", file=sys.stderr)
+        print("Error: TELEGRAM_BOT_TOKEN is not set.", file=sys.stderr)
+        print(SETUP_HINT, file=sys.stderr)
         sys.exit(1)
 
     chat_id = os.environ.get("TELEGRAM_CHAT_ID")
     if not chat_id:
-        print("Error: TELEGRAM_CHAT_ID environment variable is not set.", file=sys.stderr)
-        print("Run the setup script to configure.", file=sys.stderr)
+        print("Error: TELEGRAM_CHAT_ID is not set.", file=sys.stderr)
+        print(SETUP_HINT, file=sys.stderr)
         sys.exit(1)
 
     message = args.message
