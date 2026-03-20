@@ -19,7 +19,15 @@ Send an email using the Resend API via a self-contained Python script.
 
 ## Prerequisites
 
-The `RESEND_API_KEY` environment variable must be set. If it is not set, tell the user to:
+Before sending any email, verify the skill is ready:
+
+```
+uv run ~/.config/devin/skills/send-email/scripts/send_email.py --check
+```
+
+**Do NOT echo, print, or log `RESEND_API_KEY`.** The `--check` flag validates that the key is set and accepted by the Resend API, without revealing the secret.
+
+If `--check` reports the key is missing or invalid, tell the user to:
 1. Sign up at https://resend.com
 2. Get an API key from https://resend.com/api-keys
 3. Export it: `export RESEND_API_KEY="re_..."`
