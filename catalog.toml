@@ -128,7 +128,7 @@ members = ["gemini-chat", "google-drive-reader"]
 [rule_families."Quality & Verification"]
 icon = "\u2714"
 description = "Enforce code quality, testing, and review standards"
-members = ["blast-radius", "pitfalls-discipline", "prior-art", "verification-ladder", "verify-your-work"]
+members = ["blast-radius", "pitfalls-discipline", "prior-art", "simplicity-bar", "verification-ladder", "verify-your-work"]
 
 [rule_families."Documentation & Progress"]
 icon = "\U0001F4DD"
@@ -138,12 +138,12 @@ members = ["document-lifecycle", "document-progress"]
 [rule_families."Workflow & Process"]
 icon = "\u2699"
 description = "Shape how agents approach and execute tasks"
-members = ["continuous-improvement", "improve-the-process", "session-resilience", "stay-motivated", "task-formation"]
+members = ["continuous-improvement", "improve-the-process", "revert-on-failure", "session-resilience", "stay-motivated", "task-formation"]
 
 [rule_families."Environment & Conventions"]
 icon = "\U0001F527"
 description = "Technical environment rules and output conventions"
-members = ["no-ai-credit", "python-uv"]
+members = ["no-ai-credit", "output-discipline", "python-uv"]
 
 [rule_families."Notifications"]
 icon = "\U0001F514"

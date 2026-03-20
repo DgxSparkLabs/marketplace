@@ -16,10 +16,13 @@ A curated collection of reusable agent skills and rules. Each item is a self-con
 | [document-progress](./rules/document-progress/) | Write progress to disk using todo lists and HANDOFF.md so nothing is lost between sessions |
 | [improve-the-process](./rules/improve-the-process/) | Fix friction structurally — every session should improve the workflow |
 | [no-ai-credit](./rules/no-ai-credit/) | Prevent AI agents from adding self-attribution to any output |
+| [output-discipline](./rules/output-discipline/) | Redirect verbose output to files and extract only what you need -- never flood context |
 | [pitfalls-discipline](./rules/pitfalls-discipline/) | Read PITFALLS.md before complex work, write to it after fixing bugs |
 | [prior-art](./rules/prior-art/) | Search for existing solutions before building custom code |
 | [python-uv](./rules/python-uv/) | Use uv for all Python operations — never pip, venv, conda, or poetry |
+| [revert-on-failure](./rules/revert-on-failure/) | Commit before experimenting, measure after, keep improvements, revert failures |
 | [session-resilience](./rules/session-resilience/) | Write state to disk continuously — you don't have memory, these files do |
+| [simplicity-bar](./rules/simplicity-bar/) | Weigh complexity cost against improvement magnitude -- simpler is better, deletion is a win |
 | [stay-motivated](./rules/stay-motivated/) | Completeness checklist — verify done conditions before stopping |
 | [task-formation](./rules/task-formation/) | Decompose requests into goals with intent, then into actionable session-sized tasks |
 | [telegram-on-complete](./rules/telegram-on-complete/) | Send a Telegram notification after completing any task |
