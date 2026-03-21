@@ -1,95 +1,51 @@
 # telegram-notify
 
-Send Telegram notifications from the command line or an AI agent session using the [Telegram Bot API](https://core.telegram.org/bots/api).
+Send Telegram notifications from an AI agent session using the [Telegram Bot API](https://core.telegram.org/bots/api).
 
 Useful as a "ping me when you're done" skill — the agent sends a concise task summary to your Telegram when it finishes working.
 
+This is a markdown-only skill — no scripts or dependencies. The agent calls the Telegram Bot API directly via `curl`.
+
 ## Setup
 
-Run the interactive setup script — it handles everything:
+### 1. Create a bot
 
-```bash
-uv run telegram-notify/scripts/setup.py
-```
+1. Message [@BotFather](https://t.me/BotFather) on Telegram, send `/newbot`
+2. Choose a display name and username (must end in `bot`)
+3. Copy the bot token BotFather gives you
 
-The script will:
-1. Walk you through creating a bot via [@BotFather](https://t.me/BotFather)
-2. Validate your bot token
-3. Auto-detect your chat ID (asks you to message the bot, then polls for it)
-4. Send a test message to confirm it works
-5. Optionally append the credentials to your shell profile (`~/.zshrc`, `~/.bashrc`, etc.)
+### 2. Get your chat ID
 
-### Manual setup
-
-If you prefer to set things up manually:
-
-1. Message [@BotFather](https://t.me/BotFather) on Telegram, send `/newbot`, and copy the token.
-2. Message your new bot, then find your chat ID:
+1. Message your new bot (just say "hi")
+2. Run:
    ```bash
    curl -s "https://api.telegram.org/bot<YOUR_TOKEN>/getUpdates" | python3 -m json.tool
    ```
-   Look for `"chat": {"id": 12345678, ...}` in the response.
-3. Export both values:
-   ```bash
-   export TELEGRAM_BOT_TOKEN="123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11"
-   export TELEGRAM_CHAT_ID="12345678"
-   ```
+3. Look for `"chat": {"id": 12345678, ...}` in the response
+
+### 3. Export credentials
+
+```bash
+export TELEGRAM_BOT_TOKEN="123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11"
+export TELEGRAM_CHAT_ID="12345678"
+```
+
+Add these to your shell profile (`~/.zshrc`, `~/.bashrc`, etc.) for persistence.
 
 ## Usage
 
-The script is self-contained with zero dependencies (PEP 723, stdlib only). No install step needed:
+### Send a message
 
 ```bash
-uv run telegram-notify/scripts/send_telegram.py --message "Hello from the terminal!"
+curl -sf -X POST "https://api.telegram.org/bot$TELEGRAM_BOT_TOKEN/sendMessage" \
+  -H "Content-Type: application/json" \
+  -d '{"chat_id": "'"$TELEGRAM_CHAT_ID"'", "text": "Hello from the terminal!"}'
 ```
 
-### Options
-
-| Flag | Required | Description |
-|------|----------|-------------|
-| `--message` / `-m` | Yes | Message text to send (max 4096 chars, auto-truncated) |
-| `--parse-mode` | No | `Markdown`, `MarkdownV2`, or `HTML` (default: plain text) |
-| `--check` | No | Validate credentials and exit (no message sent) |
-
-### Examples
+### Validate your token
 
 ```bash
-# Simple notification
-uv run telegram-notify/scripts/send_telegram.py -m "Build finished successfully"
-
-# With Markdown formatting
-uv run telegram-notify/scripts/send_telegram.py -m "Deploy *complete* for \`main\`" --parse-mode Markdown
-```
-
-## Waiting for User Input
-
-Send a prompt and block until the user replies via Telegram:
-
-```bash
-uv run telegram-notify/scripts/wait_for_input.py --prompt "What should I do next?"
-```
-
-If a reply arrives, it's printed to stdout. If no reply arrives within the timeout (default: 3 minutes), the script prints an autonomous-continuation prompt instead — instructing the agent to use best judgment and keep working. Exit code is always 0.
-
-### Options
-
-| Flag | Required | Description |
-|------|----------|-------------|
-| `--prompt` / `-p` | No | Message to send before waiting |
-| `--timeout` / `-t` | No | Max seconds to wait (default: 180 = 3 min) |
-| `--json` | No | Output as JSON (includes `autonomous_prompt` on timeout) |
-
-### Examples
-
-```bash
-# Ask a question and wait up to 5 minutes
-uv run telegram-notify/scripts/wait_for_input.py -p "Need API key for deploy. Paste it here:"
-
-# Wait with JSON output
-uv run telegram-notify/scripts/wait_for_input.py -p "Pick an option: A, B, or C" --json
-
-# Silent wait (no prompt, just listen for the next message)
-uv run telegram-notify/scripts/wait_for_input.py --timeout 120
+curl -sf "https://api.telegram.org/bot$TELEGRAM_BOT_TOKEN/getMe" | python3 -m json.tool
 ```
 
 ## As an Agent Skill

@@ -7,7 +7,7 @@ allowed-tools:
   - read
 permissions:
   allow:
-    - Exec(uv run)
+    - Exec(curl)
     - Exec(echo)
 triggers:
   - user
@@ -20,34 +20,46 @@ Send a Telegram message to the user summarizing what was accomplished.
 
 ## First-time setup
 
-Before sending any notification, you MUST verify the skill is ready:
+Check that both `TELEGRAM_BOT_TOKEN` and `TELEGRAM_CHAT_ID` are set:
 
 ```
-uv run $SKILL_DIR/scripts/send_telegram.py --check
+echo "TOKEN=${TELEGRAM_BOT_TOKEN:+set}" && echo "CHAT_ID=${TELEGRAM_CHAT_ID:+set}"
 ```
 
-**Do NOT echo, print, or log `TELEGRAM_BOT_TOKEN` or `TELEGRAM_CHAT_ID`.** The `--check` flag validates that credentials are set and the bot token is valid, without revealing secret values.
+**Do NOT echo, print, or log the actual values of `TELEGRAM_BOT_TOKEN` or `TELEGRAM_CHAT_ID`.**
 
-If `--check` reports missing or invalid credentials, run the interactive setup script in an interactive shell:
+If either is missing, tell the user:
+
+1. Message [@BotFather](https://t.me/BotFather) on Telegram, send `/newbot`, and copy the token.
+2. Message the new bot, then find the chat ID:
+   ```
+   curl -s "https://api.telegram.org/bot$TELEGRAM_BOT_TOKEN/getUpdates" | python3 -c "import sys,json; print(json.dumps(json.load(sys.stdin),indent=2))"
+   ```
+   Look for `"chat": {"id": NUMBER}` in the response.
+3. Export both values:
+   ```
+   export TELEGRAM_BOT_TOKEN="<token>"
+   export TELEGRAM_CHAT_ID="<chat_id>"
+   ```
+4. Add the exports to their shell profile for persistence.
+
+To validate the token works:
 
 ```
-uv run $SKILL_DIR/scripts/setup.py
+curl -sf "https://api.telegram.org/bot$TELEGRAM_BOT_TOKEN/getMe" | python3 -c "import sys,json; d=json.load(sys.stdin); print(f'Bot: @{d[\"result\"][\"username\"]}')"
 ```
-
-The setup script handles everything: bot creation via @BotFather, token validation, chat ID discovery, test message, and saving credentials to the shell profile.
-
-After setup completes, run `--check` again to confirm.
 
 ## Sending a notification
 
 ```
-uv run $SKILL_DIR/scripts/send_telegram.py --message "Your message here"
+curl -sf -X POST "https://api.telegram.org/bot$TELEGRAM_BOT_TOKEN/sendMessage" \
+  -H "Content-Type: application/json" \
+  -d "{\"chat_id\": \"$TELEGRAM_CHAT_ID\", \"text\": \"YOUR_MESSAGE_HERE\"}"
 ```
 
-### Options
+To use Markdown formatting, add `"parse_mode": "Markdown"` to the JSON body.
 
-- `--message` / `-m` — message text (required)
-- `--parse-mode` — `Markdown`, `MarkdownV2`, or `HTML` (optional, default: plain text)
+**Important:** Escape any double quotes or special JSON characters in the message text. For multi-line messages, use `\n` for newlines in the JSON string.
 
 ## Composing the message
 
@@ -77,38 +89,51 @@ Do NOT use Markdown parse mode unless the message contains code blocks or format
 
 ## Waiting for user input
 
-When you need a response from the user and they may not be watching the terminal,
-send a prompt via Telegram and wait for their reply:
+When you need a response from the user and they may not be watching the terminal, send a prompt via Telegram and poll for their reply.
+
+### Send the prompt
 
 ```
-uv run $SKILL_DIR/scripts/wait_for_input.py --prompt "What should I do next?"
+curl -sf -X POST "https://api.telegram.org/bot$TELEGRAM_BOT_TOKEN/sendMessage" \
+  -H "Content-Type: application/json" \
+  -d "{\"chat_id\": \"$TELEGRAM_CHAT_ID\", \"text\": \"YOUR_QUESTION_HERE\"}"
 ```
 
-The script sends the prompt, long-polls for a reply, and prints the user's
-message to stdout. If no reply arrives within the timeout (default: 3 minutes),
-it prints an autonomous-continuation prompt instead — telling you to use your
-best judgment and keep working. Either way the exit code is 0 and you get
-actionable text on stdout.
+### Drain old updates then poll for a reply
 
-### Options
+First, drain pending updates to get the latest offset:
 
-- `--prompt` / `-p` — message to send before waiting (optional)
-- `--timeout` / `-t` — max seconds to wait (default: 180 = 3 minutes)
-- `--json` — output as JSON (includes `autonomous_prompt` field on timeout)
+```
+curl -sf "https://api.telegram.org/bot$TELEGRAM_BOT_TOKEN/getUpdates" | python3 -c "
+import sys, json
+data = json.load(sys.stdin)
+updates = data.get('result', [])
+if updates:
+    print(updates[-1]['update_id'] + 1)
+else:
+    print(0)
+"
+```
 
-On timeout the script exits 0 and outputs a continuation prompt. Read stdout
-and follow its instructions — pick reasonable defaults, document assumptions,
-and keep going.
+Then poll with that offset (replace `OFFSET` with the value from above). Repeat up to 6 times (30s each = ~3 minutes total):
 
-### When to use this
+```
+curl -sf "https://api.telegram.org/bot$TELEGRAM_BOT_TOKEN/getUpdates?timeout=30&offset=OFFSET" | python3 -c "
+import sys, json
+data = json.load(sys.stdin)
+for u in data.get('result', []):
+    msg = u.get('message', {})
+    if str(msg.get('chat', {}).get('id', '')) == '$TELEGRAM_CHAT_ID' and msg.get('text'):
+        print(msg['text'])
+        sys.exit(0)
+print('')
+"
+```
 
-- You are blocked and need a decision from the user
-- You need credentials, a URL, or other info only the user can provide
-- You finished a task and want to ask what to do next
-- The user might be away from the terminal but reachable on their phone
+If no reply arrives after ~3 minutes, continue autonomously: pick reasonable defaults, document assumptions, and keep working. For true emergencies (data loss, security), do NOT continue the dangerous action — leave a note in `HANDOFF.md` instead.
 
 ## Instructions
 
-Compose an appropriate notification message based on the task context, then run the script. If the user provided a specific message via arguments, send that directly.
+Compose an appropriate notification message based on the task context, then send it using `curl`. If the user provided a specific message via arguments, send that directly.
 
 User arguments: $ARGUMENTS

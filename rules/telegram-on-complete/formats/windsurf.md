@@ -19,4 +19,4 @@ If `TELEGRAM_BOT_TOKEN` or `TELEGRAM_CHAT_ID` are not set, the skill will guide 
 
 If you hit a situation that could cause **data loss, security exposure, irreversible damage, or production breakage**, do NOT proceed on your own. Invoke `/telegram-notify` using the wait-for-input mode and wait for the user's response.
 
-The script waits up to 3 minutes. If the user replies, follow their instructions. If they don't reply, the script returns an autonomous-continuation prompt — but for true emergencies, **do NOT continue the dangerous action**. Instead, leave a clear note in `HANDOFF.md` describing what happened and what decision is needed, then move on to safe work only.
+Poll for up to 3 minutes. If the user replies, follow their instructions. If no reply arrives, continue autonomously on safe work only — but for true emergencies, **do NOT continue the dangerous action**. Instead, leave a clear note in `HANDOFF.md` describing what happened and what decision is needed.

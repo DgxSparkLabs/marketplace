@@ -2,7 +2,7 @@
 
 An always-on rule that makes AI agents send a Telegram notification after completing any task. The user gets a concise summary on their phone without needing to ask.
 
-Requires the **[telegram-notify](../telegram-notify/)** skill to be installed alongside this rule.
+Requires the **[telegram-notify](../../skills/telegram-notify/)** skill to be installed alongside this rule.
 
 Unlike a skill (which must be invoked), this is a **rule** — it activates automatically in every session with no user action needed.
 
@@ -60,8 +60,8 @@ cp telegram-on-complete/formats/cursor.md .cursor/rules/telegram-on-complete.md
 
 ## Prerequisites
 
-- The **telegram-notify** skill must be installed (provides the send script and setup flow)
-- `TELEGRAM_BOT_TOKEN` and `TELEGRAM_CHAT_ID` must be set (the skill's setup script handles this)
+- The **telegram-notify** skill must be installed (provides the API call instructions and setup flow)
+- `TELEGRAM_BOT_TOKEN` and `TELEGRAM_CHAT_ID` must be set (see the skill's README for setup instructions)
 
 ## How it works
 
