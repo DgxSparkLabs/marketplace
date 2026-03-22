@@ -9,15 +9,17 @@ set -euo pipefail
 #
 # What it does:
 #   1. Installs uv (if not already installed)
-#   2. Clones the marketplace repo to a temp directory
+#   2. Clones the marketplace repo to ~/.local/share/marketplace (persistent)
 #   3. Runs the interactive TUI installer
-#   4. Cleans up the temp directory
+#
+# The clone is kept because installed skills are symlinked back to it.
 #
 # Pass arguments through to install.py:
 #   curl ... | bash -s -- --uninstall
 
 REPO="https://github.com/ForkYoraiLevi/marketplace.git"
 BRANCH="main"
+MARKETPLACE_DIR="${MARKETPLACE_HOME:-$HOME/.local/share/marketplace}"
 
 # ── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -25,13 +27,6 @@ info()  { printf '\033[1;36m%s\033[0m\n' "$*"; }
 error() { printf '\033[1;31mError: %s\033[0m\n' "$*" >&2; }
 
 command_exists() { command -v "$1" >/dev/null 2>&1; }
-
-cleanup() {
-    if [[ -n "${TMPDIR_CREATED:-}" && -d "${TMPDIR_CREATED}" ]]; then
-        rm -rf "$TMPDIR_CREATED"
-    fi
-}
-trap cleanup EXIT
 
 # ── Install uv if missing ───────────────────────────────────────────────────
 
@@ -60,17 +55,23 @@ ensure_uv() {
     fi
 }
 
-# ── Clone marketplace ────────────────────────────────────────────────────────
+# ── Clone or update marketplace ──────────────────────────────────────────────
 
-clone_marketplace() {
+ensure_marketplace() {
     if ! command_exists git; then
         error "git is required. Install git and try again."
         exit 1
     fi
-    TMPDIR_CREATED="$(mktemp -d)"
-    info "Cloning marketplace to $TMPDIR_CREATED..."
-    git clone --depth 1 --branch "$BRANCH" "$REPO" "$TMPDIR_CREATED/marketplace" 2>&1 | tail -1
-    echo "$TMPDIR_CREATED/marketplace"
+    if [[ -d "$MARKETPLACE_DIR/.git" ]]; then
+        info "Updating marketplace in $MARKETPLACE_DIR..."
+        git -C "$MARKETPLACE_DIR" fetch --depth 1 origin "$BRANCH" 2>&1 | tail -1
+        git -C "$MARKETPLACE_DIR" reset --hard "origin/$BRANCH" >/dev/null
+    else
+        info "Cloning marketplace to $MARKETPLACE_DIR..."
+        mkdir -p "$(dirname "$MARKETPLACE_DIR")"
+        git clone --depth 1 --branch "$BRANCH" "$REPO" "$MARKETPLACE_DIR" 2>&1 | tail -1
+    fi
+    echo "$MARKETPLACE_DIR"
 }
 
 # ── Main ─────────────────────────────────────────────────────────────────────
@@ -82,7 +83,7 @@ main() {
     ensure_uv
 
     local marketplace_dir
-    marketplace_dir="$(clone_marketplace)"
+    marketplace_dir="$(ensure_marketplace)"
 
     info "Launching interactive installer..."
     echo ""

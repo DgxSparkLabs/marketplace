@@ -71,7 +71,7 @@ A curated collection of reusable agent skills and rules. Each item is a self-con
 curl -fsSL https://raw.githubusercontent.com/ForkYoraiLevi/marketplace/main/scripts/install.sh | bash
 ```
 
-Installs `uv` if needed, clones the repo, and launches the interactive TUI. Pass arguments through:
+Installs `uv` if needed, clones the repo to `~/.local/share/marketplace`, and launches the interactive TUI. The clone is kept because installed skills are symlinked back to it. Override the location with `MARKETPLACE_HOME`. Pass arguments through:
 
 ```bash
 curl -fsSL ... | bash -s -- --uninstall    # uninstall mode
@@ -117,10 +117,10 @@ Supported formats: `agents` (AGENTS.md, default), `windsurf`, `cursor`, `all`.
 
 ### Skills
 
-Skills are invoked with `/<skill-name>` in an agent session. Copy the skill directory into your agent's skills directory:
+Skills are invoked with `/<skill-name>` in an agent session. Symlink the skill directory into your agent's skills directory so edits to the marketplace source are reflected immediately:
 
 ```bash
-cp -r skills/<skill-name> ~/.<agent>/skills/<skill-name>
+ln -s "$(pwd)/skills/<skill-name>" ~/.<agent>/skills/<skill-name>
 # e.g. ~/.config/devin/skills/, ~/.windsurf/skills/, etc.
 ```
 

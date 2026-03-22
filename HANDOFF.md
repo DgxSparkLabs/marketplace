@@ -172,6 +172,7 @@ marketplace/
 
 ## Recent Changes
 
+- **Symlink-safe one-liner install**: `scripts/install.sh` now clones to `~/.local/share/marketplace` (persistent) instead of a temp dir. Required after skill installation switched from copy to symlink (commit `1471299`). README updated to document symlink behavior and `MARKETPLACE_HOME` override.
 - **sync-rules skill** (`d1db0ca`→`0958aa3`): Import global agent rules into workspace. Fixed YAML escaping, slug collisions, empty slugs, avoids overwriting existing files.
 - **catalog.toml + installer upgrade** (`9edc9de`): Per-item scope toggle, workspace paths with autocomplete, catalog externalization, platform-aware scope forcing.
 - **Installer bug fixes** (`d6f254a`, `404b181`, `b2adcb6`): Crash on empty catalog, duplicate summary, race condition, banner K glyph, dropdown cap, installed marker across platforms, confirm summary scope breakdown.

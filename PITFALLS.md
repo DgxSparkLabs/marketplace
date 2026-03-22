@@ -35,3 +35,9 @@
 - **Symptom:** SKILL.md told the agent to run `echo "$TELEGRAM_BOT_TOKEN" "$TELEGRAM_CHAT_ID"` to check config, printing raw secrets into the conversation context. Also, `setup.py` printed the full bot token in a URL during fallback.
 - **Cause:** Env var validation was delegated to the agent (via shell echo) instead of to the script. The setup script interpolated the token into a user-facing URL.
 - **Fix:** Added `--check` flag to `send_telegram.py` that validates env vars and tests the token against the API without revealing secret values. Updated SKILL.md to use `--check`. Masked the token in setup.py's fallback URL.
+
+## One-liner install creates dangling symlinks after symlink migration
+
+- **Symptom:** Skills installed via `curl | bash` one-liner would be broken immediately after install — all symlinks dangling.
+- **Cause:** `scripts/install.sh` cloned to a temp directory and cleaned it up on exit. After commit `1471299` switched `install.py` from `shutil.copytree` to `dest.symlink_to(source)`, the symlink targets were deleted by the cleanup trap.
+- **Fix:** Changed `install.sh` to clone to a persistent location (`~/.local/share/marketplace`, overridable via `MARKETPLACE_HOME`). On subsequent runs it fetches + resets instead of re-cloning. Removed the cleanup trap.
