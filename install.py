@@ -1984,23 +1984,60 @@ def main():
             ]
 
             # Group items by scope for summary
+            home_str = str(Path.home())
+
+            def _item_dest(itype: str, name: str, scope: str) -> str:
+                """Compact display of destination paths across platforms."""
+                seen: list[str] = []
+                for pid in selected_platforms:
+                    info = PLATFORMS[pid]
+                    eff = scope
+                    if itype == "rule" and scope == "global" and info["global"].get("rules") is None:
+                        eff = "workspace"
+                    for paths, _ in self._get_install_targets(pid, eff, ws_paths):
+                        p = None
+                        if itype == "mcp":
+                            p = paths.get("config")
+                        elif itype == "rule":
+                            p = paths.get("rules")
+                            if p and info["rule_fmt"] != "agents":
+                                p = p / f"{name}.md"
+                        elif itype == "skill":
+                            p = paths.get("skills")
+                            if p:
+                                p = p / name
+                        if p:
+                            s = str(p)
+                            if s.startswith(home_str):
+                                s = "~" + s[len(home_str):]
+                            if s not in seen:
+                                seen.append(s)
+                return ", ".join(seen)
+
+            def _fmt(itype: str, label: str, name: str, scope: str) -> str:
+                dest = _item_dest(itype, name, scope)
+                return f"{label} [dim]→ {dest}[/]" if dest else label
+
             global_items: list[str] = []
             workspace_items_list: list[str] = []
             for m in selected_mcps:
                 key = f"mcp:{m}"
                 scope = self._item_scopes.get(key, "global")
-                (workspace_items_list if scope == "workspace" else global_items).append(f"MCP: {m}")
+                item = _fmt("mcp", f"MCP: {m}", m, scope)
+                (workspace_items_list if scope == "workspace" else global_items).append(item)
             for r in selected_rules:
                 key = f"rule:{r}"
                 scope = self._item_scopes.get(key, "global")
+                item = _fmt("rule", f"Rule: {r}", r, scope)
                 if scope == "workspace":
-                    workspace_items_list.append(f"Rule: {r}")
+                    workspace_items_list.append(item)
                 else:
-                    global_items.append(f"Rule: {r}")
+                    global_items.append(item)
             for s in selected_skills:
                 key = f"skill:{s}"
                 scope = self._item_scopes.get(key, "global")
-                (workspace_items_list if scope == "workspace" else global_items).append(f"Skill: {s}")
+                item = _fmt("skill", f"Skill: {s}", s, scope)
+                (workspace_items_list if scope == "workspace" else global_items).append(item)
 
             # Identify platforms that force rules to workspace
             forced_ws_labels = [
