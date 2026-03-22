@@ -319,15 +319,13 @@ def install_skill(skill: dict, skills_dir: Path) -> str:
         return "not supported"
     skills_dir.mkdir(parents=True, exist_ok=True)
     dest = skills_dir / skill["name"]
-    if dest.exists():
-        shutil.rmtree(dest)
-    shutil.copytree(skill["path"], dest)
-    # Resolve $SKILL_DIR placeholder in SKILL.md to the actual install path.
-    skill_md = dest / "SKILL.md"
-    if skill_md.exists():
-        text = skill_md.read_text()
-        if "$SKILL_DIR" in text:
-            skill_md.write_text(text.replace("$SKILL_DIR", str(dest)))
+    if dest.exists() or dest.is_symlink():
+        if dest.is_symlink():
+            dest.unlink()
+        else:
+            shutil.rmtree(dest)
+    # Symlink to the marketplace source — single source of truth.
+    dest.symlink_to(skill["path"].resolve())
     return "installed"
 
 
@@ -335,9 +333,12 @@ def uninstall_skill(skill_name: str, skills_dir: Path) -> str:
     if not skills_dir:
         return "not supported"
     dest = skills_dir / skill_name
-    if not dest.exists():
+    if not dest.exists() and not dest.is_symlink():
         return "not installed"
-    shutil.rmtree(dest)
+    if dest.is_symlink():
+        dest.unlink()
+    else:
+        shutil.rmtree(dest)
     return "removed"
 
 

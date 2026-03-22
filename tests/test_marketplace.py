@@ -1260,32 +1260,20 @@ class TestInstallerSkills(unittest.TestCase):
             self.assertTrue((skills_dir / skill.name).is_dir())
             self.assertTrue((skills_dir / skill.name / "SKILL.md").exists())
 
-    def test_install_skill_resolves_skill_dir(self):
-        """install_skill must replace $SKILL_DIR with the actual install path."""
+    def test_install_skill_creates_symlink(self):
+        """install_skill must create a symlink to the marketplace source."""
         install_skill, _, _ = self._get_funcs()
-        # Find a skill that uses $SKILL_DIR in its SKILL.md
-        target = None
-        for skill in SKILLS:
-            text = (skill / "SKILL.md").read_text()
-            if "$SKILL_DIR" in text:
-                target = skill
-                break
-        if target is None:
-            self.skipTest("No skill uses $SKILL_DIR")
-        skill_dict = {"name": target.name, "path": target}
+        skill = SKILLS[0]
+        skill_dict = {"name": skill.name, "path": skill}
         with tempfile.TemporaryDirectory() as tmpdir:
             skills_dir = Path(tmpdir) / "skills"
             skills_dir.mkdir()
             install_skill(skill_dict, skills_dir)
-            installed_md = (skills_dir / target.name / "SKILL.md").read_text()
-            self.assertNotIn(
-                "$SKILL_DIR", installed_md,
-                f"$SKILL_DIR was not resolved in installed {target.name}/SKILL.md",
-            )
-            expected_path = str(skills_dir / target.name)
-            self.assertIn(
-                expected_path, installed_md,
-                f"Installed SKILL.md does not contain the resolved path {expected_path}",
+            dest = skills_dir / skill.name
+            self.assertTrue(dest.is_symlink(), f"{dest} should be a symlink")
+            self.assertEqual(
+                dest.resolve(), skill.resolve(),
+                f"symlink should point to {skill.resolve()}, got {dest.resolve()}",
             )
 
     def test_install_skill_overwrites(self):
