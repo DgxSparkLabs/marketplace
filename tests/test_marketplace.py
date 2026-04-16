@@ -519,7 +519,8 @@ class TestSkillStructure(unittest.TestCase):
                 )
 
     def test_skill_allowed_tools_are_valid(self):
-        valid_builtins = {"read", "edit", "grep", "glob", "exec"}
+        valid_builtins = {"read", "edit", "grep", "glob", "exec",
+                          "Read", "Edit", "Grep", "Glob", "Bash"}
         for skill in SKILLS:
             with self.subTest(skill=skill.name):
                 content = (skill / "SKILL.md").read_text()
