@@ -4,7 +4,9 @@ description: Search YouTube for technical videos, tutorials, and talks on a topi
 argument-hint: "<topic>"
 allowed-tools:
   - exec
+  - Bash
   - read
+  - Read
 permissions:
   allow:
     - Exec(uv run)

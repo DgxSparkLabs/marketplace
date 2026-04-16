@@ -4,7 +4,9 @@ description: Fetch a web page and extract its main content as clean readable tex
 argument-hint: "<url>"
 allowed-tools:
   - exec
+  - Bash
   - read
+  - Read
 permissions:
   allow:
     - Exec(uv run)

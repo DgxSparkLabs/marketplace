@@ -4,7 +4,9 @@ description: Set up SSH port forwarding tunnels (local, remote, SOCKS proxy)
 argument-hint: "<mode> <args...>"
 allowed-tools:
   - exec
+  - Bash
   - read
+  - Read
 permissions:
   allow:
     - Exec(bash)

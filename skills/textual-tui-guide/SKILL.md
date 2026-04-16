@@ -4,10 +4,15 @@ description: "Build rich terminal UIs with Python Textual — layouts, widgets, 
 argument-hint: "[description of the TUI to build]"
 allowed-tools:
   - exec
+  - Bash
   - read
+  - Read
   - edit
+  - Edit
   - grep
+  - Grep
   - glob
+  - Glob
 permissions:
   allow:
     - Exec(uv run)

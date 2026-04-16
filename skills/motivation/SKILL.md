@@ -4,7 +4,9 @@ description: Completeness checker — report what's actually unfinished before s
 argument-hint: ""
 allowed-tools:
   - exec
+  - Bash
   - read
+  - Read
 permissions:
   allow:
     - Exec(uv run)

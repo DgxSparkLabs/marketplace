@@ -4,10 +4,15 @@ description: Create a GitHub repo with CI, branch protection, and naming rules
 argument-hint: "[visibility] [description]"
 allowed-tools:
   - exec
+  - Bash
   - read
+  - Read
   - edit
+  - Edit
   - glob
+  - Glob
   - grep
+  - Grep
 permissions:
   allow:
     - Exec(gh)

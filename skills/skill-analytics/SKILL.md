@@ -4,7 +4,9 @@ description: "Analyze skill usage patterns and generate an interactive HTML dash
 argument-hint: "[--output path]"
 allowed-tools:
   - exec
+  - Bash
   - read
+  - Read
 permissions:
   allow:
     - Exec(uv run)

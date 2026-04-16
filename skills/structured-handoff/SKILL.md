@@ -4,7 +4,9 @@ description: Generate structured task files for autonomous agent sessions
 argument-hint: "[task description]"
 allowed-tools:
   - exec
+  - Bash
   - read
+  - Read
 permissions:
   allow:
     - Exec(uv run)

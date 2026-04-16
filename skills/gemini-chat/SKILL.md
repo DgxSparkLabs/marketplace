@@ -4,7 +4,9 @@ description: Interactive multi-turn chat with Google Gemini
 argument-hint: "[-m 'message'] [--system 'prompt'] [--model gemini-2.5-pro]"
 allowed-tools:
   - exec
+  - Bash
   - read
+  - Read
 permissions:
   allow:
     - Exec(uv run)

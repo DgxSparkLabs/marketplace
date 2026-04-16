@@ -4,9 +4,13 @@ description: Audit codebase for DRY violations, oversized files, and scattered d
 argument-hint: "[directory]"
 allowed-tools:
   - read
+  - Read
   - exec
+  - Bash
   - grep
+  - Grep
   - glob
+  - Glob
 triggers:
   - user
   - model

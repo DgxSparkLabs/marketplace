@@ -4,7 +4,9 @@ description: Query past Devin CLI conversations from the local session database
 argument-hint: "[search <query>] [list] [read <id>] [stats] [prompts]"
 allowed-tools:
   - exec
+  - Bash
   - read
+  - Read
 permissions:
   allow:
     - Exec(uv run)

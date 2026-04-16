@@ -4,7 +4,9 @@ description: Expose a local port via HTTPS (localhost.run) or TCP (bore)
 argument-hint: "<port> [--bore SERVER]"
 allowed-tools:
   - exec
+  - Bash
   - read
+  - Read
 permissions:
   allow:
     - Exec(bash)

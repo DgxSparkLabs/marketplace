@@ -4,7 +4,9 @@ description: Read Google Docs from personal Drive, extract URLs and conclusions
 argument-hint: "<doc-id-or-url | --list [--query search]>"
 allowed-tools:
   - exec
+  - Bash
   - read
+  - Read
 permissions:
   allow:
     - Exec(uv run)

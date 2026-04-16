@@ -4,7 +4,9 @@ description: Extract key knowledge from a YouTube video transcript
 argument-hint: "<youtube-url>"
 allowed-tools:
   - exec
+  - Bash
   - read
+  - Read
 permissions:
   allow:
     - Exec(uv run)

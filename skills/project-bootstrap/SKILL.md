@@ -4,8 +4,11 @@ description: Initialize project docs — AGENTS.md, HANDOFF.md, CHANGELOG.md, PI
 argument-hint: "[project-name]"
 allowed-tools:
   - exec
+  - Bash
   - read
+  - Read
   - edit
+  - Edit
 permissions:
   allow:
     - Exec(uv run)

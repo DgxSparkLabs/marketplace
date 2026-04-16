@@ -4,10 +4,15 @@ description: Sync rules from global AI agent configs into the workspace
 argument-hint: "[format]"
 allowed-tools:
   - exec
+  - Bash
   - read
+  - Read
   - edit
+  - Edit
   - glob
+  - Glob
   - grep
+  - Grep
 permissions:
   allow:
     - Exec(uv run)

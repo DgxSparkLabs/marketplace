@@ -3,8 +3,11 @@ name: check
 description: Mid-session course correction — stop, review rules, and realign
 allowed-tools:
   - read
+  - Read
   - grep
+  - Grep
   - glob
+  - Glob
 triggers:
   - user
   - model

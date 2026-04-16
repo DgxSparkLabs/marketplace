@@ -4,7 +4,9 @@ description: Search GitHub for repositories, prior art, and implementation inspi
 argument-hint: "<query>"
 allowed-tools:
   - exec
+  - Bash
   - read
+  - Read
 permissions:
   allow:
     - Exec(uv run)

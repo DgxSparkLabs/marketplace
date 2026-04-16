@@ -3,10 +3,15 @@ name: skill-creator
 description: "Create, test, and iteratively improve agent skills with evals"
 allowed-tools:
   - exec
+  - Bash
   - read
+  - Read
   - edit
+  - Edit
   - grep
+  - Grep
   - glob
+  - Glob
 triggers:
   - user
 ---

@@ -4,7 +4,9 @@ description: Send a Telegram notification with a task summary
 argument-hint: "[message]"
 allowed-tools:
   - exec
+  - Bash
   - read
+  - Read
 permissions:
   allow:
     - Exec(curl)

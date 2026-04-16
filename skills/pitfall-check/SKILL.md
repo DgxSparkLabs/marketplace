@@ -4,7 +4,9 @@ description: Search PITFALLS.md and git log for known issues before starting wor
 argument-hint: "[keyword]"
 allowed-tools:
   - exec
+  - Bash
   - read
+  - Read
 permissions:
   allow:
     - Exec(uv run)

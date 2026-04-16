@@ -4,7 +4,9 @@ description: Search DuckDuckGo and return results as structured text
 argument-hint: "<query>"
 allowed-tools:
   - exec
+  - Bash
   - read
+  - Read
 permissions:
   allow:
     - Exec(uv run)

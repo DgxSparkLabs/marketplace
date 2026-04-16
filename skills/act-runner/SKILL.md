@@ -4,9 +4,13 @@ description: Run GitHub Actions workflows locally with act and podman
 argument-hint: "[workflow] [options]"
 allowed-tools:
   - exec
+  - Bash
   - read
+  - Read
   - glob
+  - Glob
   - grep
+  - Grep
 permissions:
   allow:
     - Exec(bash)

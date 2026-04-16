@@ -4,7 +4,9 @@ description: End-of-session audit — check docs, commits, and readiness for the
 argument-hint: ""
 allowed-tools:
   - exec
+  - Bash
   - read
+  - Read
 permissions:
   allow:
     - Exec(uv run)

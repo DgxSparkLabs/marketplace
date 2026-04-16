@@ -4,7 +4,9 @@ description: Send an email to someone using the Resend API
 argument-hint: "[recipient] [subject]"
 allowed-tools:
   - exec
+  - Bash
   - read
+  - Read
 permissions:
   allow:
     - Exec(uv run)

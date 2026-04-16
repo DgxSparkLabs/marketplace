@@ -4,7 +4,9 @@ description: REPLACE — Short description of what this skill does (under 80 cha
 argument-hint: "[arg1] [arg2]"
 allowed-tools:
   - exec
+  - Bash
   - read
+  - Read
 permissions:
   allow:
     - Exec(uv run)

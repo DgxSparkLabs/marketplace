@@ -38,17 +38,30 @@ All fields are optional. Frontmatter itself is optional (the file can be just Ma
 
 ### `allowed-tools` values
 
-Built-in tools:
-- `read` — read files
-- `edit` — edit files
-- `grep` — search file contents with regex
-- `glob` — find files by name pattern
-- `exec` — execute shell commands
+Built-in tools differ by platform. List **both** aliases so the skill works across all platforms (each platform matches the names it recognizes and ignores the rest):
+
+| Devin | Claude Code | Description |
+|-------|-------------|-------------|
+| `exec` | `Bash` | Execute shell commands |
+| `read` | `Read` | Read files |
+| `edit` | `Edit` | Edit files |
+| `grep` | `Grep` | Search file contents with regex |
+| `glob` | `Glob` | Find files by name pattern |
+
+Always list both aliases in `allowed-tools`:
+```yaml
+allowed-tools:
+  - exec
+  - Bash
+  - read
+  - Read
+```
 
 MCP tools use the naming convention `mcp__<server>__<tool>`:
 ```yaml
 allowed-tools:
   - read
+  - Read
   - mcp__github__list_issues
   - mcp__github__create_issue
 ```
@@ -194,8 +207,11 @@ argument-hint: "[environment]"
 model: sonnet
 allowed-tools:
   - read
+  - Read
   - exec
+  - Bash
   - grep
+  - Grep
 permissions:
   allow:
     - Exec(npm run)
@@ -226,7 +242,9 @@ description: Send an email to someone using the Resend API
 argument-hint: "[recipient] [subject]"
 allowed-tools:
   - exec
+  - Bash
   - read
+  - Read
 permissions:
   allow:
     - Exec(uv run)

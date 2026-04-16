@@ -3,8 +3,11 @@ name: recall-rules
 description: Re-read global rules and thinking framework to realign mid-session
 allowed-tools:
   - read
+  - Read
   - grep
+  - Grep
   - glob
+  - Glob
 triggers:
   - user
   - model
