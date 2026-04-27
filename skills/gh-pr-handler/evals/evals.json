@@ -1,0 +1,101 @@
+{
+  "skill_name": "gh-pr-handler",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "hey can you check PR #243 in this repo? i need to know if jacek left any inline review comments and what they say. also show me which CI checks are still running or failed",
+      "expected_output": "Should retrieve inline review comments using gh api (not gh pr view --json reviews), extract the hostname and repo path correctly, and check CI status using statusCheckRollup",
+      "files": [],
+      "assertions": [
+        {
+          "name": "Uses gh api for inline comments",
+          "description": "Should use 'gh api repos/OWNER/REPO/pulls/243/comments' to get inline review comments, not 'gh pr view --json reviews' (which returns empty bodies for inline comments)"
+        },
+        {
+          "name": "Correctly identifies repository path",
+          "description": "Should use 'gh repo view --json nameWithOwner' or similar to get the correct owner/repo path (vxflexos/agentic_root_cause_analyzer), not guess or use wrong paths like 'eos2git/jarvis'"
+        },
+        {
+          "name": "Handles enterprise GitHub hostname",
+          "description": "Should include --hostname flag for the gh api call to eos2git.cec.lab.emc.com, or rely on auto-detection from git remote"
+        },
+        {
+          "name": "Retrieves CI status correctly",
+          "description": "Should use 'gh pr view 243 --json statusCheckRollup' or 'gh pr checks 243' to get CI check status"
+        },
+        {
+          "name": "Finds Jacek's comments",
+          "description": "Output should contain the actual inline review comments from Jacek-Kreft (there are 2 comments about moving code to top of file)"
+        },
+        {
+          "name": "Reports CI check status",
+          "description": "Output should show which checks are passing/failing/in progress"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "i just pushed some changes to fix the issues from the code review. can you create a PR for me? title should be 'fix(api): address review feedback' and in the description mention that i fixed the validation logic and added tests. make it a draft PR and request reviews from tal-afek and Jacek-Kreft",
+      "expected_output": "Should create a draft PR with proper title, multi-line body, and request reviews from specified users",
+      "files": [],
+      "assertions": [
+        {
+          "name": "Uses gh pr create command",
+          "description": "Should use 'gh pr create' (not gh api) for creating a PR"
+        },
+        {
+          "name": "Includes --draft flag",
+          "description": "Command should include --draft flag to create a draft PR"
+        },
+        {
+          "name": "Sets correct title",
+          "description": "Command should include --title 'fix(api): address review feedback'"
+        },
+        {
+          "name": "Includes multi-line body",
+          "description": "Command should include --body with a description mentioning validation logic and tests, likely using heredoc syntax for multi-line text"
+        },
+        {
+          "name": "Requests reviews from both users",
+          "description": "Command should include --reviewer tal-afek,Jacek-Kreft or separate --reviewer flags for each"
+        },
+        {
+          "name": "Does not actually execute the command",
+          "description": "Should show the command but not execute it (as instructed)"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "there's this PR https://eos2git.cec.lab.emc.com/vxflexos/agentic_root_cause_analyzer/pull/243 and i want to see what files changed and if there are any test failures in the CI. can you show me the diff for any files in src/agentic_root_cause_analyzer/api/ and tell me which checks failed",
+      "expected_output": "Should handle enterprise GitHub URL, view changed files, filter for specific directory, and identify failed CI checks",
+      "files": [],
+      "assertions": [
+        {
+          "name": "Handles enterprise GitHub URL",
+          "description": "Should correctly parse the enterprise GitHub URL and work with the eos2git.cec.lab.emc.com instance"
+        },
+        {
+          "name": "Lists changed files",
+          "description": "Should use 'gh pr view 243 --json files' or similar to get the list of changed files"
+        },
+        {
+          "name": "Filters for api directory",
+          "description": "Output should show only files in src/agentic_root_cause_analyzer/api/ directory"
+        },
+        {
+          "name": "Shows diff for filtered files",
+          "description": "Should use 'gh pr diff 243' with file path filtering to show diffs for api directory files"
+        },
+        {
+          "name": "Checks CI status",
+          "description": "Should use 'gh pr view 243 --json statusCheckRollup' or 'gh pr checks 243' to get CI check status"
+        },
+        {
+          "name": "Identifies failed checks",
+          "description": "Output should clearly indicate which CI checks failed (if any) or that all passed"
+        }
+      ]
+    }
+  ]
+}
