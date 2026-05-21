@@ -1,0 +1,26 @@
+{
+  "name": "rules-workflow",
+  "description": "How agents approach, decompose, and execute tasks (auto-installs member rule plugins; each requires activate.sh to apply)",
+  "version": "1.0.0",
+  "author": {
+    "name": "DgxSparkLabs",
+    "url": "https://github.com/DgxSparkLabs"
+  },
+  "homepage": "https://github.com/DgxSparkLabs/marketplace/tree/main/_generated/rules-workflow",
+  "repository": "https://github.com/DgxSparkLabs/marketplace",
+  "license": "MIT",
+  "dependencies": [
+    "rule-autonomous-persistence",
+    "rule-continuous-improvement",
+    "rule-improve-the-process",
+    "rule-revert-on-failure",
+    "rule-session-resilience",
+    "rule-stay-motivated",
+    "rule-task-formation"
+  ],
+  "keywords": [
+    "bundle",
+    "rules",
+    "workflow"
+  ]
+}

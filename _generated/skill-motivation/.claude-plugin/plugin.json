@@ -1,0 +1,19 @@
+{
+  "name": "skill-motivation",
+  "description": "Completeness checker \u2014 report what's actually unfinished before stopping",
+  "version": "1.0.0",
+  "author": {
+    "name": "DgxSparkLabs",
+    "url": "https://github.com/DgxSparkLabs"
+  },
+  "homepage": "https://github.com/DgxSparkLabs/marketplace/tree/main/_generated/skill-motivation",
+  "repository": "https://github.com/DgxSparkLabs/marketplace",
+  "license": "MIT",
+  "skills": [
+    "./"
+  ],
+  "keywords": [
+    "skill",
+    "motivation"
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "name": "skill-google-drive-reader",
+  "description": "Read Google Docs from personal Drive, extract URLs and conclusions",
+  "version": "1.0.0",
+  "author": {
+    "name": "DgxSparkLabs",
+    "url": "https://github.com/DgxSparkLabs"
+  },
+  "homepage": "https://github.com/DgxSparkLabs/marketplace/tree/main/_generated/skill-google-drive-reader",
+  "repository": "https://github.com/DgxSparkLabs/marketplace",
+  "license": "MIT",
+  "skills": [
+    "./"
+  ],
+  "keywords": [
+    "skill",
+    "google-drive-reader"
+  ]
+}

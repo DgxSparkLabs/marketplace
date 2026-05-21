@@ -1,0 +1,20 @@
+{
+  "name": "rules-notifications",
+  "description": "Alert hooks for important events (auto-installs member rule plugins; each requires activate.sh to apply)",
+  "version": "1.0.0",
+  "author": {
+    "name": "DgxSparkLabs",
+    "url": "https://github.com/DgxSparkLabs"
+  },
+  "homepage": "https://github.com/DgxSparkLabs/marketplace/tree/main/_generated/rules-notifications",
+  "repository": "https://github.com/DgxSparkLabs/marketplace",
+  "license": "MIT",
+  "dependencies": [
+    "rule-telegram-on-complete"
+  ],
+  "keywords": [
+    "bundle",
+    "rules",
+    "notifications"
+  ]
+}

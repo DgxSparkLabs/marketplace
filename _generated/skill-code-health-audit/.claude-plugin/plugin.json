@@ -1,0 +1,19 @@
+{
+  "name": "skill-code-health-audit",
+  "description": "Audit codebase for DRY violations, oversized files, and scattered definitions",
+  "version": "1.0.0",
+  "author": {
+    "name": "DgxSparkLabs",
+    "url": "https://github.com/DgxSparkLabs"
+  },
+  "homepage": "https://github.com/DgxSparkLabs/marketplace/tree/main/_generated/skill-code-health-audit",
+  "repository": "https://github.com/DgxSparkLabs/marketplace",
+  "license": "MIT",
+  "skills": [
+    "./"
+  ],
+  "keywords": [
+    "skill",
+    "code-health-audit"
+  ]
+}

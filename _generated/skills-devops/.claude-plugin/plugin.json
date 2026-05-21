@@ -1,0 +1,23 @@
+{
+  "name": "skills-devops",
+  "description": "CI/CD, repository setup, port tunneling, infrastructure tools",
+  "version": "1.0.0",
+  "author": {
+    "name": "DgxSparkLabs",
+    "url": "https://github.com/DgxSparkLabs"
+  },
+  "homepage": "https://github.com/DgxSparkLabs/marketplace/tree/main/_generated/skills-devops",
+  "repository": "https://github.com/DgxSparkLabs/marketplace",
+  "license": "MIT",
+  "dependencies": [
+    "skill-act-runner",
+    "skill-expose-port",
+    "skill-github-repo-setup",
+    "skill-ssh-tunnel"
+  ],
+  "keywords": [
+    "bundle",
+    "skills",
+    "devops"
+  ]
+}

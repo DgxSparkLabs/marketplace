@@ -1,0 +1,26 @@
+{
+  "name": "rules-quality",
+  "description": "Code quality, testing, verification, and review discipline (auto-installs member rule plugins; each requires activate.sh to apply)",
+  "version": "1.0.0",
+  "author": {
+    "name": "DgxSparkLabs",
+    "url": "https://github.com/DgxSparkLabs"
+  },
+  "homepage": "https://github.com/DgxSparkLabs/marketplace/tree/main/_generated/rules-quality",
+  "repository": "https://github.com/DgxSparkLabs/marketplace",
+  "license": "MIT",
+  "dependencies": [
+    "rule-blast-radius",
+    "rule-code-hygiene",
+    "rule-pitfalls-discipline",
+    "rule-prior-art",
+    "rule-simplicity-bar",
+    "rule-verification-ladder",
+    "rule-verify-your-work"
+  ],
+  "keywords": [
+    "bundle",
+    "rules",
+    "quality"
+  ]
+}

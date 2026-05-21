@@ -1,0 +1,21 @@
+{
+  "name": "skills-code-analysis",
+  "description": "Codebase audits and domain-specific reference guides",
+  "version": "1.0.0",
+  "author": {
+    "name": "DgxSparkLabs",
+    "url": "https://github.com/DgxSparkLabs"
+  },
+  "homepage": "https://github.com/DgxSparkLabs/marketplace/tree/main/_generated/skills-code-analysis",
+  "repository": "https://github.com/DgxSparkLabs/marketplace",
+  "license": "MIT",
+  "dependencies": [
+    "skill-code-health-audit",
+    "skill-textual-tui-guide"
+  ],
+  "keywords": [
+    "bundle",
+    "skills",
+    "code-analysis"
+  ]
+}

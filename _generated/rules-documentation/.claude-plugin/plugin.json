@@ -1,0 +1,22 @@
+{
+  "name": "rules-documentation",
+  "description": "Tracking work, documenting decisions, maintaining project history (auto-installs member rule plugins; each requires activate.sh to apply)",
+  "version": "1.0.0",
+  "author": {
+    "name": "DgxSparkLabs",
+    "url": "https://github.com/DgxSparkLabs"
+  },
+  "homepage": "https://github.com/DgxSparkLabs/marketplace/tree/main/_generated/rules-documentation",
+  "repository": "https://github.com/DgxSparkLabs/marketplace",
+  "license": "MIT",
+  "dependencies": [
+    "rule-document-lifecycle",
+    "rule-document-progress",
+    "rule-readable-docs"
+  ],
+  "keywords": [
+    "bundle",
+    "rules",
+    "documentation"
+  ]
+}

@@ -1,0 +1,40 @@
+{
+  "name": "rules-all",
+  "description": "Every rule in this marketplace, bundled. Auto-installs all rule plugins; each requires activate.sh to apply, or use activate-installed-rules.sh at the repo root.",
+  "version": "1.0.0",
+  "author": {
+    "name": "DgxSparkLabs",
+    "url": "https://github.com/DgxSparkLabs"
+  },
+  "homepage": "https://github.com/DgxSparkLabs/marketplace/tree/main/_generated/rules-all",
+  "repository": "https://github.com/DgxSparkLabs/marketplace",
+  "license": "MIT",
+  "dependencies": [
+    "rule-autonomous-persistence",
+    "rule-blast-radius",
+    "rule-code-hygiene",
+    "rule-continuous-improvement",
+    "rule-document-lifecycle",
+    "rule-document-progress",
+    "rule-improve-the-process",
+    "rule-no-ai-credit",
+    "rule-output-discipline",
+    "rule-pitfalls-discipline",
+    "rule-prior-art",
+    "rule-python-uv",
+    "rule-readable-docs",
+    "rule-revert-on-failure",
+    "rule-session-resilience",
+    "rule-simplicity-bar",
+    "rule-stay-motivated",
+    "rule-task-formation",
+    "rule-telegram-on-complete",
+    "rule-verification-ladder",
+    "rule-verify-your-work"
+  ],
+  "keywords": [
+    "bundle",
+    "rules",
+    "all"
+  ]
+}

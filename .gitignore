@@ -16,3 +16,4 @@ results.json
 text_*.json
 test.log
 _dep-test/
+user_resource_dump/

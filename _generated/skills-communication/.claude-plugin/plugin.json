@@ -1,0 +1,21 @@
+{
+  "name": "skills-communication",
+  "description": "Send emails, messages, and notifications",
+  "version": "1.0.0",
+  "author": {
+    "name": "DgxSparkLabs",
+    "url": "https://github.com/DgxSparkLabs"
+  },
+  "homepage": "https://github.com/DgxSparkLabs/marketplace/tree/main/_generated/skills-communication",
+  "repository": "https://github.com/DgxSparkLabs/marketplace",
+  "license": "MIT",
+  "dependencies": [
+    "skill-send-email",
+    "skill-telegram-notify"
+  ],
+  "keywords": [
+    "bundle",
+    "skills",
+    "communication"
+  ]
+}

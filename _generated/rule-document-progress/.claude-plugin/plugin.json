@@ -1,0 +1,16 @@
+{
+  "name": "rule-document-progress",
+  "description": "Always-on rule: document-progress. Install, then run activate.sh to symlink into .claude/rules/.",
+  "version": "1.0.0",
+  "author": {
+    "name": "DgxSparkLabs",
+    "url": "https://github.com/DgxSparkLabs"
+  },
+  "homepage": "https://github.com/DgxSparkLabs/marketplace/tree/main/_generated/rule-document-progress",
+  "repository": "https://github.com/DgxSparkLabs/marketplace",
+  "license": "MIT",
+  "keywords": [
+    "rule",
+    "document-progress"
+  ]
+}

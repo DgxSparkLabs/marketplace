@@ -1,0 +1,16 @@
+{
+  "name": "rule-verify-your-work",
+  "description": "Always-on rule: verify-your-work. Install, then run activate.sh to symlink into .claude/rules/.",
+  "version": "1.0.0",
+  "author": {
+    "name": "DgxSparkLabs",
+    "url": "https://github.com/DgxSparkLabs"
+  },
+  "homepage": "https://github.com/DgxSparkLabs/marketplace/tree/main/_generated/rule-verify-your-work",
+  "repository": "https://github.com/DgxSparkLabs/marketplace",
+  "license": "MIT",
+  "keywords": [
+    "rule",
+    "verify-your-work"
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "name": "skills-session-management",
+  "description": "Mid-session realignment, motivation, recall, history, audits",
+  "version": "1.0.0",
+  "author": {
+    "name": "DgxSparkLabs",
+    "url": "https://github.com/DgxSparkLabs"
+  },
+  "homepage": "https://github.com/DgxSparkLabs/marketplace/tree/main/_generated/skills-session-management",
+  "repository": "https://github.com/DgxSparkLabs/marketplace",
+  "license": "MIT",
+  "dependencies": [
+    "skill-check",
+    "skill-motivation",
+    "skill-recall-rules",
+    "skill-session-wrapup",
+    "skill-session-history",
+    "skill-pitfall-check"
+  ],
+  "keywords": [
+    "bundle",
+    "skills",
+    "session-management"
+  ]
+}

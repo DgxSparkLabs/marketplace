@@ -1,0 +1,19 @@
+{
+  "name": "skill-recall-rules",
+  "description": "Re-read global rules and thinking framework to realign mid-session",
+  "version": "1.0.0",
+  "author": {
+    "name": "DgxSparkLabs",
+    "url": "https://github.com/DgxSparkLabs"
+  },
+  "homepage": "https://github.com/DgxSparkLabs/marketplace/tree/main/_generated/skill-recall-rules",
+  "repository": "https://github.com/DgxSparkLabs/marketplace",
+  "license": "MIT",
+  "skills": [
+    "./"
+  ],
+  "keywords": [
+    "skill",
+    "recall-rules"
+  ]
+}

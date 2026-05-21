@@ -1,0 +1,16 @@
+{
+  "name": "rule-telegram-on-complete",
+  "description": "Always-on rule: telegram-on-complete. Install, then run activate.sh to symlink into .claude/rules/.",
+  "version": "1.0.0",
+  "author": {
+    "name": "DgxSparkLabs",
+    "url": "https://github.com/DgxSparkLabs"
+  },
+  "homepage": "https://github.com/DgxSparkLabs/marketplace/tree/main/_generated/rule-telegram-on-complete",
+  "repository": "https://github.com/DgxSparkLabs/marketplace",
+  "license": "MIT",
+  "keywords": [
+    "rule",
+    "telegram-on-complete"
+  ]
+}
