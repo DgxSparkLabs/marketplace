@@ -6,50 +6,16 @@ Requires the **[telegram-notify](../../skills/telegram-notify/)** skill to be in
 
 Unlike a skill (which must be invoked), this is a **rule** — it activates automatically in every session with no user action needed.
 
-## Quick Install
+## Install
 
 ```bash
-git clone https://github.com/DgxSparkLabs/marketplace.git /tmp/marketplace
+# Native Claude Code plugin install:
+/plugin marketplace add DgxSparkLabs/marketplace
+/plugin install rule-telegram-on-complete@marketplace
 
-# Install into current project (AGENTS.md)
-/tmp/marketplace/telegram-on-complete/install.sh
-
-# Install globally (all projects)
-/tmp/marketplace/telegram-on-complete/install.sh --global
-
-# Install for a specific tool only
-/tmp/marketplace/telegram-on-complete/install.sh --format windsurf
-/tmp/marketplace/telegram-on-complete/install.sh --format cursor
-/tmp/marketplace/telegram-on-complete/install.sh --format agents
-```
-
-Don't forget to also install the skill:
-
-```bash
-cp -r /tmp/marketplace/telegram-notify/ ~/.config/devin/skills/telegram-notify/
-```
-
-## Manual Install
-
-### AGENTS.md (universal)
-
-```bash
-cat telegram-on-complete/rule.md >> AGENTS.md
-```
-
-### Windsurf
-
-```bash
-mkdir -p .windsurf/rules
-cp telegram-on-complete/formats/windsurf.md .windsurf/rules/telegram-on-complete.md
-```
-
-### Cursor
-
-```bash
-mkdir -p .cursor/rules
-cp telegram-on-complete/formats/cursor.md .cursor/rules/telegram-on-complete.md
-```
+# Then activate (one-time):
+bash ~/.claude/plugins/cache/DgxSparkLabs/marketplace/rule-telegram-on-complete/activate.sh
+```nFor other platforms (Devin, Cursor, Windsurf), see the auto-generated mirrors in `.devin/rules/`, `.cursor/rules/`, `.windsurf/rules/` after `git clone`.
 
 ## What it enforces
 

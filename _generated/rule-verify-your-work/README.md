@@ -4,48 +4,17 @@ An always-on rule that requires AI agents to test and verify everything they bui
 
 Unlike a skill (which must be invoked), this is a **rule** — it activates automatically in every session with no user action needed.
 
-## Quick Install
+## Install
 
 ```bash
-git clone https://github.com/DgxSparkLabs/marketplace.git /tmp/marketplace
+# Native Claude Code plugin install:
+/plugin marketplace add DgxSparkLabs/marketplace
+/plugin install rule-verify-your-work@marketplace
 
-# Install into current project (AGENTS.md)
-/tmp/marketplace/verify-your-work/install.sh
+# Then activate (one-time):
+bash ~/.claude/plugins/cache/DgxSparkLabs/marketplace/rule-verify-your-work/activate.sh
+```nFor other platforms (Devin, Cursor, Windsurf), see the auto-generated mirrors in `.devin/rules/`, `.cursor/rules/`, `.windsurf/rules/` after `git clone`.
 
-# Install globally (all projects)
-/tmp/marketplace/verify-your-work/install.sh --global
-
-# Install for a specific tool only
-/tmp/marketplace/verify-your-work/install.sh --format windsurf
-/tmp/marketplace/verify-your-work/install.sh --format cursor
-/tmp/marketplace/verify-your-work/install.sh --format agents
-```
-
-## Manual Install
-
-Copy the appropriate format file to your project or global config:
-
-### AGENTS.md (universal)
-
-Append the contents of `rule.md` to your project's `AGENTS.md`:
-
-```bash
-cat verify-your-work/rule.md >> AGENTS.md
-```
-
-### Windsurf
-
-```bash
-mkdir -p .windsurf/rules
-cp verify-your-work/formats/windsurf.md .windsurf/rules/verify-your-work.md
-```
-
-### Cursor
-
-```bash
-mkdir -p .cursor/rules
-cp verify-your-work/formats/cursor.md .cursor/rules/verify-your-work.md
-```
 ## What it enforces
 
 - **Test before you ship** — agents must run their code, inspect output, and confirm correctness

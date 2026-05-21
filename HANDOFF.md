@@ -1,13 +1,21 @@
 # Handoff
 
+> **⚠ ACTIVE MIGRATION on `feat/claude-plugin-compliance`.** The TUI installer and curl-bootstrap have been **deleted**. The marketplace is being migrated to native Claude Code `/plugin marketplace add DgxSparkLabs/marketplace` compliance with auto-generated cross-platform mirrors. **Read these three planning files first** if you're picking up the branch:
+> - `docs/GOAL_PLUGIN_COMPLIANCE.md` (what done looks like)
+> - `docs/PLAN_PLUGIN_COMPLIANCE.md` (full architecture)
+> - `docs/IMPLEMENTING_AGENT_PROMPT.md` (handoff prompt)
+>
+> Sections below this banner describe the pre-migration state and are being rewritten as task #8 progresses.
+
 ## What This Is
 
 A **skills and rules marketplace** for AI coding agents. Not a software project — the "product" is the skills, rules, and research themselves. Cross-platform: Devin CLI, Claude Code, Cursor, Windsurf.
 
-- **Skills** = on-demand capabilities invoked with `/skill-name` (24 skills)
-- **Rules** = always-on behavioral guidelines loaded every session (15 rules)
+- **Skills** = on-demand capabilities invoked with `/skill-name` (26 skills)
+- **Rules** = always-on behavioral guidelines loaded every session (21 rules)
+- **Examples** = 10 reference plugins (one per Claude Code construct type) in `examples/`
 - **Research** = 250+ sources across 12 rounds of market intelligence
-- **TUI installer** = interactive terminal UI for installing everything (`install.py`)
+- **Install path** (post-migration): `/plugin marketplace add DgxSparkLabs/marketplace`
 
 ## How to Build/Test
 

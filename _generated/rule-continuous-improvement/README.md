@@ -4,48 +4,17 @@ An always-on rule that gives AI agents a structured seven-phase workflow for fin
 
 Unlike a skill (which must be invoked), this is a **rule** — it activates automatically in every session with no user action needed.
 
-## Quick Install
+## Install
 
 ```bash
-git clone https://github.com/DgxSparkLabs/marketplace.git /tmp/marketplace
+# Native Claude Code plugin install:
+/plugin marketplace add DgxSparkLabs/marketplace
+/plugin install rule-continuous-improvement@marketplace
 
-# Install into current project (AGENTS.md)
-/tmp/marketplace/continuous-improvement/install.sh
+# Then activate (one-time):
+bash ~/.claude/plugins/cache/DgxSparkLabs/marketplace/rule-continuous-improvement/activate.sh
+```nFor other platforms (Devin, Cursor, Windsurf), see the auto-generated mirrors in `.devin/rules/`, `.cursor/rules/`, `.windsurf/rules/` after `git clone`.
 
-# Install globally (all projects)
-/tmp/marketplace/continuous-improvement/install.sh --global
-
-# Install for a specific tool only
-/tmp/marketplace/continuous-improvement/install.sh --format windsurf
-/tmp/marketplace/continuous-improvement/install.sh --format cursor
-/tmp/marketplace/continuous-improvement/install.sh --format agents
-```
-
-## Manual Install
-
-Copy the appropriate format file to your project or global config:
-
-### AGENTS.md (universal)
-
-Append the contents of `rule.md` to your project's `AGENTS.md`:
-
-```bash
-cat continuous-improvement/rule.md >> AGENTS.md
-```
-
-### Windsurf
-
-```bash
-mkdir -p .windsurf/rules
-cp continuous-improvement/formats/windsurf.md .windsurf/rules/continuous-improvement.md
-```
-
-### Cursor
-
-```bash
-mkdir -p .cursor/rules
-cp continuous-improvement/formats/cursor.md .cursor/rules/continuous-improvement.md
-```
 ## What it enforces
 
 The rule defines a mandatory seven-phase workflow when an agent is asked to improve a codebase:

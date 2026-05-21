@@ -49,14 +49,14 @@ Use `rules/no-ai-credit/` as a reference. Full spec in `docs/RULE_FORMAT.md`.
 my-rule/
 ├── rule.md             # Required — plain Markdown, no frontmatter
 ├── README.md           # Required
-├── install.sh          # Required — supports --global and --format
 └── formats/
     ├── windsurf.md     # trigger: always_on
     └── cursor.md       # alwaysApply: true
 ```
 
-- Copy and adapt `rules/no-ai-credit/install.sh`
-- Update the **Rules** table in root `README.md` (alphabetical)
+- Add the rule name to a domain in `catalog.toml` under `[rule_domain.<domain>]`.
+- Run `uv run scripts/generate_manifest.py` to regenerate the plugin wrappers and cross-platform mirrors.
+- Update the **Rules** table in root `README.md` (alphabetical).
 
 ## Conventions
 

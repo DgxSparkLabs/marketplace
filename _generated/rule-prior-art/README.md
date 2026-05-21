@@ -4,44 +4,16 @@ An always-on rule that prevents AI agents from reinventing the wheel. Before bui
 
 Unlike a skill (which must be invoked), this is a **rule** — it activates automatically in every session with no user action needed.
 
-## Quick Install
+## Install
 
 ```bash
-git clone https://github.com/DgxSparkLabs/marketplace.git /tmp/marketplace
+# Native Claude Code plugin install:
+/plugin marketplace add DgxSparkLabs/marketplace
+/plugin install rule-prior-art@marketplace
 
-# Install into current project (AGENTS.md)
-/tmp/marketplace/prior-art/install.sh
-
-# Install globally (all projects)
-/tmp/marketplace/prior-art/install.sh --global
-
-# Install for a specific tool only
-/tmp/marketplace/prior-art/install.sh --format windsurf
-/tmp/marketplace/prior-art/install.sh --format cursor
-/tmp/marketplace/prior-art/install.sh --format agents
-```
-
-## Manual Install
-
-### AGENTS.md (universal)
-
-```bash
-cat prior-art/rule.md >> AGENTS.md
-```
-
-### Windsurf
-
-```bash
-mkdir -p .windsurf/rules
-cp prior-art/formats/windsurf.md .windsurf/rules/prior-art.md
-```
-
-### Cursor
-
-```bash
-mkdir -p .cursor/rules
-cp prior-art/formats/cursor.md .cursor/rules/prior-art.md
-```
+# Then activate (one-time):
+bash ~/.claude/plugins/cache/DgxSparkLabs/marketplace/rule-prior-art/activate.sh
+```nFor other platforms (Devin, Cursor, Windsurf), see the auto-generated mirrors in `.devin/rules/`, `.cursor/rules/`, `.windsurf/rules/` after `git clone`.
 
 ## What it enforces
 

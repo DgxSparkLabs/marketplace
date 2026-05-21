@@ -5,16 +5,13 @@ Decompose requests into goals with intent, then into actionable session-sized ta
 ## Install
 
 ```bash
-# Project-level (current directory)
-task-formation/install.sh
+# Native Claude Code plugin install:
+/plugin marketplace add DgxSparkLabs/marketplace
+/plugin install rule-task-formation@marketplace
 
-# Global (all projects)
-task-formation/install.sh --global
-
-# Specific format
-task-formation/install.sh --format windsurf
-task-formation/install.sh --format cursor
-```
+# Then activate (one-time):
+bash ~/.claude/plugins/cache/DgxSparkLabs/marketplace/rule-task-formation/activate.sh
+```nFor other platforms (Devin, Cursor, Windsurf), see the auto-generated mirrors in `.devin/rules/`, `.cursor/rules/`, `.windsurf/rules/` after `git clone`.
 
 ## What it does
 

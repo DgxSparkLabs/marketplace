@@ -5,16 +5,13 @@ Every session should leave the workflow better than it found it. Fix friction st
 ## Install
 
 ```bash
-# Project-level (current directory)
-improve-the-process/install.sh
+# Native Claude Code plugin install:
+/plugin marketplace add DgxSparkLabs/marketplace
+/plugin install rule-improve-the-process@marketplace
 
-# Global (all projects)
-improve-the-process/install.sh --global
-
-# Specific format
-improve-the-process/install.sh --format windsurf
-improve-the-process/install.sh --format cursor
-```
+# Then activate (one-time):
+bash ~/.claude/plugins/cache/DgxSparkLabs/marketplace/rule-improve-the-process/activate.sh
+```nFor other platforms (Devin, Cursor, Windsurf), see the auto-generated mirrors in `.devin/rules/`, `.cursor/rules/`, `.windsurf/rules/` after `git clone`.
 
 ## What it does
 

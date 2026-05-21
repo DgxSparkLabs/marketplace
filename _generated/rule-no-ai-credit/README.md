@@ -4,48 +4,17 @@ An always-on rule that prevents AI agents from adding self-attribution to any ou
 
 Unlike a skill (which must be invoked), this is a **rule** — it activates automatically in every session with no user action needed.
 
-## Quick Install
+## Install
 
 ```bash
-git clone https://github.com/DgxSparkLabs/marketplace.git /tmp/marketplace
+# Native Claude Code plugin install:
+/plugin marketplace add DgxSparkLabs/marketplace
+/plugin install rule-no-ai-credit@marketplace
 
-# Install into current project (AGENTS.md)
-/tmp/marketplace/no-ai-credit/install.sh
+# Then activate (one-time):
+bash ~/.claude/plugins/cache/DgxSparkLabs/marketplace/rule-no-ai-credit/activate.sh
+```nFor other platforms (Devin, Cursor, Windsurf), see the auto-generated mirrors in `.devin/rules/`, `.cursor/rules/`, `.windsurf/rules/` after `git clone`.
 
-# Install globally (all projects)
-/tmp/marketplace/no-ai-credit/install.sh --global
-
-# Install for a specific tool only
-/tmp/marketplace/no-ai-credit/install.sh --format windsurf
-/tmp/marketplace/no-ai-credit/install.sh --format cursor
-/tmp/marketplace/no-ai-credit/install.sh --format agents
-```
-
-## Manual Install
-
-Copy the appropriate format file to your project or global config:
-
-### AGENTS.md (universal)
-
-Append the contents of `rule.md` to your project's `AGENTS.md`:
-
-```bash
-cat no-ai-credit/rule.md >> AGENTS.md
-```
-
-### Windsurf
-
-```bash
-mkdir -p .windsurf/rules
-cp no-ai-credit/formats/windsurf.md .windsurf/rules/no-ai-credit.md
-```
-
-### Cursor
-
-```bash
-mkdir -p .cursor/rules
-cp no-ai-credit/formats/cursor.md .cursor/rules/no-ai-credit.md
-```
 ## What it enforces
 
 - No "Co-Authored-By" lines referencing AI agents in git commits

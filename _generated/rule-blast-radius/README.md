@@ -4,48 +4,17 @@ An always-on rule that enforces change-scoping discipline for AI agents — esti
 
 Unlike a skill (which must be invoked), this is a **rule** — it activates automatically in every session with no user action needed.
 
-## Quick Install
+## Install
 
 ```bash
-git clone https://github.com/DgxSparkLabs/marketplace.git /tmp/marketplace
+# Native Claude Code plugin install:
+/plugin marketplace add DgxSparkLabs/marketplace
+/plugin install rule-blast-radius@marketplace
 
-# Install into current project (AGENTS.md)
-/tmp/marketplace/blast-radius/install.sh
+# Then activate (one-time):
+bash ~/.claude/plugins/cache/DgxSparkLabs/marketplace/rule-blast-radius/activate.sh
+```nFor other platforms (Devin, Cursor, Windsurf), see the auto-generated mirrors in `.devin/rules/`, `.cursor/rules/`, `.windsurf/rules/` after `git clone`.
 
-# Install globally (all projects)
-/tmp/marketplace/blast-radius/install.sh --global
-
-# Install for a specific tool only
-/tmp/marketplace/blast-radius/install.sh --format windsurf
-/tmp/marketplace/blast-radius/install.sh --format cursor
-/tmp/marketplace/blast-radius/install.sh --format agents
-```
-
-## Manual Install
-
-Copy the appropriate format file to your project or global config:
-
-### AGENTS.md (universal)
-
-Append the contents of `rule.md` to your project's `AGENTS.md`:
-
-```bash
-cat blast-radius/rule.md >> AGENTS.md
-```
-
-### Windsurf
-
-```bash
-mkdir -p .windsurf/rules
-cp blast-radius/formats/windsurf.md .windsurf/rules/blast-radius.md
-```
-
-### Cursor
-
-```bash
-mkdir -p .cursor/rules
-cp blast-radius/formats/cursor.md .cursor/rules/blast-radius.md
-```
 ## What it enforces
 
 - Plan and identify affected files before writing any code

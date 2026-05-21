@@ -2,21 +2,16 @@
 
 An always-on rule that enforces continuous state persistence. Agents don't have memory between sessions — this rule makes them write to HANDOFF.md, PITFALLS.md, and CHANGELOG.md so the next agent can pick up where they left off.
 
-## Quick Install
+## Install
 
 ```bash
-git clone https://github.com/yourusername/marketplace.git /tmp/marketplace
+# Native Claude Code plugin install:
+/plugin marketplace add DgxSparkLabs/marketplace
+/plugin install rule-session-resilience@marketplace
 
-# Install into current project (AGENTS.md)
-/tmp/marketplace/rules/session-resilience/install.sh
-
-# Install globally (all projects)
-/tmp/marketplace/rules/session-resilience/install.sh --global
-
-# Install for a specific tool
-/tmp/marketplace/rules/session-resilience/install.sh --format windsurf
-/tmp/marketplace/rules/session-resilience/install.sh --format cursor
-```
+# Then activate (one-time):
+bash ~/.claude/plugins/cache/DgxSparkLabs/marketplace/rule-session-resilience/activate.sh
+```nFor other platforms (Devin, Cursor, Windsurf), see the auto-generated mirrors in `.devin/rules/`, `.cursor/rules/`, `.windsurf/rules/` after `git clone`.
 
 ## What it enforces
 

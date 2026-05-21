@@ -4,44 +4,16 @@ An always-on rule that enforces core software engineering practices: DRY definit
 
 Prevents the gradual entropy that makes codebases unmaintainable — duplicate definitions scattered across files, oversized modules with mixed responsibilities, and naming that only makes sense to the agent that wrote it.
 
-## Quick Install
+## Install
 
 ```bash
-git clone https://github.com/DgxSparkLabs/marketplace.git /tmp/marketplace
+# Native Claude Code plugin install:
+/plugin marketplace add DgxSparkLabs/marketplace
+/plugin install rule-code-hygiene@marketplace
 
-# Install into current project (AGENTS.md)
-/tmp/marketplace/rules/code-hygiene/install.sh
-
-# Install globally (all projects)
-/tmp/marketplace/rules/code-hygiene/install.sh --global
-
-# Install for a specific tool only
-/tmp/marketplace/rules/code-hygiene/install.sh --format windsurf
-/tmp/marketplace/rules/code-hygiene/install.sh --format cursor
-/tmp/marketplace/rules/code-hygiene/install.sh --format agents
-```
-
-## Manual Install
-
-### AGENTS.md (universal)
-
-```bash
-cat rules/code-hygiene/rule.md >> AGENTS.md
-```
-
-### Windsurf
-
-```bash
-mkdir -p .windsurf/rules
-cp rules/code-hygiene/formats/windsurf.md .windsurf/rules/code-hygiene.md
-```
-
-### Cursor
-
-```bash
-mkdir -p .cursor/rules
-cp rules/code-hygiene/formats/cursor.md .cursor/rules/code-hygiene.md
-```
+# Then activate (one-time):
+bash ~/.claude/plugins/cache/DgxSparkLabs/marketplace/rule-code-hygiene/activate.sh
+```nFor other platforms (Devin, Cursor, Windsurf), see the auto-generated mirrors in `.devin/rules/`, `.cursor/rules/`, `.windsurf/rules/` after `git clone`.
 
 ## What it enforces
 

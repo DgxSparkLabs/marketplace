@@ -4,48 +4,17 @@ An always-on rule that requires AI agents to plan large tasks upfront using the 
 
 Unlike a skill (which must be invoked), this is a **rule** — it activates automatically in every session with no user action needed.
 
-## Quick Install
+## Install
 
 ```bash
-git clone https://github.com/DgxSparkLabs/marketplace.git /tmp/marketplace
+# Native Claude Code plugin install:
+/plugin marketplace add DgxSparkLabs/marketplace
+/plugin install rule-document-progress@marketplace
 
-# Install into current project (AGENTS.md)
-/tmp/marketplace/document-progress/install.sh
+# Then activate (one-time):
+bash ~/.claude/plugins/cache/DgxSparkLabs/marketplace/rule-document-progress/activate.sh
+```nFor other platforms (Devin, Cursor, Windsurf), see the auto-generated mirrors in `.devin/rules/`, `.cursor/rules/`, `.windsurf/rules/` after `git clone`.
 
-# Install globally (all projects)
-/tmp/marketplace/document-progress/install.sh --global
-
-# Install for a specific tool only
-/tmp/marketplace/document-progress/install.sh --format windsurf
-/tmp/marketplace/document-progress/install.sh --format cursor
-/tmp/marketplace/document-progress/install.sh --format agents
-```
-
-## Manual Install
-
-Copy the appropriate format file to your project or global config:
-
-### AGENTS.md (universal)
-
-Append the contents of `rule.md` to your project's `AGENTS.md`:
-
-```bash
-cat document-progress/rule.md >> AGENTS.md
-```
-
-### Windsurf
-
-```bash
-mkdir -p .windsurf/rules
-cp document-progress/formats/windsurf.md .windsurf/rules/document-progress.md
-```
-
-### Cursor
-
-```bash
-mkdir -p .cursor/rules
-cp document-progress/formats/cursor.md .cursor/rules/document-progress.md
-```
 ## What it enforces
 
 - Create a structured task plan (via `structured-handoff` skill or manually) before starting multi-step work
@@ -59,8 +28,9 @@ cp document-progress/formats/cursor.md .cursor/rules/document-progress.md
 This rule is designed to work with the [structured-handoff](../structured-handoff/) skill, which generates the `.tasks/` directory structure automatically. Install both for the full workflow:
 
 ```bash
-cp -r /tmp/marketplace/structured-handoff ~/.config/devin/skills/structured-handoff
-/tmp/marketplace/document-progress/install.sh --global
+/plugin install skill-structured-handoff@marketplace
+/plugin install rule-document-progress@marketplace
+bash ~/.claude/plugins/cache/DgxSparkLabs/marketplace/rule-document-progress/activate.sh
 ```
 
 ## How it works

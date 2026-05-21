@@ -2,21 +2,16 @@
 
 An always-on rule that enforces a read/write loop for `PITFALLS.md`. Before complex work, check for known pitfalls. After fixing bugs, record them.
 
-## Quick Install
+## Install
 
 ```bash
-git clone https://github.com/yourusername/marketplace.git /tmp/marketplace
+# Native Claude Code plugin install:
+/plugin marketplace add DgxSparkLabs/marketplace
+/plugin install rule-pitfalls-discipline@marketplace
 
-# Install into current project (AGENTS.md)
-/tmp/marketplace/rules/pitfalls-discipline/install.sh
-
-# Install globally (all projects)
-/tmp/marketplace/rules/pitfalls-discipline/install.sh --global
-
-# Install for a specific tool
-/tmp/marketplace/rules/pitfalls-discipline/install.sh --format windsurf
-/tmp/marketplace/rules/pitfalls-discipline/install.sh --format cursor
-```
+# Then activate (one-time):
+bash ~/.claude/plugins/cache/DgxSparkLabs/marketplace/rule-pitfalls-discipline/activate.sh
+```nFor other platforms (Devin, Cursor, Windsurf), see the auto-generated mirrors in `.devin/rules/`, `.cursor/rules/`, `.windsurf/rules/` after `git clone`.
 
 ## What it enforces
 

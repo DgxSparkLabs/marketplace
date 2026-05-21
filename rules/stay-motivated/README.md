@@ -11,17 +11,13 @@ Pairs with the [motivation](../motivation/) skill for on-demand encouragement fr
 ## Install
 
 ```bash
-# Install to AGENTS.md (default, current project)
-stay-motivated/install.sh
+# Native Claude Code plugin install:
+/plugin marketplace add DgxSparkLabs/marketplace
+/plugin install rule-stay-motivated@marketplace
 
-# Install globally
-stay-motivated/install.sh --global
-
-# Install for a specific tool
-stay-motivated/install.sh --format windsurf
-stay-motivated/install.sh --format cursor
-stay-motivated/install.sh --format all
-```
+# Then activate (one-time):
+bash ~/.claude/plugins/cache/DgxSparkLabs/marketplace/rule-stay-motivated/activate.sh
+```nFor other platforms (Devin, Cursor, Windsurf), see the auto-generated mirrors in `.devin/rules/`, `.cursor/rules/`, `.windsurf/rules/` after `git clone`.
 
 ## What It Does
 

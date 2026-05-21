@@ -4,44 +4,16 @@ An always-on rule that enforces human-friendly documentation practices: concise 
 
 Complements [document-lifecycle](../document-lifecycle/) (which covers agent-facing docs like AGENTS.md and HANDOFF.md) by focusing on project documentation that humans read — READMEs, getting-started guides, architecture overviews, and how-to docs.
 
-## Quick Install
+## Install
 
 ```bash
-git clone https://github.com/DgxSparkLabs/marketplace.git /tmp/marketplace
+# Native Claude Code plugin install:
+/plugin marketplace add DgxSparkLabs/marketplace
+/plugin install rule-readable-docs@marketplace
 
-# Install into current project (AGENTS.md)
-/tmp/marketplace/rules/readable-docs/install.sh
-
-# Install globally (all projects)
-/tmp/marketplace/rules/readable-docs/install.sh --global
-
-# Install for a specific tool only
-/tmp/marketplace/rules/readable-docs/install.sh --format windsurf
-/tmp/marketplace/rules/readable-docs/install.sh --format cursor
-/tmp/marketplace/rules/readable-docs/install.sh --format agents
-```
-
-## Manual Install
-
-### AGENTS.md (universal)
-
-```bash
-cat rules/readable-docs/rule.md >> AGENTS.md
-```
-
-### Windsurf
-
-```bash
-mkdir -p .windsurf/rules
-cp rules/readable-docs/formats/windsurf.md .windsurf/rules/readable-docs.md
-```
-
-### Cursor
-
-```bash
-mkdir -p .cursor/rules
-cp rules/readable-docs/formats/cursor.md .cursor/rules/readable-docs.md
-```
+# Then activate (one-time):
+bash ~/.claude/plugins/cache/DgxSparkLabs/marketplace/rule-readable-docs/activate.sh
+```nFor other platforms (Devin, Cursor, Windsurf), see the auto-generated mirrors in `.devin/rules/`, `.cursor/rules/`, `.windsurf/rules/` after `git clone`.
 
 ## What it enforces
 

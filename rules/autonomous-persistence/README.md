@@ -6,48 +6,16 @@ Inspired by the autonomous experimentation loop in [karpathy/autoresearch](https
 
 Unlike a skill (which must be invoked), this is a **rule** -- it activates automatically in every session with no user action needed.
 
-## Quick Install
+## Install
 
 ```bash
-git clone https://github.com/DgxSparkLabs/marketplace.git /tmp/marketplace
+# Native Claude Code plugin install:
+/plugin marketplace add DgxSparkLabs/marketplace
+/plugin install rule-autonomous-persistence@marketplace
 
-# Install into current project (AGENTS.md)
-/tmp/marketplace/rules/autonomous-persistence/install.sh
-
-# Install globally (all projects)
-/tmp/marketplace/rules/autonomous-persistence/install.sh --global
-
-# Install for a specific tool only
-/tmp/marketplace/rules/autonomous-persistence/install.sh --format windsurf
-/tmp/marketplace/rules/autonomous-persistence/install.sh --format cursor
-/tmp/marketplace/rules/autonomous-persistence/install.sh --format agents
-```
-
-## Manual Install
-
-Copy the appropriate format file to your project or global config:
-
-### AGENTS.md (universal)
-
-Append the contents of `rule.md` to your project's `AGENTS.md`:
-
-```bash
-cat autonomous-persistence/rule.md >> AGENTS.md
-```
-
-### Windsurf
-
-```bash
-mkdir -p .windsurf/rules
-cp autonomous-persistence/formats/windsurf.md .windsurf/rules/autonomous-persistence.md
-```
-
-### Cursor
-
-```bash
-mkdir -p .cursor/rules
-cp autonomous-persistence/formats/cursor.md .cursor/rules/autonomous-persistence.md
-```
+# Then activate (one-time):
+bash ~/.claude/plugins/cache/DgxSparkLabs/marketplace/rule-autonomous-persistence/activate.sh
+```nFor other platforms (Devin, Cursor, Windsurf), see the auto-generated mirrors in `.devin/rules/`, `.cursor/rules/`, `.windsurf/rules/` after `git clone`.
 
 ## What it enforces
 
