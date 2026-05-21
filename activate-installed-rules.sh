@@ -28,17 +28,20 @@ fi
 mkdir -p "$RULES_DIR"
 
 count=0
-for marketplace_dir in "$CACHE_ROOT"/*/marketplace; do
-  [ -d "$marketplace_dir" ] || continue
-  for rule_plugin in "$marketplace_dir"/rule-*; do
-    [ -d "$rule_plugin" ] || continue
-    # Walk rules/*.md inside the plugin (always one file per individual rule plugin)
-    for rule in "$rule_plugin"/rules/*.md; do
-      [ -e "$rule" ] || continue
-      ln -sfn "$rule" "$RULES_DIR/$(basename "$rule")"
-      count=$((count + 1))
-    done
-  done
+mode="symlinked"
+# Cache layout: ~/.claude/plugins/cache/<marketplace-name>/<plugin-name>/<version>/
+# We walk every marketplace, every rule-* plugin, every installed version.
+for rules_md in "$CACHE_ROOT"/*/rule-*/*/rules/*.md; do
+  [ -e "$rules_md" ] || continue
+  target="$RULES_DIR/$(basename "$rules_md")"
+  rm -f "$target"
+  if ln -s "$rules_md" "$target" 2>/dev/null && [ -L "$target" ]; then
+    :  # real symlink created
+  else
+    cp -f "$rules_md" "$target"
+    mode="copied"
+  fi
+  count=$((count + 1))
 done
 
 if [ "$count" -eq 0 ]; then
@@ -48,5 +51,9 @@ if [ "$count" -eq 0 ]; then
   exit 0
 fi
 
-echo "Symlinked $count rule file(s) into $RULES_DIR."
+echo "$mode $count rule file(s) into $RULES_DIR."
 echo "Claude Code will load them at next session start."
+if [ "$mode" = "copied" ]; then
+  echo "Note: copies, not symlinks (your platform doesn't allow symlinks here)."
+  echo "      Re-run this script after a plugin update to refresh."
+fi

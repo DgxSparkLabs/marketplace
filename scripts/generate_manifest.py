@@ -58,23 +58,41 @@ MIRRORS = {
 
 ACTIVATE_SH_TEMPLATE = """\
 #!/usr/bin/env bash
-# activate.sh — symlink this plugin's rule file(s) into the project's .claude/rules/
+# activate.sh — symlink (or copy on platforms without symlink support)
+# this plugin's rule file(s) into the project's .claude/rules/.
 # Run once after installing this plugin.
 #
 # Usage:
 #   bash <path>/activate.sh                   # default target: .claude/rules
 #   bash <path>/activate.sh <rules-dir>       # custom target
+#
+# On Linux/macOS: creates symlinks so plugin updates auto-propagate.
+# On Windows (Git Bash, MSYS) without symlink privileges: falls back
+# to file copy. After a plugin update, re-run activate.sh to refresh.
 set -euo pipefail
 
 RULES_DIR="${1:-.claude/rules}"
 PLUGIN_DIR="$(cd "$(dirname "$0")" && pwd)"
 
 mkdir -p "$RULES_DIR"
+mode="symlinked"
 for rule in "$PLUGIN_DIR/rules"/*.md; do
   [ -e "$rule" ] || continue
-  ln -sfn "$rule" "$RULES_DIR/$(basename "$rule")"
+  target="$RULES_DIR/$(basename "$rule")"
+  rm -f "$target"
+  if ln -s "$rule" "$target" 2>/dev/null && [ -L "$target" ]; then
+    :  # real symlink created
+  else
+    # Symlink unsupported on this platform; fall back to copy.
+    cp -f "$rule" "$target"
+    mode="copied"
+  fi
 done
-echo "Symlinked rule(s) into $RULES_DIR. Claude Code will load them at next session start."
+echo "$mode rule(s) into $RULES_DIR. Claude Code will load them at next session start."
+if [ "$mode" = "copied" ]; then
+  echo "Note: copies, not symlinks (your platform doesn't allow symlinks here)."
+  echo "      Re-run activate.sh after a plugin update to refresh."
+fi
 """
 
 
