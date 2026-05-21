@@ -1,0 +1,15 @@
+{
+  "name": "example-mcp",
+  "displayName": "Example MCP Server",
+  "description": "Reference template for an MCP server plugin — copy to scaffold your own.",
+  "version": "1.0.0",
+  "author": {
+    "name": "DgxSparkLabs",
+    "url": "https://github.com/DgxSparkLabs"
+  },
+  "homepage": "https://github.com/DgxSparkLabs/marketplace/tree/main/examples/example-mcp",
+  "repository": "https://github.com/DgxSparkLabs/marketplace",
+  "license": "MIT",
+  "keywords": ["example", "mcp", "model-context-protocol", "tutorial", "template"],
+  "mcpServers": "./mcp-config.json"
+}

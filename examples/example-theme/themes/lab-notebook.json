@@ -1,0 +1,13 @@
+{
+  "name": "Lab Notebook",
+  "description": "Muted, paper-toned theme suited to long reading sessions. Reference example only.",
+  "colors": {
+    "background": "#fdf6e3",
+    "foreground": "#586e75",
+    "accent": "#268bd2",
+    "warning": "#cb4b16",
+    "error": "#dc322f",
+    "success": "#859900",
+    "muted": "#93a1a1"
+  }
+}
