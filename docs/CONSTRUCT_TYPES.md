@@ -49,12 +49,12 @@ Native `/plugin install` works for nine of the ten construct types. **Rules need
 ```bash
 # Pure plugin install (skill, command, agent, hook, mcp, lsp, monitor, output style, theme)
 /plugin marketplace add DgxSparkLabs/marketplace
-/plugin install skill-telegram-notify@marketplace      # individual
-/plugin install skills-communication@marketplace       # bundle
+/plugin install skill-telegram-notify@dgxsparklabs-marketplace      # individual
+/plugin install skills-communication@dgxsparklabs-marketplace       # bundle
 
 # Rule install + activate (rules only)
-/plugin install rule-blast-radius@marketplace
-bash ~/.claude/plugins/cache/DgxSparkLabs/marketplace/rule-blast-radius/activate.sh
+/plugin install rule-blast-radius@dgxsparklabs-marketplace
+bash ~/.claude/plugins/cache/dgxsparklabs-marketplace/rule-blast-radius/activate.sh
 
 # Bulk rule activation (any number of rule plugins installed)
 bash ~/.local/share/marketplace/activate-installed-rules.sh

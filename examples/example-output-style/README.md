@@ -8,7 +8,7 @@ Ships an output style named `Lab Notebook Voice` that, when selected, makes Clau
 
 Install:
 ```
-/plugin install example-output-style@marketplace
+/plugin install example-output-style@dgxsparklabs-marketplace
 ```
 
 Then in Claude Code, switch to the style via `/output-style Lab Notebook Voice` (or similar — depends on UI).

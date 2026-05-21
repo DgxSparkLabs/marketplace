@@ -9,10 +9,10 @@ Complements [document-lifecycle](../document-lifecycle/) (which covers agent-fac
 ```bash
 # Native Claude Code plugin install:
 /plugin marketplace add DgxSparkLabs/marketplace
-/plugin install rule-readable-docs@marketplace
+/plugin install rule-readable-docs@dgxsparklabs-marketplace
 
 # Then activate (one-time):
-bash ~/.claude/plugins/cache/DgxSparkLabs/marketplace/rule-readable-docs/activate.sh
+bash ~/.claude/plugins/cache/dgxsparklabs-marketplace/rule-readable-docs/activate.sh
 ```nFor other platforms (Devin, Cursor, Windsurf), see the auto-generated mirrors in `.devin/rules/`, `.cursor/rules/`, `.windsurf/rules/` after `git clone`.
 
 ## What it enforces

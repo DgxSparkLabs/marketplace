@@ -9,7 +9,7 @@
 # followed by `uv run scripts/generate_manifest.py --write`.
 
 [marketplace]
-name = "marketplace"
+name = "dgxsparklabs-marketplace"
 display_name = "DgxSparkLabs Marketplace"
 version = "1.0.0"
 description = "Curated agent skills, rules, and reference plugins for Claude Code, plus auto-generated mirrors for Devin, Cursor, Windsurf, Codex CLI, and Gemini CLI."

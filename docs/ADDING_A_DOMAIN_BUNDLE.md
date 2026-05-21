@@ -8,7 +8,7 @@ Examples shipped by this marketplace: `skills-communication`, `skills-devops`, `
 
 Domain bundles are **never edited directly**. They are generated from tagging in `catalog.toml`. To add a new bundle, you add a new `[skill_domain.<name>]` or `[rule_domain.<name>]` section to `catalog.toml`. The generator produces the corresponding `_generated/skills-<name>/` or `_generated/rules-<name>/` plugin with a `dependencies` array.
 
-Verified empirically (see [`INVESTIGATION_PLUGIN_DEPENDENCIES.md`](./INVESTIGATION_PLUGIN_DEPENDENCIES.md)): when a user runs `/plugin install skills-<domain>@marketplace`, Claude Code auto-installs every plugin listed in the `dependencies` array.
+Verified empirically (see [`INVESTIGATION_PLUGIN_DEPENDENCIES.md`](./INVESTIGATION_PLUGIN_DEPENDENCIES.md)): when a user runs `/plugin install skills-<domain>@dgxsparklabs-marketplace`, Claude Code auto-installs every plugin listed in the `dependencies` array.
 
 ## Workflow — adding a new domain
 

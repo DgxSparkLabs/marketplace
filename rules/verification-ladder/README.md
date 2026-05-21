@@ -7,10 +7,10 @@ Five-layer automated testing: compile, unit, integration, perf, e2e
 ```bash
 # Native Claude Code plugin install:
 /plugin marketplace add DgxSparkLabs/marketplace
-/plugin install rule-verification-ladder@marketplace
+/plugin install rule-verification-ladder@dgxsparklabs-marketplace
 
 # Then activate (one-time):
-bash ~/.claude/plugins/cache/DgxSparkLabs/marketplace/rule-verification-ladder/activate.sh
+bash ~/.claude/plugins/cache/dgxsparklabs-marketplace/rule-verification-ladder/activate.sh
 ```nFor other platforms (Devin, Cursor, Windsurf), see the auto-generated mirrors in `.devin/rules/`, `.cursor/rules/`, `.windsurf/rules/` after `git clone`.
 
 ## What it does

@@ -9,10 +9,10 @@ Prevents the gradual entropy that makes codebases unmaintainable — duplicate d
 ```bash
 # Native Claude Code plugin install:
 /plugin marketplace add DgxSparkLabs/marketplace
-/plugin install rule-code-hygiene@marketplace
+/plugin install rule-code-hygiene@dgxsparklabs-marketplace
 
 # Then activate (one-time):
-bash ~/.claude/plugins/cache/DgxSparkLabs/marketplace/rule-code-hygiene/activate.sh
+bash ~/.claude/plugins/cache/dgxsparklabs-marketplace/rule-code-hygiene/activate.sh
 ```nFor other platforms (Devin, Cursor, Windsurf), see the auto-generated mirrors in `.devin/rules/`, `.cursor/rules/`, `.windsurf/rules/` after `git clone`.
 
 ## What it enforces

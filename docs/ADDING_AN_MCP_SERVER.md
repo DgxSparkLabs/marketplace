@@ -47,7 +47,7 @@ This avoids needing to maintain your own MCP server code.
 ## Install path after merge
 
 ```
-/plugin install mcp-my-mcp@marketplace
+/plugin install mcp-my-mcp@dgxsparklabs-marketplace
 ```
 
 Tools provided by the server become available as `mcp__my-server__<tool-name>`.

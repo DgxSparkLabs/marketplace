@@ -9,10 +9,10 @@ Unlike a skill (which must be invoked), this is a **rule** — it activates auto
 ```bash
 # Native Claude Code plugin install:
 /plugin marketplace add DgxSparkLabs/marketplace
-/plugin install rule-verify-your-work@marketplace
+/plugin install rule-verify-your-work@dgxsparklabs-marketplace
 
 # Then activate (one-time):
-bash ~/.claude/plugins/cache/DgxSparkLabs/marketplace/rule-verify-your-work/activate.sh
+bash ~/.claude/plugins/cache/dgxsparklabs-marketplace/rule-verify-your-work/activate.sh
 ```nFor other platforms (Devin, Cursor, Windsurf), see the auto-generated mirrors in `.devin/rules/`, `.cursor/rules/`, `.windsurf/rules/` after `git clone`.
 
 ## What it enforces

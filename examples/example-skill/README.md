@@ -8,7 +8,7 @@ When invoked as `/example-skill <topic>`, it prints a short markdown block tagge
 
 Install:
 ```
-/plugin install example-skill@marketplace
+/plugin install example-skill@dgxsparklabs-marketplace
 ```
 
 Invoke:

@@ -72,7 +72,7 @@ Predictable, machine-parseable, identifies construct type from plugin name alone
 Claude Code's plugin system does not natively support installing rules (confirmed via documentation review; feature request open at anthropics/claude-code#21163). The workaround:
 
 - Each rule is shipped as a real plugin: `rule-<name>/.claude-plugin/plugin.json` + `rules/<name>.md` + `activate.sh`
-- `/plugin install rule-<name>@marketplace` extracts the plugin to `~/.claude/plugins/cache/...`
+- `/plugin install rule-<name>@dgxsparklabs-marketplace` extracts the plugin to `~/.claude/plugins/cache/...`
 - User then runs `bash <cache>/rule-<name>/activate.sh`, which symlinks the rule file into `.claude/rules/`
 - Claude Code loads `.claude/rules/*.md` automatically at session start
 
@@ -183,24 +183,24 @@ marketplace/
 /plugin marketplace add DgxSparkLabs/marketplace
 
 # Skills — auto-activate after install
-/plugin install skill-telegram-notify@marketplace            # individual
-/plugin install skills-communication@marketplace             # bundle (deps install per task #13 outcome)
+/plugin install skill-telegram-notify@dgxsparklabs-marketplace            # individual
+/plugin install skills-communication@dgxsparklabs-marketplace             # bundle (deps install per task #13 outcome)
 
 # Rules — require activate step after install
-/plugin install rule-blast-radius@marketplace
-bash ~/.claude/plugins/cache/DgxSparkLabs/marketplace/rule-blast-radius/activate.sh
+/plugin install rule-blast-radius@dgxsparklabs-marketplace
+bash ~/.claude/plugins/cache/dgxsparklabs-marketplace/rule-blast-radius/activate.sh
 
 # Or all rules at once
-/plugin install rules-all@marketplace
-bash ~/.claude/plugins/cache/DgxSparkLabs/marketplace/rules-all/activate.sh
+/plugin install rules-all@dgxsparklabs-marketplace
+bash ~/.claude/plugins/cache/dgxsparklabs-marketplace/rules-all/activate.sh
 
 # Or activate everything currently installed in one shot
 bash ~/.local/share/marketplace/activate-installed-rules.sh
 
 # Other construct types follow the skill pattern (auto-activate)
-/plugin install example-command@marketplace
-/plugin install example-agent@marketplace
-/plugin install example-hook@marketplace
+/plugin install example-command@dgxsparklabs-marketplace
+/plugin install example-agent@dgxsparklabs-marketplace
+/plugin install example-hook@dgxsparklabs-marketplace
 ```
 
 ---

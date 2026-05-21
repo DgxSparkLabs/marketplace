@@ -47,13 +47,13 @@ For the file-by-file walkthrough of skill structure, read [`examples/example-ski
 ## Install path after merge
 
 ```
-/plugin install skill-my-skill@marketplace
+/plugin install skill-my-skill@dgxsparklabs-marketplace
 ```
 
 Or via a bundle that includes it:
 
 ```
-/plugin install skills-<domain>@marketplace
+/plugin install skills-<domain>@dgxsparklabs-marketplace
 ```
 
 ## Related docs

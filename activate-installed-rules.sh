@@ -21,7 +21,7 @@ if [ ! -d "$CACHE_ROOT" ]; then
   echo "Error: Claude Code plugin cache not found at $CACHE_ROOT"
   echo "Have you installed any plugins yet? Try:"
   echo "  /plugin marketplace add DgxSparkLabs/marketplace"
-  echo "  /plugin install rule-blast-radius@marketplace"
+  echo "  /plugin install rule-blast-radius@dgxsparklabs-marketplace"
   exit 1
 fi
 
@@ -46,8 +46,8 @@ done
 
 if [ "$count" -eq 0 ]; then
   echo "No rule plugins found in $CACHE_ROOT. Install some first:"
-  echo "  /plugin install rule-blast-radius@marketplace"
-  echo "  /plugin install rules-quality@marketplace"
+  echo "  /plugin install rule-blast-radius@dgxsparklabs-marketplace"
+  echo "  /plugin install rules-quality@dgxsparklabs-marketplace"
   exit 0
 fi
 

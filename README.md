@@ -70,17 +70,17 @@ A curated collection of reusable agent skills and rules. Each item is a self-con
 /plugin marketplace add DgxSparkLabs/marketplace
 
 # Install an individual skill:
-/plugin install skill-telegram-notify@marketplace
+/plugin install skill-telegram-notify@dgxsparklabs-marketplace
 
 # Install a domain bundle (auto-installs all member skills):
-/plugin install skills-communication@marketplace
+/plugin install skills-communication@dgxsparklabs-marketplace
 
 # Install an individual rule (then activate to symlink into .claude/rules/):
-/plugin install rule-blast-radius@marketplace
-bash ~/.claude/plugins/cache/DgxSparkLabs/marketplace/rule-blast-radius/activate.sh
+/plugin install rule-blast-radius@dgxsparklabs-marketplace
+bash ~/.claude/plugins/cache/dgxsparklabs-marketplace/rule-blast-radius/activate.sh
 
 # Install a rule bundle (auto-installs all rules in the bundle):
-/plugin install rules-quality@marketplace
+/plugin install rules-quality@dgxsparklabs-marketplace
 # Then activate each rule's symlink, or use the repo-root helper:
 bash <(curl -fsSL https://raw.githubusercontent.com/DgxSparkLabs/marketplace/main/activate-installed-rules.sh)
 ```

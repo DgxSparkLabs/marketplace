@@ -12,7 +12,7 @@
 
 ## The Question
 
-When a user runs `/plugin install skills-communication@marketplace`, and the `skills-communication` plugin declares `"dependencies": ["skill-send-email", "skill-telegram-notify"]` in its `plugin.json`, **does Claude Code automatically install those dependency plugins?**
+When a user runs `/plugin install skills-communication@dgxsparklabs-marketplace`, and the `skills-communication` plugin declares `"dependencies": ["skill-send-email", "skill-telegram-notify"]` in its `plugin.json`, **does Claude Code automatically install those dependency plugins?**
 
 Sources we already have:
 
@@ -118,7 +118,7 @@ Append a "Result" section to this file with the date, outcome, and any observed 
 - Each domain bundle = ~10-line `plugin.json` with a `dependencies` array
 - Bundles are auto-generated from `catalog.toml` tagging
 - Zero content duplication
-- `/plugin install skills-communication@marketplace` installs every dependent skill
+- `/plugin install skills-communication@dgxsparklabs-marketplace` installs every dependent skill
 
 No further changes needed. Cancel the fallback design work.
 
@@ -138,8 +138,8 @@ Each bundle has:
 
 User flow:
 ```bash
-/plugin install skills-communication@marketplace
-bash ~/.claude/plugins/cache/DgxSparkLabs/marketplace/skills-communication/install-deps.sh
+/plugin install skills-communication@dgxsparklabs-marketplace
+bash ~/.claude/plugins/cache/dgxsparklabs-marketplace/skills-communication/install-deps.sh
 ```
 
 Pros: preserves bundle UX, parallels the rules-activate.sh pattern we're already shipping. Cons: extra manual step.
@@ -152,8 +152,8 @@ Remove `skills-*` and `rules-*` bundle plugins from the marketplace. Replace wit
 
 > **Communication bundle:**
 > ```
-> /plugin install skill-send-email@marketplace
-> /plugin install skill-telegram-notify@marketplace
+> /plugin install skill-send-email@dgxsparklabs-marketplace
+> /plugin install skill-telegram-notify@dgxsparklabs-marketplace
 > ```
 
 Pros: simplest, no bundle plugin maintenance. Cons: loses one-command bundle install, more typing, less discoverable.

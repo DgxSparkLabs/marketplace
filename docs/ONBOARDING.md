@@ -52,10 +52,10 @@ marketplace/
 /plugin marketplace add DgxSparkLabs/marketplace
 
 # Then install whatever you need:
-/plugin install skill-telegram-notify@marketplace        # individual skill
-/plugin install skills-communication@marketplace         # domain bundle
-/plugin install rule-blast-radius@marketplace            # individual rule
-bash ~/.claude/plugins/cache/DgxSparkLabs/marketplace/rule-blast-radius/activate.sh
+/plugin install skill-telegram-notify@dgxsparklabs-marketplace        # individual skill
+/plugin install skills-communication@dgxsparklabs-marketplace         # domain bundle
+/plugin install rule-blast-radius@dgxsparklabs-marketplace            # individual rule
+bash ~/.claude/plugins/cache/dgxsparklabs-marketplace/rule-blast-radius/activate.sh
 
 # Bulk-activate all installed rule plugins at once:
 bash ~/.local/share/marketplace/activate-installed-rules.sh

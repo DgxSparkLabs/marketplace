@@ -8,7 +8,7 @@ Registers an MCP server named `example-fetch` that wraps `mcp-server-fetch` (the
 
 Install:
 ```
-/plugin install example-mcp@marketplace
+/plugin install example-mcp@dgxsparklabs-marketplace
 ```
 
 After install, MCP tools like `mcp__example-fetch__fetch` become available.

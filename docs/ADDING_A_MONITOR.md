@@ -32,7 +32,7 @@ For the file structure, read [`examples/example-monitor/README.md`](../examples/
 ## Install path after merge
 
 ```
-/plugin install monitor-my-monitor@marketplace
+/plugin install monitor-my-monitor@dgxsparklabs-marketplace
 ```
 
 The monitor starts running in the background once the plugin is enabled. Track Claude Code release notes for changes to the monitor API.

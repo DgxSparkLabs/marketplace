@@ -7,10 +7,10 @@ Three-tier documentation: rules, reference, history — no sprawl
 ```bash
 # Native Claude Code plugin install:
 /plugin marketplace add DgxSparkLabs/marketplace
-/plugin install rule-document-lifecycle@marketplace
+/plugin install rule-document-lifecycle@dgxsparklabs-marketplace
 
 # Then activate (one-time):
-bash ~/.claude/plugins/cache/DgxSparkLabs/marketplace/rule-document-lifecycle/activate.sh
+bash ~/.claude/plugins/cache/dgxsparklabs-marketplace/rule-document-lifecycle/activate.sh
 ```nFor other platforms (Devin, Cursor, Windsurf), see the auto-generated mirrors in `.devin/rules/`, `.cursor/rules/`, `.windsurf/rules/` after `git clone`.
 
 ## What it does

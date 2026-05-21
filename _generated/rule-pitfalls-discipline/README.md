@@ -7,10 +7,10 @@ An always-on rule that enforces a read/write loop for `PITFALLS.md`. Before comp
 ```bash
 # Native Claude Code plugin install:
 /plugin marketplace add DgxSparkLabs/marketplace
-/plugin install rule-pitfalls-discipline@marketplace
+/plugin install rule-pitfalls-discipline@dgxsparklabs-marketplace
 
 # Then activate (one-time):
-bash ~/.claude/plugins/cache/DgxSparkLabs/marketplace/rule-pitfalls-discipline/activate.sh
+bash ~/.claude/plugins/cache/dgxsparklabs-marketplace/rule-pitfalls-discipline/activate.sh
 ```nFor other platforms (Devin, Cursor, Windsurf), see the auto-generated mirrors in `.devin/rules/`, `.cursor/rules/`, `.windsurf/rules/` after `git clone`.
 
 ## What it enforces

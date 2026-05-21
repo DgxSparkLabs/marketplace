@@ -8,7 +8,7 @@ Registers an LSP server for markdown files using [marksman](https://github.com/a
 
 Install:
 ```
-/plugin install example-lsp@marketplace
+/plugin install example-lsp@dgxsparklabs-marketplace
 ```
 
 Prerequisite: marksman must be installed on the system (`brew install marksman` or download from the project's releases). This plugin only registers the server — it does not install it.

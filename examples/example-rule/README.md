@@ -8,12 +8,12 @@ Ships an always-on behavioral rule that gets symlinked into Claude Code's `.clau
 
 Install:
 ```
-/plugin install example-rule@marketplace
+/plugin install example-rule@dgxsparklabs-marketplace
 ```
 
 Then activate (one-time):
 ```
-bash ~/.claude/plugins/cache/DgxSparkLabs/marketplace/example-rule/activate.sh
+bash ~/.claude/plugins/cache/dgxsparklabs-marketplace/example-rule/activate.sh
 ```
 
 After that, Claude Code loads the rule automatically every session.

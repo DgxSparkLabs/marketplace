@@ -42,7 +42,7 @@ For per-project preferences, use a CLAUDE.md or a rule. Force-applied output sty
 ## Install path after merge
 
 ```
-/plugin install output-style-my-style@marketplace
+/plugin install output-style-my-style@dgxsparklabs-marketplace
 ```
 
 Then select via `/output-style My Style` — or, if `force-for-plugin: true`, it activates automatically.

@@ -32,7 +32,7 @@ Claude Code auto-discovers `agents/*.md` files inside any plugin directory. You 
 ## Install path after merge
 
 ```
-/plugin install agent-my-agent@marketplace
+/plugin install agent-my-agent@dgxsparklabs-marketplace
 ```
 
 Invoke via Claude Code's agent picker or `--agent my-agent`.

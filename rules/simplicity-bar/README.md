@@ -11,10 +11,10 @@ Unlike a skill (which must be invoked), this is a **rule** -- it activates autom
 ```bash
 # Native Claude Code plugin install:
 /plugin marketplace add DgxSparkLabs/marketplace
-/plugin install rule-simplicity-bar@marketplace
+/plugin install rule-simplicity-bar@dgxsparklabs-marketplace
 
 # Then activate (one-time):
-bash ~/.claude/plugins/cache/DgxSparkLabs/marketplace/rule-simplicity-bar/activate.sh
+bash ~/.claude/plugins/cache/dgxsparklabs-marketplace/rule-simplicity-bar/activate.sh
 ```nFor other platforms (Devin, Cursor, Windsurf), see the auto-generated mirrors in `.devin/rules/`, `.cursor/rules/`, `.windsurf/rules/` after `git clone`.
 
 ## What it enforces

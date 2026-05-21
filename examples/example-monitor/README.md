@@ -8,7 +8,7 @@ Registers a background monitor named `example-disk` that runs `df -h .` every 5 
 
 Install:
 ```
-/plugin install example-monitor@marketplace
+/plugin install example-monitor@dgxsparklabs-marketplace
 ```
 
 > Monitors are an experimental construct in Claude Code. The plugin.json field is `experimental.monitors`, reflecting that the API may change.

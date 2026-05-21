@@ -42,7 +42,7 @@ Claude Code auto-discovers `hooks/hooks.json` inside any plugin directory. No `h
 ## Install path after merge
 
 ```
-/plugin install hook-my-hook@marketplace
+/plugin install hook-my-hook@dgxsparklabs-marketplace
 ```
 
 The hook fires automatically once enabled.

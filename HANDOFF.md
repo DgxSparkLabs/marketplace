@@ -73,7 +73,7 @@ General workflow:
 
 ## What's Next
 
-- **Task #10**: End-to-end install verification + open PR to `main`. Manually verify in a fresh Claude Code session that `/plugin marketplace add DgxSparkLabs/marketplace`, `/plugin install skill-telegram-notify@marketplace`, `/plugin install skills-communication@marketplace`, `/plugin install rule-blast-radius@marketplace` + activate, and `/plugin install rules-all@marketplace` + bulk activate all work as documented.
+- **Task #10**: End-to-end install verification + open PR to `main`. Manually verify in a fresh Claude Code session that `/plugin marketplace add DgxSparkLabs/marketplace`, `/plugin install skill-telegram-notify@dgxsparklabs-marketplace`, `/plugin install skills-communication@dgxsparklabs-marketplace`, `/plugin install rule-blast-radius@dgxsparklabs-marketplace` + activate, and `/plugin install rules-all@dgxsparklabs-marketplace` + bulk activate all work as documented.
 - **After merge**: research backlog (T6 / T7 / T10 in `research/TASKS.md`).
 - **Future**: native `rules` field if Anthropic adds it (would remove the activate.sh step). See `docs/INVESTIGATION_PLUGIN_DEPENDENCIES.md` for the open feature request reference.
 

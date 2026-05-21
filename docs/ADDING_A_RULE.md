@@ -45,14 +45,14 @@ For the architectural rationale (why rules need a manual `activate.sh` step), se
 ## Install path after merge
 
 ```bash
-/plugin install rule-my-rule@marketplace
-bash ~/.claude/plugins/cache/DgxSparkLabs/marketplace/rule-my-rule/activate.sh
+/plugin install rule-my-rule@dgxsparklabs-marketplace
+bash ~/.claude/plugins/cache/dgxsparklabs-marketplace/rule-my-rule/activate.sh
 ```
 
 Or via a bundle:
 
 ```bash
-/plugin install rules-<domain>@marketplace
+/plugin install rules-<domain>@dgxsparklabs-marketplace
 # Then symlink each rule (or use the repo-root bulk helper)
 bash ~/.local/share/marketplace/activate-installed-rules.sh
 ```

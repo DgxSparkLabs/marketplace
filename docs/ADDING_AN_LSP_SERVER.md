@@ -43,7 +43,7 @@ Multiple plugins can register different LSP servers for different file extension
 ## Install path after merge
 
 ```
-/plugin install lsp-my-lsp@marketplace
+/plugin install lsp-my-lsp@dgxsparklabs-marketplace
 ```
 
 ## Related docs

@@ -18,10 +18,10 @@ A reviewer can run each check below and get a yes/no.
 | # | Criterion | How to verify |
 |---|-----------|---------------|
 | 1 | `/plugin marketplace add DgxSparkLabs/marketplace` succeeds in a fresh Claude Code session | Run the command, confirm no error |
-| 2 | Individual skill install works | `/plugin install skill-telegram-notify@marketplace` then invoke `/telegram-notify` |
-| 3 | Domain skill bundle install works | `/plugin install skills-communication@marketplace` results in all member skills being installed (directly or via `install-deps.sh` per task #13 outcome) |
-| 4 | Individual rule install + activation works | `/plugin install rule-blast-radius@marketplace` then `bash <cache>/rule-blast-radius/activate.sh` symlinks rule into `.claude/rules/` |
-| 5 | Bulk rule install + activation works | `/plugin install rules-all@marketplace` + activate script applies all 21 rules |
+| 2 | Individual skill install works | `/plugin install skill-telegram-notify@dgxsparklabs-marketplace` then invoke `/telegram-notify` |
+| 3 | Domain skill bundle install works | `/plugin install skills-communication@dgxsparklabs-marketplace` results in all member skills being installed (directly or via `install-deps.sh` per task #13 outcome) |
+| 4 | Individual rule install + activation works | `/plugin install rule-blast-radius@dgxsparklabs-marketplace` then `bash <cache>/rule-blast-radius/activate.sh` symlinks rule into `.claude/rules/` |
+| 5 | Bulk rule install + activation works | `/plugin install rules-all@dgxsparklabs-marketplace` + activate script applies all 21 rules |
 | 6 | Ten example plugins exist and install | One `example-*` plugin per construct type (skill, rule, command, agent, hook, mcp, lsp, monitor, output-style, theme); each installs without error |
 | 7 | Cross-platform mirrors exist | `.codex/skills/`, `.gemini/skills/`, `.cursor/rules/`, `.windsurf/rules/` directories committed and populated |
 | 8 | Test suite passes | `uv run tests/test_marketplace.py` exits 0 |

@@ -9,10 +9,10 @@ Unlike a skill (which must be invoked), this is a **rule** — it activates auto
 ```bash
 # Native Claude Code plugin install:
 /plugin marketplace add DgxSparkLabs/marketplace
-/plugin install rule-document-progress@marketplace
+/plugin install rule-document-progress@dgxsparklabs-marketplace
 
 # Then activate (one-time):
-bash ~/.claude/plugins/cache/DgxSparkLabs/marketplace/rule-document-progress/activate.sh
+bash ~/.claude/plugins/cache/dgxsparklabs-marketplace/rule-document-progress/activate.sh
 ```nFor other platforms (Devin, Cursor, Windsurf), see the auto-generated mirrors in `.devin/rules/`, `.cursor/rules/`, `.windsurf/rules/` after `git clone`.
 
 ## What it enforces
@@ -28,9 +28,9 @@ bash ~/.claude/plugins/cache/DgxSparkLabs/marketplace/rule-document-progress/act
 This rule is designed to work with the [structured-handoff](../structured-handoff/) skill, which generates the `.tasks/` directory structure automatically. Install both for the full workflow:
 
 ```bash
-/plugin install skill-structured-handoff@marketplace
-/plugin install rule-document-progress@marketplace
-bash ~/.claude/plugins/cache/DgxSparkLabs/marketplace/rule-document-progress/activate.sh
+/plugin install skill-structured-handoff@dgxsparklabs-marketplace
+/plugin install rule-document-progress@dgxsparklabs-marketplace
+bash ~/.claude/plugins/cache/dgxsparklabs-marketplace/rule-document-progress/activate.sh
 ```
 
 ## How it works

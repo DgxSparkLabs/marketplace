@@ -8,7 +8,7 @@ Ships an agent named `notebook-reviewer` with a skeptical-peer-reviewer system p
 
 Install:
 ```
-/plugin install example-agent@marketplace
+/plugin install example-agent@dgxsparklabs-marketplace
 ```
 
 ## File-by-file walkthrough

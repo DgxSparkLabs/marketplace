@@ -8,7 +8,7 @@ Installs a `UserPromptSubmit` hook that prepends a timestamp marker to every pro
 
 Install:
 ```
-/plugin install example-hook@marketplace
+/plugin install example-hook@dgxsparklabs-marketplace
 ```
 
 After install, every prompt you type gets a `[Lab Notebook context: timestamp=...]` line prepended invisibly.

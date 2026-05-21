@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # activate.sh — symlink (or copy on platforms without symlink support)
 # this plugin's rule file into the project's .claude/rules/.
-# Run this once after `/plugin install example-rule@marketplace`.
+# Run this once after `/plugin install example-rule@dgxsparklabs-marketplace`.
 #
 # On Linux/macOS: creates symlinks so plugin updates auto-propagate.
 # On Windows (Git Bash, MSYS) without symlink privileges: falls back

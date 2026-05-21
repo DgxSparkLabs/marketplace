@@ -30,7 +30,7 @@ For the file structure walkthrough, read [`examples/example-command/README.md`](
 ## Install path after merge
 
 ```
-/plugin install command-my-command@marketplace
+/plugin install command-my-command@dgxsparklabs-marketplace
 ```
 
 ## When to use a command vs. a skill

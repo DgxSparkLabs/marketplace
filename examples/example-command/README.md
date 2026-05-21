@@ -8,7 +8,7 @@ When the user types `/example-command`, Claude runs the prompt in `commands/exam
 
 Install:
 ```
-/plugin install example-command@marketplace
+/plugin install example-command@dgxsparklabs-marketplace
 ```
 
 Invoke:

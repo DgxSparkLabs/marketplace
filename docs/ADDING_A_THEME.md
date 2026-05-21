@@ -32,7 +32,7 @@ For the file structure, read [`examples/example-theme/README.md`](../examples/ex
 ## Install path after merge
 
 ```
-/plugin install theme-my-theme@marketplace
+/plugin install theme-my-theme@dgxsparklabs-marketplace
 ```
 
 Then select via `/theme My Theme`.

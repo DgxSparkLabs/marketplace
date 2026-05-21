@@ -104,7 +104,7 @@ cat rule.md >> AGENTS.md
 Claude Code's plugin system does not yet support installing rules natively (no `rules` field in `plugin.json`; see [`INVESTIGATION_PLUGIN_DEPENDENCIES.md`](./INVESTIGATION_PLUGIN_DEPENDENCIES.md)). The workaround:
 
 1. Rules ship as plugins under `_generated/rule-<name>/` with a small `activate.sh` helper.
-2. Users run `/plugin install rule-<name>@marketplace` to extract the plugin to `~/.claude/plugins/cache/`.
+2. Users run `/plugin install rule-<name>@dgxsparklabs-marketplace` to extract the plugin to `~/.claude/plugins/cache/`.
 3. Users run the plugin's `activate.sh`, which symlinks the rule body into `.claude/rules/`.
 4. Claude Code loads `.claude/rules/*.md` automatically at session start.
 

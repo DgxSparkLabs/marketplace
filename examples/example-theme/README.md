@@ -8,7 +8,7 @@ Ships a UI theme named `Lab Notebook` with a muted, paper-toned palette (Solariz
 
 Install:
 ```
-/plugin install example-theme@marketplace
+/plugin install example-theme@dgxsparklabs-marketplace
 ```
 
 > Themes are an experimental construct. The plugin.json field is `experimental.themes`, reflecting that the API may change.
