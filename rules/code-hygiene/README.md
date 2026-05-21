@@ -7,7 +7,7 @@ Prevents the gradual entropy that makes codebases unmaintainable — duplicate d
 ## Quick Install
 
 ```bash
-git clone https://github.com/ForkYoraiLevi/marketplace.git /tmp/marketplace
+git clone https://github.com/DgxSparkLabs/marketplace.git /tmp/marketplace
 
 # Install into current project (AGENTS.md)
 /tmp/marketplace/rules/code-hygiene/install.sh

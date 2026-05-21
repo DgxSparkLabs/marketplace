@@ -7,7 +7,7 @@ Complements [document-lifecycle](../document-lifecycle/) (which covers agent-fac
 ## Quick Install
 
 ```bash
-git clone https://github.com/ForkYoraiLevi/marketplace.git /tmp/marketplace
+git clone https://github.com/DgxSparkLabs/marketplace.git /tmp/marketplace
 
 # Install into current project (AGENTS.md)
 /tmp/marketplace/rules/readable-docs/install.sh

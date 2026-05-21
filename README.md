@@ -72,7 +72,7 @@ A curated collection of reusable agent skills and rules. Each item is a self-con
 ### One-liner install
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/ForkYoraiLevi/marketplace/main/scripts/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/DgxSparkLabs/marketplace/main/scripts/install.sh | bash
 ```
 
 Installs `uv` if needed, clones the repo to `~/.local/share/marketplace`, and launches the interactive TUI. The clone is kept because installed skills are symlinked back to it. Override the location with `MARKETPLACE_HOME`. Pass arguments through:

@@ -4,8 +4,8 @@ set -euo pipefail
 # Bootstrap installer for the Skills Marketplace.
 #
 # Usage:
-#   curl -fsSL https://raw.githubusercontent.com/ForkYoraiLevi/marketplace/main/scripts/install.sh | bash
-#   wget -qO- https://raw.githubusercontent.com/ForkYoraiLevi/marketplace/main/scripts/install.sh | bash
+#   curl -fsSL https://raw.githubusercontent.com/DgxSparkLabs/marketplace/main/scripts/install.sh | bash
+#   wget -qO- https://raw.githubusercontent.com/DgxSparkLabs/marketplace/main/scripts/install.sh | bash
 #
 # What it does:
 #   1. Installs uv (if not already installed)
@@ -17,7 +17,7 @@ set -euo pipefail
 # Pass arguments through to install.py:
 #   curl ... | bash -s -- --uninstall
 
-REPO="https://github.com/ForkYoraiLevi/marketplace.git"
+REPO="https://github.com/DgxSparkLabs/marketplace.git"
 BRANCH="main"
 MARKETPLACE_DIR="${MARKETPLACE_HOME:-$HOME/.local/share/marketplace}"
 

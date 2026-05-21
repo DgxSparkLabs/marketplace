@@ -7,7 +7,7 @@ Unlike a skill (which must be invoked), this is a **rule** — it activates auto
 ## Quick Install
 
 ```bash
-git clone https://github.com/ForkYoraiLevi/marketplace.git /tmp/marketplace
+git clone https://github.com/DgxSparkLabs/marketplace.git /tmp/marketplace
 
 # Install into current project (AGENTS.md)
 /tmp/marketplace/python-uv/install.sh
