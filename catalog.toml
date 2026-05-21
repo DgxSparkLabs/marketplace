@@ -1,155 +1,211 @@
-# catalog.toml — TUI installer configuration
+# catalog.toml — Marketplace catalog: construct types + domain bundles
 #
-# Edit this file to control what appears in the installer.
-# Run: uv run install.py
+# The generate_manifest.py script reads this file along with MARKETPLACE.toml,
+# the source directories (skills/, rules/, examples/), and the per-plugin
+# content to produce:
+#   - .claude-plugin/marketplace.json (root manifest)
+#   - _generated/<plugin>/.claude-plugin/plugin.json (per-plugin wrappers)
+#   - Cross-platform mirrors in .codex/, .gemini/, .cursor/, .windsurf/, .devin/
 #
-# ─────────────────────────────────────────────────────────────────────────────
+# How to edit:
+#   - Add a new skill:    drop SKILL.md in skills/<name>/, add <name> to a
+#                         skill_domain's `members` list
+#   - Add a new rule:     drop rule.md in rules/<name>/, add <name> to a
+#                         rule_domain's `members` list
+#   - Rebalance domains:  edit the `members` lists in the relevant domain
+#   - Add a domain:       add a new [skill_domain.<name>] or [rule_domain.<name>]
+#                         section with a `members` list
+#   - Add a construct:    add a new [construct.<type>] section (rare; only when
+#                         Claude Code adds a new plugin construct type)
+#
+# Then run: uv run scripts/generate_manifest.py
 
-# Items that default to workspace scope (all others default to global).
-# Toggle individual items with the S key in the TUI.
-workspace_scope_defaults = []
+# ── Construct Types ─────────────────────────────────────────────────────────
+# Every Claude Code plugin construct type the marketplace supports.
+# The generator creates individual plugins and domain bundles for each,
+# using the prefix convention below.
 
-# Skills unchecked by default in install mode (e.g. require API keys).
-skills_disabled_by_default = ["web-scraper", "expose-port", "gemini-chat", "google-drive-reader"]
+[construct.skill]
+prefix_individual = "skill-"
+prefix_domain = "skills-"
+source_directory = "skills/"
+example_directory = "examples/example-skill/"
+description = "On-demand domain expertise invoked via slash command"
 
+[construct.rule]
+prefix_individual = "rule-"
+prefix_domain = "rules-"
+source_directory = "rules/"
+example_directory = "examples/example-rule/"
+description = "Always-on behavioral guideline (ships as plugin + activate.sh symlink into .claude/rules/)"
 
-# ── Platforms ────────────────────────────────────────────────────────────────
-# Each platform defines where skills, rules, and configs get installed.
-# Paths starting with ~ are expanded at runtime.
-# Leave global_rules or global_skills empty ("") if not supported.
+[construct.command]
+prefix_individual = "command-"
+prefix_domain = "commands-"
+source_directory = "commands/"
+example_directory = "examples/example-command/"
+description = "Custom slash command"
 
-[platforms.devin]
-label = "Devin CLI"
-rule_format = "agents"
-detection_binary = "devin"
-global_config = "~/.config/devin/config.json"
-global_rules  = "~/.config/devin/AGENTS.md"
-global_skills = "~/.config/devin/skills"
-project_config = ".devin/config.json"
-project_rules  = "AGENTS.md"
-project_skills = ".devin/skills"
+[construct.agent]
+prefix_individual = "agent-"
+prefix_domain = "agents-"
+source_directory = "agents/"
+example_directory = "examples/example-agent/"
+description = "Sub-agent with its own system prompt and scoped execution"
 
-[platforms.claude-code]
-label = "Claude Code"
-rule_format = "agents"
-detection_binary = "claude"
-global_config = "~/.claude/settings.json"
-global_rules  = "~/.claude/CLAUDE.md"
-global_skills = "~/.claude/skills"
-project_config = ".claude/settings.local.json"
-project_rules  = "CLAUDE.md"
-project_skills = ".claude/skills"
+[construct.hook]
+prefix_individual = "hook-"
+prefix_domain = "hooks-"
+source_directory = "hooks/"
+example_directory = "examples/example-hook/"
+description = "Event-triggered script (PreToolUse, UserPromptSubmit, SessionStart, etc.)"
 
-[platforms.cursor]
-label = "Cursor"
-rule_format = "cursor"
-detection_binary = "cursor"
-global_config = "~/.cursor/mcp.json"
-global_rules  = "~/.cursor/rules"
-global_skills = "~/.cursor/skills"
-project_config = ".cursor/mcp.json"
-project_rules  = ".cursor/rules"
-project_skills = ".cursor/skills"
+[construct.mcp]
+prefix_individual = "mcp-"
+prefix_domain = "mcps-"
+source_directory = "mcp-servers/"
+example_directory = "examples/example-mcp/"
+description = "Model Context Protocol server registration"
 
-[platforms.windsurf]
-label = "Windsurf"
-rule_format = "windsurf"
-detection_binary = "windsurf"
-global_config = "~/.codeium/windsurf/mcp_config.json"
-global_rules  = "~/.windsurf/rules"
-global_skills = "~/.windsurf/skills"
-project_config = ".windsurf/mcp.json"
-project_rules  = ".windsurf/rules"
-project_skills = ".windsurf/skills"
+[construct.lsp]
+prefix_individual = "lsp-"
+prefix_domain = "lsps-"
+source_directory = "lsp-servers/"
+example_directory = "examples/example-lsp/"
+description = "Language Server Protocol server registration"
 
+[construct.monitor]
+prefix_individual = "monitor-"
+prefix_domain = "monitors-"
+source_directory = "monitors/"
+example_directory = "examples/example-monitor/"
+description = "Background monitor process"
 
-# ── MCP Servers ──────────────────────────────────────────────────────────────
-# External tool connections. Each entry appears as a checkbox in the TUI.
+[construct.output-style]
+prefix_individual = "output-style-"
+prefix_domain = "output-styles-"
+source_directory = "output-styles/"
+example_directory = "examples/example-output-style/"
+description = "System prompt modification (use force-for-plugin: true to inject always-on)"
 
-[mcp_servers.fetch]
-description = "Fetch web pages and return content"
-config = { command = "uvx", args = ["mcp-server-fetch"] }
+[construct.theme]
+prefix_individual = "theme-"
+prefix_domain = "themes-"
+source_directory = "themes/"
+example_directory = "examples/example-theme/"
+description = "Claude Code UI theme"
 
-[mcp_servers.github]
-description = "GitHub API — issues, PRs, repos, search"
-config = { command = "npx", args = ["-y", "@github/mcp-server"] }
+# ── Skill Domains ───────────────────────────────────────────────────────────
+# Skills are grouped into bundles. Each bundle becomes a dep-only plugin
+# named "skills-<domain>" that auto-installs all its members.
+# Domain names must be kebab-case (they become part of plugin names).
 
-[mcp_servers.playwright]
-description = "Browser automation for web testing"
-config = { command = "npx", args = ["-y", "@playwright/mcp-server"] }
-
-[mcp_servers.filesystem]
-description = "Read/write/search local files"
-config = { command = "npx", args = ["-y", "@modelcontextprotocol/server-filesystem"] }
-
-[mcp_servers.sqlite]
-description = "Query and manage SQLite databases"
-config = { command = "uvx", args = ["mcp-server-sqlite"] }
-
-[mcp_servers.brave-search]
-description = "Web search via Brave Search API"
-config = { command = "npx", args = ["-y", "@anthropic/mcp-server-brave-search"] }
-
-[mcp_servers.memory]
-description = "Persistent knowledge graph memory"
-config = { command = "npx", args = ["-y", "@anthropic/mcp-server-memory"] }
-
-
-# ── Skill Families ───────────────────────────────────────────────────────────
-# Organize skills into collapsible groups in the TUI.
-# Add a skill's directory name to "members" to place it in a family.
-# Skills not listed in any family appear under "Other".
-
-[skill_families."Search & Research"]
-icon = "\U0001F50D"
+[skill_domain.search-research]
+display_name = "Search and Research"
 description = "Find information across web, code repos, and video"
 members = ["duckduckgo-search", "github-search", "web-scraper", "youtube-search", "youtube-wisdom"]
 
-[skill_families."Communication"]
-icon = "\u2709"
+[skill_domain.communication]
+display_name = "Communication"
 description = "Send emails, messages, and notifications"
 members = ["send-email", "telegram-notify"]
 
-[skill_families."DevOps & Infrastructure"]
-icon = "\U0001F680"
-description = "Run CI locally, expose ports, manage tunnels"
+[skill_domain.devops]
+display_name = "DevOps and Infrastructure"
+description = "CI/CD, repository setup, port tunneling, infrastructure tools"
 members = ["act-runner", "expose-port", "github-repo-setup", "ssh-tunnel"]
 
-[skill_families."Productivity & Meta"]
-icon = "\u2B50"
-description = "Session management, handoffs, and skill development"
-members = ["check", "code-health-audit", "motivation", "pitfall-check", "project-bootstrap", "recall-rules", "session-history", "session-wrapup", "skill-analytics", "structured-handoff", "skill-creator", "sync-rules", "textual-tui-guide"]
+[skill_domain.session-management]
+display_name = "Session Management"
+description = "Mid-session realignment, motivation, recall, history, audits"
+members = ["check", "motivation", "recall-rules", "session-wrapup", "session-history", "pitfall-check"]
 
-[skill_families."AI & External Services"]
-icon = "\U0001F916"
-description = "Connect to AI models and cloud APIs"
+[skill_domain.project-scaffolding]
+display_name = "Project Scaffolding"
+description = "Initialize project documentation and structured handoffs"
+members = ["project-bootstrap", "structured-handoff"]
+
+[skill_domain.code-analysis]
+display_name = "Code Analysis"
+description = "Codebase audits and domain-specific reference guides"
+members = ["code-health-audit", "textual-tui-guide"]
+
+[skill_domain.meta-tooling]
+display_name = "Meta Tooling"
+description = "Skill creation, analytics, and configuration synchronization"
+members = ["skill-creator", "skill-analytics", "sync-rules"]
+
+[skill_domain.ai-services]
+display_name = "AI and External Services"
+description = "External AI APIs and cloud service integrations"
 members = ["gemini-chat", "google-drive-reader"]
 
+# ── Rule Domains ────────────────────────────────────────────────────────────
+# Rules are grouped into bundles. Each bundle becomes a dep-only plugin
+# named "rules-<domain>" that auto-installs all its members.
+# A user installing the bundle then runs the per-rule activate.sh (or
+# the repo-root activate-installed-rules.sh) to symlink the rules into
+# their .claude/rules/ directory.
 
-# ── Rule Families ────────────────────────────────────────────────────────────
-# Same as skill families, but for rules.
-
-[rule_families."Quality & Verification"]
-icon = "\u2714"
-description = "Enforce code quality, testing, and review standards"
+[rule_domain.quality]
+display_name = "Quality and Verification"
+description = "Code quality, testing, verification, and review discipline"
 members = ["blast-radius", "code-hygiene", "pitfalls-discipline", "prior-art", "simplicity-bar", "verification-ladder", "verify-your-work"]
 
-[rule_families."Documentation & Progress"]
-icon = "\U0001F4DD"
-description = "Track work, document decisions, maintain project history"
-members = ["document-lifecycle", "document-progress", "readable-docs"]
-
-[rule_families."Workflow & Process"]
-icon = "\u2699"
-description = "Shape how agents approach and execute tasks"
+[rule_domain.workflow]
+display_name = "Workflow and Process"
+description = "How agents approach, decompose, and execute tasks"
 members = ["autonomous-persistence", "continuous-improvement", "improve-the-process", "revert-on-failure", "session-resilience", "stay-motivated", "task-formation"]
 
-[rule_families."Environment & Conventions"]
-icon = "\U0001F527"
-description = "Technical environment rules and output conventions"
+[rule_domain.documentation]
+display_name = "Documentation and Progress"
+description = "Tracking work, documenting decisions, maintaining project history"
+members = ["document-lifecycle", "document-progress", "readable-docs"]
+
+[rule_domain.environment]
+display_name = "Environment and Conventions"
+description = "Tooling conventions and output discipline"
 members = ["no-ai-credit", "output-discipline", "python-uv"]
 
-[rule_families."Notifications"]
-icon = "\U0001F514"
-description = "Alert you when important events happen"
+[rule_domain.notifications]
+display_name = "Notifications"
+description = "Alert hooks for important events"
 members = ["telegram-on-complete"]
+
+# ── Cross-Platform Mirrors ──────────────────────────────────────────────────
+# The generator produces a mirror directory for each non-Claude-Code platform
+# so users can `git clone` the marketplace and point their tool at the right
+# subdirectory. Mirrors are committed to the repo.
+
+[platform.claude-code]
+display_name = "Claude Code"
+mirror_directory = ""  # native — uses .claude-plugin/ + _generated/, no separate mirror needed
+rule_format = "rules-directory"  # symlinked into .claude/rules/ per Path 2
+
+[platform.devin]
+display_name = "Devin CLI"
+mirror_directory = ".devin/"
+rule_format = "agents"  # appended to AGENTS.md
+skill_format = "directory"
+
+[platform.cursor]
+display_name = "Cursor"
+mirror_directory = ".cursor/"
+rule_format = "cursor"  # YAML frontmatter with alwaysApply: true
+skill_format = "directory"
+
+[platform.windsurf]
+display_name = "Windsurf"
+mirror_directory = ".windsurf/"
+rule_format = "windsurf"  # YAML frontmatter with trigger: always_on
+skill_format = "directory"
+
+[platform.codex]
+display_name = "Codex CLI"
+mirror_directory = ".codex/"
+skill_format = "directory"
+
+[platform.gemini]
+display_name = "Gemini CLI"
+mirror_directory = ".gemini/"
+skill_format = "directory"
