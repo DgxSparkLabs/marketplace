@@ -1,6 +1,8 @@
 # Investigation — Plugin Dependency Auto-Install
 
-**Status:** Open. To be verified immediately after the `feat/claude-plugin-compliance` branch is pushed to GitHub.
+**Status:** ✅ RESOLVED — verified empirically on 2026-05-22. See **Result** section at the bottom.
+
+**Outcome (TL;DR):** Plugin dependencies **DO auto-install**. The planned dependency-only domain bundle architecture works. No fallback needed for tasks #3-#5. The Option 2 fallback design remains documented below as reference material for future readers.
 
 **Owner:** Whoever picks up task #13.
 
@@ -172,10 +174,73 @@ Pros: simplest, no bundle plugin maintenance. Cons: loses one-command bundle ins
 
 ---
 
+## Result
+
+**Date:** 2026-05-22
+**Verified by:** Claude (during execution of `feat/claude-plugin-compliance`)
+**Claude Code version:** as installed via `claude` CLI on this machine
+**Outcome:** ✅ **Dependencies auto-install**
+
+### Experiment summary
+
+Built two minimal test plugins per the plan above:
+
+- `test-plugin-a` — content-only plugin with a minimal SKILL.md
+- `test-plugin-b` — bundle-style plugin with `"dependencies": ["test-plugin-a"]` and no other content
+
+Bundled them in a local `dep-test-marketplace` and registered it via:
+
+```bash
+claude plugin marketplace add ./_dep-test/dep-test-marketplace
+```
+
+Installed ONLY the bundle plugin (project scope to avoid leaking into user state):
+
+```bash
+claude plugin install test-plugin-b@dep-test-marketplace --scope project
+```
+
+### What happened
+
+Install output (verbatim):
+
+> Successfully installed plugin: test-plugin-b@dep-test-marketplace (scope: project) **(+ 1 dependency: test-plugin-a)**
+
+Subsequent `claude plugin list` confirmed both plugins installed and enabled.
+
+### Bonus findings
+
+Several useful behaviors discovered during cleanup that inform our plan:
+
+| Behavior | Detail |
+|---------|--------|
+| Auto-installed deps are tracked separately from user-installed | They're called "auto-installed dependencies" in CLI output |
+| Uninstalling the bundle does NOT auto-remove its deps | Deps become "orphaned" / "no longer needed" but persist until prune |
+| `claude plugin prune --scope <scope> -y` removes orphans | The `-y` is needed in non-TTY mode (e.g., scripted execution) |
+| Removing a marketplace marks all its plugins as orphaned | Files written to cache with `.orphaned_at` marker; final cleanup is deferred |
+| Cache path is `~/.claude/plugins/cache/<marketplace>/<plugin>/<version>/` | Versioned subdirectories — multiple installed versions coexist |
+| Plugin names must be kebab-case for Claude.ai marketplace sync | Mixed-case names load locally but fail Claude.ai sync; `claude plugin validate` warns |
+| `homepage` and `repository` fields in marketplace.json are tolerated | `claude plugin validate` flags them as "Unknown field. Claude Code ignores it at load time." — keep them anyway for documentation, no harm |
+| Local-path marketplaces work | `claude plugin marketplace add <local-dir>` succeeds — no GitHub push needed for testing |
+
+### Implications for the marketplace design
+
+1. **Domain bundles work as planned.** `skills-communication`, `rules-quality`, etc. can be dep-only plugins. No `install-deps.sh` script needed.
+2. **Update behavior is correct.** When a user bumps their installed bundle version and a new dep was added, the new dep should auto-install too. (Not separately verified; document this for the implementing agent of task #3.)
+3. **Pruning is the user's responsibility.** If a user uninstalls a bundle, they must run `claude plugin prune` to remove orphaned deps. Worth mentioning in the contributor tutorials.
+4. **Validate during CI.** `claude plugin validate <path>` should run against every plugin in CI as part of task #6. Catches kebab-case violations and unknown fields before they ship.
+
+### Conclusion
+
+The bundle architecture documented in `PLAN_PLUGIN_COMPLIANCE.md` is approved as-is. Proceed with tasks #3-#5 using dependency-only domain bundles. The Option 2 fallback design (bundles ship `install-deps.sh`) is no longer needed but remains documented above as reference.
+
+---
+
 ## References
 
-- [Claude Code Plugins Reference](https://code.claude.com/docs/en/plugins-reference) — `dependencies` field listed but install behavior unspecified
+- [Claude Code Plugins Reference](https://code.claude.com/docs/en/plugins-reference) — `dependencies` field listed but install behavior was unspecified
 - [Plugin Marketplaces](https://code.claude.com/docs/en/plugin-marketplaces) — confirms marketplace.json structure
 - [SchemaStore Claude Code Plugin Manifest](https://www.schemastore.org/claude-code-plugin-manifest.json) — canonical schema
+- `claude plugin --help`, `claude plugin install --help`, `claude plugin marketplace --help` — most authoritative source we found during this work
 - `docs/INVESTIGATION_PLUGIN_DEPENDENCIES.md` — this file
 - Task #13 in the project task list
