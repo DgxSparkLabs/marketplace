@@ -32,6 +32,21 @@ Which platform exposes a CLI command to introspect each construct type:
 
 ---
 
+## Match Mode Convention
+
+CI workflows transcribe each catalog row into one of four assertion shapes. Every row's "after-install output" cell implicitly uses **`grep` substring match** of the bolded or backticked key phrase shown, unless the row explicitly declares another mode. Implementing agents follow this contract; deviations require an explicit Match mode override per row.
+
+| Match mode | Assertion shape | When to use |
+|------------|----------------|-------------|
+| `exit-code-only` | `<command>; [ $? -eq 0 ]` | Command must complete without error; output content is not checked |
+| `grep <substring>` (default) | `<command> \| grep -F '<substring>'` | A specific phrase must appear in the output (most common) |
+| `regex <pattern>` | `<command> \| grep -E '<pattern>'` | Output structure matters more than exact text (e.g., version numbers, paths) |
+| `exact-diff` | `<command> > tmp; diff <(echo '<expected>') tmp` | Byte-exact match required (rare; useful for stable JSON outputs) |
+
+Default for every command in this catalog: **`exit-code-only` for `--version` / `--help`-type commands; `grep <substring>` for list/inspection commands.** Per-row overrides documented inline where they apply.
+
+---
+
 ## Platform 1: Claude Code
 
 **CLI binary:** `claude` (`claude --version` reports current Code release)
@@ -249,7 +264,7 @@ Which platform exposes a CLI command to introspect each construct type:
 - **No marketplace concept** — Cursor reads `.cursor/rules/*.mdc` files at IDE open
 - Format: `.mdc` files with YAML frontmatter (`description`, `globs`, `alwaysApply`)
 - **Our format compatibility:** Generator writes `.cursor/rules/<name>.md` — Cursor docs say `.mdc` is canonical; `.md` is also accepted but loses UI/validator support
-- Third-party `npx cursor-doctor scan .cursor/rules/` provides format validation (auth-free, free)
+- **Third-party validator (verified 2026-05-22):** `cursor-doctor@1.11.0` (npm, by `nedcodes`, MIT-licensed, zero deps). Usage: `npx --yes cursor-doctor@1.11.0 scan .cursor/rules/`. The `scan` operation is free; `fix` operation has a 3-uses-per-session free tier (Pro for unlimited). For CI validation we only need `scan`, which is fully auth-free. Available subcommands: `scan` (default), `fix`, `fix --preview`, `lint`, `badge`.
 
 ### Per-construct visibility
 

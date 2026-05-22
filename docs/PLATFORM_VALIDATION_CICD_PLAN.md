@@ -39,40 +39,64 @@ Why matrix rather than separate files per platform inside each construct workflo
 
 ## 3. Workflow Inventory
 
-Eleven `compat-*.yml` workflows, one per construct type. Some are single-platform (Claude-only constructs); some span 2–4 platforms.
+Ten `compat-*.yml` workflows, one per **plugin-installable** construct type our marketplace ships. Rules are intentionally excluded — they aren't installable via any platform's plugin system; rule format validation stays in `tests/test_marketplace.py`.
 
 | Workflow file | Construct covered | Matrix platforms | Required for merge? |
 |---------------|------------------|------------------|--------------------|
-| `compat-skill.yml` | skills | claude, devin, codex, gemini | claude + devin **required**; codex + gemini **advisory** |
-| `compat-rule.yml` | rules | claude, cursor, windsurf, devin | claude + cursor + windsurf + devin **required** (all viable in CI) |
+| `compat-skill.yml` | skills | claude, devin, codex, gemini | claude + devin **required**; codex + gemini **advisory** (`continue-on-error`) |
 | `compat-command.yml` | commands | claude | **required** |
 | `compat-agent.yml` | agents | claude | **required** |
 | `compat-hook.yml` | hooks | claude, gemini (migration check only) | claude **required**; gemini **advisory** |
 | `compat-mcp.yml` | MCP servers | claude, devin, codex, gemini | claude + devin **required**; codex + gemini **advisory** |
-| `compat-extension.yml` | Gemini extensions | gemini | **advisory** (Gemini-only construct; blocked from GitHub Actions) |
+| `compat-extension.yml` | Gemini extensions | gemini | **advisory** — fails until generator emits `gemini-extension.json`; passes when it does |
 | `compat-monitor.yml` | monitors | claude | **required** |
 | `compat-output-style.yml` | output styles | claude | **required** |
 | `compat-theme.yml` | themes | claude | **required** |
 | `compat-marketplace-add.yml` | marketplace registration | claude, codex | claude **required**; codex **advisory** |
 
-**Eleven workflows total.** Most are small (one platform); a few are matrix-rich (skills, rules, MCP).
+**Ten workflows total.** Most are small (one platform); a few are matrix-rich (skills, MCP).
+
+All workflows share:
+- `on: pull_request` to `main` AND `on: push` to `main` + `feat/**` AND `workflow_dispatch` (per decision #12)
+- `concurrency: { group: '${{ github.workflow }}-${{ github.ref }}', cancel-in-progress: true }` (per decision #19)
+- First step: `uv run scripts/generate_manifest.py --write` (per decision #13) — regenerates `_generated/` fresh from sources
+- Each matrix cell runs in its own job on `ubuntu-latest` (per decision #6 — per-job isolation)
 
 ---
 
 ## 4. All Locked Decisions Recap
 
-Eight decisions are locked. The implementing agent picks these up as given.
+Twenty decisions are locked across three rounds of review-and-resolve. The implementing agent picks these up as given.
+
+### Original 8 (first design pass)
 
 | # | Decision | Chosen direction |
 |---|----------|-----------------|
 | 1 | Where to commit catalog + plan docs | `feat/claude-plugin-compliance` (merged with migration PR #1) |
-| 2 | Required vs advisory for compat checks | Required for non-blocked platforms; advisory for blocked platforms |
+| 2 | Required vs advisory for compat checks | Required for non-blocked platforms; advisory for blocked platforms (via job-level `continue-on-error`) |
 | 3 | Workflow file structure | One workflow per construct capability, with platform matrix per workflow |
 | 4 | Codex + Gemini blocked-in-CI strategy | Parallel tracks — GitHub support whitelist request + local-dev fallback scripts |
 | 5 | Composite action location | In this repo, `.github/actions/setup-<platform>/` |
 | 6 | Test isolation between platforms | Per-job isolation — each matrix cell on a fresh Ubuntu runner |
 | 7 | Platform-breakage policy | Block release until catalog + assertions are updated in same PR |
-| 8 | Advisory → required promotion path (post-whitelist) | Immediate promotion after one green CI run on `main` + branch protection update |
+| 8 | Advisory → required promotion path (post-whitelist) | **Superseded by #16 below** — no explicit promotion needed |
+
+### Round 1+2+3 (post-reviewer-critique resolutions)
+
+| # | Decision | Chosen direction |
+|---|----------|-----------------|
+| 9 | Output match contract (BLOCKER #1) | Per-row `Match mode` column in catalog: `exit-code-only` / `grep <substring>` / `regex <pattern>` / `exact-diff`. Each row commits to one. Default: `grep` substring match against stdout |
+| 10 | Advisory enforcement YAML idiom (BLOCKER #2) | Job-level `continue-on-error: true` on Codex/Gemini matrix entries. Failures stay visible in PR UI without blocking merge |
+| 11 | Claude rules in compat (BLOCKER #10) | **`compat-rule.yml` removed entirely.** Rules aren't installable via plugins on any platform; rule format validation lives in `tests/test_marketplace.py`. Workflow count: 11 → 10 |
+| 12 | Workflow trigger model (IMPORTANT #8) | `on: pull_request` to `main` AND `on: push` to `main` + `feat/**`. Manual `workflow_dispatch` available |
+| 13 | Generator invocation (BLOCKER #4) | Each compat workflow runs `uv run scripts/generate_manifest.py --write` as its first step (regenerates fresh from sources). Workflows do NOT trust the committed `_generated/` tree |
+| 14 | CLI version pinning (IMPORTANT #5) | Float to `@latest` for npm-installed CLIs (Codex, Gemini). CI catches real-world breakage immediately; per the platform-breakage policy (#7), a failed compat run blocks release until catalog + assertions are updated |
+| 15 | Devin skills/rules assertion (IMPORTANT #6) | Explicit `working-directory: ${{ github.workspace }}` + `devin skills list \| grep -i <skill-name>` (and same shape for rules, mcp). Asserts skill is in Devin's output |
+| 16 | Gating mechanism for blocked platforms (NICE #13) | **None.** No `vars.*` variable, no admin toggle, no promotion ceremony. The CLI install attempt itself is the gate. When GitHub lifts the block, workflows start passing on the next run with zero code changes |
+| 17 | Composite action contract (BLOCKER #3) | Standard contract for every `setup-<platform>` action: `inputs: version (string, default 'latest')`; `outputs: installed (boolean)`. Behavior: install CLI at requested version, run `<cli> --version` to verify, set output |
+| 18 | Marketplace re-registration handling (IMPORTANT #9) | Trust runner ephemerality. No defensive `remove-if-exists`. GitHub-hosted runners are fresh per job. Self-hosted runner consideration deferred to if/when we add one |
+| 19 | Concurrency block (NICE #11) | Add to every compat workflow: `concurrency: { group: '${{ github.workflow }}-${{ github.ref }}', cancel-in-progress: true }`. Prevents redundant runs on rapid pushes |
+| 20 | Gemini extension workflow gating (NICE #14) | **No gating.** Ship `compat-extension.yml` normally. If it fails because generator doesn't yet emit `gemini-extension.json`, the failure is advisory (Gemini row has `continue-on-error: true`). Workflow passes when generator catches up |
 
 ### Required vs Advisory matrix (decision #2 elaborated)
 
@@ -91,30 +115,56 @@ Advisory checks run but don't block merge. They surface failures in the UI witho
 
 ## 5. Shared Platform Setup — Composite Actions
 
-To avoid duplicating install logic across 11 workflows, each platform with a CLI gets a composite action:
+To avoid duplicating install logic across 10 workflows, each platform with a CLI gets a composite action. **All actions share a standard contract** (per decision #17):
+
+```yaml
+inputs:
+  version:
+    description: 'CLI version to install. Default: latest'
+    default: 'latest'
+    required: false
+outputs:
+  installed:
+    description: 'Boolean — true if the CLI binary is available after setup'
+```
+
+### Action inventory
 
 ```
 .github/actions/
-├── setup-claude/action.yml         # claude CLI (likely pre-installed in some runners)
-├── setup-codex/action.yml          # npm install -g @openai/codex (skip-if-blocked logic)
-├── setup-gemini/action.yml         # npm install -g @google/gemini-cli (skip-if-blocked logic)
-├── setup-devin/action.yml          # curl install script with || true wrap
-├── setup-cursor-doctor/action.yml  # npx cursor-doctor (no auth, no install global)
-└── register-marketplace/action.yml # registers ./_generated as the local marketplace for whichever platform was set up
+├── setup-claude/action.yml         # claude CLI install (TBD vendor mechanism)
+├── setup-codex/action.yml          # npm install -g @openai/codex@${{ inputs.version }}
+├── setup-gemini/action.yml         # npm install -g @google/gemini-cli@${{ inputs.version }}
+├── setup-devin/action.yml          # curl -fsSL https://cli.devin.ai/install.sh | bash || true (per empirical finding: non-TTY exits 1 but binary installs)
+└── setup-cursor-doctor/action.yml  # ensures `npx --yes cursor-doctor@${{ inputs.version }}` is reachable (no global install — npx ad-hoc)
 ```
 
-Workflows then:
+Note: there is no `register-marketplace/action.yml`. Marketplace registration is a single platform-specific line in each workflow (e.g., `claude plugin marketplace add ./` or `codex plugin marketplace add ./`), simple enough not to warrant an abstraction. Per decision #18, no defensive `remove-if-exists` is needed because GitHub-hosted runners are ephemeral.
+
+### Per-action behavior
+
+| Action | Install command | Verify | Sets `installed` |
+|--------|----------------|--------|------------------|
+| `setup-claude` | TBD vendor install mechanism | `claude --version` exit 0 | true if verify passes |
+| `setup-codex` | `npm install -g @openai/codex@${{ inputs.version }}` | `codex --version` exit 0 | true if verify passes |
+| `setup-gemini` | `npm install -g @google/gemini-cli@${{ inputs.version }}` | `gemini --version` exit 0 | true if verify passes |
+| `setup-devin` | `curl -fsSL https://cli.devin.ai/install.sh \| bash \|\| true` then `chmod +x ~/.local/bin/devin` | `devin --version` exit 0 | true if verify passes |
+| `setup-cursor-doctor` | n/a — npx handles installation on first use | `npx --yes cursor-doctor@${{ inputs.version }} --help` exit 0 | true if verify passes |
+
+Workflows use them:
 
 ```yaml
 - uses: ./.github/actions/setup-claude
-- uses: ./.github/actions/register-marketplace
+  id: claude
+- uses: ./.github/actions/setup-codex
+  id: codex
   with:
-    platform: claude
+    version: 'latest'    # per decision #14 — float to latest
+- run: claude plugin marketplace add ./
 - run: claude plugin install skill-telegram-notify@dgxsparklabs-marketplace --scope project
-- run: claude plugin list | grep skill-telegram-notify || exit 1
+- run: claude plugin list | grep "skill-telegram-notify@dgxsparklabs-marketplace"
+  # Match mode per catalog: grep substring (decision #9)
 ```
-
-Composite actions encapsulate the platform-specific quirks (Devin's interactive installer needing `|| true`, Gemini's `--scope project` flag, Codex's `plugin marketplace add` syntax). The workflows themselves stay readable.
 
 ---
 
@@ -133,17 +183,13 @@ Composite actions encapsulate the platform-specific quirks (Devin's interactive 
 | codex (advisory) | setup-codex (skip-if-blocked) | `codex plugin marketplace add ./` exit 0 | `cat ~/.codex/config.toml \| grep dgxsparklabs-marketplace` | `codex plugin marketplace remove dgxsparklabs-marketplace` |
 | gemini (advisory) | setup-gemini (skip-if-blocked) | `echo "y" \| gemini skills install ./_generated/skill-telegram-notify` exit 0 | `gemini skills list --all \| grep telegram-notify` exit 0 | `gemini skills uninstall telegram-notify` |
 
-### 6.2 `compat-rule.yml`
+### 6.2 ~~`compat-rule.yml`~~ — REMOVED (per decision #11)
 
-**Construct:** rules
-**Matrix platforms:** claude (advisory — rules use activate.sh, not pure plugin install), cursor, windsurf, devin
+Rules are not installable via the plugin system on any platform. Claude Code's plugin spec has no `rules` field; we use the `activate.sh` symlink workaround for Claude users, and Devin/Cursor/Windsurf simply read rule files directly from filesystem.
 
-| Platform | Strategy |
-|----------|----------|
-| claude (advisory) | Install `rule-blast-radius@dgxsparklabs-marketplace`, then run cached `activate.sh`, verify symlink/copy in `.claude/rules/blast-radius.md` |
-| cursor | `npx cursor-doctor scan .cursor/rules/` exit 0 + custom YAML parser asserting frontmatter has `description \| globs \| alwaysApply` |
-| windsurf | Custom YAML parser asserting `trigger:` in `{always_on, model_decision, glob, manual}`, body ≤ 12,000 chars |
-| devin | `devin rules list` output includes rules tagged `Cursor` and `Windsurf` (matching our generator-produced mirror files) |
+Rule **format validation** lives in the existing `tests/test_marketplace.py` (TestCursorRulesMirror, TestWindsurfRulesMirror, TestDevinRulesMirror classes — to be authored or extended as part of the implementation). It runs as part of the existing `ci.yml` and the manifest-drift check, not as a `compat-*.yml`.
+
+There is no `compat-rule.yml` workflow.
 
 ### 6.3 `compat-command.yml`
 
@@ -257,9 +303,11 @@ echo "All Codex local validation checks passed."
 
 ### When the whitelist arrives
 
-The Codex and Gemini compat workflows (already drafted with the assertions, just gated on `if: ${{ vars.CODEX_WHITELIST_GRANTED == 'true' }}` or similar) flip from skipped to running. Their advisory status is promoted to required. No code changes to the workflows themselves — just toggling the gate.
+**No gating mechanism exists** (per decision #16). Codex and Gemini workflows are written normally and attempt to install at every run. While the org-level block is in place, their CLI install fails with the documented 0s GitHub Actions error. The matrix entries have `continue-on-error: true` (decision #10), so this failure is **advisory** — visible in the PR summary, doesn't gate merge.
 
-If the whitelist is denied or doesn't arrive, the local-dev scripts remain the validation path indefinitely. The compat workflows stay as documented intent.
+When GitHub lifts the block (whether via whitelist, policy change, or any other mechanism), the install will succeed on the next CI run, the workflow will pass, and the advisory check turns green automatically. No code changes, no admin toggle, no promotion ceremony — the CLI install attempt itself is the gate.
+
+If the block is never lifted, the local-dev scripts remain the only validation path for Codex/Gemini. The compat workflows continue to fail advisory and serve as visible documentation of the unresolved block.
 
 ---
 
@@ -282,19 +330,19 @@ If the whitelist is denied or doesn't arrive, the local-dev scripts remain the v
 
 ## 9. Remaining Open Questions
 
-Three smaller questions deferred to implementation time (Wave 1/2 of the implementation PR):
+After three rounds of review-and-resolve, only smaller implementation-time questions remain. All BLOCKER and IMPORTANT items from the reviewer's critique are resolved in Section 4. The two below are NICE-level questions deferred to empirical resolution during Wave 1/2 implementation:
 
-1. **Composite action cache strategy.** npm installs are 5–10s each; multiplied across many workflows × platforms = significant CI cost. Should `setup-codex` etc. use `actions/cache` for `~/.npm` and the installed binary? Decide during Wave 1 by measuring actual runner cost.
+1. **Composite action cache strategy.** npm installs are 5–10s each; multiplied across many workflows × platforms = significant CI cost. Should `setup-codex` etc. use `actions/cache` for `~/.npm` and the installed binary? Decide during Wave 1 by measuring actual runner cost. Default: no caching to start; add if CI minutes become a problem.
 
-2. **Devin CLI install cost in CI.** The `curl ... | bash` installer is large; consider caching the installed binary across runs. Decide during Wave 2 once the actual Devin workflow is being authored.
+2. **Devin CLI install cost in CI.** The `curl ... | bash` installer is large (~10s to download + install); consider caching the installed binary across runs. Decide during Wave 2 once the actual Devin workflow is authored and we have runtime data.
 
-3. **Should `compat-marketplace-add.yml` also test Devin's filesystem-only "registration" (just verifying `devin rules list` sees our mirrors)?** Devin doesn't have a marketplace concept but its native cross-platform reading IS our cross-platform compatibility surface. Lean: yes, add a Devin row in advisory mode — but defer the call until Wave 2 since the related `compat-rule.yml` already covers `devin rules list` assertions.
-
-These three are intentionally left for implementation-time empirical resolution rather than pre-committed to here.
+These two are intentionally left for implementation-time empirical resolution rather than pre-committed to here.
 
 ### Resolved questions (moved to Section 4 above)
 
-Five questions from the earlier draft of this section are now locked decisions and moved to Section 4: composite action publishing (in-repo), test isolation (per-job), platform-breakage policy (block release), promotion path (immediate after one green run), and the four decisions from the original Phase A round (branch, advisory, structure, whitelist).
+All 18 substantial questions raised during the design and critique cycles are now locked decisions documented in Section 4. Reviewer's third-round critique surfaced 14 items (4 blockers + 6 important + 4 nice); 12 were resolved with explicit decisions, 1 (`cursor-doctor` package name) was resolved via npm research, and 1 (`compat-rule.yml` existence) was resolved by clarification of the marketplace's plugin-installable scope.
+
+The third reviewer pass after these doc updates should confirm clean.
 
 ---
 
