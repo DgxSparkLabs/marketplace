@@ -50,7 +50,8 @@ jobs:
 
       - name: Assert extension appears in list after install
         # Match mode: grep substring — catalog row: gemini extensions list shows our entry
-        run: gemini extensions list | grep -F "dgxsparklabs"
+        # stderr redirect required: gemini extensions list writes output to stderr on Linux (same pattern as gemini mcp list).
+        run: gemini extensions list 2>&1 | grep -F "dgxsparklabs"
 
       - name: Cleanup
         if: always()

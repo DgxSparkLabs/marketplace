@@ -186,7 +186,7 @@ Default for every command in this catalog: **`exit-code-only` for `--version` / 
 | `gemini --help` | Subcommand surface | 0 | text | 5 main subcommands + many flags | same |
 | `gemini skills list` | Discovered skills (project + user + built-in) | 0 | text | `No skills discovered.` | enumerated skills with location + status |
 | `gemini skills list --all` | Same + built-in/disabled | 0 | text | At minimum `skill-creator [Enabled] [Built-in]` | additional discovered skills |
-| `gemini extensions list` | Installed extensions | 0 | text | `No extensions installed.` | extension entries with name + version |
+| `gemini extensions list 2>&1` | Installed extensions | 0 | text (stderr) | `No extensions installed.` | extension entries with name + version. **ALL output is written to stderr on Linux, not stdout.** Pipe assertions must use `2>&1`. Without the redirect, grep receives empty stdin and exits 1. Last verified: 2026-05-22 |
 | `gemini mcp list 2>&1` | Configured MCP servers | 0 | text (stderr) | `No MCP servers configured.` | each server with command + status. **ALL output (warning preamble + server list) is written to stderr, not stdout.** Pipe must use `2>&1` to capture output for grep assertions. `gemini mcp list \| grep` receives empty stdin and exits 1. Last verified: 2026-05-22 |
 | `gemini skills enable <name>` / `disable <name>` | Toggle skill | 0 | text | (skill not found error) | updates `~/.gemini/settings.json` |
 | `gemini extensions enable <name>` / `disable <name>` | Toggle extension | 0 | text | (not found) | updates settings |
