@@ -1,0 +1,68 @@
+name: explore-openai-cli
+
+on:
+  push:
+    branches: ["exp/cli-empirical-discovery", "exp/**"]
+
+jobs:
+  explore:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install openai cli package
+        run: |
+          PACKAGE="@openai/codex"
+          npm install -g "$PACKAGE" 2>&1 | tail -10 || echo "INSTALL_EXIT: $?"
+
+      - name: Check binary version
+        run: codex --version 2>&1 || echo "EXIT: $?"
+
+      - name: Top-level help
+        run: codex --help 2>&1 || echo "EXIT: $?"
+
+      - name: Print config
+        run: codex --print-config 2>&1 || echo "EXIT: $?"
+
+      - name: MCP help
+        run: codex mcp --help 2>&1 || echo "EXIT: $?"
+
+      - name: MCP list auth-free check
+        run: codex mcp list 2>&1 || echo "EXIT: $?"
+
+      - name: Skills help
+        run: codex skills --help 2>&1 || echo "EXIT: $?"
+
+      - name: Features list
+        run: codex features list 2>&1 || echo "EXIT: $?"
+
+      - name: Execpolicy help
+        run: codex execpolicy --help 2>&1 || echo "EXIT: $?"
+
+      - name: Agents help
+        run: codex agents --help 2>&1 || echo "EXIT: $?"
+
+      - name: Config help
+        run: codex config --help 2>&1 || echo "EXIT: $?"
+
+      - name: Introspect all subcommands
+        run: |
+          codex list 2>&1 || echo "EXIT: $?"
+          codex commands 2>&1 || echo "EXIT: $?"
+          codex help 2>&1 || echo "EXIT: $?"
+
+      - name: Locate config and skill file paths
+        run: |
+          echo "--- which codex ---"
+          which codex || echo "not found"
+          echo "--- ls ~/.codex ---"
+          ls -la ~/.codex 2>&1 || echo "no dir"
+          echo "--- ls ~/.config/codex ---"
+          ls -la ~/.config/codex 2>&1 || echo "no dir"
+          echo "--- npm package version ---"
+          PKGJSON="/usr/local/lib/node_modules/@openai/codex/package.json"
+          cat "$PKGJSON" 2>/dev/null | grep -E '"version"|"bin"' | head -5 || echo "no package.json"
+
+      - name: JSON and output flags
+        run: |
+          codex --help 2>&1 | grep -iE 'json|output|format|--[a-z]' || echo "no matches"

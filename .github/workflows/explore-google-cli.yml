@@ -1,0 +1,65 @@
+name: explore-google-cli
+
+on:
+  push:
+    branches: ["exp/cli-empirical-discovery", "exp/**"]
+
+jobs:
+  explore:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install google cli package
+        run: |
+          PACKAGE="@google/gemini-cli"
+          npm install -g "$PACKAGE" 2>&1 | tail -10 || echo "INSTALL_EXIT: $?"
+
+      - name: Check binary version
+        run: gemini --version 2>&1 || echo "EXIT: $?"
+
+      - name: Top-level help
+        run: gemini --help 2>&1 || echo "EXIT: $?"
+
+      - name: Extensions help
+        run: gemini extensions --help 2>&1 || echo "EXIT: $?"
+
+      - name: Extensions list auth-free
+        run: gemini extensions list 2>&1 || echo "EXIT: $?"
+
+      - name: List extensions flag
+        run: gemini --list-extensions 2>&1 || echo "EXIT: $?"
+
+      - name: Settings help
+        run: gemini settings --help 2>&1 || echo "EXIT: $?"
+
+      - name: Settings list
+        run: gemini settings list 2>&1 || echo "EXIT: $?"
+
+      - name: Tools help
+        run: gemini tools --help 2>&1 || echo "EXIT: $?"
+
+      - name: MCP help
+        run: gemini mcp --help 2>&1 || echo "EXIT: $?"
+
+      - name: Auth help
+        run: gemini auth --help 2>&1 || echo "EXIT: $?"
+
+      - name: Config help
+        run: gemini config --help 2>&1 || echo "EXIT: $?"
+
+      - name: Locate config file paths
+        run: |
+          echo "--- which gemini ---"
+          which gemini || echo "not found"
+          echo "--- ls ~/.gemini ---"
+          ls -la ~/.gemini 2>&1 || echo "no dir"
+          echo "--- ls ~/.config/gemini ---"
+          ls -la ~/.config/gemini 2>&1 || echo "no dir"
+          echo "--- npm package version ---"
+          PKGJSON="/usr/local/lib/node_modules/@google/gemini-cli/package.json"
+          cat "$PKGJSON" 2>/dev/null | grep -E '"version"|"bin"|"description"' | head -5 || echo "no package.json"
+
+      - name: JSON and output flags
+        run: |
+          gemini --help 2>&1 | grep -iE 'json|output|format|--[a-z]' || echo "no matches"
