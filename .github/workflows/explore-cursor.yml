@@ -43,8 +43,38 @@ jobs:
         run: |
           echo "Checking latest Cursor Linux download availability..."
           curl -sI "https://downloader.cursor.sh/linux/appImage/x64" 2>&1 | head -10 || echo "no appimage"
-          # Do NOT actually run the full app — just check binary existence
           ls /opt/cursor 2>&1 || echo "no /opt/cursor"
           ls /usr/local/bin/cursor 2>&1 || echo "no /usr/local/bin/cursor"
-          # Check npm global for any cursor packages
           npm list -g --depth=0 2>&1 | grep -i cursor || echo "no cursor in global npm"
+
+      - name: Install and probe openai codex cli
+        run: npm install -g @openai/codex 2>&1 | tail -10 || echo "INSTALL_EXIT: $?"
+
+      - name: codex version
+        run: codex --version 2>&1 || echo "EXIT: $?"
+
+      - name: codex help
+        run: codex --help 2>&1 || echo "EXIT: $?"
+
+      - name: codex print config
+        run: codex --print-config 2>&1 || echo "EXIT: $?"
+
+      - name: codex mcp subcommands
+        run: |
+          codex mcp --help 2>&1 || echo "EXIT: $?"
+          codex mcp list 2>&1 || echo "EXIT: $?"
+
+      - name: codex other subcommands
+        run: |
+          codex skills --help 2>&1 || echo "EXIT: $?"
+          codex features list 2>&1 || echo "EXIT: $?"
+          codex execpolicy --help 2>&1 || echo "EXIT: $?"
+          codex agents --help 2>&1 || echo "EXIT: $?"
+          codex config --help 2>&1 || echo "EXIT: $?"
+
+      - name: codex file paths and package info
+        run: |
+          which codex || echo "not found"
+          ls -la ~/.codex 2>&1 || echo "no dir"
+          ls -la ~/.config/codex 2>&1 || echo "no dir"
+          cat /usr/local/lib/node_modules/@openai/codex/package.json 2>/dev/null | grep -E '"version"|"bin"' | head -5 || echo "no package.json"

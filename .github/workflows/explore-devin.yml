@@ -13,75 +13,65 @@ jobs:
       - name: Install Devin CLI
         run: |
           curl -fsSL https://cli.devin.ai/install.sh 2>&1 | bash || echo "INSTALL_EXIT: $?"
+          # Also add to PATH in case installer dropped it in ~/bin or similar
           export PATH="$HOME/.local/bin:$HOME/bin:$PATH"
-          which devin 2>&1 || echo "devin not found"
+          which devin 2>&1 || find /usr/local/bin /usr/bin $HOME/bin $HOME/.local/bin -name "devin" 2>/dev/null | head -5 || echo "devin not found anywhere"
 
-      - name: devin version and help
+      - name: Add devin to PATH and check version
         run: |
           export PATH="$HOME/.local/bin:$HOME/bin:/usr/local/bin:$PATH"
+          echo "PATH=$PATH"
+          which devin 2>&1 || echo "not in PATH"
           devin --version 2>&1 || echo "EXIT: $?"
+
+      - name: devin --help (no auth)
+        run: |
+          export PATH="$HOME/.local/bin:$HOME/bin:/usr/local/bin:$PATH"
           devin --help 2>&1 || echo "EXIT: $?"
 
-  explore-openai:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Install openai codex cli
-        run: npm install -g @openai/codex 2>&1 | tail -10 || echo "INSTALL_EXIT: $?"
-
-      - name: codex version and help
+      - name: devin auth --help (auth subcommand shape)
         run: |
-          codex --version 2>&1 || echo "EXIT: $?"
-          codex --help 2>&1 || echo "EXIT: $?"
+          export PATH="$HOME/.local/bin:$HOME/bin:/usr/local/bin:$PATH"
+          devin auth --help 2>&1 || echo "EXIT: $?"
+          devin auth status 2>&1 || echo "EXIT: $?"
 
-      - name: codex mcp and config
+      - name: devin skills --help (auth-free?)
         run: |
-          codex mcp --help 2>&1 || echo "EXIT: $?"
-          codex mcp list 2>&1 || echo "EXIT: $?"
-          codex --print-config 2>&1 || echo "EXIT: $?"
-          codex config --help 2>&1 || echo "EXIT: $?"
+          export PATH="$HOME/.local/bin:$HOME/bin:/usr/local/bin:$PATH"
+          devin skills --help 2>&1 || echo "EXIT: $?"
+          devin skills list 2>&1 || echo "EXIT: $?"
+          devin skills paths 2>&1 || echo "EXIT: $?"
 
-      - name: codex subcommands
+      - name: devin rules --help (auth-free?)
         run: |
-          codex skills --help 2>&1 || echo "EXIT: $?"
-          codex features list 2>&1 || echo "EXIT: $?"
-          codex execpolicy --help 2>&1 || echo "EXIT: $?"
-          codex agents --help 2>&1 || echo "EXIT: $?"
+          export PATH="$HOME/.local/bin:$HOME/bin:/usr/local/bin:$PATH"
+          devin rules --help 2>&1 || echo "EXIT: $?"
+          devin rules list 2>&1 || echo "EXIT: $?"
 
-      - name: codex file paths
+      - name: devin mcp --help (auth-free?)
         run: |
-          which codex || echo "not found"
-          ls -la ~/.codex 2>&1 || echo "no dir"
-          ls -la ~/.config/codex 2>&1 || echo "no dir"
-          cat /usr/local/lib/node_modules/@openai/codex/package.json 2>/dev/null | grep version | head -3 || echo "no package.json"
+          export PATH="$HOME/.local/bin:$HOME/bin:/usr/local/bin:$PATH"
+          devin mcp --help 2>&1 || echo "EXIT: $?"
+          devin mcp list 2>&1 || echo "EXIT: $?"
 
-  explore-google:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Install google gemini cli
-        run: npm install -g @google/gemini-cli 2>&1 | tail -10 || echo "INSTALL_EXIT: $?"
-
-      - name: gemini version and help
+      - name: Devin config file locations
         run: |
-          gemini --version 2>&1 || echo "EXIT: $?"
-          gemini --help 2>&1 || echo "EXIT: $?"
+          export PATH="$HOME/.local/bin:$HOME/bin:/usr/local/bin:$PATH"
+          echo "--- ls ~/.devin ---"
+          ls -la ~/.devin 2>&1 || echo "no ~/.devin"
+          echo "--- ls ~/.config/devin ---"
+          ls -la ~/.config/devin 2>&1 || echo "no ~/.config/devin"
+          echo "--- ls ~/.local/share/devin ---"
+          ls -la ~/.local/share/devin 2>&1 || echo "no ~/.local/share/devin"
+          echo "--- Devin binary location ---"
+          which devin 2>/dev/null && ls -la $(which devin) || echo "not in PATH"
+          echo "--- Try find for devin binary ---"
+          find /usr/local /usr/bin $HOME -name "devin" -type f 2>/dev/null | head -10 || echo "find done"
 
-      - name: gemini subcommands
+      - name: devin JSON output and remaining subcommands
         run: |
-          gemini extensions --help 2>&1 || echo "EXIT: $?"
-          gemini extensions list 2>&1 || echo "EXIT: $?"
-          gemini settings --help 2>&1 || echo "EXIT: $?"
-          gemini tools --help 2>&1 || echo "EXIT: $?"
-          gemini mcp --help 2>&1 || echo "EXIT: $?"
-          gemini auth --help 2>&1 || echo "EXIT: $?"
-          gemini config --help 2>&1 || echo "EXIT: $?"
-
-      - name: gemini file paths
-        run: |
-          which gemini || echo "not found"
-          ls -la ~/.gemini 2>&1 || echo "no dir"
-          ls -la ~/.config/gemini 2>&1 || echo "no dir"
-          cat /usr/local/lib/node_modules/@google/gemini-cli/package.json 2>/dev/null | grep version | head -3 || echo "no package.json"
+          export PATH="$HOME/.local/bin:$HOME/bin:/usr/local/bin:$PATH"
+          devin --help 2>&1 | grep -iE 'json|output|format|--[a-z]' || echo "grep found nothing"
+          devin config --help 2>&1 || echo "EXIT: $?"
+          devin workspace --help 2>&1 || echo "EXIT: $?"
+          devin session --help 2>&1 || echo "EXIT: $?"
