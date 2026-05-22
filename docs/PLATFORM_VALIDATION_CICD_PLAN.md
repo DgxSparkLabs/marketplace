@@ -59,9 +59,22 @@ Eleven `compat-*.yml` workflows, one per construct type. Some are single-platfor
 
 ---
 
-## 4. Required vs Advisory — Decision Recap
+## 4. All Locked Decisions Recap
 
-The user decided: **Required for non-blocked platforms; advisory for blocked platforms.**
+Eight decisions are locked. The implementing agent picks these up as given.
+
+| # | Decision | Chosen direction |
+|---|----------|-----------------|
+| 1 | Where to commit catalog + plan docs | `feat/claude-plugin-compliance` (merged with migration PR #1) |
+| 2 | Required vs advisory for compat checks | Required for non-blocked platforms; advisory for blocked platforms |
+| 3 | Workflow file structure | One workflow per construct capability, with platform matrix per workflow |
+| 4 | Codex + Gemini blocked-in-CI strategy | Parallel tracks — GitHub support whitelist request + local-dev fallback scripts |
+| 5 | Composite action location | In this repo, `.github/actions/setup-<platform>/` |
+| 6 | Test isolation between platforms | Per-job isolation — each matrix cell on a fresh Ubuntu runner |
+| 7 | Platform-breakage policy | Block release until catalog + assertions are updated in same PR |
+| 8 | Advisory → required promotion path (post-whitelist) | Immediate promotion after one green CI run on `main` + branch protection update |
+
+### Required vs Advisory matrix (decision #2 elaborated)
 
 | Platform | CI viability | Compat checks status |
 |----------|-------------|----------------------|
@@ -267,25 +280,21 @@ If the whitelist is denied or doesn't arrive, the local-dev scripts remain the v
 
 ---
 
-## 9. Open Questions for Next Round
+## 9. Remaining Open Questions
 
-The questions that warrant explicit decisions before implementation starts:
+Three smaller questions deferred to implementation time (Wave 1/2 of the implementation PR):
 
-1. **Composite action publishing.** Should `.github/actions/setup-claude/` etc. be in this repo, or extracted to a separate `DgxSparkLabs/claude-code-actions` repo for reuse across multiple repos? If extracted, the workflows reference them by `uses: DgxSparkLabs/claude-code-actions/setup-claude@v1`.
+1. **Composite action cache strategy.** npm installs are 5–10s each; multiplied across many workflows × platforms = significant CI cost. Should `setup-codex` etc. use `actions/cache` for `~/.npm` and the installed binary? Decide during Wave 1 by measuring actual runner cost.
 
-2. **Composite action cache strategy.** npm installs are 5–10s each; multiplied across 11 workflows × 4 platforms = significant CI cost. Should setup-codex et al. use `actions/cache` for `~/.npm` and the installed binary?
+2. **Devin CLI install cost in CI.** The `curl ... | bash` installer is large; consider caching the installed binary across runs. Decide during Wave 2 once the actual Devin workflow is being authored.
 
-3. **Test isolation per platform.** Two options:
-   - **Per-job isolation:** each matrix cell runs on a fresh runner — clean, expensive.
-   - **Per-step isolation:** all platforms share one runner but cleanup between steps is rigorous — cheaper, but cleanup bugs leak between platforms.
+3. **Should `compat-marketplace-add.yml` also test Devin's filesystem-only "registration" (just verifying `devin rules list` sees our mirrors)?** Devin doesn't have a marketplace concept but its native cross-platform reading IS our cross-platform compatibility surface. Lean: yes, add a Devin row in advisory mode — but defer the call until Wave 2 since the related `compat-rule.yml` already covers `devin rules list` assertions.
 
-4. **Devin CLI install cost in CI.** The `curl ... | bash` script is large; consider caching the installed binary across runs.
+These three are intentionally left for implementation-time empirical resolution rather than pre-committed to here.
 
-5. **Promotion path for advisory checks.** When (if) the Codex/Gemini whitelist arrives, do we promote them to required for every PR, or only after a probationary period of stable advisory runs?
+### Resolved questions (moved to Section 4 above)
 
-6. **What happens when a platform breaks?** If a CLI changes behavior such that our cataloged commands stop working, do we (a) update the catalog + assertions in the same PR that breaks them, (b) skip the broken platform until it's investigated, or (c) flag the breakage as a release blocker?
-
-7. **Should `compat-marketplace-add.yml` also test Devin's filesystem-only "registration" (just verifying `devin rules list` sees our mirrors)?** Devin doesn't have a marketplace concept but its native cross-platform reading IS our cross-platform compatibility surface.
+Five questions from the earlier draft of this section are now locked decisions and moved to Section 4: composite action publishing (in-repo), test isolation (per-job), platform-breakage policy (block release), promotion path (immediate after one green run), and the four decisions from the original Phase A round (branch, advisory, structure, whitelist).
 
 ---
 
