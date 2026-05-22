@@ -149,7 +149,7 @@ Note: there is no `register-marketplace/action.yml`. Marketplace registration is
 | `setup-codex` | `npm install -g @openai/codex@${{ inputs.version }}` | `codex --version` exit 0 | true if verify passes |
 | `setup-gemini` | `npm install -g @google/gemini-cli@${{ inputs.version }}` | `gemini --version` exit 0 | true if verify passes |
 | `setup-devin` | `curl -fsSL https://cli.devin.ai/install.sh \| bash \|\| true` then `chmod +x ~/.local/bin/devin` | `devin --version` exit 0 | true if verify passes |
-| `setup-cursor-doctor` | n/a — npx handles installation on first use | `npx --yes cursor-doctor@${{ inputs.version }} --help` exit 0 | true if verify passes |
+| `setup-cursor-doctor` | n/a — npx handles installation on first use (`'latest'` is a valid npm dist-tag, resolves to current published version) | `npx --yes cursor-doctor@${{ inputs.version }} --help` exit 0 | true if verify passes |
 
 Workflows use them:
 
@@ -320,7 +320,7 @@ If the block is never lifted, the local-dev scripts remain the only validation p
 | Wave | Scope | Files added | Effort |
 |------|-------|-------------|--------|
 | 1 | Composite actions + 6 single-platform Claude-only workflows | `.github/actions/setup-claude/`, `compat-command.yml`, `compat-agent.yml`, `compat-monitor.yml`, `compat-output-style.yml`, `compat-theme.yml`, `compat-marketplace-add.yml` (claude row only) | 4–6 hrs |
-| 2 | Matrix workflows for free-in-CI platforms | `compat-skill.yml` (claude + devin), `compat-rule.yml` (4 platforms), `compat-mcp.yml` (claude + devin), `compat-hook.yml` (claude only initially), `setup-devin/`, `setup-cursor-doctor/` | 6–8 hrs |
+| 2 | Matrix workflows for free-in-CI platforms | `compat-skill.yml` (claude + devin), `compat-mcp.yml` (claude + devin), `compat-hook.yml` (claude only initially), `setup-devin/`, `setup-cursor-doctor/` | 6–8 hrs |
 | 3 | Codex + Gemini advisory rows in existing matrices + local fallback scripts | `setup-codex/`, `setup-gemini/`, `scripts/validate-codex-local.sh`, `scripts/validate-gemini-local.sh`, `LOCAL_DEVELOPMENT.md` update | 3–4 hrs |
 | 4 | Whitelist follow-up — flip Codex/Gemini advisory → required when granted | one-line edits per workflow | 30 min |
 
@@ -340,7 +340,7 @@ These two are intentionally left for implementation-time empirical resolution ra
 
 ### Resolved questions (moved to Section 4 above)
 
-All 18 substantial questions raised during the design and critique cycles are now locked decisions documented in Section 4. Reviewer's third-round critique surfaced 14 items (4 blockers + 6 important + 4 nice); 12 were resolved with explicit decisions, 1 (`cursor-doctor` package name) was resolved via npm research, and 1 (`compat-rule.yml` existence) was resolved by clarification of the marketplace's plugin-installable scope.
+All 20 substantial questions raised during the design and critique cycles are now locked decisions documented in Section 4 (8 original + 12 from critique resolution). Reviewer's critique surfaced 14 items (4 blockers + 6 important + 4 nice); 12 resolved with explicit decisions, 1 (`cursor-doctor` package name) resolved via npm research, 1 (`compat-rule.yml` existence) resolved by clarification of the marketplace's plugin-installable scope. Second-pass reviewer (after these updates) confirmed all 14 items resolved cleanly.
 
 The third reviewer pass after these doc updates should confirm clean.
 
