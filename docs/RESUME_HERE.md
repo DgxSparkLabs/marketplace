@@ -107,18 +107,18 @@ The full 20-decision table is in `docs/PLATFORM_VALIDATION_CICD_PLAN.md` Section
 
 Avoid re-litigating these. Each is one or more hours of conversation that ended in "no."
 
-| Idea | Why we rejected it |
-|------|-------------------|
-| **Web research for current CLI surfaces** | Docs from December 2025 were stale by May 2026 for fast-moving CLIs (`gemini skills` subcommand existed but no research surfaced it). Switched to empirical CI + local exploration. |
-| **Council of 6 specialist agents** to review the design | Theatrical / overkill for the scope. Reviewer push-back collapsed it to 1 platform researcher + 1 devil's advocate. |
-| **Hooks-based rules validation** (UserPromptSubmit hook per rule) | Clunky pattern that the user correctly called "stupid." Rules aren't installable as plugins on any platform; format validation in the test suite is the right primitive. |
-| **`force-for-plugin: true` output styles for rules** | Single-winner (only one can apply at a time). Doesn't compose across multiple installed rule plugins. |
-| **`vars.CODEX_WHITELIST_GRANTED` gating mechanism** | Adds a state variable nobody would remember to flip. `continue-on-error: true` alone makes the workflow advisory; when the block lifts, the install just succeeds. Zero ceremony. |
-| **Soft-deprecation of the TUI installer** | User wanted full removal in the migration branch, not a deprecation period. Single PR ships the breaking change with migration notes. |
-| **Per-platform workflow organization** | Was the initial framing. User reframed to per-construct ("new construct = one workflow; new platform = matrix row in N workflows"). Cleaner. |
-| **Trying to install `@openai/codex` / `@google/gemini-cli` in GitHub Actions** | Blocked at the org policy level (0-second failures across 12+ variants). Local exploration is the empirical fallback; whitelist request is the long-term unblock. |
-| **Pinning CLI versions in CI** | Decided against — pinning lies about reproducibility because the upstream CLI evolves regardless. Float to `@latest` and let the platform-breakage policy handle change. |
-| **Caching CLI installs across CI runs** | Deferred to Wave 1/2 implementation. Empirical decision: measure first, optimize if CI minutes become a problem. |
+| Idea | Why we rejected it | Trigger to watch for |
+|------|-------------------|----------------------|
+| **Web research for current CLI surfaces** | Docs from December 2025 were stale by May 2026 for fast-moving CLIs (`gemini skills` subcommand existed but no research surfaced it). Switched to empirical CI + local exploration. | Anyone proposing to "check the docs" or "search the web" for what subcommands a CLI exposes |
+| **Council of 6 specialist agents** to review the design | Theatrical / overkill for the scope. Reviewer push-back collapsed it to 1 platform researcher + 1 devil's advocate. | Anyone proposing more than 2–3 sub-agents for design review of locked architecture |
+| **Hooks-based rules validation** (UserPromptSubmit hook per rule) | Clunky pattern that the user correctly called "stupid." Rules aren't installable as plugins on any platform; format validation in the test suite is the right primitive. | Anyone proposing `UserPromptSubmit` / `PreToolUse` hooks to inject rule content |
+| **`force-for-plugin: true` output styles for rules** | Single-winner (only one can apply at a time). Doesn't compose across multiple installed rule plugins. | Anyone proposing output styles as a rule-distribution mechanism |
+| **`vars.CODEX_WHITELIST_GRANTED` gating mechanism** | Adds a state variable nobody would remember to flip. `continue-on-error: true` alone makes the workflow advisory; when the block lifts, the install just succeeds. Zero ceremony. | Anyone proposing a `vars.*` or repo-secret toggle for any CI workflow gate |
+| **Soft-deprecation of the TUI installer** | User wanted full removal in the migration branch, not a deprecation period. Single PR ships the breaking change with migration notes. | Anyone proposing to keep `install.py` or `install.sh` "for backwards compat" |
+| **Per-platform workflow organization** | Was the initial framing. User reframed to per-construct ("new construct = one workflow; new platform = matrix row in N workflows"). Cleaner. | Anyone proposing `compat-claude.yml`, `compat-codex.yml` etc. as the primary organization |
+| **Trying to install `@openai/codex` / `@google/gemini-cli` in GitHub Actions** | Blocked at the org policy level (0-second failures across 12+ variants). Local exploration is the empirical fallback; whitelist request is the long-term unblock. | Anyone proposing to add an `npm install -g @openai/codex` step to a github.com-hosted CI workflow and expect it to succeed |
+| **Pinning CLI versions in CI** | Decided against — pinning lies about reproducibility because the upstream CLI evolves regardless. Float to `@latest` and let the platform-breakage policy handle change. | Anyone proposing `npm install -g @openai/codex@0.130.0` in setup actions |
+| **Caching CLI installs across CI runs** | Deferred to Wave 1/2 implementation. Empirical decision: measure first, optimize if CI minutes become a problem. | Anyone proposing `actions/cache` for npm globals before we have CI runtime data |
 
 ---
 
@@ -130,11 +130,16 @@ Patterns to reuse. These shaped how this session reached convergence.
 - **`AskUserQuestion` with 3 explicit options + a Recommended marker** — concrete picks beat open-ended prose. Most decisions took less than 30 seconds once posed as choices with defaults.
 - **Empirical CI exploration on a research branch** — when stale docs distrust, push experiment workflows to a throwaway branch and let CI logs be the evidence. `exp/cli-empirical-discovery` has the logs.
 - **Local CLI exploration when CI is blocked** — GitHub Actions can't install everything; the local dev machine can. Two complementary empirical vantage points.
+- **Never use web research for current CLI surfaces** — documented dead end; docs are months stale for fast-moving CLIs like Codex and Gemini. When tempted to "just search the docs," install the CLI instead and run `--help` recursively.
 - **Per-decision iteration cycle** — reviewer flags ambiguity → AskUserQuestion → doc edit → next reviewer pass. Three rounds converged on a clean design.
 - **Catalog-as-executable-spec** — `PLATFORM_INSPECTION_CATALOG.md` rows transcribe 1:1 into CI assertions. Catalog + workflow stay synchronized because one drives the other.
 - **Single source of truth for identity** — `MARKETPLACE.toml` is the only place where owner / repo URL / version / license live. Generated manifests inherit from there. Renames or version bumps are one-line edits.
 - **Construct-axis organization** — when in doubt, organize by what's being shipped (skill, rule, command…), not by what's consuming it (Claude, Codex, Gemini…).
 - **"If it fails it fails" gating** — for blocked external dependencies, the failure itself is the gate. No state variable, no toggle, no promotion ceremony.
+
+### Doc-conflict tie-breaker rule
+
+**If any prose document contradicts the locked decisions table, the decisions table wins.** Update the drifting prose to match; do not interpret prose against the decisions table. The decisions table lives in two places: the "Top Decisions with Rationale" section above (top 10) and `docs/PLATFORM_VALIDATION_CICD_PLAN.md` Section 4 (full 20). Either is canonical over any other prose.
 
 ---
 
