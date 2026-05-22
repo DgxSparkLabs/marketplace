@@ -75,10 +75,10 @@ jobs:
         run: devin mcp list | grep -i "example-fetch"
 
   codex:
-    # Advisory — blocked by GitHub Actions org policy. Fails at install time; continue-on-error keeps it non-blocking.
-    # When GitHub lifts the block, this job will start passing automatically with zero code changes.
+    # Required per Wave 4 (2026-05-22): org-level block confirmed lifted via 3 consecutive
+    # clean CI runs. Codex installs and passes assertions cleanly; promoted from advisory.
     runs-on: ubuntu-latest
-    continue-on-error: true
+    continue-on-error: false
     steps:
       - uses: actions/checkout@v4
 
@@ -110,10 +110,10 @@ jobs:
         run: codex mcp get example-fetch --json
 
   gemini:
-    # Advisory — blocked by GitHub Actions org policy. Fails at install time; continue-on-error keeps it non-blocking.
-    # When GitHub lifts the block, this job will start passing automatically with zero code changes.
+    # Required per Wave 4 (2026-05-22): org-level block confirmed lifted via 3 consecutive
+    # clean CI runs. Gemini installs and passes assertions cleanly; promoted from advisory.
     runs-on: ubuntu-latest
-    continue-on-error: true
+    continue-on-error: false
     steps:
       - uses: actions/checkout@v4
 

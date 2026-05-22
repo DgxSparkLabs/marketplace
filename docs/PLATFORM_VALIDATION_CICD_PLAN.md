@@ -317,14 +317,16 @@ If the block is never lifted, the local-dev scripts remain the only validation p
 
 **Follow-up PR #2 (`feat/multi-platform-validation`):**
 
-| Wave | Scope | Files added | Effort |
-|------|-------|-------------|--------|
-| 1 | Composite actions + 6 single-platform Claude-only workflows | `.github/actions/setup-claude/`, `compat-command.yml`, `compat-agent.yml`, `compat-monitor.yml`, `compat-output-style.yml`, `compat-theme.yml`, `compat-marketplace-add.yml` (claude row only) | 4–6 hrs |
-| 2 | Matrix workflows for free-in-CI platforms | `compat-skill.yml` (claude + devin), `compat-mcp.yml` (claude + devin), `compat-hook.yml` (claude only initially), `setup-devin/`, `setup-cursor-doctor/` | 6–8 hrs |
-| 3 | Codex + Gemini advisory rows in existing matrices + local fallback scripts | `setup-codex/`, `setup-gemini/`, `scripts/validate-codex-local.sh`, `scripts/validate-gemini-local.sh`, `LOCAL_DEVELOPMENT.md` update | 3–4 hrs |
-| 4 | Whitelist follow-up — flip Codex/Gemini advisory → required when granted | one-line edits per workflow | 30 min |
+| Wave | Scope | Files added | Effort | Status |
+|------|-------|-------------|--------|--------|
+| 1 | Composite actions + 6 single-platform Claude-only workflows | `.github/actions/setup-claude/`, `compat-command.yml`, `compat-agent.yml`, `compat-monitor.yml`, `compat-output-style.yml`, `compat-theme.yml`, `compat-marketplace-add.yml` (claude row only) | 4–6 hrs | DONE |
+| 2 | Matrix workflows for free-in-CI platforms | `compat-skill.yml` (claude + devin), `compat-mcp.yml` (claude + devin), `compat-hook.yml` (claude only initially), `setup-devin/`, `setup-cursor-doctor/` | 6–8 hrs | DONE |
+| 3 | Codex + Gemini advisory rows in existing matrices + local fallback scripts | `setup-codex/`, `setup-gemini/`, `scripts/validate-codex-local.sh`, `scripts/validate-gemini-local.sh`, `LOCAL_DEVELOPMENT.md` update | 3–4 hrs | DONE |
+| 4 | Whitelist follow-up — flip Codex/Gemini advisory → required when granted | one-line edits per workflow | 30 min | **DONE (2026-05-22)** — org block confirmed lifted via 3 consecutive clean CI runs; all 6 `continue-on-error: true` entries flipped to `false`. Generator also extended to emit `.gemini/gemini-extension.json`, making `compat-extension.yml` required. |
 
 **Total estimated effort:** ~15–20 hours of implementation work + the indeterminate whitelist process.
+
+**Wave 4 completion note:** The GitHub org-level block on `@openai/codex` and `@google/gemini-cli` was confirmed lifted empirically — both CLIs installed and passed all assertions across three consecutive CI runs (verification commit, FIX_REPORT commit, and fix cycle commit). No whitelist request was required; the block appears to have been lifted independently. All 6 Codex/Gemini `continue-on-error: true` entries are now `continue-on-error: false`. The `compat-extension.yml` gemini job additionally required generator work (decision #20) which landed in the same Wave 4 commit.
 
 ---
 
