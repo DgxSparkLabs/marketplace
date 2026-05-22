@@ -5,7 +5,7 @@ on:
     branches: ["exp/cli-empirical-discovery", "exp/**"]
 
 jobs:
-  explore:
+  devin:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -13,154 +13,119 @@ jobs:
       - name: Install Devin CLI
         run: |
           curl -fsSL https://cli.devin.ai/install.sh 2>&1 | bash || echo "INSTALL_EXIT: $?"
-          # Also add to PATH in case installer dropped it in ~/bin or similar
           export PATH="$HOME/.local/bin:$HOME/bin:$PATH"
           which devin 2>&1 || find /usr/local/bin /usr/bin $HOME/bin $HOME/.local/bin -name "devin" 2>/dev/null | head -5 || echo "devin not found anywhere"
 
-      - name: Add devin to PATH and check version
+      - name: devin version and help
         run: |
           export PATH="$HOME/.local/bin:$HOME/bin:/usr/local/bin:$PATH"
-          echo "PATH=$PATH"
-          which devin 2>&1 || echo "not in PATH"
           devin --version 2>&1 || echo "EXIT: $?"
-
-      - name: devin --help (no auth)
-        run: |
-          export PATH="$HOME/.local/bin:$HOME/bin:/usr/local/bin:$PATH"
           devin --help 2>&1 || echo "EXIT: $?"
 
-      - name: devin auth --help (auth subcommand shape)
+      - name: devin auth status
         run: |
           export PATH="$HOME/.local/bin:$HOME/bin:/usr/local/bin:$PATH"
           devin auth --help 2>&1 || echo "EXIT: $?"
           devin auth status 2>&1 || echo "EXIT: $?"
 
-      - name: devin skills --help (auth-free?)
+      - name: devin skills list and paths
         run: |
           export PATH="$HOME/.local/bin:$HOME/bin:/usr/local/bin:$PATH"
           devin skills --help 2>&1 || echo "EXIT: $?"
           devin skills list 2>&1 || echo "EXIT: $?"
           devin skills paths 2>&1 || echo "EXIT: $?"
 
-      - name: devin rules --help (auth-free?)
+      - name: devin rules list and paths
         run: |
           export PATH="$HOME/.local/bin:$HOME/bin:/usr/local/bin:$PATH"
           devin rules --help 2>&1 || echo "EXIT: $?"
           devin rules list 2>&1 || echo "EXIT: $?"
+          devin rules paths 2>&1 || echo "EXIT: $?"
 
-      - name: devin mcp --help (auth-free?)
+      - name: devin mcp list
         run: |
           export PATH="$HOME/.local/bin:$HOME/bin:/usr/local/bin:$PATH"
           devin mcp --help 2>&1 || echo "EXIT: $?"
           devin mcp list 2>&1 || echo "EXIT: $?"
 
-      - name: Devin config file locations
+      - name: devin config locations
         run: |
           export PATH="$HOME/.local/bin:$HOME/bin:/usr/local/bin:$PATH"
-          echo "--- ls ~/.devin ---"
           ls -la ~/.devin 2>&1 || echo "no ~/.devin"
-          echo "--- ls ~/.config/devin ---"
           ls -la ~/.config/devin 2>&1 || echo "no ~/.config/devin"
-          echo "--- ls ~/.local/share/devin ---"
           ls -la ~/.local/share/devin 2>&1 || echo "no ~/.local/share/devin"
-          echo "--- Devin binary location ---"
+          cat ~/.config/devin/config.json 2>&1 || echo "no config.json"
           which devin 2>/dev/null && ls -la $(which devin) || echo "not in PATH"
-          echo "--- Try find for devin binary ---"
-          find /usr/local /usr/bin $HOME -name "devin" -type f 2>/dev/null | head -10 || echo "find done"
 
-      - name: devin rules paths and show
-        run: |
-          export PATH="$HOME/.local/bin:$HOME/bin:/usr/local/bin:$PATH"
-          devin rules paths 2>&1 || echo "EXIT: $?"
-          devin rules show AGENTS 2>&1 | head -30 || echo "EXIT: $?"
-
-      - name: devin skills show (detailed structure)
-        run: |
-          export PATH="$HOME/.local/bin:$HOME/bin:/usr/local/bin:$PATH"
-          devin skills show pitfall-check 2>&1 | head -30 || echo "EXIT: $?"
-
-      - name: devin version subcommand and update check
+      - name: devin subcommands detail
         run: |
           export PATH="$HOME/.local/bin:$HOME/bin:/usr/local/bin:$PATH"
           devin version 2>&1 || echo "EXIT: $?"
-          devin update --help 2>&1 || echo "EXIT: $?"
-
-      - name: devin list sessions (auth-free?)
-        run: |
-          export PATH="$HOME/.local/bin:$HOME/bin:/usr/local/bin:$PATH"
           devin list --help 2>&1 || echo "EXIT: $?"
-          devin list 2>&1 | head -10 || echo "EXIT: $?"
-
-      - name: devin cloud and acp help (auth required?)
-        run: |
-          export PATH="$HOME/.local/bin:$HOME/bin:/usr/local/bin:$PATH"
+          devin list 2>&1 | head -5 || echo "EXIT: $?"
           devin cloud --help 2>&1 || echo "EXIT: $?"
           devin acp --help 2>&1 || echo "EXIT: $?"
 
-      - name: Show ~/.config/devin/config.json content
-        run: |
-          export PATH="$HOME/.local/bin:$HOME/bin:/usr/local/bin:$PATH"
-          cat ~/.config/devin/config.json 2>&1 || echo "no config.json"
-          ls ~/.config/devin/cli/ 2>&1 || echo "no cli dir"
-          ls ~/.local/share/devin/cli/ 2>&1 || echo "no share dir"
+  codex:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
 
-      # ==== CODEX CLI DISCOVERY (piggybacked here due to workflow registration issue) ====
-      - name: codex - Install openai codex
+      - name: Install openai codex cli
         run: npm install -g @openai/codex 2>&1 | tail -10 || echo "INSTALL_EXIT: $?"
 
-      - name: codex - version check
+      - name: codex version
         run: codex --version 2>&1 || echo "EXIT: $?"
 
-      - name: codex - help output
+      - name: codex help
         run: codex --help 2>&1 || echo "EXIT: $?"
 
-      - name: codex - print config
+      - name: codex print config
         run: codex --print-config 2>&1 || echo "EXIT: $?"
 
-      - name: codex - mcp help and list
+      - name: codex mcp subcommands
         run: |
           codex mcp --help 2>&1 || echo "EXIT: $?"
           codex mcp list 2>&1 || echo "EXIT: $?"
 
-      - name: codex - skills features execpolicy agents config
+      - name: codex other subcommands
         run: |
           codex skills --help 2>&1 || echo "EXIT: $?"
           codex features list 2>&1 || echo "EXIT: $?"
           codex execpolicy --help 2>&1 || echo "EXIT: $?"
           codex agents --help 2>&1 || echo "EXIT: $?"
           codex config --help 2>&1 || echo "EXIT: $?"
-
-      - name: codex - introspection and file paths
-        run: |
           codex list 2>&1 || echo "EXIT: $?"
-          codex commands 2>&1 || echo "EXIT: $?"
           codex help 2>&1 || echo "EXIT: $?"
-          echo "--- which codex ---"
-          which codex || echo "not found"
-          echo "--- ~/.codex dir ---"
-          ls -la ~/.codex 2>&1 || echo "no dir"
-          echo "--- ~/.config/codex dir ---"
-          ls -la ~/.config/codex 2>&1 || echo "no dir"
-          PKGJSON="/usr/local/lib/node_modules/@openai/codex/package.json"
-          cat "$PKGJSON" 2>/dev/null | grep -E '"version"|"bin"' | head -5 || echo "no package.json"
 
-      # ==== GEMINI CLI DISCOVERY (piggybacked here due to workflow registration issue) ====
-      - name: gemini - Install google gemini cli
+      - name: codex file paths
+        run: |
+          which codex || echo "not found"
+          ls -la ~/.codex 2>&1 || echo "no dir"
+          ls -la ~/.config/codex 2>&1 || echo "no dir"
+          cat /usr/local/lib/node_modules/@openai/codex/package.json 2>/dev/null | grep -E 'version|bin' | head -5 || echo "no package.json"
+
+  gemini:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install google gemini cli
         run: npm install -g @google/gemini-cli 2>&1 | tail -10 || echo "INSTALL_EXIT: $?"
 
-      - name: gemini - version check
+      - name: gemini version
         run: gemini --version 2>&1 || echo "EXIT: $?"
 
-      - name: gemini - help output
+      - name: gemini help
         run: gemini --help 2>&1 || echo "EXIT: $?"
 
-      - name: gemini - extensions subcommands
+      - name: gemini extensions subcommands
         run: |
           gemini extensions --help 2>&1 || echo "EXIT: $?"
           gemini extensions list 2>&1 || echo "EXIT: $?"
           gemini --list-extensions 2>&1 || echo "EXIT: $?"
 
-      - name: gemini - settings tools mcp auth config
+      - name: gemini settings tools mcp auth config
         run: |
           gemini settings --help 2>&1 || echo "EXIT: $?"
           gemini settings list 2>&1 || echo "EXIT: $?"
@@ -169,14 +134,10 @@ jobs:
           gemini auth --help 2>&1 || echo "EXIT: $?"
           gemini config --help 2>&1 || echo "EXIT: $?"
 
-      - name: gemini - file paths and JSON flags
+      - name: gemini file paths and flags
         run: |
-          echo "--- which gemini ---"
           which gemini || echo "not found"
-          echo "--- ~/.gemini dir ---"
           ls -la ~/.gemini 2>&1 || echo "no dir"
-          echo "--- ~/.config/gemini dir ---"
           ls -la ~/.config/gemini 2>&1 || echo "no dir"
-          PKGJSON="/usr/local/lib/node_modules/@google/gemini-cli/package.json"
-          cat "$PKGJSON" 2>/dev/null | grep -E '"version"|"bin"|"description"' | head -5 || echo "no package.json"
-          gemini --help 2>&1 | grep -iE 'json|output|format|--[a-z]' || echo "no matches"
+          cat /usr/local/lib/node_modules/@google/gemini-cli/package.json 2>/dev/null | grep -E 'version|bin|description' | head -5 || echo "no package.json"
+          gemini --help 2>&1 | grep -iE 'json|output|format' || echo "no matches"
