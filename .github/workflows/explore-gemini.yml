@@ -1,4 +1,5 @@
 name: explore-gemini
+# run-2: re-triggered to fix initial race-condition parse failure
 
 on:
   push:

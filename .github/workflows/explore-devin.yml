@@ -68,10 +68,38 @@ jobs:
           echo "--- Try find for devin binary ---"
           find /usr/local /usr/bin $HOME -name "devin" -type f 2>/dev/null | head -10 || echo "find done"
 
-      - name: devin JSON output and remaining subcommands
+      - name: devin rules paths and show
         run: |
           export PATH="$HOME/.local/bin:$HOME/bin:/usr/local/bin:$PATH"
-          devin --help 2>&1 | grep -iE 'json|output|format|--[a-z]' || echo "grep found nothing"
-          devin config --help 2>&1 || echo "EXIT: $?"
-          devin workspace --help 2>&1 || echo "EXIT: $?"
-          devin session --help 2>&1 || echo "EXIT: $?"
+          devin rules paths 2>&1 || echo "EXIT: $?"
+          devin rules show AGENTS 2>&1 | head -30 || echo "EXIT: $?"
+
+      - name: devin skills show (detailed structure)
+        run: |
+          export PATH="$HOME/.local/bin:$HOME/bin:/usr/local/bin:$PATH"
+          devin skills show pitfall-check 2>&1 | head -30 || echo "EXIT: $?"
+
+      - name: devin version subcommand and update check
+        run: |
+          export PATH="$HOME/.local/bin:$HOME/bin:/usr/local/bin:$PATH"
+          devin version 2>&1 || echo "EXIT: $?"
+          devin update --help 2>&1 || echo "EXIT: $?"
+
+      - name: devin list sessions (auth-free?)
+        run: |
+          export PATH="$HOME/.local/bin:$HOME/bin:/usr/local/bin:$PATH"
+          devin list --help 2>&1 || echo "EXIT: $?"
+          devin list 2>&1 | head -10 || echo "EXIT: $?"
+
+      - name: devin cloud and acp help (auth required?)
+        run: |
+          export PATH="$HOME/.local/bin:$HOME/bin:/usr/local/bin:$PATH"
+          devin cloud --help 2>&1 || echo "EXIT: $?"
+          devin acp --help 2>&1 || echo "EXIT: $?"
+
+      - name: Show ~/.config/devin/config.json content
+        run: |
+          export PATH="$HOME/.local/bin:$HOME/bin:/usr/local/bin:$PATH"
+          cat ~/.config/devin/config.json 2>&1 || echo "no config.json"
+          ls ~/.config/devin/cli/ 2>&1 || echo "no cli dir"
+          ls ~/.local/share/devin/cli/ 2>&1 || echo "no share dir"
