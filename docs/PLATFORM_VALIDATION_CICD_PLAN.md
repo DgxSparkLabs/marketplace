@@ -2,7 +2,7 @@
 
 This is the design for the CI/CD layer that verifies our marketplace works on every platform we ship a mirror for. It transcribes the rows in [`PLATFORM_INSPECTION_CATALOG.md`](./PLATFORM_INSPECTION_CATALOG.md) into automated assertions.
 
-**Still planning.** No workflow files are committed yet. This document is the design that contributors will implement, review, and adjust before any `.github/workflows/compat-*.yml` ships.
+**Implementation complete.** Workflow files are committed in branch `feat/multi-platform-validation`. This document remains the canonical design reference and source of truth for catalog-to-assertion synchronization.
 
 ---
 

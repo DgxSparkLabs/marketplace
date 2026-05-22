@@ -1,0 +1,71 @@
+name: Compat — Hook (Claude + Gemini migration check)
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main, "feat/**"]
+  workflow_dispatch:
+
+concurrency:
+  group: '${{ github.workflow }}-${{ github.ref }}'
+  cancel-in-progress: true
+
+jobs:
+  claude:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: astral-sh/setup-uv@v4
+        with:
+          version: "latest"
+
+      - name: Regenerate manifests from sources
+        run: uv run scripts/generate_manifest.py
+
+      - uses: ./.github/actions/setup-claude
+        id: claude
+
+      - name: Register marketplace
+        run: claude plugin marketplace add ./
+
+      - name: Install example-hook plugin
+        run: claude plugin install example-hook@dgxsparklabs-marketplace --scope project
+
+      - name: Assert plugin details shows hooks section with UserPromptSubmit entry
+        # Match mode: grep substring — catalog row: claude plugin details example-hook shows hooks section including UserPromptSubmit entry
+        run: claude plugin details example-hook | grep -F "UserPromptSubmit"
+
+      - name: Cleanup
+        if: always()
+        run: |
+          claude plugin uninstall example-hook --scope project || true
+          claude plugin prune --scope project -y || true
+          claude plugin marketplace remove dgxsparklabs-marketplace || true
+
+  gemini-migration-check:
+    # Advisory — blocked by GitHub Actions org policy. Fails at install time; continue-on-error keeps it non-blocking.
+    # Gemini hook migration check: verifies our hooks.json is parseable by gemini hooks migrate.
+    # When GitHub lifts the block, this job will start passing automatically with zero code changes.
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: astral-sh/setup-uv@v4
+        with:
+          version: "latest"
+
+      - name: Regenerate manifests from sources
+        run: uv run scripts/generate_manifest.py
+
+      - uses: ./.github/actions/setup-gemini
+        id: gemini
+        with:
+          version: 'latest'
+
+      - name: Run Gemini hook migration dry-run against our hooks.json
+        # Match mode: exit-code-only — catalog row: gemini hooks migrate (dry-run), assert no error
+        # Gemini understands Claude Code hook format and can convert (verified in catalog)
+        run: gemini hooks migrate examples/example-hook/hooks/hooks.json --dry-run

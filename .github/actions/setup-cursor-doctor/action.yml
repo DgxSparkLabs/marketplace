@@ -1,0 +1,29 @@
+name: 'Setup cursor-doctor'
+description: 'Verify cursor-doctor is reachable via npx (no global install needed — npx handles it on first use)'
+
+inputs:
+  version:
+    description: 'cursor-doctor version to use. Default: latest'
+    default: 'latest'
+    required: false
+
+outputs:
+  installed:
+    description: 'Boolean — true if cursor-doctor is reachable after setup'
+    value: ${{ steps.verify.outputs.installed }}
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Verify cursor-doctor is reachable via npx
+      id: verify
+      shell: bash
+      run: |
+        # cursor-doctor@1.11.0 by nedcodes (MIT, zero deps). No global install needed.
+        # npx handles installation on first use. 'latest' is a valid npm dist-tag.
+        if npx --yes cursor-doctor@${{ inputs.version }} --help; then
+          echo "installed=true" >> "$GITHUB_OUTPUT"
+        else
+          echo "installed=false" >> "$GITHUB_OUTPUT"
+          exit 1
+        fi

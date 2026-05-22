@@ -1,0 +1,38 @@
+name: 'Setup Devin CLI'
+description: 'Install the Devin CLI and verify it is available'
+
+inputs:
+  version:
+    description: 'CLI version to install. Default: latest (version selection not supported by installer; input accepted for API compatibility)'
+    default: 'latest'
+    required: false
+
+outputs:
+  installed:
+    description: 'Boolean — true if the CLI binary is available after setup'
+    value: ${{ steps.verify.outputs.installed }}
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Install Devin CLI
+      shell: bash
+      run: |
+        # The installer tries an interactive setup wizard that fails in non-TTY environments.
+        # curl ... | bash exits 1 in CI, but the binary installs correctly at ~/.local/bin/devin.
+        # Wrap with || true per empirical finding (exp/cli-empirical-discovery CI run 26260259130).
+        curl -fsSL https://cli.devin.ai/install.sh | bash || true
+        # Ensure binary is executable and on PATH
+        chmod +x ~/.local/bin/devin 2>/dev/null || true
+        echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+
+    - name: Verify installation
+      id: verify
+      shell: bash
+      run: |
+        if devin --version; then
+          echo "installed=true" >> "$GITHUB_OUTPUT"
+        else
+          echo "installed=false" >> "$GITHUB_OUTPUT"
+          exit 1
+        fi

@@ -1,0 +1,145 @@
+name: Compat — MCP Server (Claude + Devin + Codex + Gemini)
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main, "feat/**"]
+  workflow_dispatch:
+
+concurrency:
+  group: '${{ github.workflow }}-${{ github.ref }}'
+  cancel-in-progress: true
+
+jobs:
+  claude:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: astral-sh/setup-uv@v4
+        with:
+          version: "latest"
+
+      - name: Regenerate manifests from sources
+        run: uv run scripts/generate_manifest.py
+
+      - uses: ./.github/actions/setup-claude
+        id: claude
+
+      - name: Register marketplace
+        run: claude plugin marketplace add ./
+
+      - name: Install example-mcp plugin
+        run: claude plugin install example-mcp@dgxsparklabs-marketplace --scope project
+
+      - name: Assert plugin details shows mcpServers
+        # Match mode: grep substring — catalog row: claude plugin details example-mcp shows mcpServers
+        run: claude plugin details example-mcp | grep -F "mcpServers"
+
+      - name: Cleanup
+        if: always()
+        run: |
+          claude plugin uninstall example-mcp --scope project || true
+          claude plugin prune --scope project -y || true
+          claude plugin marketplace remove dgxsparklabs-marketplace || true
+
+  devin:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: astral-sh/setup-uv@v4
+        with:
+          version: "latest"
+
+      - name: Regenerate manifests from sources
+        run: uv run scripts/generate_manifest.py
+
+      - uses: ./.github/actions/setup-devin
+        id: devin
+
+      - name: Assert Devin MCP list returns exit 0 (baseline)
+        # Match mode: exit-code-only — catalog row: devin mcp list exit 0
+        working-directory: ${{ github.workspace }}
+        run: devin mcp list
+
+      - name: Add example MCP server to Devin
+        # Devin has no marketplace concept — MCP servers are added individually
+        working-directory: ${{ github.workspace }}
+        run: devin mcp add example-fetch -- uvx mcp-server-fetch
+
+      - name: Assert MCP server appears in Devin's list
+        # Match mode: grep -i substring (case-insensitive per decision #15)
+        working-directory: ${{ github.workspace }}
+        run: devin mcp list | grep -i "example-fetch"
+
+  codex:
+    # Advisory — blocked by GitHub Actions org policy. Fails at install time; continue-on-error keeps it non-blocking.
+    # When GitHub lifts the block, this job will start passing automatically with zero code changes.
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: astral-sh/setup-uv@v4
+        with:
+          version: "latest"
+
+      - name: Regenerate manifests from sources
+        run: uv run scripts/generate_manifest.py
+
+      - uses: ./.github/actions/setup-codex
+        id: codex
+        with:
+          version: 'latest'
+
+      - name: Assert Codex MCP list returns exit 0 (baseline)
+        # Match mode: exit-code-only — catalog row: codex mcp list exit 0
+        run: codex mcp list
+
+      - name: Add example MCP server to Codex
+        run: codex mcp add example-fetch -- uvx mcp-server-fetch
+
+      - name: Assert MCP server appears in Codex list
+        # Match mode: grep substring — catalog row: codex mcp list shows each registered MCP
+        run: codex mcp list | grep -F "example-fetch"
+
+      - name: Assert codex mcp get returns valid output
+        # Match mode: exit-code-only — catalog row: codex mcp get <name> --json exit 0 if exists
+        run: codex mcp get example-fetch --json
+
+  gemini:
+    # Advisory — blocked by GitHub Actions org policy. Fails at install time; continue-on-error keeps it non-blocking.
+    # When GitHub lifts the block, this job will start passing automatically with zero code changes.
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: astral-sh/setup-uv@v4
+        with:
+          version: "latest"
+
+      - name: Regenerate manifests from sources
+        run: uv run scripts/generate_manifest.py
+
+      - uses: ./.github/actions/setup-gemini
+        id: gemini
+        with:
+          version: 'latest'
+
+      - name: Assert Gemini MCP list returns exit 0 (baseline)
+        # Match mode: exit-code-only — catalog row: gemini mcp list exit 0
+        run: gemini mcp list
+
+      - name: Add example MCP server to Gemini
+        run: gemini mcp add example-fetch uvx mcp-server-fetch
+
+      - name: Assert MCP server appears in Gemini list
+        # Match mode: grep substring — catalog row: gemini mcp list shows each server
+        run: gemini mcp list | grep -F "example-fetch"
+
+      - name: Cleanup
+        if: always()
+        run: gemini mcp remove example-fetch || true

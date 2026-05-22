@@ -15,25 +15,26 @@ This repo (`DgxSparkLabs/marketplace`) is a **Claude Code plugin marketplace**. 
 ## You Are Here
 
 ```
-Active branch:         feat/claude-plugin-compliance
-Last commit:           8584dc5 ("docs: second-pass reviewer fixes — drop stale compat-rule.yml reference + minor")
-Open PR:               #1 at https://github.com/DgxSparkLabs/marketplace/pull/1
-Status:                Migration done; validation design locked; validation implementation NOT STARTED
+Active branch:         feat/multi-platform-validation (off feat/claude-plugin-compliance)
+Open PRs:              #1 at https://github.com/DgxSparkLabs/marketplace/pull/1 (migration + design)
+                       #2 pending (validation implementation — this branch)
+Status:                Migration done; validation design locked; validation implementation COMPLETE
 Working directory:     C:\Users\devic\source\marketplace
 Other relevant branch: exp/cli-empirical-discovery (sub-agent's empirical research, contains CI logs)
 ```
 
-The PR contains everything: the migration (TUI removed, native /plugin compliance achieved) and the validation design (planning docs only — no compat workflow files yet).
+PR #1 contains: migration (TUI removed, native /plugin compliance) + validation design docs.
+PR #2 (this branch) contains: 10 compat workflows + 5 composite actions + 2 local-dev scripts.
 
 ---
 
 ## Next Concrete Actions (in priority order)
 
-1. **File the GitHub whitelist request** — independent of all other work. Copy-paste the body from `docs/CI_WHITELIST_REQUEST.md` into https://support.github.com/contact. Ask GitHub to permit `@openai/codex` and `@google/gemini-cli` in our org's Actions. Update the doc's "After-the-fact tracking" section with the ticket number once filed. This can happen any time; it doesn't block engineering.
+1. **File the GitHub whitelist request** — independent of all other work. Copy-paste the body from `docs/CI_WHITELIST_REQUEST.md` into https://support.github.com/contact. Ask GitHub to permit `@openai/codex` and `@google/gemini-cli` in our org's Actions. Update the doc's "After-the-fact tracking" section with the ticket number once filed. This can happen any time; it doesn't block engineering. When granted, flip `continue-on-error: false` for Codex/Gemini matrix jobs (~30 min of Wave 4 work, one-line edits per workflow).
 
-2. **Get PR #1 reviewed and merged** — contains the migration plus all design documents for the future validation work. Once merged, anyone cloning main has the full planning dossier.
+2. **Get PR #1 reviewed and merged** — contains the migration plus all design documents. Once merged, main has the full planning dossier.
 
-3. **Start multi-platform validation implementation** — spawn an implementer agent on a new branch `feat/multi-platform-validation`. The brief is the planning docs themselves. Expected effort: ~15–20 hours across 4 waves per `docs/PLATFORM_VALIDATION_CICD_PLAN.md` Section 8.
+3. **Get PR #2 reviewed and merged** (`feat/multi-platform-validation`) — contains the 10 compat workflows + 5 composite actions + 2 local-dev scripts. Depends on PR #1 merging first (or rebase if needed).
 
 If you only have time for one action and want to make forward progress: file the whitelist request. It's the only one with an external dependency (GitHub's response time).
 
@@ -148,9 +149,9 @@ Patterns to reuse. These shaped how this session reached convergence.
 | Branch | Purpose | Status |
 |--------|---------|--------|
 | `main` | Production | Current; doesn't yet have the migration |
-| `feat/claude-plugin-compliance` | Migration + validation design | All work; PR #1 open; ready to merge |
+| `feat/claude-plugin-compliance` | Migration + validation design | PR #1 open; ready to merge |
 | `exp/cli-empirical-discovery` | Sub-agent's empirical CLI research | Contains CI experiment workflows + per-platform findings docs; not for production merge |
-| `feat/multi-platform-validation` | The implementation of the validation design | **DOES NOT EXIST YET.** This is where the implementer agent will work |
+| `feat/multi-platform-validation` | The implementation of the validation design | **COMPLETE.** PR #2 pending. 10 workflows + 5 actions + 2 local scripts. |
 
 ---
 
@@ -161,7 +162,9 @@ Patterns to reuse. These shaped how this session reached convergence.
 #14     ✅ GitHub whitelist request drafted (docs/CI_WHITELIST_REQUEST.md — ready to file)
 #15     ✅ First reviewer pass complete (14 items flagged)
 #16     ✅ Critique iteration cycle complete (3 decision rounds + 2 reviewer passes → clean)
-#17     ⏳ Multi-platform validation implementation — waiting to start
+#17     ✅ Multi-platform validation implementation — COMPLETE (branch feat/multi-platform-validation)
+#18     ⏳ File GitHub whitelist request — independent, can happen any time
+#19     ⏳ Wave 4 — flip Codex/Gemini advisory → required after whitelist granted
 ```
 
 ---

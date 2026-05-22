@@ -2,7 +2,7 @@
 
 > **Start here if you've never seen this project before:** `docs/RESUME_HERE.md`. That file is the 3-minute orientation. This document (`HANDOFF.md`) is for ongoing-state tracking; it complements `RESUME_HERE.md` rather than duplicating it.
 
-**Branch state:** `feat/claude-plugin-compliance` — migration complete, multi-platform validation design complete, validation implementation not yet started. PR #1 open: https://github.com/DgxSparkLabs/marketplace/pull/1
+**Branch state:** `feat/multi-platform-validation` (off `feat/claude-plugin-compliance`) — migration complete, multi-platform validation design complete, **validation implementation COMPLETE**. PR #1 open: https://github.com/DgxSparkLabs/marketplace/pull/1 (base). PR #2 (this branch) pending.
 
 ---
 
@@ -60,17 +60,18 @@ Three sub-phases:
 
 ## One Pending Work Phase
 
-### Phase 3 — Multi-Platform Validation Implementation (NOT STARTED)
+### Phase 3 — Multi-Platform Validation Implementation (COMPLETE)
 
-The design is locked. The implementing agent needs to:
+Branch `feat/multi-platform-validation` (off `feat/claude-plugin-compliance`).
 
-1. Create branch `feat/multi-platform-validation` off `main` (after Phase 1+2 PR #1 merges)
-2. Read `docs/PLATFORM_VALIDATION_CICD_PLAN.md` (the spec) and `docs/PLATFORM_INSPECTION_CATALOG.md` (the assertion source)
-3. Implement 10 compat workflow files + 5 composite actions per Wave 1–4 phasing in `PLATFORM_VALIDATION_CICD_PLAN.md` Section 8
-4. Write 2 local-dev fallback scripts (`scripts/validate-codex-local.sh`, `scripts/validate-gemini-local.sh`) for the platforms blocked from GitHub Actions
-5. Estimated effort: ~15–20 hours
+Delivered:
+- **10 compat workflows** in `.github/workflows/compat-*.yml` — one per construct type
+- **5 composite actions** in `.github/actions/setup-<platform>/action.yml`
+- **2 local-dev fallback scripts** in `scripts/validate-codex-local.sh` + `scripts/validate-gemini-local.sh`
+- All catalog assertions transcribed 1:1 per match modes in `PLATFORM_INSPECTION_CATALOG.md`
+- All 20 locked decisions followed (per-job isolation, concurrency block, `continue-on-error` for blocked platforms, float to `@latest`, decision #15 Devin assertions, etc.)
 
-The brief to hand to the implementing agent is in `docs/IMPLEMENTING_AGENT_PROMPT.md` (which was written for the migration; the validation implementation will need a similar but new brief — that's the implementer's first task, or can be drafted as a one-paragraph extension of the existing prompt).
+Codex and Gemini jobs have `continue-on-error: true` at the job level. They will fail at install time (blocked by GitHub Actions org policy) until the whitelist request in `docs/CI_WHITELIST_REQUEST.md` is granted. No code changes needed when the block lifts.
 
 ---
 
@@ -101,7 +102,13 @@ marketplace/
 ├── _generated/                         Per-plugin wrappers + bundles
 ├── .codex/ .gemini/ .cursor/ .windsurf/ .devin/   Cross-platform mirrors
 ├── activate-installed-rules.sh         Bulk helper for rule activation
+├── .github/
+│   ├── workflows/ci.yml                Existing: manifest drift check + test suite
+│   ├── workflows/compat-*.yml (10)     NEW: per-construct multi-platform validation
+│   └── actions/setup-<platform>/ (5)  NEW: composite actions per platform
 ├── scripts/generate_manifest.py        The engine
+├── scripts/validate-codex-local.sh     NEW: local-dev Codex validation (blocked in CI)
+├── scripts/validate-gemini-local.sh    NEW: local-dev Gemini validation (blocked in CI)
 ├── tests/test_marketplace.py           Test suite
 ├── docs/
 │   ├── RESUME_HERE.md                  ★ Start here on re-entry
@@ -126,7 +133,7 @@ marketplace/
 - **Generated**: everything in `_generated/`, `.codex/`, `.gemini/`, `.cursor/`, `.windsurf/`, `.devin/`, and `.claude-plugin/marketplace.json`. The generator produces these from sources.
 - **Skill or rule bundles** (`skills-<domain>`, `rules-<domain>`, `rules-all`) are content-free plugins whose `plugin.json` declares only `dependencies`. Claude Code auto-installs the dependencies — verified empirically.
 - **Rules** install via `/plugin install` then activate via `activate.sh` symlink into `.claude/rules/`. Workaround for the lack of a `rules` field in Claude Code's plugin spec.
-- **Multi-platform validation (planned)**: 10 compat workflows organized per-construct (skill, command, agent, hook, mcp, extension, monitor, output-style, theme, marketplace-add) with platform matrix per workflow.
+- **Multi-platform validation (implemented)**: 10 compat workflows in `.github/workflows/compat-*.yml` organized per-construct (skill, command, agent, hook, mcp, extension, monitor, output-style, theme, marketplace-add) with platform matrix per workflow. 5 composite actions in `.github/actions/setup-<platform>/`. 2 local-dev fallback scripts in `scripts/`.
 
 ---
 
@@ -158,11 +165,12 @@ General workflow:
 
 ## What's Next
 
-In priority order, three independent paths forward:
+In priority order:
 
-- **File the GitHub Support whitelist request** — drafted at `docs/CI_WHITELIST_REQUEST.md`. Independent of all engineering work; can happen any time.
-- **Merge PR #1** — the migration + design docs land on `main`. After merge, `main` has the full planning dossier.
-- **Start multi-platform validation implementation** — create `feat/multi-platform-validation` off `main`; transcribe catalog rows into CI assertions per the locked design. Wave 1 → 4 per `PLATFORM_VALIDATION_CICD_PLAN.md` Section 8.
+- **File the GitHub Support whitelist request** — drafted at `docs/CI_WHITELIST_REQUEST.md`. Independent of all engineering work; can happen any time. Once granted, Codex/Gemini advisory jobs will start passing on next CI run with zero code changes.
+- **Merge PR #1** (`feat/claude-plugin-compliance` → `main`) — migration + design docs.
+- **Merge PR #2** (`feat/multi-platform-validation` → `main`) — validation implementation. Depends on PR #1 merging first (or rebase if PR #1 merges before review).
+- **Wave 4** — after the GitHub whitelist is granted, flip `continue-on-error: false` for Codex/Gemini matrix jobs (one-line edits per workflow, ~30 min).
 
 ---
 

@@ -1,0 +1,130 @@
+name: Compat — Skill (Claude + Devin + Codex + Gemini)
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main, "feat/**"]
+  workflow_dispatch:
+
+concurrency:
+  group: '${{ github.workflow }}-${{ github.ref }}'
+  cancel-in-progress: true
+
+jobs:
+  claude:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: astral-sh/setup-uv@v4
+        with:
+          version: "latest"
+
+      - name: Regenerate manifests from sources
+        run: uv run scripts/generate_manifest.py
+
+      - uses: ./.github/actions/setup-claude
+        id: claude
+
+      - name: Register marketplace
+        run: claude plugin marketplace add ./
+
+      - name: Install skill-telegram-notify plugin
+        run: claude plugin install skill-telegram-notify@dgxsparklabs-marketplace --scope project
+
+      - name: Assert plugin is listed (grep match)
+        # Match mode: grep substring — catalog row: claude plugin list shows installed entry
+        run: claude plugin list | grep -F "skill-telegram-notify@dgxsparklabs-marketplace"
+
+      - name: Cleanup
+        if: always()
+        run: |
+          claude plugin uninstall skill-telegram-notify --scope project || true
+          claude plugin prune --scope project -y || true
+          claude plugin marketplace remove dgxsparklabs-marketplace || true
+
+  devin:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: astral-sh/setup-uv@v4
+        with:
+          version: "latest"
+
+      - name: Regenerate manifests from sources
+        run: uv run scripts/generate_manifest.py
+
+      - uses: ./.github/actions/setup-devin
+        id: devin
+
+      - name: Assert skill appears in Devin's skill list
+        # Match mode: grep -i substring (case-insensitive per decision #15)
+        # Devin reads filesystem at session start — our .devin/skills/ mirror is already present after generator runs
+        # working-directory: ${{ github.workspace }} per decision #15
+        working-directory: ${{ github.workspace }}
+        run: devin skills list | grep -i "telegram"
+
+  codex:
+    # Advisory — blocked by GitHub Actions org policy. Fails at install time; continue-on-error keeps it non-blocking.
+    # When GitHub lifts the block, this job will start passing automatically with zero code changes.
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: astral-sh/setup-uv@v4
+        with:
+          version: "latest"
+
+      - name: Regenerate manifests from sources
+        run: uv run scripts/generate_manifest.py
+
+      - uses: ./.github/actions/setup-codex
+        id: codex
+        with:
+          version: 'latest'
+
+      - name: Register marketplace
+        run: codex plugin marketplace add ./
+
+      - name: Assert marketplace registration in config
+        # Match mode: grep substring — catalog row: cat ~/.codex/config.toml | grep dgxsparklabs-marketplace
+        run: cat ~/.codex/config.toml | grep -F "dgxsparklabs-marketplace"
+
+      - name: Cleanup
+        if: always()
+        run: codex plugin marketplace remove dgxsparklabs-marketplace || true
+
+  gemini:
+    # Advisory — blocked by GitHub Actions org policy. Fails at install time; continue-on-error keeps it non-blocking.
+    # When GitHub lifts the block, this job will start passing automatically with zero code changes.
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: astral-sh/setup-uv@v4
+        with:
+          version: "latest"
+
+      - name: Regenerate manifests from sources
+        run: uv run scripts/generate_manifest.py
+
+      - uses: ./.github/actions/setup-gemini
+        id: gemini
+        with:
+          version: 'latest'
+
+      - name: Install skill via Gemini
+        # Gemini installs skills individually — no marketplace concept
+        run: echo "y" | gemini skills install ./_generated/skill-telegram-notify
+
+      - name: Assert skill appears in Gemini's skill list
+        # Match mode: grep substring — catalog row: gemini skills list --all | grep telegram-notify
+        run: gemini skills list --all | grep -F "telegram-notify"
+
+      - name: Cleanup
+        if: always()
+        run: gemini skills uninstall telegram-notify || true
