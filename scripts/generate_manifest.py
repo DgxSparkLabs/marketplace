@@ -46,6 +46,7 @@ RULES_DIR = REPO_ROOT / "rules"
 EXAMPLES_DIR = REPO_ROOT / "examples"
 GENERATED_DIR = REPO_ROOT / "_generated"
 MARKETPLACE_JSON = REPO_ROOT / ".claude-plugin" / "marketplace.json"
+GEMINI_EXTENSION_JSON = REPO_ROOT / ".gemini" / "gemini-extension.json"
 
 # Cross-platform mirror roots
 MIRRORS = {
@@ -410,6 +411,27 @@ def gen_cross_platform_mirrors() -> None:
         shutil.copy(rule_dir / "rule.md", devin_rules / f"{rule_dir.name}.md")
 
 
+def gen_gemini_extension_json(mp: dict) -> None:
+    """Produce .gemini/gemini-extension.json for gemini extensions validate.
+
+    The gemini-extension.json format requires only `name` and `version`.
+    We write it into .gemini/ (the existing Gemini mirror directory) so that
+    generated content stays under the mirror dir rather than polluting repo root.
+    The compat-extension.yml workflow runs: gemini extensions validate ./.gemini/
+
+    Minimum required fields verified empirically with gemini 0.43.0 (2026-05-22):
+      - name    (string)
+      - version (string)
+    Optional fields include description, mcpServers, skills, themes, etc.
+    """
+    data = {
+        "name": mp["marketplace"]["name"],
+        "version": mp["marketplace"]["version"],
+        "description": mp["marketplace"]["description"],
+    }
+    write_json(GEMINI_EXTENSION_JSON, data)
+
+
 # ───────────────────────── --check mode ──────────────────────────────────────
 
 def snapshot_tree(root: Path) -> dict[str, bytes]:
@@ -484,6 +506,7 @@ def write_all() -> None:
 
     gen_marketplace_json(mp, entries)
     gen_cross_platform_mirrors()
+    gen_gemini_extension_json(mp)
 
     print(f"Generated {len(entries)} plugin entries in marketplace.json")
     print(f"  Skills:        {sum(1 for e in entries if e['category'] == 'skill')}")

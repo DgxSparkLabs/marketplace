@@ -330,6 +330,49 @@ class TestCrossPlatformMirrors(unittest.TestCase):
                 self.assertTrue(target.exists(), f"{platform} mirror missing rule {rule.name}")
 
 
+class TestGeminiExtension(unittest.TestCase):
+    """Generator must emit a valid gemini-extension.json in the .gemini/ mirror dir."""
+
+    GEMINI_EXTENSION_JSON = REPO_ROOT / ".gemini" / "gemini-extension.json"
+
+    def test_gemini_extension_json_exists(self):
+        self.assertTrue(
+            self.GEMINI_EXTENSION_JSON.exists(),
+            ".gemini/gemini-extension.json missing — run generate_manifest.py",
+        )
+
+    def test_gemini_extension_json_parseable(self):
+        data = json.loads(self.GEMINI_EXTENSION_JSON.read_text(encoding="utf-8"))
+        self.assertIsInstance(data, dict, "gemini-extension.json must be a JSON object")
+
+    def test_gemini_extension_json_has_required_fields(self):
+        data = json.loads(self.GEMINI_EXTENSION_JSON.read_text(encoding="utf-8"))
+        self.assertIn("name", data, "gemini-extension.json must have 'name' field")
+        self.assertIn("version", data, "gemini-extension.json must have 'version' field")
+
+    def test_gemini_extension_name_matches_marketplace(self):
+        import tomllib
+        with open(MARKETPLACE_TOML, "rb") as f:
+            mp = tomllib.load(f)
+        data = json.loads(self.GEMINI_EXTENSION_JSON.read_text(encoding="utf-8"))
+        self.assertEqual(
+            data["name"],
+            mp["marketplace"]["name"],
+            "gemini-extension.json name must match MARKETPLACE.toml marketplace.name",
+        )
+
+    def test_gemini_extension_version_matches_marketplace(self):
+        import tomllib
+        with open(MARKETPLACE_TOML, "rb") as f:
+            mp = tomllib.load(f)
+        data = json.loads(self.GEMINI_EXTENSION_JSON.read_text(encoding="utf-8"))
+        self.assertEqual(
+            data["version"],
+            mp["marketplace"]["version"],
+            "gemini-extension.json version must match MARKETPLACE.toml marketplace.version",
+        )
+
+
 class TestSecretScan(unittest.TestCase):
     """No tracked file may contain a credential-shaped string."""
 
