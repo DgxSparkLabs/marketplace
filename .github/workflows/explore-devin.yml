@@ -103,3 +103,80 @@ jobs:
           cat ~/.config/devin/config.json 2>&1 || echo "no config.json"
           ls ~/.config/devin/cli/ 2>&1 || echo "no cli dir"
           ls ~/.local/share/devin/cli/ 2>&1 || echo "no share dir"
+
+      # ==== CODEX CLI DISCOVERY (piggybacked here due to workflow registration issue) ====
+      - name: "[codex] Install @openai/codex"
+        run: npm install -g @openai/codex 2>&1 | tail -10 || echo "INSTALL_EXIT: $?"
+
+      - name: "[codex] codex --version"
+        run: codex --version 2>&1 || echo "EXIT: $?"
+
+      - name: "[codex] codex --help"
+        run: codex --help 2>&1 || echo "EXIT: $?"
+
+      - name: "[codex] codex --print-config"
+        run: codex --print-config 2>&1 || echo "EXIT: $?"
+
+      - name: "[codex] codex mcp --help and list"
+        run: |
+          codex mcp --help 2>&1 || echo "EXIT: $?"
+          codex mcp list 2>&1 || echo "EXIT: $?"
+
+      - name: "[codex] codex skills, features, execpolicy, agents, config"
+        run: |
+          codex skills --help 2>&1 || echo "EXIT: $?"
+          codex features list 2>&1 || echo "EXIT: $?"
+          codex execpolicy --help 2>&1 || echo "EXIT: $?"
+          codex agents --help 2>&1 || echo "EXIT: $?"
+          codex config --help 2>&1 || echo "EXIT: $?"
+
+      - name: "[codex] codex introspection and file paths"
+        run: |
+          codex list 2>&1 || echo "EXIT: $?"
+          codex commands 2>&1 || echo "EXIT: $?"
+          codex help 2>&1 || echo "EXIT: $?"
+          echo "--- which codex ---"
+          which codex || echo "not found"
+          echo "--- ~/.codex dir ---"
+          ls -la ~/.codex 2>&1 || echo "no dir"
+          echo "--- ~/.config/codex dir ---"
+          ls -la ~/.config/codex 2>&1 || echo "no dir"
+          PKGJSON="/usr/local/lib/node_modules/@openai/codex/package.json"
+          cat "$PKGJSON" 2>/dev/null | grep -E '"version"|"bin"' | head -5 || echo "no package.json"
+
+      # ==== GEMINI CLI DISCOVERY (piggybacked here due to workflow registration issue) ====
+      - name: "[gemini] Install @google/gemini-cli"
+        run: npm install -g @google/gemini-cli 2>&1 | tail -10 || echo "INSTALL_EXIT: $?"
+
+      - name: "[gemini] gemini --version"
+        run: gemini --version 2>&1 || echo "EXIT: $?"
+
+      - name: "[gemini] gemini --help"
+        run: gemini --help 2>&1 || echo "EXIT: $?"
+
+      - name: "[gemini] gemini extensions"
+        run: |
+          gemini extensions --help 2>&1 || echo "EXIT: $?"
+          gemini extensions list 2>&1 || echo "EXIT: $?"
+          gemini --list-extensions 2>&1 || echo "EXIT: $?"
+
+      - name: "[gemini] gemini settings, tools, mcp, auth, config"
+        run: |
+          gemini settings --help 2>&1 || echo "EXIT: $?"
+          gemini settings list 2>&1 || echo "EXIT: $?"
+          gemini tools --help 2>&1 || echo "EXIT: $?"
+          gemini mcp --help 2>&1 || echo "EXIT: $?"
+          gemini auth --help 2>&1 || echo "EXIT: $?"
+          gemini config --help 2>&1 || echo "EXIT: $?"
+
+      - name: "[gemini] gemini file paths and JSON flags"
+        run: |
+          echo "--- which gemini ---"
+          which gemini || echo "not found"
+          echo "--- ~/.gemini dir ---"
+          ls -la ~/.gemini 2>&1 || echo "no dir"
+          echo "--- ~/.config/gemini dir ---"
+          ls -la ~/.config/gemini 2>&1 || echo "no dir"
+          PKGJSON="/usr/local/lib/node_modules/@google/gemini-cli/package.json"
+          cat "$PKGJSON" 2>/dev/null | grep -E '"version"|"bin"|"description"' | head -5 || echo "no package.json"
+          gemini --help 2>&1 | grep -iE 'json|output|format|--[a-z]' || echo "no matches"
