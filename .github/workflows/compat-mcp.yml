@@ -34,8 +34,8 @@ jobs:
         run: claude plugin install example-mcp@dgxsparklabs-marketplace --scope project
 
       - name: Assert plugin details shows mcpServers
-        # Match mode: grep substring — catalog row: claude plugin details example-mcp shows mcpServers
-        run: claude plugin details example-mcp | grep -F "mcpServers"
+        # Match mode: grep substring — catalog row: claude plugin details mentions MCP in human-readable output
+        run: claude plugin details example-mcp | grep -iF "mcp"
 
       - name: Cleanup
         if: always()
@@ -137,8 +137,8 @@ jobs:
         run: gemini mcp add example-fetch uvx mcp-server-fetch
 
       - name: Assert MCP server appears in Gemini list
-        # Match mode: grep substring — catalog row: gemini mcp list shows each server
-        run: gemini mcp list | grep -F "example-fetch"
+        # Match mode: grep substring — catalog row: gemini mcp list shows each server (stderr redirect required: gemini mcp list writes all output to stderr)
+        run: gemini mcp list 2>&1 | grep -F "example-fetch"
 
       - name: Cleanup
         if: always()

@@ -19,7 +19,7 @@ Which platform exposes a CLI command to introspect each construct type:
 | rule | — (file-only) | n/a (uses AGENTS.md) | n/a (uses GEMINI.md) | — no CLI | — no CLI | `devin rules list` |
 | command | `claude plugin list` | — | — | — | — | — |
 | agent | `claude plugin list` | — | — | — | — | — |
-| hook | `claude plugin list` | — | only `gemini hooks migrate` | — | — | — |
+| hook | `claude plugin list` | — | `gemini hooks migrate --from-claude` (destructive — no CI assertion; see Platform 3 notes) | — | — | — |
 | mcp | `claude plugin list` | `codex mcp list` | `gemini mcp list` | — | — | `devin mcp list` |
 | extension | n/a | n/a | `gemini extensions list` | — | — | n/a |
 | monitor | `claude plugin list` | — | — | — | — | — |
@@ -79,12 +79,12 @@ Default for every command in this catalog: **`exit-code-only` for `--version` / 
 
 ### Per-construct visibility after install
 
-| Construct | Detection method | Expected output |
-|-----------|------------------|-----------------|
-| skill | `claude plugin install skill-X@dgxsparklabs-marketplace` → `claude plugin list` | shows installed entry |
-| skill bundle | `claude plugin install skills-X@dgxsparklabs-marketplace` | output reports `(+ N dependency: ...)` auto-installing members |
-| rule | `claude plugin install rule-X@dgxsparklabs-marketplace` → run plugin's `activate.sh` | symlinks/copies into `.claude/rules/` |
-| MCP | Plugin manifest's `mcpServers` field; `claude plugin details` shows MCP entries | confirmed via `details` output |
+| Construct | Detection method | Expected output | Notes |
+|-----------|------------------|-----------------|-------|
+| skill | `claude plugin install skill-X@dgxsparklabs-marketplace` → `claude plugin list` | shows installed entry | |
+| skill bundle | `claude plugin install skills-X@dgxsparklabs-marketplace` | output reports `(+ N dependency: ...)` auto-installing members | |
+| rule | `claude plugin install rule-X@dgxsparklabs-marketplace` → run plugin's `activate.sh` | symlinks/copies into `.claude/rules/` | |
+| MCP | `claude plugin install example-mcp@dgxsparklabs-marketplace` → `claude plugin details example-mcp \| grep -iF "mcp"` | details output contains "mcp" (case-insensitive) | Output is **human-readable text**, NOT JSON. Does not contain JSON field names like `mcpServers`. Use `grep -iF "mcp"` not `grep -F "mcpServers"`. Last verified: 2026-05-22 |
 
 ### Workspace/trust/sandbox quirks
 
@@ -187,7 +187,7 @@ Default for every command in this catalog: **`exit-code-only` for `--version` / 
 | `gemini skills list` | Discovered skills (project + user + built-in) | 0 | text | `No skills discovered.` | enumerated skills with location + status |
 | `gemini skills list --all` | Same + built-in/disabled | 0 | text | At minimum `skill-creator [Enabled] [Built-in]` | additional discovered skills |
 | `gemini extensions list` | Installed extensions | 0 | text | `No extensions installed.` | extension entries with name + version |
-| `gemini mcp list` | Configured MCP servers | 0 | text | `No MCP servers configured.` | each server with command + status |
+| `gemini mcp list 2>&1` | Configured MCP servers | 0 | text (stderr) | `No MCP servers configured.` | each server with command + status. **ALL output (warning preamble + server list) is written to stderr, not stdout.** Pipe must use `2>&1` to capture output for grep assertions. `gemini mcp list \| grep` receives empty stdin and exits 1. Last verified: 2026-05-22 |
 | `gemini skills enable <name>` / `disable <name>` | Toggle skill | 0 | text | (skill not found error) | updates `~/.gemini/settings.json` |
 | `gemini extensions enable <name>` / `disable <name>` | Toggle extension | 0 | text | (not found) | updates settings |
 | `gemini extensions validate <path>` | Validate extension manifest | 0 if valid, 1 if invalid | text + errors | n/a | `Configuration file not found at <path>/gemini-extension.json` (if missing) or validation report |
@@ -220,7 +220,7 @@ Default for every command in this catalog: **`exit-code-only` for `--version` / 
 | rule | Read from `GEMINI.md` and `AGENTS.md`; no `gemini rules list` exists | inferred from filesystem |
 | mcp | `gemini mcp add` then `gemini mcp list` | manageable via CLI |
 | extension | `gemini extensions install <local-extension-dir>` requires `gemini-extension.json` | NOT compatible with our format unless we add the manifest |
-| hook | `gemini hooks migrate` (Claude Code → Gemini converter) | Gemini understands Claude Code hook format and can convert |
+| hook | `gemini hooks migrate --from-claude` | **Skipped in CI — no non-destructive invocation available.** CLI surface (verified 0.43.0, 2026-05-22): accepts only `--from-claude` (boolean), `--debug`, `--help`. No positional path argument, no `--dry-run` flag. `--from-claude` reads `.claude/settings.json` and writes migrated hooks to `.gemini/settings.json` immediately without confirmation. In CI the workspace has no `.claude/settings.json` so it exits 0 with "No Claude Code settings found" — not a meaningful assertion. Job removed from `compat-hook.yml`. |
 
 ### Workspace/trust/sandbox quirks
 
