@@ -75,3 +75,76 @@ jobs:
           devin config --help 2>&1 || echo "EXIT: $?"
           devin workspace --help 2>&1 || echo "EXIT: $?"
           devin session --help 2>&1 || echo "EXIT: $?"
+
+  probe-openai-codex:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: install codex
+        run: npm install -g @openai/codex 2>&1 | tail -10 || echo "INSTALL_EXIT: $?"
+
+      - name: codex version
+        run: codex --version 2>&1 || echo "EXIT: $?"
+
+      - name: codex help
+        run: codex --help 2>&1 || echo "EXIT: $?"
+
+      - name: codex print-config
+        run: codex --print-config 2>&1 || echo "EXIT: $?"
+
+      - name: codex mcp
+        run: |
+          codex mcp --help 2>&1 || echo "EXIT: $?"
+          codex mcp list 2>&1 || echo "EXIT: $?"
+
+      - name: codex skills features execpolicy agents config
+        run: |
+          codex skills --help 2>&1 || echo "EXIT: $?"
+          codex features list 2>&1 || echo "EXIT: $?"
+          codex execpolicy --help 2>&1 || echo "EXIT: $?"
+          codex agents --help 2>&1 || echo "EXIT: $?"
+          codex config --help 2>&1 || echo "EXIT: $?"
+
+      - name: codex paths and package version
+        run: |
+          which codex || echo "not found"
+          ls -la ~/.codex 2>&1 || echo "no dir"
+          ls -la ~/.config/codex 2>&1 || echo "no dir"
+          cat /usr/local/lib/node_modules/@openai/codex/package.json 2>/dev/null | grep version | head -3 || echo "no pkg"
+
+  probe-google-gemini:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: install gemini
+        run: npm install -g @google/gemini-cli 2>&1 | tail -10 || echo "INSTALL_EXIT: $?"
+
+      - name: gemini version
+        run: gemini --version 2>&1 || echo "EXIT: $?"
+
+      - name: gemini help
+        run: gemini --help 2>&1 || echo "EXIT: $?"
+
+      - name: gemini extensions
+        run: |
+          gemini extensions --help 2>&1 || echo "EXIT: $?"
+          gemini extensions list 2>&1 || echo "EXIT: $?"
+          gemini --list-extensions 2>&1 || echo "EXIT: $?"
+
+      - name: gemini settings tools mcp auth config
+        run: |
+          gemini settings --help 2>&1 || echo "EXIT: $?"
+          gemini settings list 2>&1 || echo "EXIT: $?"
+          gemini tools --help 2>&1 || echo "EXIT: $?"
+          gemini mcp --help 2>&1 || echo "EXIT: $?"
+          gemini auth --help 2>&1 || echo "EXIT: $?"
+          gemini config --help 2>&1 || echo "EXIT: $?"
+
+      - name: gemini paths and package version
+        run: |
+          which gemini || echo "not found"
+          ls -la ~/.gemini 2>&1 || echo "no dir"
+          ls -la ~/.config/gemini 2>&1 || echo "no dir"
+          cat /usr/local/lib/node_modules/@google/gemini-cli/package.json 2>/dev/null | grep version | head -3 || echo "no pkg"
