@@ -1,0 +1,50 @@
+name: explore-cursor
+
+on:
+  push:
+    branches: ["exp/cli-empirical-discovery", "exp/**"]
+
+jobs:
+  explore:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Attempt Cursor install via official URL
+        run: |
+          echo "--- Checking cursor install script ---"
+          curl -fsSL https://cursor.com/install 2>&1 | head -40 || echo "CURL_EXIT: $?"
+          echo "--- Also try agent installer ---"
+          curl -fsSL https://cursor.com/install-agent 2>&1 | head -40 || echo "CURL_EXIT_AGENT: $?"
+
+      - name: Try cursor via npm
+        run: |
+          npm show cursor 2>&1 | head -20 || echo "EXIT: $?"
+          npm show @cursor-ai/cli 2>&1 | head -20 || echo "EXIT: $?"
+          npm show @cursor/cli 2>&1 | head -20 || echo "EXIT: $?"
+          npm show cursor-cli 2>&1 | head -20 || echo "EXIT: $?"
+
+      - name: Check if cursor binary exists in PATH after install attempt
+        run: |
+          which cursor 2>&1 || echo "cursor not in PATH"
+          which agent 2>&1 || echo "agent not in PATH"
+          cursor --version 2>&1 || echo "cursor --version EXIT: $?"
+          cursor --help 2>&1 || echo "cursor --help EXIT: $?"
+
+      - name: Check for Cursor agent binary
+        run: |
+          agent --version 2>&1 || echo "agent not found: EXIT $?"
+          agent --help 2>&1 || echo "agent --help EXIT: $?"
+          agent mcp list 2>&1 || echo "EXIT: $?"
+          agent status 2>&1 || echo "EXIT: $?"
+          agent about 2>&1 || echo "EXIT: $?"
+
+      - name: Try downloading cursor AppImage / linux binary directly
+        run: |
+          echo "Checking latest Cursor Linux download availability..."
+          curl -sI "https://downloader.cursor.sh/linux/appImage/x64" 2>&1 | head -10 || echo "no appimage"
+          # Do NOT actually run the full app — just check binary existence
+          ls /opt/cursor 2>&1 || echo "no /opt/cursor"
+          ls /usr/local/bin/cursor 2>&1 || echo "no /usr/local/bin/cursor"
+          # Check npm global for any cursor packages
+          npm list -g --depth=0 2>&1 | grep -i cursor || echo "no cursor in global npm"

@@ -1,0 +1,61 @@
+name: explore-windsurf
+
+on:
+  push:
+    branches: ["exp/cli-empirical-discovery", "exp/**"]
+
+jobs:
+  explore:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check npm for windsurf CLI packages
+        run: |
+          npm show windsurf 2>&1 | head -20 || echo "EXIT: $?"
+          npm show @windsurf/cli 2>&1 | head -20 || echo "EXIT: $?"
+          npm show @codeium/windsurf 2>&1 | head -20 || echo "EXIT: $?"
+          npm show windsurf-cli 2>&1 | head -20 || echo "EXIT: $?"
+          npm show @codeium/cli 2>&1 | head -20 || echo "EXIT: $?"
+
+      - name: Check PyPI for windsurf CLI
+        run: |
+          pip show windsurf 2>&1 | head -10 || echo "not on PyPI"
+          pip index versions windsurf 2>&1 | head -10 || echo "EXIT: $?"
+
+      - name: Check GitHub releases for windsurf CLI
+        run: |
+          curl -s "https://api.github.com/repos/codeium-ai/windsurf/releases?per_page=3" 2>&1 | python3 -c "
+          import sys, json
+          try:
+              data = json.load(sys.stdin)
+              if isinstance(data, list):
+                  for r in data[:3]:
+                      print('release:', r.get('tag_name'), r.get('name'))
+                      for a in r.get('assets', [])[:5]:
+                          print('  asset:', a.get('name'))
+              else:
+                  print('response:', str(data)[:300])
+          except Exception as e:
+              print('parse error:', e)
+              sys.stdin.seek(0)
+          " || echo "EXIT: $?"
+
+      - name: Check for windsurf binary directly
+        run: |
+          which windsurf 2>&1 || echo "windsurf not in PATH"
+          windsurf --version 2>&1 || echo "windsurf --version EXIT: $?"
+          windsurf --help 2>&1 || echo "windsurf --help EXIT: $?"
+
+      - name: Check Codeium CLI (windsurf parent company)
+        run: |
+          which codeium 2>&1 || echo "codeium not in PATH"
+          codeium --version 2>&1 || echo "EXIT: $?"
+          codeium --help 2>&1 || echo "EXIT: $?"
+
+      - name: Attempt install via any known method
+        run: |
+          # Try snap
+          snap info windsurf 2>&1 | head -15 || echo "snap EXIT: $?"
+          # Try apt
+          apt-cache show windsurf 2>&1 | head -10 || echo "apt EXIT: $?"

@@ -1,0 +1,64 @@
+name: explore-gemini
+
+on:
+  push:
+    branches: ["exp/cli-empirical-discovery", "exp/**"]
+
+jobs:
+  explore:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Gemini CLI
+        run: npm install -g @google/gemini-cli 2>&1 | tail -5 || echo "INSTALL_EXIT: $?"
+
+      - name: gemini --version
+        run: gemini --version 2>&1 || echo "EXIT: $?"
+
+      - name: gemini --help
+        run: gemini --help 2>&1 || echo "EXIT: $?"
+
+      - name: gemini extensions --help
+        run: gemini extensions --help 2>&1 || echo "EXIT: $?"
+
+      - name: gemini extensions list (auth-free?)
+        run: gemini extensions list 2>&1 || echo "EXIT: $?"
+
+      - name: gemini --list-extensions
+        run: gemini --list-extensions 2>&1 || echo "EXIT: $?"
+
+      - name: gemini settings --help
+        run: gemini settings --help 2>&1 || echo "EXIT: $?"
+
+      - name: gemini settings list
+        run: gemini settings list 2>&1 || echo "EXIT: $?"
+
+      - name: gemini tools --help
+        run: gemini tools --help 2>&1 || echo "EXIT: $?"
+
+      - name: gemini mcp --help
+        run: gemini mcp --help 2>&1 || echo "EXIT: $?"
+
+      - name: gemini auth --help
+        run: gemini auth --help 2>&1 || echo "EXIT: $?"
+
+      - name: gemini config --help
+        run: gemini config --help 2>&1 || echo "EXIT: $?"
+
+      - name: Gemini file/config locations
+        run: |
+          echo "--- which gemini ---"
+          which gemini || echo "not found"
+          echo "--- ls ~/.gemini ---"
+          ls ~/.gemini 2>&1 || echo "no ~/.gemini dir"
+          echo "--- ls ~/.config/gemini ---"
+          ls ~/.config/gemini 2>&1 || echo "no ~/.config/gemini"
+          echo "--- package.json version ---"
+          cat /usr/local/lib/node_modules/@google/gemini-cli/package.json 2>/dev/null | python3 -c "import sys,json; d=json.load(sys.stdin); print('version:', d.get('version')); print('bin:', d.get('bin')); print('description:', d.get('description','')[:200])" || echo "no package.json or parse error"
+          echo "--- ls package root ---"
+          ls /usr/local/lib/node_modules/@google/gemini-cli 2>/dev/null | head -20 || echo "not found at that path"
+
+      - name: gemini JSON output / structured flags
+        run: |
+          gemini --help 2>&1 | grep -iE 'json|output|format|--[a-z]' || echo "grep found nothing"
