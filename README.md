@@ -1,142 +1,377 @@
-# Skills Marketplace
+# DgxSparkLabs Marketplace
 
-A curated collection of reusable agent skills and rules. Each item is a self-contained directory that can be installed into any compatible AI agent tool.
+A multi-platform marketplace of agent skills, rules, and other constructs for Claude Code, with auto-generated mirrors for Codex, Gemini, Cursor, Windsurf, and Devin. Install a single plugin and get a curated tool; install a bundle and get a whole domain. Every construct lives in one source directory and the generator propagates it to all six platforms automatically.
 
-**Skills** are invoked on demand (`/skill-name`). **Rules** are always-on and activate automatically every session.
+## Quick Start
 
-## Catalog
+Pick your platform, copy the block, and you're running.
 
-### Rules
-
-| Rule | Description |
-|------|-------------|
-| [autonomous-persistence](./rules/autonomous-persistence/) | Never ask permission to continue -- keep working autonomously until done or explicitly stopped |
-| [blast-radius](./rules/blast-radius/) | Scope changes by blast radius — prefer small atomic edits over large risky rewrites |
-| [code-hygiene](./rules/code-hygiene/) | Enforce DRY, single-responsibility, centralized definitions, and human-readable naming |
-| [continuous-improvement](./rules/continuous-improvement/) | Structured seven-phase workflow for finding, planning, and implementing codebase improvements |
-| [document-lifecycle](./rules/document-lifecycle/) | Three-tier documentation: rules, reference, history — no sprawl |
-| [document-progress](./rules/document-progress/) | Write progress to disk using todo lists and HANDOFF.md so nothing is lost between sessions |
-| [improve-the-process](./rules/improve-the-process/) | Fix friction structurally — every session should improve the workflow |
-| [no-ai-credit](./rules/no-ai-credit/) | Prevent AI agents from adding self-attribution to any output |
-| [output-discipline](./rules/output-discipline/) | Redirect verbose output to files and extract only what you need -- never flood context |
-| [pitfalls-discipline](./rules/pitfalls-discipline/) | Read PITFALLS.md before complex work, write to it after fixing bugs |
-| [prior-art](./rules/prior-art/) | Search for existing solutions before building custom code |
-| [python-uv](./rules/python-uv/) | Use uv for all Python operations — never pip, venv, conda, or poetry |
-| [readable-docs](./rules/readable-docs/) | Write documentation for humans — TL;DR readme, hand-holding guides, consistent terminology |
-| [revert-on-failure](./rules/revert-on-failure/) | Commit before experimenting, measure after, keep improvements, revert failures |
-| [session-resilience](./rules/session-resilience/) | Write state to disk continuously — you don't have memory, these files do |
-| [simplicity-bar](./rules/simplicity-bar/) | Weigh complexity cost against improvement magnitude -- simpler is better, deletion is a win |
-| [stay-motivated](./rules/stay-motivated/) | Completeness checklist — verify done conditions before stopping |
-| [task-formation](./rules/task-formation/) | Decompose requests into goals with intent, then into actionable session-sized tasks |
-| [telegram-on-complete](./rules/telegram-on-complete/) | Send a Telegram notification after completing any task |
-| [verification-ladder](./rules/verification-ladder/) | Five-layer automated testing: compile, unit, integration, perf, e2e |
-| [verify-your-work](./rules/verify-your-work/) | Require agents to test and verify their work before declaring tasks complete |
-
-### Skills
-
-| Skill | Description |
-|-------|-------------|
-| [act-runner](./skills/act-runner/) | Run GitHub Actions workflows locally with act and podman |
-| [check](./skills/check/) | Mid-session course correction — stop, review rules, and realign |
-| [code-health-audit](./skills/code-health-audit/) | Audit codebase for DRY violations, oversized files, and scattered definitions |
-| [duckduckgo-search](./skills/duckduckgo-search/) | Search DuckDuckGo and return results as structured text |
-| [expose-port](./skills/expose-port/) | Expose a local port via HTTPS (localhost.run) or TCP (bore) |
-| [gemini-chat](./skills/gemini-chat/) | Interactive multi-turn chat with Google Gemini |
-| [github-repo-setup](./skills/github-repo-setup/) | Create a GitHub repo with CI, branch protection, and naming rules |
-| [github-search](./skills/github-search/) | Search GitHub for repositories, prior art, and implementation inspiration |
-| [google-drive-reader](./skills/google-drive-reader/) | Read Google Docs from personal Drive, extract URLs and conclusions |
-| [motivation](./skills/motivation/) | Completeness checker — report what's actually unfinished before stopping |
-| [pitfall-check](./skills/pitfall-check/) | Search PITFALLS.md and git log for known issues before starting work |
-| [project-bootstrap](./skills/project-bootstrap/) | Initialize project docs — AGENTS.md, HANDOFF.md, CHANGELOG.md, PITFALLS.md |
-| [recall-rules](./skills/recall-rules/) | Re-read global rules and thinking framework to realign mid-session |
-| [send-email](./skills/send-email/) | Send an email to someone using the Resend API |
-| [session-history](./skills/session-history/) | Query past Devin CLI conversations from the local session database |
-| [session-wrapup](./skills/session-wrapup/) | End-of-session audit — check docs, commits, and readiness for the next agent |
-| [skill-analytics](./skills/skill-analytics/) | Analyze skill usage patterns and generate an interactive HTML dashboard |
-| [skill-creator](./skills/skill-creator/) | Create, test, and iteratively improve agent skills with evals |
-| [ssh-tunnel](./skills/ssh-tunnel/) | Set up SSH port forwarding tunnels (local, remote, SOCKS proxy) |
-| [structured-handoff](./skills/structured-handoff/) | Generate structured task files for autonomous agent sessions |
-| [sync-rules](./skills/sync-rules/) | Sync rules from global AI agent configs into the workspace |
-| [telegram-notify](./skills/telegram-notify/) | Send a Telegram notification with a task summary |
-| [textual-tui-guide](./skills/textual-tui-guide/) | Build rich terminal UIs with Python Textual — layouts, widgets, modals, styling |
-| [web-scraper](./skills/web-scraper/) | Fetch a web page and extract its main content as clean readable text |
-| [youtube-search](./skills/youtube-search/) | Search YouTube for technical videos, tutorials, and talks on a topic |
-| [youtube-wisdom](./skills/youtube-wisdom/) | Extract key knowledge from a YouTube video transcript |
-
-## Install
+### Claude Code
 
 ```bash
-# In a Claude Code session:
+# In a Claude Code session — register the marketplace, then install what you want
 /plugin marketplace add DgxSparkLabs/marketplace
-
-# Install an individual skill:
+/plugin install bundle-skill-all@dgxsparklabs-marketplace
+# Or a single skill:
 /plugin install skill-telegram-notify@dgxsparklabs-marketplace
+# Or a rule bundle:
+/plugin install bundle-quality-rules@dgxsparklabs-marketplace
+```
 
-# Install a domain bundle (auto-installs all member skills):
-/plugin install skills-communication@dgxsparklabs-marketplace
+### Codex
 
-# Install an individual rule (then activate to symlink into .claude/rules/):
+```bash
+# Register the marketplace (reads from local clone or GitHub shortform)
+codex plugin marketplace add ./
+# Codex registers it as dgxsparklabs-marketplace in ~/.codex/config.toml
+# Individual plugin install follows the same pattern as Claude Code
+```
+
+### Gemini
+
+```bash
+# Install an individual skill from the generated plugin directory
+echo "y" | gemini skills install ./_generated/skill-telegram-notify
+# Validate the extension manifest
+gemini extensions validate ./.gemini/
+# Install as a Gemini extension (answers the workspace-trust prompt)
+echo "y" | gemini extensions install ./.gemini/ --consent
+```
+
+### Cursor
+
+Clone the repo and open it in the Cursor IDE. Cursor auto-detects `.cursor/rules/*.md` at project open — no install command exists or is needed.
+
+```bash
+git clone https://github.com/DgxSparkLabs/marketplace
+# Open the cloned directory in Cursor IDE
+```
+
+### Windsurf
+
+Same clone-and-open pattern. Windsurf reads `.windsurf/rules/*.md` automatically.
+
+```bash
+git clone https://github.com/DgxSparkLabs/marketplace
+# Open the cloned directory in Windsurf IDE
+```
+
+### Devin
+
+Clone the repo; Devin auto-discovers skills and rules from the filesystem at session start.
+
+```bash
+git clone https://github.com/DgxSparkLabs/marketplace
+# Verify what Devin sees (auth-free):
+devin skills list
+devin rules list
+```
+
+---
+
+## Construct Types Available
+
+| Type | Prefix | Description | Count |
+|------|--------|-------------|-------|
+| skill | `skill-` | Slash-command invoked on demand | 27 |
+| rule | `rule-` | Always-on context loaded every session | 21 |
+| command | `command-` | Structured agent command definitions | 1 (example) |
+| agent | `agent-` | Autonomous agent configuration | 1 (example) |
+| hook | `hook-` | Event-triggered automation | 1 (example) |
+| mcp | `mcp-` | Model Context Protocol server config | 1 (example) |
+| lsp | `lsp-` | Language Server Protocol integration | 1 (example) |
+| monitor | `monitor-` | Continuous monitoring setup | 1 (example) |
+| output-style | `output-style-` | Output formatting rules | 1 (example) |
+| theme | `theme-` | Visual theme configuration | 1 (example) |
+
+To add a new construct of any type, see [`docs/ADDING_A_CONSTRUCT.md`](docs/ADDING_A_CONSTRUCT.md).
+
+---
+
+## Installation Patterns
+
+### Individual plugins
+
+```bash
+# Claude Code — install by prefixed name
+/plugin install skill-telegram-notify@dgxsparklabs-marketplace
+/plugin install skill-duckduckgo-search@dgxsparklabs-marketplace
 /plugin install rule-blast-radius@dgxsparklabs-marketplace
-bash ~/.claude/plugins/cache/dgxsparklabs-marketplace/rule-blast-radius/activate.sh
-
-# Install a rule bundle (auto-installs all rules in the bundle):
-/plugin install rules-quality@dgxsparklabs-marketplace
-# Then activate each rule's symlink, or use the repo-root helper:
-bash <(curl -fsSL https://raw.githubusercontent.com/DgxSparkLabs/marketplace/main/activate-installed-rules.sh)
+/plugin install rule-no-ai-credit@dgxsparklabs-marketplace
+/plugin install mcp-example@dgxsparklabs-marketplace
 ```
 
-For users on **Devin, Cursor, Windsurf, Codex CLI, or Gemini CLI** — clone the repo and point your tool at the appropriate auto-generated mirror directory:
+### Domain bundles — related items grouped
 
-```
-.devin/skills/      .devin/rules/
-.cursor/rules/      .windsurf/rules/
-.codex/skills/      .gemini/skills/
+```bash
+# Skill domain bundles
+/plugin install bundle-communication-skills@dgxsparklabs-marketplace
+/plugin install bundle-search-research-skills@dgxsparklabs-marketplace
+/plugin install bundle-devops-skills@dgxsparklabs-marketplace
+/plugin install bundle-session-management-skills@dgxsparklabs-marketplace
+/plugin install bundle-project-scaffolding-skills@dgxsparklabs-marketplace
+/plugin install bundle-code-analysis-skills@dgxsparklabs-marketplace
+/plugin install bundle-meta-tooling-skills@dgxsparklabs-marketplace
+/plugin install bundle-ai-services-skills@dgxsparklabs-marketplace
+
+# Rule domain bundles
+/plugin install bundle-quality-rules@dgxsparklabs-marketplace
+/plugin install bundle-workflow-rules@dgxsparklabs-marketplace
+/plugin install bundle-documentation-rules@dgxsparklabs-marketplace
+/plugin install bundle-environment-rules@dgxsparklabs-marketplace
+/plugin install bundle-notifications-rules@dgxsparklabs-marketplace
 ```
 
-The mirrors are regenerated by `uv run scripts/generate_manifest.py` whenever the source skills/rules change.
+### Catch-all bundles — everything of one type
+
+```bash
+# Install every skill, or every rule, in a single command
+/plugin install bundle-skill-all@dgxsparklabs-marketplace
+/plugin install bundle-rule-all@dgxsparklabs-marketplace
+```
+
+### Cross-construct examples bundle — study all 10 construct types
+
+```bash
+# One of each construct type, useful for contributors and integrators
+/plugin install bundle-examples@dgxsparklabs-marketplace
+```
+
+---
+
+## Per-Platform Details
+
+### Claude Code
+
+**What it reads:** `.claude-plugin/marketplace.json` (root manifest) and `_generated/<plugin>/.claude-plugin/plugin.json` (per-plugin).
+
+**Install + use:**
+
+```bash
+# 1. Register the marketplace (GitHub shortform or local path both work)
+claude plugin marketplace add DgxSparkLabs/marketplace
+# or from a local clone:
+claude plugin marketplace add ./
+
+# 2. Browse what's available
+claude plugin list --json --available
+
+# 3. Install a plugin
+claude plugin install skill-telegram-notify@dgxsparklabs-marketplace --scope project
+
+# 4. Verify it's installed
+claude plugin list
+
+# 5. Inspect plugin details
+claude plugin details skill-telegram-notify
+```
+
+**Notable behavior:** Installing a bundle automatically installs its member plugins as dependencies. The install output reports `(+ N dependencies: ...)`. Marketplace is registered as `dgxsparklabs-marketplace`.
+
+**Cleanup:**
+
+```bash
+claude plugin uninstall skill-telegram-notify --scope project
+claude plugin prune --scope project -y
+claude plugin marketplace remove dgxsparklabs-marketplace
+```
+
+---
+
+### Codex
+
+**What it reads:** Reads `.claude-plugin/marketplace.json` when registered. Rules are read from `AGENTS.md`, `.cursor/rules/*.md`, and `.windsurf/rules/*.md` via filesystem — no `codex rules` subcommand exists.
+
+**Install + use:**
+
+```bash
+# 1. Register from local clone
+codex plugin marketplace add ./
+
+# 2. Verify registration
+cat ~/.codex/config.toml | grep dgxsparklabs-marketplace
+
+# 3. List configured MCP servers
+codex mcp list
+
+# 4. Add an MCP server manually (Codex has no skills concept)
+codex mcp add my-tool -- uvx mcp-server-fetch
+```
+
+**Limitations:** Codex has no `skills` subcommand. Skills are conveyed via `AGENTS.md` instructions, not named slash-commands. Plugin install uses the same `/plugin install` convention as Claude Code, but Codex plugin manifests use a different format internally.
+
+**Cleanup:**
+
+```bash
+codex plugin marketplace remove dgxsparklabs-marketplace
+```
+
+---
+
+### Gemini
+
+**What it reads:** Skills from `.gemini/skills/<name>/SKILL.md` or individual install paths. Extension manifest at `.gemini/gemini-extension.json`. MCP servers from `~/.gemini/settings.json`. Rules via `GEMINI.md` and `AGENTS.md` — no `gemini rules` subcommand exists.
+
+**Install + use:**
+
+```bash
+# Install an individual skill (our SKILL.md format is directly detected)
+echo "y" | gemini skills install ./_generated/skill-telegram-notify
+
+# List discovered skills (project + user + built-in)
+gemini skills list --all
+
+# Validate our extension manifest
+gemini extensions validate ./.gemini/
+
+# Install as a Gemini extension
+echo "y" | gemini extensions install ./.gemini/ --consent
+
+# List installed extensions (NOTE: output goes to stderr — pipe with 2>&1)
+gemini extensions list 2>&1
+
+# List configured MCP servers (NOTE: output goes to stderr — pipe with 2>&1)
+gemini mcp list 2>&1
+```
+
+**Quirks:**
+- `gemini extensions list` and `gemini mcp list` write all output to **stderr**, not stdout. Always pipe with `2>&1` when grepping.
+- `gemini --list-extensions` (top-level flag) requires auth and exits 41. Use the `gemini extensions list` subcommand form instead — it is auth-free.
+- No marketplace concept: skills and extensions are installed individually.
+- Gemini reports `Skipping project agents due to untrusted folder` until the workspace is trusted.
+
+**Cleanup:**
+
+```bash
+gemini skills uninstall telegram-notify
+gemini extensions uninstall dgxsparklabs-marketplace
+gemini mcp remove <name>
+```
+
+---
+
+### Cursor
+
+**What it reads:** `.cursor/rules/*.md` files with YAML frontmatter (`description`, `globs`, `alwaysApply`). Auto-detected when the directory is opened in the IDE.
+
+**Install:** No CLI exists for Cursor. Clone the repo and open the directory in the IDE.
+
+```bash
+git clone https://github.com/DgxSparkLabs/marketplace
+# Open in Cursor IDE — rules appear automatically in the rules panel
+```
+
+**Validate format (third-party, auth-free):**
+
+```bash
+npx --yes cursor-doctor@1.11.0 scan .cursor/rules/
+```
+
+**Limitations:** No headless CLI. No install command. The IDE does all the detection.
+
+---
+
+### Windsurf
+
+**What it reads:** `.windsurf/rules/*.md` files with a required `trigger:` frontmatter field (`always_on`, `model_decision`, `glob`, or `manual`). Body limit: 12,000 characters per file.
+
+**Install:** Clone and open in the Windsurf IDE. No CLI exists.
+
+```bash
+git clone https://github.com/DgxSparkLabs/marketplace
+# Open in Windsurf IDE — rules auto-load from .windsurf/rules/
+```
+
+**Limitations:** No headless CLI. No install command.
+
+---
+
+### Devin
+
+**What it reads:**
+- Skills: `.devin/skills/<name>/SKILL.md` (project) or `~/.config/devin/skills/<name>/SKILL.md` (user)
+- Rules: `.windsurf/rules/*.md`, `.cursor/rules/*.md`, `.cursorrules`, `AGENTS.md` — all read natively
+
+**Install + use:**
+
+```bash
+# Install the Devin CLI
+curl -fsSL https://cli.devin.ai/install.sh | bash || true
+# (the installer exits 1 in non-TTY but the binary lands at ~/.local/bin/devin)
+
+# Clone the marketplace
+git clone https://github.com/DgxSparkLabs/marketplace
+cd marketplace
+
+# Verify what Devin sees (all auth-free)
+devin skills list
+devin rules list
+devin mcp list
+
+# Check where Devin scans for skills and rules
+devin skills paths
+devin rules paths
+```
+
+**Notable behavior:** Devin reads `.cursor/rules/` and `.windsurf/rules/` natively — it sees all 21 of our rules automatically from those mirror directories. No configuration required. This is the broadest cross-platform coverage: one clone and all skills plus rules are immediately visible. `devin auth login` says "Log in to Windsurf" — Devin is built on Windsurf/Codeium infrastructure.
+
+---
 
 ## Repository Structure
 
 ```
 marketplace/
-├── MARKETPLACE.toml        # Single source for repo identity (owner, version, license)
-├── catalog.toml            # Construct types + skill/rule domain tagging
+├── MARKETPLACE.toml              # Marketplace identity (owner, version, license)
+├── catalog.toml                  # Bundle definitions only
 ├── .claude-plugin/
-│   └── marketplace.json    # Generated root manifest (71 plugin entries)
-├── skills/                 # Source skill content (one directory per skill)
-├── rules/                  # Source rule content (one directory per rule)
-├── examples/               # 10 example-* reference plugins (one per construct type)
-├── _generated/             # Generated plugin wrappers + bundles (run scripts/generate_manifest.py)
-├── .codex/ .gemini/ .cursor/ .windsurf/ .devin/   # Cross-platform mirrors
+│   └── marketplace.json          # Generated root manifest
+├── skills/                       # Source skill directories (one per skill)
+├── rules/                        # Source rule directories (one per rule)
+├── commands/                     # Command construct sources
+├── agents/                       # Agent construct sources
+├── hooks/                        # Hook construct sources
+├── mcp-servers/                  # MCP server construct sources
+├── lsp-servers/                  # LSP server construct sources
+├── monitors/                     # Monitor construct sources
+├── output-styles/                # Output style construct sources
+├── themes/                       # Theme construct sources
+├── _generated/                   # Generated plugin wrappers + bundles
+├── .codex/   .gemini/            # Cross-platform mirrors (Codex, Gemini)
+├── .cursor/  .windsurf/  .devin/ # Cross-platform mirrors (Cursor, Windsurf, Devin)
 ├── scripts/
-│   └── generate_manifest.py
-├── docs/
-│   ├── ONBOARDING.md
-│   ├── SKILL_FORMAT.md
-│   ├── RULE_FORMAT.md
-│   ├── GOAL_PLUGIN_COMPLIANCE.md
-│   ├── PLAN_PLUGIN_COMPLIANCE.md
-│   ├── INVESTIGATION_PLUGIN_DEPENDENCIES.md
-│   └── IMPLEMENTING_AGENT_PROMPT.md
-├── tests/                  # Automated tests
-└── activate-installed-rules.sh  # One-shot helper for symlinking installed rule plugins
+│   ├── generate_manifest.py      # Generator entry point (5-phase orchestrator)
+│   ├── constructs.py             # 10 Construct classes
+│   ├── platforms.py              # 6 Platform classes
+│   ├── bundles.py                # Bundle + BundleMember dataclasses
+│   └── utils.py                  # Shared helpers
+└── docs/                         # Architecture docs, platform findings, plans
 ```
 
-## Documentation
+Mirrors are regenerated by running:
 
-| Document | Audience | Purpose |
-|----------|----------|---------|
-| [AGENTS.md](./AGENTS.md) | AI agents | Instructions for creating skills and rules autonomously |
-| [docs/ONBOARDING.md](./docs/ONBOARDING.md) | AI agents | Quick-start orientation for new agents (3-minute read) |
-| [CONTRIBUTING.md](./CONTRIBUTING.md) | Humans | Contribution guide with quality checklist |
-| [docs/SKILL_FORMAT.md](./docs/SKILL_FORMAT.md) | Both | Complete SKILL.md format specification |
-| [docs/RULE_FORMAT.md](./docs/RULE_FORMAT.md) | Both | Rule format specification for all supported tools |
-| [_template/](./_template/) | Both | Copy-and-modify starter for new skills |
-| [research/](./research/) | Both | Market intelligence: 200+ sources, knowledge base, methodology |
+```bash
+uv run scripts/generate_manifest.py
+```
+
+---
 
 ## Contributing
 
-See [CONTRIBUTING.md](./CONTRIBUTING.md) for guidelines on adding new skills and rules.
+To add a new construct, see [`docs/ADDING_A_CONSTRUCT.md`](docs/ADDING_A_CONSTRUCT.md). The guide covers all 10 construct types with a step-by-step checklist per type.
+
+---
+
+## Deep Dives
+
+| Document | Purpose |
+|----------|---------|
+| [`docs/PLATFORM_INSPECTION_CATALOG.md`](docs/PLATFORM_INSPECTION_CATALOG.md) | Empirically verified CLI commands per platform, with match-mode annotations for CI |
+| [`docs/EMPIRICAL_CLI_FINDINGS/`](docs/EMPIRICAL_CLI_FINDINGS/) | Raw research notes — Devin, Gemini, Codex, Cursor, Windsurf findings |
+| [`docs/PLAN_DI_REFACTOR.md`](docs/PLAN_DI_REFACTOR.md) | Generator architecture — the DI strategy-pattern design |
+| [`docs/DI_REFACTOR_REPORT.md`](docs/DI_REFACTOR_REPORT.md) | What the refactor changed and why |
+| [`docs/RESUME_HERE.md`](docs/RESUME_HERE.md) | Project orientation for new agents and contributors |
+
+---
 
 ## License
 
