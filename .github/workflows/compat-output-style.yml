@@ -30,20 +30,20 @@ jobs:
       - name: Register marketplace
         run: claude plugin marketplace add ./
 
-      - name: Install example-output-style plugin
-        run: claude plugin install example-output-style@dgxsparklabs-marketplace --scope project
+      - name: Install output-style-example plugin
+        run: claude plugin install output-style-example@dgxsparklabs-marketplace --scope project
 
       - name: Assert plugin is listed (grep match)
         # Match mode: grep substring — catalog row: claude plugin list shows installed entry
-        run: claude plugin list | grep -F "example-output-style@dgxsparklabs-marketplace"
+        run: claude plugin list | grep -F "output-style-example@dgxsparklabs-marketplace"
 
       - name: Assert plugin details shows output styles section
         # Match mode: grep substring — catalog row: claude plugin details shows the relevant section
-        run: claude plugin details example-output-style | grep -F "example-output-style"
+        run: claude plugin details output-style-example | grep -F "output-style-example"
 
       - name: Cleanup
         if: always()
         run: |
-          claude plugin uninstall example-output-style --scope project || true
+          claude plugin uninstall output-style-example --scope project || true
           claude plugin prune --scope project -y || true
           claude plugin marketplace remove dgxsparklabs-marketplace || true

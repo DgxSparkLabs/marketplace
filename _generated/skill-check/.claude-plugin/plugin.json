@@ -1,14 +1,11 @@
 {
   "name": "skill-check",
-  "description": "Mid-session course correction \u2014 stop, review rules, and realign",
   "version": "1.0.0",
   "author": {
     "name": "DgxSparkLabs",
     "url": "https://github.com/DgxSparkLabs"
   },
-  "homepage": "https://github.com/DgxSparkLabs/marketplace/tree/main/_generated/skill-check",
-  "repository": "https://github.com/DgxSparkLabs/marketplace",
-  "license": "MIT",
+  "description": "Mid-session course correction \u2014 stop, review rules, and realign",
   "skills": [
     "./"
   ],

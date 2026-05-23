@@ -1,14 +1,11 @@
 {
   "name": "skill-textual-tui-guide",
-  "description": "Build rich terminal UIs with Python Textual \u2014 layouts, widgets, modals, styling",
   "version": "1.0.0",
   "author": {
     "name": "DgxSparkLabs",
     "url": "https://github.com/DgxSparkLabs"
   },
-  "homepage": "https://github.com/DgxSparkLabs/marketplace/tree/main/_generated/skill-textual-tui-guide",
-  "repository": "https://github.com/DgxSparkLabs/marketplace",
-  "license": "MIT",
+  "description": "Build rich terminal UIs with Python Textual \u2014 layouts, widgets, modals, styling",
   "skills": [
     "./"
   ],

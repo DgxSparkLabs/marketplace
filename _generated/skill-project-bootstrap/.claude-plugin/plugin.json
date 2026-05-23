@@ -1,14 +1,11 @@
 {
   "name": "skill-project-bootstrap",
-  "description": "Initialize project docs \u2014 AGENTS.md, HANDOFF.md, CHANGELOG.md, PITFALLS.md",
   "version": "1.0.0",
   "author": {
     "name": "DgxSparkLabs",
     "url": "https://github.com/DgxSparkLabs"
   },
-  "homepage": "https://github.com/DgxSparkLabs/marketplace/tree/main/_generated/skill-project-bootstrap",
-  "repository": "https://github.com/DgxSparkLabs/marketplace",
-  "license": "MIT",
+  "description": "Initialize project docs \u2014 AGENTS.md, HANDOFF.md, CHANGELOG.md, PITFALLS.md",
   "skills": [
     "./"
   ],

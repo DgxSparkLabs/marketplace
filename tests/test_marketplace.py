@@ -4,24 +4,24 @@
 # dependencies = []
 # ///
 """
-Marketplace test suite.
+Marketplace test suite — post DI-refactor.
 
-Validates the post-migration structure:
-  - Source layout (skills/, rules/, commands/, agents/, hooks/, mcp-servers/,
-    lsp-servers/, monitors/, output-styles/, themes/)
-  - MARKETPLACE.toml + catalog.toml integrity and cross-references
-  - Example plugins in their native construct folders
-  - Generator drift (running --check must succeed)
-  - Generated marketplace.json + plugin.json schemas
-  - Per-rule activate.sh executability and shebang
-  - Cross-platform mirror coverage
-  - Plugin naming (kebab-case)
-  - Secret scanning (no API keys committed)
+Validates:
+  - Source layout (10 construct source dirs + examples)
+  - Generated plugins at correct paths with correct schemas
+  - Code-generated catch-all bundles (bundle-<prefix>-all)
+  - Platform mirror coverage (Codex, Gemini, Cursor, Windsurf, Devin)
+  - marketplace.json schema, sorting, and completeness
+  - Bundle validation (reserved names, empty bundles, syntax)
+  - CONSTRUCTS registry invariants
+  - Plugin count formula
+  - No secrets in tracked files
+  - Generator drift check
 
 Run:
     uv run tests/test_marketplace.py          # all tests
     uv run tests/test_marketplace.py -v       # verbose
-    uv run tests/test_marketplace.py -k Rule  # filter by test name
+    uv run tests/test_marketplace.py -k Name  # filter
 """
 
 from __future__ import annotations
@@ -34,505 +34,440 @@ import tomllib
 import unittest
 from pathlib import Path
 
+# Add scripts/ to sys.path for imports
 REPO_ROOT = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(REPO_ROOT / "scripts"))
+
+from bundles import BundleMember, load_bundles
+from constructs import (
+    CONSTRUCTS,
+    RuleConstruct,
+    SkillConstruct,
+)
+from platforms import PLATFORMS
+from utils import CATALOG, MARKETPLACE_JSON, scan_source_dir
 
 MARKETPLACE_TOML = REPO_ROOT / "MARKETPLACE.toml"
-CATALOG_TOML = REPO_ROOT / "catalog.toml"
-MARKETPLACE_JSON = REPO_ROOT / ".claude-plugin" / "marketplace.json"
-
-SKILLS_DIR = REPO_ROOT / "skills"
-RULES_DIR = REPO_ROOT / "rules"
 GENERATED_DIR = REPO_ROOT / "_generated"
 
-# The 8 new top-level construct source directories (skills/ and rules/ also exist)
-CONSTRUCT_DIRS = {
-    "commands":       REPO_ROOT / "commands",
-    "agents":         REPO_ROOT / "agents",
-    "hooks":          REPO_ROOT / "hooks",
-    "mcp-servers":    REPO_ROOT / "mcp-servers",
-    "lsp-servers":    REPO_ROOT / "lsp-servers",
-    "monitors":       REPO_ROOT / "monitors",
-    "output-styles":  REPO_ROOT / "output-styles",
-    "themes":         REPO_ROOT / "themes",
-}
 
-# Map from construct folder name → expected example directory name
-CONSTRUCT_EXAMPLES = {
-    "skills":         "example-skill",
-    "rules":          "example-rule",
-    "commands":       "example-command",
-    "agents":         "example-agent",
-    "hooks":          "example-hook",
-    "mcp-servers":    "example-mcp",
-    "lsp-servers":    "example-lsp",
-    "monitors":       "example-monitor",
-    "output-styles":  "example-output-style",
-    "themes":         "example-theme",
-}
-
-MIRROR_DIRS = {
-    "codex":    REPO_ROOT / ".codex" / "skills",
-    "gemini":   REPO_ROOT / ".gemini" / "skills",
-    "cursor":   REPO_ROOT / ".cursor" / "rules",
-    "windsurf": REPO_ROOT / ".windsurf" / "rules",
-    "devin-s":  REPO_ROOT / ".devin"  / "skills",
-    "devin-r":  REPO_ROOT / ".devin"  / "rules",
-}
-
-KEBAB_CASE = re.compile(r"^[a-z][a-z0-9-]*[a-z0-9]$")
-
-
-# ────────────────────────── helpers ──────────────────────────────────────────
+# ─── helpers ─────────────────────────────────────────────────────────────────
 
 def load_toml(path: Path) -> dict:
     with open(path, "rb") as f:
         return tomllib.load(f)
 
 
-def load_marketplace() -> dict:
-    return load_toml(MARKETPLACE_TOML)
+def load_marketplace_json() -> dict:
+    return json.loads(MARKETPLACE_JSON.read_text(encoding="utf-8"))
 
 
-def load_catalog() -> dict:
-    return load_toml(CATALOG_TOML)
-
-
-def list_skills() -> list[Path]:
-    """Return real skills (exclude example-* directories)."""
-    return sorted(
-        d for d in SKILLS_DIR.iterdir()
-        if d.is_dir() and (d / "SKILL.md").exists() and not d.name.startswith("example-")
-    )
-
-
-def list_rules() -> list[Path]:
-    """Return real rules (exclude example-* directories)."""
-    return sorted(
-        d for d in RULES_DIR.iterdir()
-        if d.is_dir() and (d / "rule.md").exists() and not d.name.startswith("example-")
-    )
-
-
-def list_examples_native() -> list[Path]:
-    """Return all 10 example plugins from their native construct folders."""
-    examples = []
-    for folder_name, example_name in CONSTRUCT_EXAMPLES.items():
-        if folder_name == "skills":
-            folder = SKILLS_DIR
-        elif folder_name == "rules":
-            folder = RULES_DIR
-        else:
-            folder = REPO_ROOT / folder_name
-        ex_path = folder / example_name
-        if ex_path.is_dir():
-            examples.append(ex_path)
-    return sorted(examples, key=lambda p: p.name)
-
-
-# ────────────────────────── tests ────────────────────────────────────────────
+# ─── TestSourceLayout ─────────────────────────────────────────────────────────
 
 class TestSourceLayout(unittest.TestCase):
-    """Every source directory follows naming + required-file conventions."""
+    """Source directory conventions — contract tests."""
 
-    def test_skills_dir_exists(self):
-        self.assertTrue(SKILLS_DIR.is_dir(), "skills/ must exist")
-
-    def test_rules_dir_exists(self):
-        self.assertTrue(RULES_DIR.is_dir(), "rules/ must exist")
-
-    def test_commands_dir_exists(self):
-        self.assertTrue(CONSTRUCT_DIRS["commands"].is_dir(), "commands/ must exist")
-
-    def test_agents_dir_exists(self):
-        self.assertTrue(CONSTRUCT_DIRS["agents"].is_dir(), "agents/ must exist")
-
-    def test_hooks_dir_exists(self):
-        self.assertTrue(CONSTRUCT_DIRS["hooks"].is_dir(), "hooks/ must exist")
-
-    def test_mcp_servers_dir_exists(self):
-        self.assertTrue(CONSTRUCT_DIRS["mcp-servers"].is_dir(), "mcp-servers/ must exist")
-
-    def test_lsp_servers_dir_exists(self):
-        self.assertTrue(CONSTRUCT_DIRS["lsp-servers"].is_dir(), "lsp-servers/ must exist")
-
-    def test_monitors_dir_exists(self):
-        self.assertTrue(CONSTRUCT_DIRS["monitors"].is_dir(), "monitors/ must exist")
-
-    def test_output_styles_dir_exists(self):
-        self.assertTrue(CONSTRUCT_DIRS["output-styles"].is_dir(), "output-styles/ must exist")
-
-    def test_themes_dir_exists(self):
-        self.assertTrue(CONSTRUCT_DIRS["themes"].is_dir(), "themes/ must exist")
-
-    def test_examples_not_in_separate_dir(self):
-        self.assertFalse((REPO_ROOT / "examples").exists(), "examples/ must not exist — examples live in native construct folders")
-
-    def test_skill_names_kebab_case(self):
-        for skill in list_skills():
-            self.assertRegex(skill.name, KEBAB_CASE, f"skill name '{skill.name}' must be kebab-case")
-
-    def test_rule_names_kebab_case(self):
-        for rule in list_rules():
-            self.assertRegex(rule.name, KEBAB_CASE, f"rule name '{rule.name}' must be kebab-case")
-
-    def test_skills_have_skill_md(self):
-        for skill in list_skills():
-            self.assertTrue((skill / "SKILL.md").exists(), f"{skill.name} missing SKILL.md")
-
-    def test_rules_have_rule_md(self):
-        for rule in list_rules():
-            self.assertTrue((rule / "rule.md").exists(), f"{rule.name} missing rule.md")
-
-    def test_each_construct_dir_has_its_example(self):
-        """Every native construct folder must contain its reference example."""
-        for folder_name, example_name in CONSTRUCT_EXAMPLES.items():
-            if folder_name == "skills":
-                folder = SKILLS_DIR
-            elif folder_name == "rules":
-                folder = RULES_DIR
-            else:
-                folder = REPO_ROOT / folder_name
-            self.assertTrue(
-                (folder / example_name).is_dir(),
-                f"{folder_name}/{example_name}/ must exist as the reference example",
-            )
-
-
-class TestConfigFiles(unittest.TestCase):
-    """MARKETPLACE.toml and catalog.toml are well-formed and consistent."""
-
-    def test_marketplace_toml_parses(self):
-        mp = load_marketplace()
-        self.assertIn("marketplace", mp)
-        self.assertIn("owner", mp)
-        self.assertIn("repository", mp)
-
-    def test_marketplace_has_required_fields(self):
-        mp = load_marketplace()
-        self.assertIn("name", mp["marketplace"])
-        self.assertIn("version", mp["marketplace"])
-        self.assertIn("description", mp["marketplace"])
-        self.assertIn("name", mp["owner"])
-        self.assertIn("url", mp["repository"])
-
-    def test_marketplace_version_semver(self):
-        mp = load_marketplace()
-        version = mp["marketplace"]["version"]
-        self.assertRegex(version, r"^\d+\.\d+\.\d+$", f"version '{version}' must be semver")
-
-    def test_catalog_toml_parses(self):
-        cat = load_catalog()
-        self.assertIn("construct", cat)
-        self.assertIn("skill_domain", cat)
-        self.assertIn("rule_domain", cat)
-
-    def test_catalog_has_all_ten_construct_types(self):
-        cat = load_catalog()
-        expected = {"skill", "rule", "command", "agent", "hook", "mcp", "lsp", "monitor", "output-style", "theme"}
-        actual = set(cat.get("construct", {}).keys())
-        self.assertEqual(actual, expected, "catalog.toml must define all 10 construct types")
-
-    def test_catalog_has_examples_domain_for_each_construct(self):
-        """Every construct type must have a [<construct>_domain.examples] entry."""
-        cat = load_catalog()
-        for ckey in cat.get("construct", {}):
-            domain_table = ckey.replace("-", "_") + "_domain"
-            domain_data = cat.get(domain_table, {})
-            self.assertIn(
-                "examples",
-                domain_data,
-                f"catalog.toml must have [{domain_table}.examples] for construct '{ckey}'",
-            )
-
-    def test_examples_domain_members_exist_in_source_dirs(self):
-        """Each [<construct>_domain.examples] member must resolve to a real directory."""
-        cat = load_catalog()
-        for ckey, cconf in cat.get("construct", {}).items():
-            src_dir_rel = cconf.get("source_directory", "").rstrip("/")
-            domain_table = ckey.replace("-", "_") + "_domain"
-            domain_data = cat.get(domain_table, {})
-            examples_domain = domain_data.get("examples", {})
-            for member in examples_domain.get("members", []):
-                member_path = REPO_ROOT / src_dir_rel / member
+    def test_construct_source_dirs_exist(self):
+        """Each of the 10 construct source directories must exist."""
+        for construct_id, construct in CONSTRUCTS.items():
+            with self.subTest(construct=construct_id):
                 self.assertTrue(
-                    member_path.is_dir(),
-                    f"[{domain_table}.examples] member '{member}' not found at {src_dir_rel}/{member}/",
+                    construct.source_directory.exists(),
+                    f"{construct_id}: source_directory {construct.source_directory} does not exist",
                 )
 
-    def test_every_skill_in_one_domain(self):
-        cat = load_catalog()
-        actual = {s.name for s in list_skills()}
-        referenced: set[str] = set()
-        for dname, dconf in cat["skill_domain"].items():
-            if dname == "examples":
-                continue
-            for m in dconf.get("members", []):
-                self.assertNotIn(m, referenced, f"skill '{m}' appears in multiple domains")
-                referenced.add(m)
-                self.assertIn(m, actual, f"skill_domain.{dname} references '{m}' but skills/{m}/SKILL.md does not exist")
-        orphans = actual - referenced
-        self.assertFalse(orphans, f"skills not in any domain: {sorted(orphans)}")
+    def test_examples_present_per_construct(self):
+        """Each construct source dir must contain an 'example' subdir."""
+        for construct_id, construct in CONSTRUCTS.items():
+            with self.subTest(construct=construct_id):
+                self.assertTrue(
+                    (construct.source_directory / "example").is_dir(),
+                    f"{construct_id}: missing {construct.source_directory}/example/",
+                )
 
-    def test_every_rule_in_one_domain(self):
-        cat = load_catalog()
-        actual = {r.name for r in list_rules()}
-        referenced: set[str] = set()
-        for dname, dconf in cat["rule_domain"].items():
-            if dname == "examples":
-                continue
-            for m in dconf.get("members", []):
-                self.assertNotIn(m, referenced, f"rule '{m}' appears in multiple domains")
-                referenced.add(m)
-                self.assertIn(m, actual, f"rule_domain.{dname} references '{m}' but rules/{m}/rule.md does not exist")
-        orphans = actual - referenced
-        self.assertFalse(orphans, f"rules not in any domain: {sorted(orphans)}")
+    def test_instance_names_kebab_case(self):
+        """Every instance name across all constructs must be kebab-case."""
+        kebab = re.compile(r"^[a-z0-9]+(-[a-z0-9]+)*$")
+        for construct_id, construct in CONSTRUCTS.items():
+            for name in scan_source_dir(construct.source_directory):
+                with self.subTest(construct=construct_id, name=name):
+                    self.assertRegex(
+                        name, kebab,
+                        f"{construct_id}/{name}: not kebab-case; "
+                        f"derived plugin name '{construct.prefix}-{name}' would be invalid",
+                    )
 
-    def test_domain_names_kebab_case(self):
-        cat = load_catalog()
-        for d in cat.get("skill_domain", {}):
-            self.assertRegex(d, KEBAB_CASE, f"skill domain '{d}' must be kebab-case")
-        for d in cat.get("rule_domain", {}):
-            self.assertRegex(d, KEBAB_CASE, f"rule domain '{d}' must be kebab-case")
-
-
-class TestExamples(unittest.TestCase):
-    """Each example plugin is fully self-contained and validates."""
-
-    EXPECTED_EXAMPLES = {
-        "example-skill", "example-rule", "example-command", "example-agent",
-        "example-hook", "example-mcp", "example-lsp", "example-monitor",
-        "example-output-style", "example-theme",
-    }
-
-    def test_all_ten_examples_present(self):
-        actual = {e.name for e in list_examples_native()}
-        missing = self.EXPECTED_EXAMPLES - actual
-        self.assertFalse(missing, f"missing example plugins: {sorted(missing)}")
-
-    def test_each_example_has_plugin_json(self):
-        for ex in list_examples_native():
-            pj = ex / ".claude-plugin" / "plugin.json"
-            self.assertTrue(pj.exists(), f"{ex.name} missing .claude-plugin/plugin.json")
-
-    def test_each_example_plugin_json_valid(self):
-        for ex in list_examples_native():
-            pj_path = ex / ".claude-plugin" / "plugin.json"
-            pj = json.loads(pj_path.read_text(encoding="utf-8"))
-            self.assertEqual(pj["name"], ex.name, f"{ex.name} plugin.json name field mismatch")
-            self.assertIn("description", pj)
-            self.assertIn("version", pj)
-            self.assertIsInstance(pj.get("author"), dict, f"{ex.name} author must be object not string")
-
-    def test_each_example_has_readme(self):
-        for ex in list_examples_native():
-            self.assertTrue((ex / "README.md").exists(), f"{ex.name} missing README.md tutorial")
-
-    def test_examples_live_in_native_dirs_not_examples_folder(self):
-        """All 10 examples must be in their construct's native folder, not examples/."""
-        for folder_name, example_name in CONSTRUCT_EXAMPLES.items():
-            if folder_name == "skills":
-                folder = SKILLS_DIR
-            elif folder_name == "rules":
-                folder = RULES_DIR
-            else:
-                folder = REPO_ROOT / folder_name
-            self.assertTrue(
-                (folder / example_name).is_dir(),
-                f"{example_name} must live in {folder_name}/{example_name}/, not examples/",
-            )
-
-
-class TestGeneratorDrift(unittest.TestCase):
-    """Generator output must match committed content (no drift)."""
-
-    def test_generator_check_succeeds(self):
-        proc = subprocess.run(
-            ["uv", "run", str(REPO_ROOT / "scripts" / "generate_manifest.py"), "--check"],
-            cwd=REPO_ROOT,
-            capture_output=True,
-            text=True,
-            timeout=120,
+    def test_examples_not_in_separate_dir(self):
+        """A top-level examples/ folder must not exist — examples live in native construct dirs."""
+        self.assertFalse(
+            (REPO_ROOT / "examples").exists(),
+            "examples/ must not exist — examples live in native construct folders",
         )
-        self.assertEqual(proc.returncode, 0, f"generator --check reported drift:\n{proc.stdout}\n{proc.stderr}")
 
 
-class TestGeneratedManifests(unittest.TestCase):
-    """The generated marketplace.json and per-plugin manifests are well-formed."""
+# ─── TestGeneratedPlugins ─────────────────────────────────────────────────────
 
-    def test_marketplace_json_exists(self):
-        self.assertTrue(MARKETPLACE_JSON.exists(), "root .claude-plugin/marketplace.json missing")
+class TestGeneratedPlugins(unittest.TestCase):
+    """Generated plugin artifacts — integration + contract tests."""
 
-    def test_marketplace_json_parses(self):
-        data = json.loads(MARKETPLACE_JSON.read_text(encoding="utf-8"))
+    def test_all_plugins_at_correct_path(self):
+        """Every plugin in marketplace.json must resolve to a real .claude-plugin/plugin.json."""
+        manifest = load_marketplace_json()
+        for entry in manifest["plugins"]:
+            plugin_path = Path(entry["source"]) / ".claude-plugin" / "plugin.json"
+            with self.subTest(plugin=entry["name"]):
+                self.assertTrue(
+                    plugin_path.exists(),
+                    f"{entry['name']}: source {entry['source']} has no .claude-plugin/plugin.json",
+                )
+
+    def test_all_plugins_parse_and_have_required_fields(self):
+        """Every plugin.json must parse and carry the required common fields."""
+        manifest = load_marketplace_json()
+        common_required = {"name", "description", "version", "author"}
+        for entry in manifest["plugins"]:
+            plugin_path = Path(entry["source"]) / ".claude-plugin" / "plugin.json"
+            with self.subTest(plugin=entry["name"]):
+                data = json.loads(plugin_path.read_text(encoding="utf-8"))
+                missing = common_required - set(data.keys())
+                self.assertFalse(
+                    missing,
+                    f"{entry['name']}: missing common fields {missing}",
+                )
+                if entry["category"] == "bundle":
+                    self.assertIn(
+                        "dependencies", data,
+                        f"{entry['name']}: bundle missing 'dependencies' field",
+                    )
+
+    def test_bundle_dependencies_resolve_to_real_plugins(self):
+        """Every catalog bundle's dependencies must resolve to real plugin files."""
+        for bundle in load_bundles(CATALOG, CONSTRUCTS):
+            deps = bundle.resolve_dependencies(CONSTRUCTS)
+            for dep_name in deps:
+                with self.subTest(bundle=bundle.name, dep=dep_name):
+                    self.assertTrue(
+                        Path(f"_generated/{dep_name}/.claude-plugin/plugin.json").exists(),
+                        f"Bundle '{bundle.name}' dep '{dep_name}' has no generated plugin",
+                    )
+
+    def test_individual_plugin_name_matches_prefix_and_source(self):
+        """Each individual plugin's name field must equal <prefix>-<source_name>."""
+        for construct in CONSTRUCTS.values():
+            for name in scan_source_dir(construct.source_directory):
+                plugin_path = REPO_ROOT / "_generated" / f"{construct.prefix}-{name}" / ".claude-plugin" / "plugin.json"
+                with self.subTest(construct=construct.prefix, name=name):
+                    data = json.loads(plugin_path.read_text(encoding="utf-8"))
+                    self.assertEqual(
+                        data["name"], f"{construct.prefix}-{name}",
+                        f"Plugin name mismatch for {construct.prefix}-{name}",
+                    )
+
+
+# ─── TestCatchAllBundles ──────────────────────────────────────────────────────
+
+class TestCatchAllBundles(unittest.TestCase):
+    """Code-generated bundle-<prefix>-all bundles — integration tests."""
+
+    def test_catchall_present_for_each_construct_with_sources(self):
+        """bundle-<prefix>-all must exist iff the construct has at least one source."""
+        for construct in CONSTRUCTS.values():
+            sources = scan_source_dir(construct.source_directory)
+            catchall_path = REPO_ROOT / "_generated" / f"bundle-{construct.prefix}-all" / ".claude-plugin" / "plugin.json"
+            with self.subTest(construct=construct.prefix):
+                if sources:
+                    self.assertTrue(
+                        catchall_path.exists(),
+                        f"Catch-all missing for {construct.prefix} (sources present: {sources})",
+                    )
+                else:
+                    self.assertFalse(
+                        catchall_path.exists(),
+                        f"Catch-all should be absent for {construct.prefix} (no sources)",
+                    )
+
+    def test_catchall_deps_match_all_sources(self):
+        """Each catch-all bundle's deps must equal exactly every instance of that construct."""
+        for construct in CONSTRUCTS.values():
+            sources = scan_source_dir(construct.source_directory)
+            if not sources:
+                continue
+            catchall_path = REPO_ROOT / "_generated" / f"bundle-{construct.prefix}-all" / ".claude-plugin" / "plugin.json"
+            with self.subTest(construct=construct.prefix):
+                data = json.loads(catchall_path.read_text(encoding="utf-8"))
+                expected = {f"{construct.prefix}-{n}" for n in sources}
+                self.assertEqual(
+                    set(data["dependencies"]), expected,
+                    f"Catch-all for {construct.prefix} has wrong deps",
+                )
+
+
+# ─── TestPlatformMirrors ──────────────────────────────────────────────────────
+
+class TestPlatformMirrors(unittest.TestCase):
+    """Per-platform mirror contents — integration tests."""
+
+    def test_codex_skills_mirror(self):
+        """Codex mirror must contain a directory for every skill."""
+        codex = PLATFORMS["codex"]
+        if SkillConstruct not in codex.supports:
+            self.skipTest("Codex does not declare skill support")
+        skill = next(c for c in CONSTRUCTS.values() if isinstance(c, SkillConstruct))
+        for name in scan_source_dir(skill.source_directory):
+            with self.subTest(skill=name):
+                mirror_dir = codex.mirror_directory / "skills" / name
+                self.assertTrue(
+                    mirror_dir.exists(),
+                    f"Codex mirror missing skills/{name}/",
+                )
+                self.assertTrue(
+                    (mirror_dir / "SKILL.md").exists(),
+                    f"Codex mirror skills/{name}/ missing SKILL.md",
+                )
+
+    def test_gemini_skills_mirror_and_extension_manifest(self):
+        """Gemini mirror must contain skills and a valid gemini-extension.json."""
+        gemini = PLATFORMS["gemini"]
+        skill = next(c for c in CONSTRUCTS.values() if isinstance(c, SkillConstruct))
+        for name in scan_source_dir(skill.source_directory):
+            with self.subTest(skill=name):
+                self.assertTrue(
+                    (gemini.mirror_directory / "skills" / name / "SKILL.md").exists(),
+                    f"Gemini mirror missing skills/{name}/SKILL.md",
+                )
+        # Repo-level extension manifest (Phase 4 emission)
+        manifest_path = gemini.mirror_directory / "gemini-extension.json"
+        self.assertTrue(manifest_path.exists(), ".gemini/gemini-extension.json missing")
+        manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+        for required in ("name", "version", "description"):
+            self.assertIn(required, manifest, f"gemini-extension.json missing '{required}' field")
+        # Version must match MARKETPLACE.toml
+        with open(MARKETPLACE_TOML, "rb") as f:
+            mp = tomllib.load(f)
+        self.assertEqual(manifest["name"], mp["marketplace"]["name"])
+        self.assertEqual(manifest["version"], mp["marketplace"]["version"])
+
+    def test_cursor_rules_mirror(self):
+        """Cursor mirror must contain a .md file for every rule."""
+        cursor = PLATFORMS["cursor"]
+        rule = next(c for c in CONSTRUCTS.values() if isinstance(c, RuleConstruct))
+        for name in scan_source_dir(rule.source_directory):
+            with self.subTest(rule=name):
+                self.assertTrue(
+                    (cursor.mirror_directory / "rules" / f"{name}.md").exists(),
+                    f"Cursor mirror missing rules/{name}.md",
+                )
+
+    def test_windsurf_rules_mirror(self):
+        """Windsurf mirror must contain a .md file for every rule."""
+        windsurf = PLATFORMS["windsurf"]
+        rule = next(c for c in CONSTRUCTS.values() if isinstance(c, RuleConstruct))
+        for name in scan_source_dir(rule.source_directory):
+            with self.subTest(rule=name):
+                self.assertTrue(
+                    (windsurf.mirror_directory / "rules" / f"{name}.md").exists(),
+                    f"Windsurf mirror missing rules/{name}.md",
+                )
+
+    def test_devin_skills_mirror(self):
+        """Devin mirror must contain a directory for every skill.
+
+        Devin reads rules from .cursor/ and .windsurf/ natively (empirically
+        verified); we emit a Devin-native skills mirror only.
+        """
+        devin = PLATFORMS["devin"]
+        skill = next(c for c in CONSTRUCTS.values() if isinstance(c, SkillConstruct))
+        for name in scan_source_dir(skill.source_directory):
+            with self.subTest(skill=name):
+                self.assertTrue(
+                    (devin.mirror_directory / "skills" / name / "SKILL.md").exists(),
+                    f"Devin mirror missing skills/{name}/SKILL.md",
+                )
+
+
+# ─── TestMarketplaceJson ──────────────────────────────────────────────────────
+
+class TestMarketplaceJson(unittest.TestCase):
+    """marketplace.json schema and completeness — contract + integration tests."""
+
+    def test_marketplace_json_exists_and_parses(self):
+        """Top-level .claude-plugin/marketplace.json must exist and parse."""
+        self.assertTrue(MARKETPLACE_JSON.exists(), ".claude-plugin/marketplace.json missing")
+        data = load_marketplace_json()
+        self.assertIsInstance(data, dict)
         self.assertIn("plugins", data)
-        self.assertIn("metadata", data)
         self.assertIn("owner", data)
 
-    def test_marketplace_json_owner_is_object(self):
-        data = json.loads(MARKETPLACE_JSON.read_text(encoding="utf-8"))
-        self.assertIsInstance(data["owner"], dict)
+    def test_marketplace_entries_have_required_fields(self):
+        """Every marketplace.json entry must have all required fields."""
+        required = {"name", "source", "description", "version", "author", "category"}
+        manifest = load_marketplace_json()
+        for entry in manifest["plugins"]:
+            with self.subTest(plugin=entry["name"]):
+                missing = required - set(entry.keys())
+                self.assertFalse(missing, f"{entry['name']}: missing fields {missing}")
+                self.assertTrue(
+                    entry["source"].startswith("./"),
+                    f"{entry['name']}: source must start with './'",
+                )
 
-    def test_every_plugin_has_required_fields(self):
-        data = json.loads(MARKETPLACE_JSON.read_text(encoding="utf-8"))
-        for p in data["plugins"]:
-            self.assertIn("name", p)
-            self.assertIn("source", p)
-            self.assertIn("version", p)
-            self.assertTrue(p["source"].startswith("./"), f"plugin {p['name']} source must start with ./")
+    def test_marketplace_entries_sorted_by_category_then_name(self):
+        """Entries must be sorted by (category, name) for deterministic diffs."""
+        manifest = load_marketplace_json()
+        entries = manifest["plugins"]
+        sorted_entries = sorted(entries, key=lambda e: (e["category"], e["name"]))
+        actual_order = [(e["category"], e["name"]) for e in entries]
+        expected_order = [(e["category"], e["name"]) for e in sorted_entries]
+        self.assertEqual(actual_order, expected_order, "marketplace.json entries are not sorted")
 
-    def test_plugin_names_kebab_case(self):
-        data = json.loads(MARKETPLACE_JSON.read_text(encoding="utf-8"))
-        for p in data["plugins"]:
-            self.assertRegex(p["name"], KEBAB_CASE, f"plugin name '{p['name']}' must be kebab-case")
+    def test_marketplace_lists_all_expected_plugins(self):
+        """Marketplace must list exactly: all individuals + catalog bundles + catch-alls."""
+        manifest = load_marketplace_json()
+        actual_names = {e["name"] for e in manifest["plugins"]}
 
-    def test_plugin_count(self):
-        """81 = 26 skills + 8 skill-bundles + 21 rules + 6 rule-bundles + 10 examples + 10 example-bundles."""
-        data = json.loads(MARKETPLACE_JSON.read_text(encoding="utf-8"))
-        self.assertEqual(len(data["plugins"]), 81, "expected 81 plugin entries in marketplace.json")
+        # Individual construct plugins
+        expected: set[str] = set()
+        for construct in CONSTRUCTS.values():
+            for name in scan_source_dir(construct.source_directory):
+                expected.add(f"{construct.prefix}-{name}")
 
-    def test_generated_skill_wrappers_exist(self):
-        for skill in list_skills():
-            pj = GENERATED_DIR / f"skill-{skill.name}" / ".claude-plugin" / "plugin.json"
-            self.assertTrue(pj.exists(), f"missing generated wrapper for skill '{skill.name}'")
+        # Catalog bundles
+        for bundle in load_bundles(CATALOG, CONSTRUCTS):
+            expected.add(f"bundle-{bundle.name}")
 
-    def test_generated_rule_wrappers_have_activate(self):
-        for rule in list_rules():
-            target = GENERATED_DIR / f"rule-{rule.name}"
-            self.assertTrue(target.exists(), f"missing generated wrapper for rule '{rule.name}'")
-            self.assertTrue((target / "activate.sh").exists(), f"rule-{rule.name} missing activate.sh")
-            self.assertTrue((target / "rules" / f"{rule.name}.md").exists(), f"rule-{rule.name} missing rules/{rule.name}.md")
+        # Code-generated catch-alls
+        for construct in CONSTRUCTS.values():
+            if scan_source_dir(construct.source_directory):
+                expected.add(f"bundle-{construct.prefix}-all")
 
-    def test_skill_bundle_plugins_have_dependencies(self):
-        cat = load_catalog()
-        for dname in cat.get("skill_domain", {}):
-            if dname == "examples":
-                continue
-            pj_path = GENERATED_DIR / f"skills-{dname}" / ".claude-plugin" / "plugin.json"
-            self.assertTrue(pj_path.exists(), f"missing skills-{dname} bundle")
-            pj = json.loads(pj_path.read_text(encoding="utf-8"))
-            self.assertIn("dependencies", pj)
-            self.assertGreater(len(pj["dependencies"]), 0, f"skills-{dname} has no dependencies")
-            for dep in pj["dependencies"]:
-                self.assertTrue(dep.startswith("skill-"), f"skills-{dname} dependency '{dep}' must start with skill-")
-
-    def test_rule_bundle_plugins_have_dependencies(self):
-        cat = load_catalog()
-        for dname in cat.get("rule_domain", {}):
-            if dname == "examples":
-                continue
-            pj_path = GENERATED_DIR / f"rules-{dname}" / ".claude-plugin" / "plugin.json"
-            self.assertTrue(pj_path.exists(), f"missing rules-{dname} bundle")
-            pj = json.loads(pj_path.read_text(encoding="utf-8"))
-            self.assertIn("dependencies", pj)
-            for dep in pj["dependencies"]:
-                self.assertTrue(dep.startswith("rule-"), f"rules-{dname} dependency '{dep}' must start with rule-")
-
-    def test_rules_all_bundle_contains_every_rule(self):
-        pj_path = GENERATED_DIR / "rules-all" / ".claude-plugin" / "plugin.json"
-        self.assertTrue(pj_path.exists(), "rules-all bundle missing")
-        pj = json.loads(pj_path.read_text(encoding="utf-8"))
-        expected_deps = {f"rule-{r.name}" for r in list_rules()}
-        self.assertEqual(set(pj["dependencies"]), expected_deps, "rules-all dependencies must include every rule")
-
-    def test_example_bundle_plugins_exist(self):
-        """Each construct type must have a generated <construct>s-examples bundle."""
-        cat = load_catalog()
-        for ckey, cconf in cat.get("construct", {}).items():
-            bundle_prefix = cconf.get("prefix_domain", f"{ckey}s-")
-            bundle_name = f"{bundle_prefix}examples"
-            pj_path = GENERATED_DIR / bundle_name / ".claude-plugin" / "plugin.json"
-            self.assertTrue(pj_path.exists(), f"missing example bundle plugin: {bundle_name}")
-
-    def test_example_bundle_plugins_have_dependencies(self):
-        """Each <construct>s-examples bundle must have at least one dependency."""
-        cat = load_catalog()
-        for ckey, cconf in cat.get("construct", {}).items():
-            bundle_prefix = cconf.get("prefix_domain", f"{ckey}s-")
-            bundle_name = f"{bundle_prefix}examples"
-            pj_path = GENERATED_DIR / bundle_name / ".claude-plugin" / "plugin.json"
-            if pj_path.exists():
-                pj = json.loads(pj_path.read_text(encoding="utf-8"))
-                self.assertIn("dependencies", pj, f"{bundle_name} missing dependencies field")
-                self.assertGreater(len(pj["dependencies"]), 0, f"{bundle_name} has empty dependencies")
+        self.assertEqual(actual_names, expected, "marketplace.json plugin set mismatch")
 
 
-class TestActivateScripts(unittest.TestCase):
-    """Generated activate.sh scripts must be executable and well-formed."""
+# ─── TestNoOrphanedConstructs ─────────────────────────────────────────────────
 
-    def test_activate_scripts_have_shebang(self):
-        for rule in list_rules():
-            activate = GENERATED_DIR / f"rule-{rule.name}" / "activate.sh"
-            first_line = activate.read_text(encoding="utf-8").splitlines()[0]
-            self.assertTrue(first_line.startswith("#!"), f"rule-{rule.name}/activate.sh missing shebang")
+class TestNoOrphanedConstructs(unittest.TestCase):
+    """Every construct instance appears in at least one bundle — integration."""
 
-    def test_activate_scripts_use_strict_bash(self):
-        for rule in list_rules():
-            activate = GENERATED_DIR / f"rule-{rule.name}" / "activate.sh"
-            text = activate.read_text(encoding="utf-8")
-            self.assertIn("set -euo pipefail", text, f"rule-{rule.name}/activate.sh missing 'set -euo pipefail'")
-
-
-class TestCrossPlatformMirrors(unittest.TestCase):
-    """Each mirror directory exists and contains expected items."""
-
-    def test_skill_mirrors_have_every_skill(self):
-        for platform in ("codex", "gemini", "devin-s"):
-            for skill in list_skills():
-                target = MIRROR_DIRS[platform] / skill.name
-                self.assertTrue(target.exists(), f"{platform} mirror missing skill {skill.name}")
-
-    def test_rule_mirrors_have_every_rule(self):
-        for platform in ("cursor", "windsurf", "devin-r"):
-            for rule in list_rules():
-                target = MIRROR_DIRS[platform] / f"{rule.name}.md"
-                self.assertTrue(target.exists(), f"{platform} mirror missing rule {rule.name}")
+    def test_every_construct_in_at_least_one_bundle(self):
+        """Every individual plugin must be reachable via some bundle."""
+        all_bundle_deps: set[str] = set()
+        # Catalog bundles
+        for bundle in load_bundles(CATALOG, CONSTRUCTS):
+            all_bundle_deps.update(bundle.resolve_dependencies(CONSTRUCTS))
+        # Code-generated catch-alls (decision #23) — these include everything
+        for construct in CONSTRUCTS.values():
+            all_bundle_deps.update(
+                f"{construct.prefix}-{n}"
+                for n in scan_source_dir(construct.source_directory)
+            )
+        # Every instance must be in the union
+        for construct in CONSTRUCTS.values():
+            for name in scan_source_dir(construct.source_directory):
+                plugin_name = f"{construct.prefix}-{name}"
+                with self.subTest(plugin=plugin_name):
+                    self.assertIn(
+                        plugin_name, all_bundle_deps,
+                        f"{plugin_name} is not in any bundle (catalog or catch-all)",
+                    )
 
 
-class TestGeminiExtension(unittest.TestCase):
-    """Generator must emit a valid gemini-extension.json in the .gemini/ mirror dir."""
+# ─── TestBundleValidation ─────────────────────────────────────────────────────
 
-    GEMINI_EXTENSION_JSON = REPO_ROOT / ".gemini" / "gemini-extension.json"
+class TestBundleValidation(unittest.TestCase):
+    """Bundle loader validation — unit tests."""
 
-    def test_gemini_extension_json_exists(self):
-        self.assertTrue(
-            self.GEMINI_EXTENSION_JSON.exists(),
-            ".gemini/gemini-extension.json missing — run generate_manifest.py",
-        )
+    def test_bundle_cannot_use_reserved_catchall_name(self):
+        """load_bundles raises ValueError if catalog defines a reserved <prefix>-all name."""
+        import tempfile
+        bad_catalog = "[bundle.skill-all]\nmembers = [\"skill:foo\"]\n"
+        with tempfile.NamedTemporaryFile(mode="w", suffix=".toml", delete=False) as f:
+            f.write(bad_catalog)
+            f.flush()
+            with self.assertRaises(ValueError, msg="Reserved catch-all name should raise ValueError"):
+                load_bundles(Path(f.name), CONSTRUCTS)
 
-    def test_gemini_extension_json_parseable(self):
-        data = json.loads(self.GEMINI_EXTENSION_JSON.read_text(encoding="utf-8"))
-        self.assertIsInstance(data, dict, "gemini-extension.json must be a JSON object")
+    def test_bundle_requires_members(self):
+        """load_bundles raises ValueError if a bundle has no 'members' field."""
+        import tempfile
+        bad_catalog = "[bundle.empty]\ndescription = \"no members\"\n"
+        with tempfile.NamedTemporaryFile(mode="w", suffix=".toml", delete=False) as f:
+            f.write(bad_catalog)
+            f.flush()
+            with self.assertRaises(ValueError, msg="Bundle without members should raise ValueError"):
+                load_bundles(Path(f.name), CONSTRUCTS)
 
-    def test_gemini_extension_json_has_required_fields(self):
-        data = json.loads(self.GEMINI_EXTENSION_JSON.read_text(encoding="utf-8"))
-        self.assertIn("name", data, "gemini-extension.json must have 'name' field")
-        self.assertIn("version", data, "gemini-extension.json must have 'version' field")
+    def test_bundle_member_syntax_validated(self):
+        """BundleMember.from_str raises ValueError on malformed member strings."""
+        with self.assertRaises(ValueError):
+            BundleMember.from_str("no-colon-here")
+        with self.assertRaises(ValueError):
+            BundleMember.from_str(":empty-prefix")
+        with self.assertRaises(ValueError):
+            BundleMember.from_str("skill:")
+        # Valid cases should not raise
+        m = BundleMember.from_str("skill:telegram-notify")
+        self.assertEqual(m.ref_type, "plugin")
+        self.assertEqual(m.prefix, "skill")
+        self.assertEqual(m.name, "telegram-notify")
+        b = BundleMember.from_str("bundle:communication-skills")
+        self.assertEqual(b.ref_type, "bundle")
+        self.assertIsNone(b.prefix)
 
-    def test_gemini_extension_name_matches_marketplace(self):
-        import tomllib
-        with open(MARKETPLACE_TOML, "rb") as f:
-            mp = tomllib.load(f)
-        data = json.loads(self.GEMINI_EXTENSION_JSON.read_text(encoding="utf-8"))
+
+# ─── TestConstructRegistry ────────────────────────────────────────────────────
+
+class TestConstructRegistry(unittest.TestCase):
+    """CONSTRUCTS registry invariants — unit tests."""
+
+    def test_all_prefixes_unique(self):
+        """No two construct classes may share the same prefix."""
+        prefixes = [c.prefix for c in CONSTRUCTS.values()]
+        duplicates = [p for p in prefixes if prefixes.count(p) > 1]
         self.assertEqual(
-            data["name"],
-            mp["marketplace"]["name"],
-            "gemini-extension.json name must match MARKETPLACE.toml marketplace.name",
+            len(prefixes), len(set(prefixes)),
+            f"Duplicate prefixes in CONSTRUCTS: {duplicates}",
         )
 
-    def test_gemini_extension_version_matches_marketplace(self):
-        import tomllib
-        with open(MARKETPLACE_TOML, "rb") as f:
-            mp = tomllib.load(f)
-        data = json.loads(self.GEMINI_EXTENSION_JSON.read_text(encoding="utf-8"))
+    def test_all_prefixes_kebab_case(self):
+        """Every construct prefix must be kebab-case."""
+        kebab = re.compile(r"^[a-z]+(-[a-z]+)*$")
+        for construct_id, construct in CONSTRUCTS.items():
+            with self.subTest(construct=construct_id):
+                self.assertRegex(
+                    construct.prefix, kebab,
+                    f"{construct_id}: prefix '{construct.prefix}' is not kebab-case",
+                )
+
+
+# ─── TestPluginCount ──────────────────────────────────────────────────────────
+
+class TestPluginCount(unittest.TestCase):
+    """Plugin count formula — integration test (replaces hardcoded == 81)."""
+
+    def test_marketplace_count_matches_expected_formula(self):
+        """Count = individuals + catalog_bundles + catch-alls (one per construct with sources)."""
+        manifest = load_marketplace_json()
+        individuals = sum(
+            len(scan_source_dir(c.source_directory)) for c in CONSTRUCTS.values()
+        )
+        catalog_bundles = len(load_bundles(CATALOG, CONSTRUCTS))
+        catchalls = sum(
+            1 for c in CONSTRUCTS.values()
+            if scan_source_dir(c.source_directory)
+        )
+        expected = individuals + catalog_bundles + catchalls
         self.assertEqual(
-            data["version"],
-            mp["marketplace"]["version"],
-            "gemini-extension.json version must match MARKETPLACE.toml marketplace.version",
+            len(manifest["plugins"]), expected,
+            f"Expected {expected} plugins "
+            f"({individuals} individual + {catalog_bundles} catalog + {catchalls} catch-alls), "
+            f"got {len(manifest['plugins'])}",
         )
 
 
-class TestSecretScan(unittest.TestCase):
-    """No tracked file may contain a credential-shaped string."""
+# ─── TestNoSecrets ────────────────────────────────────────────────────────────
+
+class TestNoSecrets(unittest.TestCase):
+    """No tracked file may contain credential-shaped strings."""
 
     PATTERNS = [
         (re.compile(r"sk-[A-Za-z0-9]{32,}"), "OpenAI/Anthropic-style API key"),
@@ -559,10 +494,105 @@ class TestSecretScan(unittest.TestCase):
             for pattern, label in self.PATTERNS:
                 match = pattern.search(content)
                 if match:
-                    self.fail(f"{path.relative_to(REPO_ROOT)} contains {label}: {match.group()[:20]}...")
+                    self.fail(
+                        f"{path.relative_to(REPO_ROOT)} contains {label}: "
+                        f"{match.group()[:20]}..."
+                    )
 
 
-# ────────────────────────── runner ───────────────────────────────────────────
+# ─── TestGeneratorDrift ───────────────────────────────────────────────────────
+
+class TestGeneratorDrift(unittest.TestCase):
+    """Generator output must match committed content — E2E test."""
+
+    def test_check_succeeds(self):
+        result = subprocess.run(
+            [sys.executable, "-m", "uv", "run",
+             str(REPO_ROOT / "scripts" / "generate_manifest.py"), "--check"],
+            capture_output=True,
+            cwd=REPO_ROOT,
+        )
+        # Try direct uv invocation
+        result = subprocess.run(
+            ["uv", "run", str(REPO_ROOT / "scripts" / "generate_manifest.py"), "--check"],
+            capture_output=True,
+            text=True,
+            cwd=REPO_ROOT,
+            timeout=120,
+        )
+        self.assertEqual(
+            result.returncode, 0,
+            f"generator --check reported drift:\n{result.stdout}\n{result.stderr}",
+        )
+
+
+# ─── TestMarketplaceToml ──────────────────────────────────────────────────────
+
+class TestMarketplaceToml(unittest.TestCase):
+    """MARKETPLACE.toml integrity — contract tests."""
+
+    def test_marketplace_toml_parses(self):
+        mp = load_toml(MARKETPLACE_TOML)
+        self.assertIn("marketplace", mp)
+        self.assertIn("owner", mp)
+        self.assertIn("repository", mp)
+
+    def test_marketplace_has_required_fields(self):
+        mp = load_toml(MARKETPLACE_TOML)
+        self.assertIn("name", mp["marketplace"])
+        self.assertIn("version", mp["marketplace"])
+        self.assertIn("description", mp["marketplace"])
+        self.assertIn("name", mp["owner"])
+        self.assertIn("url", mp["repository"])
+
+    def test_marketplace_version_semver(self):
+        mp = load_toml(MARKETPLACE_TOML)
+        version = mp["marketplace"]["version"]
+        self.assertRegex(version, r"^\d+\.\d+\.\d+$", f"version '{version}' must be semver")
+
+    def test_catalog_toml_contains_only_bundles(self):
+        """After the DI refactor, catalog.toml must contain only [bundle.*] blocks."""
+        cat = load_toml(CATALOG)
+        # Old schema keys must not be present
+        for old_key in ("construct", "skill_domain", "rule_domain", "platform"):
+            self.assertNotIn(
+                old_key, cat,
+                f"catalog.toml still contains old schema key '{old_key}' — "
+                "DI refactor requires bundles-only catalog",
+            )
+        # Must have bundle entries
+        self.assertIn("bundle", cat, "catalog.toml must have [bundle.*] entries")
+
+
+# ─── TestActivateScripts ──────────────────────────────────────────────────────
+
+class TestActivateScripts(unittest.TestCase):
+    """Generated activate.sh scripts are well-formed — contract tests."""
+
+    def test_activate_scripts_have_shebang(self):
+        rule = next(c for c in CONSTRUCTS.values() if isinstance(c, RuleConstruct))
+        for name in scan_source_dir(rule.source_directory):
+            activate = REPO_ROOT / "_generated" / f"rule-{name}" / "activate.sh"
+            with self.subTest(rule=name):
+                first_line = activate.read_text(encoding="utf-8").splitlines()[0]
+                self.assertTrue(
+                    first_line.startswith("#!"),
+                    f"rule-{name}/activate.sh missing shebang",
+                )
+
+    def test_activate_scripts_use_strict_bash(self):
+        rule = next(c for c in CONSTRUCTS.values() if isinstance(c, RuleConstruct))
+        for name in scan_source_dir(rule.source_directory):
+            activate = REPO_ROOT / "_generated" / f"rule-{name}" / "activate.sh"
+            with self.subTest(rule=name):
+                text = activate.read_text(encoding="utf-8")
+                self.assertIn(
+                    "set -euo pipefail", text,
+                    f"rule-{name}/activate.sh missing 'set -euo pipefail'",
+                )
+
+
+# ─── runner ───────────────────────────────────────────────────────────────────
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)

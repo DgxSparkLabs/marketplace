@@ -1,81 +1,71 @@
 # Construct Types
 
-A Claude Code plugin can ship ten distinct **construct types**. This marketplace ships individual plugins, domain bundles, and reference examples for every one. Pick the row that matches what you're building, then read the linked ADDING guide.
+A Claude Code plugin can ship ten distinct **construct types**. This marketplace ships individual plugins, domain bundles, and reference examples for every one. For the contribution workflow, see [`ADDING_A_CONSTRUCT.md`](./ADDING_A_CONSTRUCT.md).
 
 ## The ten construct types
 
-| Construct | What it is | Source dir | Example | Tutorial |
-|-----------|-----------|------------|---------|----------|
-| **Skill** | On-demand domain expertise. Invoked by user (`/skill-name`) or auto-invoked by Claude when the description matches. | `skills/<name>/` | `skills/example-skill/` | [ADDING_A_SKILL.md](./ADDING_A_SKILL.md) |
-| **Rule** | Always-on behavioral guideline injected into every session via `.claude/rules/`. Requires a manual `activate.sh` symlink step after install. | `rules/<name>/` | `rules/example-rule/` | [ADDING_A_RULE.md](./ADDING_A_RULE.md) |
-| **Command** | A custom slash command. Lighter-weight than a skill — single markdown file, user-invoked only. | `commands/<name>.md` (within a plugin) | `commands/example-command/` | [ADDING_A_COMMAND.md](./ADDING_A_COMMAND.md) |
-| **Agent** | A sub-agent persona with its own system prompt and scoped tool access. | `agents/<name>.md` (within a plugin) | `agents/example-agent/` | [ADDING_AN_AGENT.md](./ADDING_AN_AGENT.md) |
-| **Hook** | Event-triggered script (`UserPromptSubmit`, `PreToolUse`, `SessionStart`, `Stop`, etc.). | `hooks/hooks.json` (within a plugin) | `hooks/example-hook/` | [ADDING_A_HOOK.md](./ADDING_A_HOOK.md) |
-| **MCP server** | A Model Context Protocol server. Exposes tools, resources, and prompts to Claude. | `mcp-config.json` (within a plugin, `mcpServers` field) | `mcp-servers/example-mcp/` | [ADDING_AN_MCP_SERVER.md](./ADDING_AN_MCP_SERVER.md) |
-| **LSP server** | A Language Server Protocol server. Gives Claude type info, definitions, and diagnostics for a language. | `lsp-config.json` (within a plugin, `lspServers` field) | `lsp-servers/example-lsp/` | [ADDING_AN_LSP_SERVER.md](./ADDING_AN_LSP_SERVER.md) |
-| **Monitor** | Background process that runs on an interval and surfaces output to Claude on demand. | `monitors/monitors.json` (within a plugin, `experimental.monitors`) | `monitors/example-monitor/` | [ADDING_A_MONITOR.md](./ADDING_A_MONITOR.md) |
-| **Output style** | System-prompt modification — adjusts Claude's voice, format, or behavior. Can be user-selectable or auto-applied (`force-for-plugin: true`). | `output-styles/<name>.md` (within a plugin) | `output-styles/example-output-style/` | [ADDING_AN_OUTPUT_STYLE.md](./ADDING_AN_OUTPUT_STYLE.md) |
-| **Theme** | UI color theme (experimental). | `themes/<name>.json` (within a plugin, `experimental.themes`) | `themes/example-theme/` | [ADDING_A_THEME.md](./ADDING_A_THEME.md) |
+| Construct    | What it is | Source dir | Example dir | Plugin name prefix |
+|--------------|-----------|------------|-------------|-------------------|
+| **skill**    | On-demand domain expertise. Invoked by user (`/skill-name`) or auto-invoked by Claude when the description matches. | `skills/` | `skills/example/` | `skill-` |
+| **rule**     | Always-on behavioral guideline injected into every session via `.claude/rules/`. Requires a manual `activate.sh` symlink step after install (Claude Code limitation). | `rules/` | `rules/example/` | `rule-` |
+| **command**  | A custom slash command. Lighter-weight than a skill — single markdown file, user-invoked only. | `commands/` | `commands/example/` | `command-` |
+| **agent**    | A sub-agent persona with its own system prompt and scoped tool access. | `agents/` | `agents/example/` | `agent-` |
+| **hook**     | Event-triggered script (`UserPromptSubmit`, `PreToolUse`, `SessionStart`, `Stop`, etc.). | `hooks/` | `hooks/example/` | `hook-` |
+| **mcp**      | A Model Context Protocol server. Exposes tools, resources, and prompts to Claude. | `mcp-servers/` | `mcp-servers/example/` | `mcp-` |
+| **lsp**      | A Language Server Protocol server. Gives Claude type info, definitions, and diagnostics for a language. | `lsp-servers/` | `lsp-servers/example/` | `lsp-` |
+| **monitor**  | Background process that runs on an interval and surfaces output to Claude on demand. | `monitors/` | `monitors/example/` | `monitor-` |
+| **output-style** | System-prompt modification — adjusts Claude's voice, format, or behavior. | `output-styles/` | `output-styles/example/` | `output-style-` |
+| **theme**    | UI color theme (experimental). | `themes/` | `themes/example/` | `theme-` |
 
-Plus a meta-construct:
+## Bundles
 
-| Construct | What it is | Defined in | Tutorial |
-|-----------|-----------|------------|----------|
-| **Domain bundle** | A plugin whose only job is to declare dependencies on other plugins, so users can install a logical group with one command. | `catalog.toml` `[skill_domain.*]` and `[rule_domain.*]` tagging | [ADDING_A_DOMAIN_BUNDLE.md](./ADDING_A_DOMAIN_BUNDLE.md) |
+Bundles are dep-only plugins that group constructs for one-command installation. Two types:
 
-## Naming convention
+| Bundle type | Declared where | Name pattern | Example |
+|-------------|---------------|--------------|---------|
+| **Catalog bundle** | `catalog.toml [bundle.*]` | `bundle-<name>` | `bundle-communication-skills` |
+| **Catch-all bundle** | Code-generated by generator Phase 2b | `bundle-<prefix>-all` | `bundle-skill-all` |
 
-Every plugin in this marketplace follows a strict prefix convention so the plugin name alone identifies what it is:
+Catch-all bundles (`bundle-skill-all`, `bundle-rule-all`, etc.) are code-generated — the generator emits one per construct type that has at least one instance. They are NOT declared in `catalog.toml` (decision #23). Attempting to define them in the catalog raises a `ValueError`.
 
-| Type | Individual | Domain bundle |
-|------|-----------|---------------|
-| skill | `skill-<name>` | `skills-<domain>` |
-| rule | `rule-<name>` | `rules-<domain>` |
-| command | `command-<name>` | `commands-<domain>` |
-| agent | `agent-<name>` | `agents-<domain>` |
-| hook | `hook-<name>` | `hooks-<domain>` |
-| mcp server | `mcp-<name>` | `mcps-<domain>` |
-| lsp server | `lsp-<name>` | `lsps-<domain>` |
-| monitor | `monitor-<name>` | `monitors-<domain>` |
-| output style | `output-style-<name>` | `output-styles-<domain>` |
-| theme | `theme-<name>` | `themes-<domain>` |
+## Plugin naming convention
 
-Plus `example-<type>` for the reference templates living in each construct's native folder.
+```
+Individual:    <prefix>-<instance-name>      e.g., skill-telegram-notify
+Catalog bundle: bundle-<bundle-name>          e.g., bundle-communication-skills
+Catch-all:     bundle-<prefix>-all            e.g., bundle-skill-all
+```
 
 ## Install paths
 
-Native `/plugin install` works for nine of the ten construct types. **Rules need a manual `activate.sh` step** because Claude Code's plugin system does not yet support installing rules natively (see [`INVESTIGATION_PLUGIN_DEPENDENCIES.md`](./INVESTIGATION_PLUGIN_DEPENDENCIES.md) for the full context).
-
 ```bash
-# Pure plugin install (skill, command, agent, hook, mcp, lsp, monitor, output style, theme)
+# Add marketplace
 /plugin marketplace add DgxSparkLabs/marketplace
-/plugin install skill-telegram-notify@dgxsparklabs-marketplace      # individual
-/plugin install skills-communication@dgxsparklabs-marketplace       # bundle
 
-# Rule install + activate (rules only)
+# Individual plugin (any construct except rule)
+/plugin install skill-telegram-notify@dgxsparklabs-marketplace
+
+# Domain bundle
+/plugin install bundle-communication-skills@dgxsparklabs-marketplace
+
+# Catch-all (every skill)
+/plugin install bundle-skill-all@dgxsparklabs-marketplace
+
+# Rule install + activate (extra step required — Claude Code limitation)
 /plugin install rule-blast-radius@dgxsparklabs-marketplace
 bash ~/.claude/plugins/cache/dgxsparklabs-marketplace/rule-blast-radius/activate.sh
-
-# Bulk rule activation (any number of rule plugins installed)
-bash ~/.local/share/marketplace/activate-installed-rules.sh
 ```
 
-## Architecture notes
+## Architecture
 
-- **Source of truth**: `skills/<name>/`, `rules/<name>/`, and the 8 other construct directories (`commands/`, `agents/`, `hooks/`, `mcp-servers/`, `lsp-servers/`, `monitors/`, `output-styles/`, `themes/`) are hand-edited content. Each construct directory also contains its own `example-<type>/` reference plugin.
-- **Generated output**: `_generated/skill-<name>/`, `_generated/rule-<name>/`, `_generated/skills-<domain>/`, `_generated/rules-<domain>/`, and `_generated/<construct>s-examples/` (one per construct type) are produced by `uv run scripts/generate_manifest.py` from sources + `catalog.toml` tagging. Never edit `_generated/` files by hand.
-- **Cross-platform mirrors**: `.codex/`, `.gemini/`, `.cursor/`, `.windsurf/`, `.devin/` are auto-generated for users on non-Claude-Code tools.
-- **Single source for identity**: `MARKETPLACE.toml` declares owner, repo URL, version, license. All generated plugin.json files inherit from this.
+The generator (`scripts/generate_manifest.py`) reads sources and produces everything else. The architecture after the DI refactor:
 
-## Adding new constructs
+- `scripts/constructs.py` — 10 typed Construct classes; each implements `build_plugin_json` + `emit`
+- `scripts/platforms.py` — 6 typed Platform classes; each declares `supports` + implements `emit`
+- `scripts/bundles.py` — Bundle dataclass + loader for `catalog.toml`
+- `scripts/utils.py` — shared helpers
+- `catalog.toml` — bundle definitions ONLY (no construct-type config, no platform config)
 
-For each construct type, the workflow is:
+Adding a new construct type: write one new class in `constructs.py` + add an entry to `CONSTRUCTS`. No generator changes needed.
 
-1. Copy the matching example from the same folder — e.g., `cp -r skills/example-skill skills/my-skill`.
-2. Edit the plugin manifest (`.claude-plugin/plugin.json`) and the construct content.
-3. (Skills and rules only) Add the new entry to `catalog.toml` under the appropriate `[skill_domain.*]` or `[rule_domain.*]` so it lands in a bundle.
-4. Run `uv run scripts/generate_manifest.py` to regenerate manifests and mirrors.
-5. Run `uv run tests/test_marketplace.py` to validate.
-6. Commit.
-
-Each `ADDING_*.md` document walks through this for its specific construct type.
+See [`ADDING_A_CONSTRUCT.md`](./ADDING_A_CONSTRUCT.md) for the full contribution workflow.

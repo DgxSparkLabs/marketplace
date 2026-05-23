@@ -1,14 +1,11 @@
 {
   "name": "skill-act-runner",
-  "description": "Run GitHub Actions workflows locally with act and podman",
   "version": "1.0.0",
   "author": {
     "name": "DgxSparkLabs",
     "url": "https://github.com/DgxSparkLabs"
   },
-  "homepage": "https://github.com/DgxSparkLabs/marketplace/tree/main/_generated/skill-act-runner",
-  "repository": "https://github.com/DgxSparkLabs/marketplace",
-  "license": "MIT",
+  "description": "Run GitHub Actions workflows locally with act and podman",
   "skills": [
     "./"
   ],

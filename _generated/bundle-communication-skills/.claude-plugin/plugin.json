@@ -1,0 +1,13 @@
+{
+  "name": "bundle-communication-skills",
+  "version": "1.0.0",
+  "description": "Send emails, messages, and notifications",
+  "author": {
+    "name": "DgxSparkLabs",
+    "url": "https://github.com/DgxSparkLabs"
+  },
+  "dependencies": [
+    "skill-send-email",
+    "skill-telegram-notify"
+  ]
+}

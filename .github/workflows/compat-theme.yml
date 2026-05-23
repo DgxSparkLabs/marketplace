@@ -30,20 +30,20 @@ jobs:
       - name: Register marketplace
         run: claude plugin marketplace add ./
 
-      - name: Install example-theme plugin
-        run: claude plugin install example-theme@dgxsparklabs-marketplace --scope project
+      - name: Install theme-example plugin
+        run: claude plugin install theme-example@dgxsparklabs-marketplace --scope project
 
       - name: Assert plugin is listed (grep match)
         # Match mode: grep substring — catalog row: claude plugin list shows installed entry
-        run: claude plugin list | grep -F "example-theme@dgxsparklabs-marketplace"
+        run: claude plugin list | grep -F "theme-example@dgxsparklabs-marketplace"
 
       - name: Assert plugin details shows themes section
         # Match mode: grep substring — catalog row: claude plugin details shows the relevant section
-        run: claude plugin details example-theme | grep -F "example-theme"
+        run: claude plugin details theme-example | grep -F "theme-example"
 
       - name: Cleanup
         if: always()
         run: |
-          claude plugin uninstall example-theme --scope project || true
+          claude plugin uninstall theme-example --scope project || true
           claude plugin prune --scope project -y || true
           claude plugin marketplace remove dgxsparklabs-marketplace || true

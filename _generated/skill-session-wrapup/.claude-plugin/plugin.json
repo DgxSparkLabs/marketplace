@@ -1,14 +1,11 @@
 {
   "name": "skill-session-wrapup",
-  "description": "End-of-session audit \u2014 check docs, commits, and readiness for the next agent",
   "version": "1.0.0",
   "author": {
     "name": "DgxSparkLabs",
     "url": "https://github.com/DgxSparkLabs"
   },
-  "homepage": "https://github.com/DgxSparkLabs/marketplace/tree/main/_generated/skill-session-wrapup",
-  "repository": "https://github.com/DgxSparkLabs/marketplace",
-  "license": "MIT",
+  "description": "End-of-session audit \u2014 check docs, commits, and readiness for the next agent",
   "skills": [
     "./"
   ],

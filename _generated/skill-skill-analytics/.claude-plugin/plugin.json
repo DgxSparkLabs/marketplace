@@ -1,14 +1,11 @@
 {
   "name": "skill-skill-analytics",
-  "description": "Analyze skill usage patterns and generate an interactive HTML dashboard",
   "version": "1.0.0",
   "author": {
     "name": "DgxSparkLabs",
     "url": "https://github.com/DgxSparkLabs"
   },
-  "homepage": "https://github.com/DgxSparkLabs/marketplace/tree/main/_generated/skill-skill-analytics",
-  "repository": "https://github.com/DgxSparkLabs/marketplace",
-  "license": "MIT",
+  "description": "Analyze skill usage patterns and generate an interactive HTML dashboard",
   "skills": [
     "./"
   ],

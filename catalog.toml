@@ -1,257 +1,161 @@
-# catalog.toml — Marketplace catalog: construct types + domain bundles
+# catalog.toml — bundle definitions ONLY
 #
-# The generate_manifest.py script reads this file along with MARKETPLACE.toml,
-# the source directories (skills/, rules/, examples/), and the per-plugin
-# content to produce:
-#   - .claude-plugin/marketplace.json (root manifest)
-#   - _generated/<plugin>/.claude-plugin/plugin.json (per-plugin wrappers)
-#   - Cross-platform mirrors in .codex/, .gemini/, .cursor/, .windsurf/, .devin/
+# After the DI refactor (see docs/PLAN_DI_REFACTOR.md), this file contains
+# ONLY [bundle.*] blocks. Construct types, platforms, and catch-all bundles
+# are defined in code (scripts/constructs.py, scripts/platforms.py,
+# scripts/generate_manifest.py Phase 2b) — not in configuration files.
 #
-# How to edit:
-#   - Add a new skill:    drop SKILL.md in skills/<name>/, add <name> to a
-#                         skill_domain's `members` list
-#   - Add a new rule:     drop rule.md in rules/<name>/, add <name> to a
-#                         rule_domain's `members` list
-#   - Rebalance domains:  edit the `members` lists in the relevant domain
-#   - Add a domain:       add a new [skill_domain.<name>] or [rule_domain.<name>]
-#                         section with a `members` list
-#   - Add a construct:    add a new [construct.<type>] section (rare; only when
-#                         Claude Code adds a new plugin construct type)
+# Bundle member syntax: "<kind>:<name>"
+#   skill:telegram-notify       → individual plugin "skill-telegram-notify"
+#   rule:no-ai-credit           → individual plugin "rule-no-ai-credit"
+#   bundle:communication-skills → bundle plugin "bundle-communication-skills"
+#
+# Reserved names: <prefix>-all (e.g., skill-all, rule-all) are auto-generated
+# by Phase 2b of the generator. Defining them here raises a ValueError.
 #
 # Then run: uv run scripts/generate_manifest.py
 
-# ── Construct Types ─────────────────────────────────────────────────────────
-# Every Claude Code plugin construct type the marketplace supports.
-# The generator creates individual plugins and domain bundles for each,
-# using the prefix convention below.
+# ─── Skill domain bundles (migrated from [skill_domain.*]) ───────────────────
 
-[construct.skill]
-prefix_individual = "skill-"
-prefix_domain = "skills-"
-source_directory = "skills/"
-example_directory = "skills/example-skill/"
-description = "On-demand domain expertise invoked via slash command"
-
-[construct.rule]
-prefix_individual = "rule-"
-prefix_domain = "rules-"
-source_directory = "rules/"
-example_directory = "rules/example-rule/"
-description = "Always-on behavioral guideline (ships as plugin + activate.sh symlink into .claude/rules/)"
-
-[construct.command]
-prefix_individual = "command-"
-prefix_domain = "commands-"
-source_directory = "commands/"
-example_directory = "commands/example-command/"
-description = "Custom slash command"
-
-[construct.agent]
-prefix_individual = "agent-"
-prefix_domain = "agents-"
-source_directory = "agents/"
-example_directory = "agents/example-agent/"
-description = "Sub-agent with its own system prompt and scoped execution"
-
-[construct.hook]
-prefix_individual = "hook-"
-prefix_domain = "hooks-"
-source_directory = "hooks/"
-example_directory = "hooks/example-hook/"
-description = "Event-triggered script (PreToolUse, UserPromptSubmit, SessionStart, etc.)"
-
-[construct.mcp]
-prefix_individual = "mcp-"
-prefix_domain = "mcps-"
-source_directory = "mcp-servers/"
-example_directory = "mcp-servers/example-mcp/"
-description = "Model Context Protocol server registration"
-
-[construct.lsp]
-prefix_individual = "lsp-"
-prefix_domain = "lsps-"
-source_directory = "lsp-servers/"
-example_directory = "lsp-servers/example-lsp/"
-description = "Language Server Protocol server registration"
-
-[construct.monitor]
-prefix_individual = "monitor-"
-prefix_domain = "monitors-"
-source_directory = "monitors/"
-example_directory = "monitors/example-monitor/"
-description = "Background monitor process"
-
-[construct.output-style]
-prefix_individual = "output-style-"
-prefix_domain = "output-styles-"
-source_directory = "output-styles/"
-example_directory = "output-styles/example-output-style/"
-description = "System prompt modification (use force-for-plugin: true to inject always-on)"
-
-[construct.theme]
-prefix_individual = "theme-"
-prefix_domain = "themes-"
-source_directory = "themes/"
-example_directory = "themes/example-theme/"
-description = "Claude Code UI theme"
-
-# ── Skill Domains ───────────────────────────────────────────────────────────
-# Skills are grouped into bundles. Each bundle becomes a dep-only plugin
-# named "skills-<domain>" that auto-installs all its members.
-# Domain names must be kebab-case (they become part of plugin names).
-
-[skill_domain.search-research]
-display_name = "Search and Research"
+[bundle.search-research-skills]
 description = "Find information across web, code repos, and video"
-members = ["duckduckgo-search", "github-search", "web-scraper", "youtube-search", "youtube-wisdom"]
+members = [
+  "skill:duckduckgo-search",
+  "skill:github-search",
+  "skill:web-scraper",
+  "skill:youtube-search",
+  "skill:youtube-wisdom",
+]
 
-[skill_domain.communication]
-display_name = "Communication"
+[bundle.communication-skills]
 description = "Send emails, messages, and notifications"
-members = ["send-email", "telegram-notify"]
+members = [
+  "skill:send-email",
+  "skill:telegram-notify",
+]
 
-[skill_domain.devops]
-display_name = "DevOps and Infrastructure"
+[bundle.devops-skills]
 description = "CI/CD, repository setup, port tunneling, infrastructure tools"
-members = ["act-runner", "expose-port", "github-repo-setup", "ssh-tunnel"]
+members = [
+  "skill:act-runner",
+  "skill:expose-port",
+  "skill:github-repo-setup",
+  "skill:ssh-tunnel",
+]
 
-[skill_domain.session-management]
-display_name = "Session Management"
+[bundle.session-management-skills]
 description = "Mid-session realignment, motivation, recall, history, audits"
-members = ["check", "motivation", "recall-rules", "session-wrapup", "session-history", "pitfall-check"]
+members = [
+  "skill:check",
+  "skill:motivation",
+  "skill:recall-rules",
+  "skill:session-wrapup",
+  "skill:session-history",
+  "skill:pitfall-check",
+]
 
-[skill_domain.project-scaffolding]
-display_name = "Project Scaffolding"
+[bundle.project-scaffolding-skills]
 description = "Initialize project documentation and structured handoffs"
-members = ["project-bootstrap", "structured-handoff"]
+members = [
+  "skill:project-bootstrap",
+  "skill:structured-handoff",
+]
 
-[skill_domain.code-analysis]
-display_name = "Code Analysis"
+[bundle.code-analysis-skills]
 description = "Codebase audits and domain-specific reference guides"
-members = ["code-health-audit", "textual-tui-guide"]
+members = [
+  "skill:code-health-audit",
+  "skill:textual-tui-guide",
+]
 
-[skill_domain.meta-tooling]
-display_name = "Meta Tooling"
+[bundle.meta-tooling-skills]
 description = "Skill creation, analytics, and configuration synchronization"
-members = ["skill-creator", "skill-analytics", "sync-rules"]
+members = [
+  "skill:skill-creator",
+  "skill:skill-analytics",
+  "skill:sync-rules",
+]
 
-[skill_domain.ai-services]
-display_name = "AI and External Services"
+[bundle.ai-services-skills]
 description = "External AI APIs and cloud service integrations"
-members = ["gemini-chat", "google-drive-reader"]
+members = [
+  "skill:gemini-chat",
+  "skill:google-drive-reader",
+]
 
-# ── Rule Domains ────────────────────────────────────────────────────────────
-# Rules are grouped into bundles. Each bundle becomes a dep-only plugin
-# named "rules-<domain>" that auto-installs all its members.
-# A user installing the bundle then runs the per-rule activate.sh (or
-# the repo-root activate-installed-rules.sh) to symlink the rules into
-# their .claude/rules/ directory.
+# ─── Rule domain bundles (migrated from [rule_domain.*]) ─────────────────────
 
-[rule_domain.quality]
-display_name = "Quality and Verification"
+[bundle.quality-rules]
 description = "Code quality, testing, verification, and review discipline"
-members = ["blast-radius", "code-hygiene", "pitfalls-discipline", "prior-art", "simplicity-bar", "verification-ladder", "verify-your-work"]
+members = [
+  "rule:blast-radius",
+  "rule:code-hygiene",
+  "rule:pitfalls-discipline",
+  "rule:prior-art",
+  "rule:simplicity-bar",
+  "rule:verification-ladder",
+  "rule:verify-your-work",
+]
 
-[rule_domain.workflow]
-display_name = "Workflow and Process"
+[bundle.workflow-rules]
 description = "How agents approach, decompose, and execute tasks"
-members = ["autonomous-persistence", "continuous-improvement", "improve-the-process", "revert-on-failure", "session-resilience", "stay-motivated", "task-formation"]
+members = [
+  "rule:autonomous-persistence",
+  "rule:continuous-improvement",
+  "rule:improve-the-process",
+  "rule:revert-on-failure",
+  "rule:session-resilience",
+  "rule:stay-motivated",
+  "rule:task-formation",
+]
 
-[rule_domain.documentation]
-display_name = "Documentation and Progress"
+[bundle.documentation-rules]
 description = "Tracking work, documenting decisions, maintaining project history"
-members = ["document-lifecycle", "document-progress", "readable-docs"]
+members = [
+  "rule:document-lifecycle",
+  "rule:document-progress",
+  "rule:readable-docs",
+]
 
-[rule_domain.environment]
-display_name = "Environment and Conventions"
+[bundle.environment-rules]
 description = "Tooling conventions and output discipline"
-members = ["no-ai-credit", "output-discipline", "python-uv"]
+members = [
+  "rule:no-ai-credit",
+  "rule:output-discipline",
+  "rule:python-uv",
+]
 
-[rule_domain.notifications]
-display_name = "Notifications"
+[bundle.notifications-rules]
 description = "Alert hooks for important events"
-members = ["telegram-on-complete"]
+members = [
+  "rule:telegram-on-complete",
+]
 
-# ── Examples Domains ────────────────────────────────────────────────────────
-# One [<construct>_domain.examples] entry per construct type.
-# Each becomes a dep-only bundle plugin named "<construct>s-examples"
-# whose sole dependency is the reference example for that construct.
-# "examples" is the reserved domain name for the template fixtures.
+# ─── Per-construct catch-all bundles are NOT declared here ───────────────────
+#
+# Decision #23: bundle-<prefix>-all (skill-all, rule-all, ..., theme-all)
+# is generated by the code (Phase 2b of generate_manifest.py), NOT
+# declared in catalog.toml. They have no user-configurable content —
+# every catch-all is "every member of that construct" — so configuration
+# files have nothing useful to contribute. The generator owns the 10
+# reserved names and emits the bundles directly.
+#
+# Decision #25: load_bundles raises ValueError if catalog tries to define
+# a reserved name (e.g., [bundle.skill-all] here raises an error).
 
-[skill_domain.examples]
-description = "Reference example skill — template for contributors adding new skills"
-members = ["example-skill"]
+# ─── Cross-construct examples bundle ─────────────────────────────────────────
 
-[rule_domain.examples]
-description = "Reference example rule — template for contributors adding new rules"
-members = ["example-rule"]
-
-[command_domain.examples]
-description = "Reference example command — template for contributors adding new commands"
-members = ["example-command"]
-
-[agent_domain.examples]
-description = "Reference example agent — template for contributors adding new agents"
-members = ["example-agent"]
-
-[hook_domain.examples]
-description = "Reference example hook — template for contributors adding new hooks"
-members = ["example-hook"]
-
-[mcp_domain.examples]
-description = "Reference example MCP server — template for contributors adding new MCP servers"
-members = ["example-mcp"]
-
-[lsp_domain.examples]
-description = "Reference example LSP server — template for contributors adding new LSP servers"
-members = ["example-lsp"]
-
-[monitor_domain.examples]
-description = "Reference example monitor — template for contributors adding new monitors"
-members = ["example-monitor"]
-
-[output_style_domain.examples]
-description = "Reference example output style — template for contributors adding new output styles"
-members = ["example-output-style"]
-
-[theme_domain.examples]
-description = "Reference example theme — template for contributors adding new themes"
-members = ["example-theme"]
-
-# ── Cross-Platform Mirrors ──────────────────────────────────────────────────
-# The generator produces a mirror directory for each non-Claude-Code platform
-# so users can `git clone` the marketplace and point their tool at the right
-# subdirectory. Mirrors are committed to the repo.
-
-[platform.claude-code]
-display_name = "Claude Code"
-mirror_directory = ""  # native — uses .claude-plugin/ + _generated/, no separate mirror needed
-rule_format = "rules-directory"  # symlinked into .claude/rules/ per Path 2
-
-[platform.devin]
-display_name = "Devin CLI"
-mirror_directory = ".devin/"
-rule_format = "agents"  # appended to AGENTS.md
-skill_format = "directory"
-
-[platform.cursor]
-display_name = "Cursor"
-mirror_directory = ".cursor/"
-rule_format = "cursor"  # YAML frontmatter with alwaysApply: true
-skill_format = "directory"
-
-[platform.windsurf]
-display_name = "Windsurf"
-mirror_directory = ".windsurf/"
-rule_format = "windsurf"  # YAML frontmatter with trigger: always_on
-skill_format = "directory"
-
-[platform.codex]
-display_name = "Codex CLI"
-mirror_directory = ".codex/"
-skill_format = "directory"
-
-[platform.gemini]
-display_name = "Gemini CLI"
-mirror_directory = ".gemini/"
-skill_format = "directory"
+[bundle.examples]
+description = "Reference examples — install to study every construct type"
+members = [
+  "skill:example",
+  "rule:example",
+  "command:example",
+  "agent:example",
+  "hook:example",
+  "mcp:example",
+  "lsp:example",
+  "monitor:example",
+  "output-style:example",
+  "theme:example",
+]

@@ -1,0 +1,12 @@
+{
+  "name": "monitor-example",
+  "version": "1.0.0",
+  "author": {
+    "name": "DgxSparkLabs",
+    "url": "https://github.com/DgxSparkLabs"
+  },
+  "description": "Reference template for a background monitor plugin \u2014 copy to scaffold your own.",
+  "experimental": {
+    "monitors": "./monitors/monitors.json"
+  }
+}

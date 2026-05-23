@@ -1,14 +1,11 @@
 {
   "name": "skill-github-repo-setup",
-  "description": "Create a GitHub repo with CI, branch protection, and naming rules",
   "version": "1.0.0",
   "author": {
     "name": "DgxSparkLabs",
     "url": "https://github.com/DgxSparkLabs"
   },
-  "homepage": "https://github.com/DgxSparkLabs/marketplace/tree/main/_generated/skill-github-repo-setup",
-  "repository": "https://github.com/DgxSparkLabs/marketplace",
-  "license": "MIT",
+  "description": "Create a GitHub repo with CI, branch protection, and naming rules",
   "skills": [
     "./"
   ],

@@ -1,14 +1,11 @@
 {
   "name": "skill-gemini-chat",
-  "description": "Interactive multi-turn chat with Google Gemini",
   "version": "1.0.0",
   "author": {
     "name": "DgxSparkLabs",
     "url": "https://github.com/DgxSparkLabs"
   },
-  "homepage": "https://github.com/DgxSparkLabs/marketplace/tree/main/_generated/skill-gemini-chat",
-  "repository": "https://github.com/DgxSparkLabs/marketplace",
-  "license": "MIT",
+  "description": "Interactive multi-turn chat with Google Gemini",
   "skills": [
     "./"
   ],

@@ -1,14 +1,11 @@
 {
   "name": "skill-structured-handoff",
-  "description": "Generate structured task files for autonomous agent sessions",
   "version": "1.0.0",
   "author": {
     "name": "DgxSparkLabs",
     "url": "https://github.com/DgxSparkLabs"
   },
-  "homepage": "https://github.com/DgxSparkLabs/marketplace/tree/main/_generated/skill-structured-handoff",
-  "repository": "https://github.com/DgxSparkLabs/marketplace",
-  "license": "MIT",
+  "description": "Generate structured task files for autonomous agent sessions",
   "skills": [
     "./"
   ],

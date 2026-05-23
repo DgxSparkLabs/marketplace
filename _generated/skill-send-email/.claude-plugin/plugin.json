@@ -1,14 +1,11 @@
 {
   "name": "skill-send-email",
-  "description": "Send an email to someone using the Resend API",
   "version": "1.0.0",
   "author": {
     "name": "DgxSparkLabs",
     "url": "https://github.com/DgxSparkLabs"
   },
-  "homepage": "https://github.com/DgxSparkLabs/marketplace/tree/main/_generated/skill-send-email",
-  "repository": "https://github.com/DgxSparkLabs/marketplace",
-  "license": "MIT",
+  "description": "Send an email to someone using the Resend API",
   "skills": [
     "./"
   ],

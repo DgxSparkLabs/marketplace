@@ -1,14 +1,11 @@
 {
   "name": "skill-youtube-wisdom",
-  "description": "Extract key knowledge from a YouTube video transcript",
   "version": "1.0.0",
   "author": {
     "name": "DgxSparkLabs",
     "url": "https://github.com/DgxSparkLabs"
   },
-  "homepage": "https://github.com/DgxSparkLabs/marketplace/tree/main/_generated/skill-youtube-wisdom",
-  "repository": "https://github.com/DgxSparkLabs/marketplace",
-  "license": "MIT",
+  "description": "Extract key knowledge from a YouTube video transcript",
   "skills": [
     "./"
   ],

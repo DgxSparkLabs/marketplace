@@ -1,14 +1,11 @@
 {
   "name": "rule-python-uv",
-  "description": "Always-on rule: python-uv. Install, then run activate.sh to symlink into .claude/rules/.",
   "version": "1.0.0",
   "author": {
     "name": "DgxSparkLabs",
     "url": "https://github.com/DgxSparkLabs"
   },
-  "homepage": "https://github.com/DgxSparkLabs/marketplace/tree/main/_generated/rule-python-uv",
-  "repository": "https://github.com/DgxSparkLabs/marketplace",
-  "license": "MIT",
+  "description": "Always-on rule: python-uv. Install, then run activate.sh to symlink the rule into ~/.claude/rules/.",
   "keywords": [
     "rule",
     "python-uv"

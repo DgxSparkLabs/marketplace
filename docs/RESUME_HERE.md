@@ -2,41 +2,124 @@
 
 **This is the first file to read when returning to this project after any break.** Don't read anything else first.
 
-Written 2026-05-22 at the close of a long working session that completed the migration and designed (but did not yet implement) the multi-platform validation feature. If you're picking this up cold, the next ~3 minutes of reading get you back to where the previous session left off.
+Updated 2026-05-24 after the DI refactor (dependency-injection architecture for the generator). Previous version documented the pre-refactor state.
 
 ---
 
 ## 30-Second TLDR
 
-This repo (`DgxSparkLabs/marketplace`) is a **Claude Code plugin marketplace**. The previous session migrated it from a custom Textual TUI installer to native `/plugin marketplace add DgxSparkLabs/marketplace` compliance, then designed the CI/CD validation layer that will verify the marketplace works across six AI-coding-CLI platforms (Claude Code, Codex, Gemini CLI, Cursor, Windsurf, Devin). PR #1 is open with both the migration and the validation design — the validation **implementation** is the next phase and has not started.
+This repo (`DgxSparkLabs/marketplace`) is a **Claude Code plugin marketplace**. It ships skills, rules, commands, agents, hooks, MCP servers, LSP servers, monitors, output styles, and themes — 10 construct types total. The generator (`scripts/generate_manifest.py`) reads sources + `catalog.toml` and produces everything else. PR #1 is open against `main` and contains the full migration to native `/plugin marketplace add` compliance plus the DI refactor.
 
 ---
 
 ## You Are Here
 
 ```
-Active branch:         feat/multi-platform-validation (off feat/claude-plugin-compliance)
-Open PRs:              #1 at https://github.com/DgxSparkLabs/marketplace/pull/1 (migration + design)
-                       #2 pending (validation implementation — this branch)
-Status:                Migration done; validation design locked; validation implementation COMPLETE
+Active branch:         feat/claude-plugin-compliance
+Open PRs:              #1 at https://github.com/DgxSparkLabs/marketplace/pull/1
+Status:                DI refactor complete; ready for CI verification + merge
 Working directory:     C:\Users\devic\source\marketplace
-Other relevant branch: exp/cli-empirical-discovery (sub-agent's empirical research, contains CI logs)
 ```
 
-PR #1 contains: migration (TUI removed, native /plugin compliance) + validation design docs.
-PR #2 (this branch) contains: 10 compat workflows + 5 composite actions + 2 local-dev scripts.
+---
+
+## Architecture (Post DI Refactor)
+
+The generator is now a thin orchestrator over typed registries:
+
+```
+scripts/utils.py        — shared helpers (scan_source_dir, _load_plugin_json, etc.)
+scripts/constructs.py   — 10 Construct classes (SkillConstruct, RuleConstruct, ...)
+scripts/platforms.py    — 6 Platform classes (ClaudeCodePlatform, CodexPlatform, ...)
+scripts/bundles.py      — Bundle dataclass + load_bundles + BundleMember
+scripts/generate_manifest.py — orchestrator (~100 lines); 5 phases:
+  Phase 1: individual plugins (construct.emit per source instance)
+  Phase 2a: catalog bundles from catalog.toml [bundle.*]
+  Phase 2b: code-generated catch-alls (bundle-<prefix>-all per construct)
+  Phase 3: cross-platform mirrors (platform.emit per supported construct)
+  Phase 4: Gemini extension manifest
+  Phase 5: marketplace.json from in-memory entries (never re-reads filesystem)
+catalog.toml            — bundle definitions ONLY (no [construct.*] or [skill_domain.*])
+```
+
+### Key architectural decisions
+
+| # | Decision |
+|---|----------|
+| 15 | Construct protocol has TWO methods: `build_plugin_json` (pure) + `emit` (I/O) |
+| 16 | Generated plugin path: `_generated/<prefix>-<name>/.claude-plugin/plugin.json` |
+| 17 | marketplace.json built from in-memory entries — never re-read from filesystem |
+| 18 | Example dirs renamed: `example-<construct>` → `example` (e.g., `skills/example/`) |
+| 23 | Catch-all bundles code-generated (not catalog-declared) |
+| 24 | `members_from_construct` field removed entirely from Bundle schema |
+| 25 | Reserved bundle names: `<prefix>-all`; `load_bundles` raises ValueError if catalog defines them |
+
+Full 25-decision table in [`docs/PLAN_DI_REFACTOR.md`](./PLAN_DI_REFACTOR.md) Locked Decisions section.
+
+---
+
+## Source Structure
+
+```
+skills/<name>/          — real skill content + skills/example/
+rules/<name>/           — real rule content + rules/example/
+commands/<name>/        — commands/example/ (only example today)
+agents/<name>/          — agents/example/
+hooks/<name>/           — hooks/example/
+mcp-servers/<name>/     — mcp-servers/example/
+lsp-servers/<name>/     — lsp-servers/example/
+monitors/<name>/        — monitors/example/
+output-styles/<name>/   — output-styles/example/
+themes/<name>/          — themes/example/
+```
+
+Examples are `example/` (not `example-<construct>/` — renamed in this refactor).
+
+---
+
+## Plugin Naming
+
+```
+Individual:     <prefix>-<name>           e.g., skill-telegram-notify
+Catalog bundle: bundle-<bundle-name>      e.g., bundle-communication-skills
+Catch-all:      bundle-<prefix>-all       e.g., bundle-skill-all
+```
+
+Notable renames from pre-refactor:
+- `example-mcp` → `mcp-example`
+- `example-skill` → `skill-example`
+- `skills-communication` → `bundle-communication-skills`
+- `rules-all` → `bundle-rule-all`
+- etc.
 
 ---
 
 ## Next Concrete Actions (in priority order)
 
-1. **File the GitHub whitelist request** — independent of all other work. Copy-paste the body from `docs/CI_WHITELIST_REQUEST.md` into https://support.github.com/contact. Ask GitHub to permit `@openai/codex` and `@google/gemini-cli` in our org's Actions. Update the doc's "After-the-fact tracking" section with the ticket number once filed. This can happen any time; it doesn't block engineering. When granted, flip `continue-on-error: false` for Codex/Gemini matrix jobs (~30 min of Wave 4 work, one-line edits per workflow).
+1. **Verify CI green** — push `feat/claude-plugin-compliance` and watch all 10 compat workflows + CI workflow. Any failures: diagnose, fix, re-push.
 
-2. **Get PR #1 reviewed and merged** — contains the migration plus all design documents. Once merged, main has the full planning dossier.
+2. **Merge PR #1** — once CI is green. Contains migration + DI refactor + platform validation design docs.
 
-3. **Get PR #2 reviewed and merged** (`feat/multi-platform-validation`) — contains the 10 compat workflows + 5 composite actions + 2 local-dev scripts. Depends on PR #1 merging first (or rebase if needed).
+3. **File the GitHub whitelist request** (if not already done) — `docs/CI_WHITELIST_REQUEST.md` has the body. When granted, flip `continue-on-error: false` for Codex/Gemini (~30 min, one-line edits per workflow).
 
-If you only have time for one action and want to make forward progress: file the whitelist request. It's the only one with an external dependency (GitHub's response time).
+---
+
+## Project Glossary
+
+| Term | Meaning here |
+|------|--------------|
+| **marketplace** | A curated index of installable Claude Code plugins, declared in `.claude-plugin/marketplace.json`. Ours is named `dgxsparklabs-marketplace`. |
+| **plugin** | A directory containing `.claude-plugin/plugin.json` plus construct content. |
+| **construct** | One of 10 Claude Code plugin construct types: skill, rule, command, agent, hook, mcp, lsp, monitor, output-style, theme. |
+| **Construct class** | A Python class in `scripts/constructs.py` implementing the Construct protocol. |
+| **Platform class** | A Python class in `scripts/platforms.py` implementing the Platform protocol. |
+| **bundle** | A dep-only plugin whose job is to declare dependencies on other plugins. Two kinds: catalog bundles (in `catalog.toml`) and code-generated catch-alls (one per construct). |
+| **catch-all bundle** | `bundle-<prefix>-all` — code-generated by Phase 2b of the generator. Contains every instance of one construct type. NOT declared in catalog.toml. |
+| **mirror** | An auto-generated directory under `.codex/`, `.gemini/`, `.cursor/`, `.windsurf/`, or `.devin/` that copies our generated content into the layout each non-Claude-Code CLI expects. |
+| **generator** | `scripts/generate_manifest.py` — thin orchestrator. Reads sources + catalog.toml; produces everything else. |
+| **activate.sh** | Per-rule plugin shell script that symlinks (or copies on Windows) the rule file into `.claude/rules/`. Workaround for the lack of a `rules` field in Claude Code's plugin spec. |
+| **compat workflow** | A `.github/workflows/compat-<construct>.yml` file that verifies our marketplace works for that construct across applicable platforms. |
+| **wave** | Implementation phase in the validation plan. Wave 4 = Codex/Gemini promoted from advisory after whitelist granted. |
 
 ---
 
@@ -45,127 +128,21 @@ If you only have time for one action and want to make forward progress: file the
 | Time | Read | Why |
 |------|------|-----|
 | 90s | This file | Get oriented |
-| 3min | `docs/IMPLEMENTING_AGENT_PROMPT.md` | Understand what an implementer agent gets handed |
-| 5min | `docs/GOAL_PLUGIN_COMPLIANCE.md` + `docs/PLATFORM_VALIDATION_CICD_PLAN.md` Section 4 (decisions table) | Success criteria + the 20 locked design decisions |
-| 10min | `README.md` + `docs/CONSTRUCT_TYPES.md` | What the marketplace ships + the construct vocabulary |
-| 20min | `docs/PLAN_PLUGIN_COMPLIANCE.md` + `docs/PLATFORM_INSPECTION_CATALOG.md` + `docs/PLATFORM_VALIDATION_CICD_PLAN.md` (full) | Architecture + empirical CLI catalog + full validation design |
-| 30+min | `docs/INVESTIGATION_PLUGIN_DEPENDENCIES.md` + `docs/CI_WHITELIST_REQUEST.md` + `AGENTS.md` + `HANDOFF.md` + `CHANGELOG.md` | Empirical investigation outcomes + open requests + conventions + change history |
-
-For implementing, the implementing agent should start with the 5-minute tier and reach Section 4 of `PLATFORM_VALIDATION_CICD_PLAN.md` — that's where the 20 locked decisions are. Everything below that is supporting reference.
+| 5min | `docs/PLAN_DI_REFACTOR.md` Locked Decisions table | The 25 locked decisions for the DI refactor |
+| 10min | `docs/CONSTRUCT_TYPES.md` + `docs/ADDING_A_CONSTRUCT.md` | What the marketplace ships + contribution workflow |
+| 20min | `docs/PLATFORM_VALIDATION_CICD_PLAN.md` Section 4 | 25 locked validation CI decisions |
+| 30min | `docs/PLAN_DI_REFACTOR.md` (full) + `docs/PLATFORM_INSPECTION_CATALOG.md` | Full DI architecture + empirical CLI catalog |
 
 ---
 
-## Project Glossary
+## Dead Ends (Don't Re-litigate)
 
-Terms in this project have specific meanings. The same word might mean something different elsewhere.
+Same as before plus:
 
-| Term | Meaning here |
-|------|--------------|
-| **marketplace** | A curated index of installable Claude Code plugins, declared in `.claude-plugin/marketplace.json`. Our marketplace is named `dgxsparklabs-marketplace`. |
-| **plugin** | A directory containing `.claude-plugin/plugin.json` plus the content it ships (skill, command, agent, hook, mcp config, etc.). |
-| **construct** | One of 10 Claude Code plugin construct types: skill, rule, command, agent, hook, mcp, lsp, monitor, output style, theme. |
-| **mirror** | An auto-generated directory under `.codex/`, `.gemini/`, `.cursor/`, `.windsurf/`, or `.devin/` that copies our generated content into the directory layout each non-Claude-Code CLI expects. |
-| **generator** | `scripts/generate_manifest.py` — reads `MARKETPLACE.toml`, `catalog.toml`, `skills/`, `rules/`, `examples/`, produces everything else (`_generated/`, mirrors, `.claude-plugin/marketplace.json`). |
-| **inspection command** | An auth-free CLI command that lists or describes locally-loaded content without invoking the model — e.g., `codex mcp list`, `gemini skills list`, `devin rules list`. |
-| **auth-free** | A CLI command that runs without an API key, OAuth login, or paid auth. Often inspection-type commands. |
-| **catalog tagging** | The `[skill_domain.X]` and `[rule_domain.X]` sections in `catalog.toml` that group constructs into bundles. |
-| **domain bundle** | A plugin (e.g., `skills-communication`) whose only job is to declare dependencies on other plugins, so users can install a curated set with one command. |
-| **compat workflow** | A `.github/workflows/compat-<construct>.yml` file that verifies our marketplace works for that construct across applicable platforms. Designed but not yet implemented. |
-| **match mode** | The shape of a CI assertion against a catalog command's output: `exit-code-only`, `grep <substring>`, `regex <pattern>`, or `exact-diff`. Declared per catalog row. |
-| **the trio** | Shorthand for the three core planning docs: `GOAL_PLUGIN_COMPLIANCE.md` + `PLAN_PLUGIN_COMPLIANCE.md` + `INVESTIGATION_PLUGIN_DEPENDENCIES.md`. |
-| **the catalog** | Shorthand for `docs/PLATFORM_INSPECTION_CATALOG.md` — the executable spec for CI assertions. |
-| **the validation plan** | Shorthand for `docs/PLATFORM_VALIDATION_CICD_PLAN.md` — the CI/CD design. |
-| **the migration** | The work that took the marketplace from TUI installer to native /plugin marketplace add. Now complete. |
-| **the validation** | The work that will add multi-platform CI/CD verification. Design complete, implementation not started. |
-| **blocked platforms** | Codex and Gemini. Their npm packages (`@openai/codex`, `@google/gemini-cli`) are blocked at the GitHub Actions org policy level. CI cannot install them currently. |
-| **wave** | Implementation phase in the validation plan. Wave 1 = Claude-only workflows. Wave 2 = free-in-CI matrix workflows. Wave 3 = blocked-platform advisory + local-dev fallback. Wave 4 = promotion after whitelist arrives. |
-| **continue-on-error** | The YAML idiom (`continue-on-error: true` at job level) that makes Codex/Gemini failures advisory: they're visible in the PR UI but don't block merge. |
-| **template fixture** | `examples/example-<construct>/` — the canonical reference plugins. Used as test subjects for compat workflows. Stable contract: don't rename or delete without updating the workflow. |
-| **`activate.sh`** | Per-rule plugin shell script that symlinks (or copies on Windows) the rule file into `.claude/rules/`. Workaround for the lack of a `rules` field in Claude Code's plugin spec. |
-
----
-
-## Top Decisions with Rationale
-
-The full 20-decision table is in `docs/PLATFORM_VALIDATION_CICD_PLAN.md` Section 4. The ones below are the ten most consequential — the ones that, if reversed, would change the architecture substantially.
-
-| # | Decision | Why |
-|---|----------|-----|
-| 1 | **Per-construct workflows, not per-platform** | A new construct type = one new workflow file. A new platform = a matrix entry to N existing workflows. Matches the marketplace's domain model (construct is the primary axis). |
-| 2 | **Required for non-blocked platforms; advisory for blocked (Codex, Gemini) via `continue-on-error: true`** | GitHub Actions blocks the Codex/Gemini npm packages at org policy level. Honest failure surfacing without blocking PR merges. |
-| 3 | **No gating variable for blocked platforms** | The CLI install attempt itself is the gate. When GitHub lifts the block (or whitelist arrives), workflows start passing on the next run with zero code changes. Beats a `vars.X_WHITELIST_GRANTED` toggle that nobody would remember to flip. |
-| 4 | **`compat-rule.yml` does NOT exist** | Rules aren't installable via plugins on any platform. They use the `activate.sh` symlink workaround for Claude. Rule format validation lives in `tests/test_marketplace.py` instead. |
-| 5 | **Per-row Match Mode column in the catalog** | Without explicit match modes, 11 workflows would invent 11 ways to compare command output. Per-row commitment prevents drift. Default is `grep <substring>`; explicit override per row when needed. |
-| 6 | **Each compat workflow runs `generate_manifest.py --write` as first step** | Workflows are self-contained: they regenerate `_generated/` fresh from sources rather than trusting the committed tree. Isolates compat failures from generator drift. |
-| 7 | **Float to `@latest` for npm-installed CLIs (Codex, Gemini)** | Catches real-world CLI changes immediately. Pinning lies about reproducibility — the CLI changes upstream regardless of our pin. Per the platform-breakage policy (#7 in the table), a breakage blocks release until catalog + assertions are updated. |
-| 8 | **Standard composite action contract** | Every `setup-<platform>/action.yml` takes `inputs.version` (default `'latest'`) and emits `outputs.installed` (boolean). Uniform shape across all 5 setup actions. |
-| 9 | **Per-job test isolation, not per-step** | Each matrix cell on a fresh `ubuntu-latest` runner. Higher CI cost but no risk of one platform's CLI install polluting another's environment. Cleanup discipline becomes less load-bearing. |
-| 10 | **Triggers: PR to main + push to main + push to feat/** + workflow_dispatch** | Catches issues at PR time AND on feature-branch commits. Manual dispatch available for ad-hoc verification. Comprehensive but not so noisy as to drown the runner pool. |
-
----
-
-## Dead Ends — What We Tried That Didn't Work
-
-Avoid re-litigating these. Each is one or more hours of conversation that ended in "no."
-
-| Idea | Why we rejected it | Trigger to watch for |
-|------|-------------------|----------------------|
-| **Web research for current CLI surfaces** | Docs from December 2025 were stale by May 2026 for fast-moving CLIs (`gemini skills` subcommand existed but no research surfaced it). Switched to empirical CI + local exploration. | Anyone proposing to "check the docs" or "search the web" for what subcommands a CLI exposes |
-| **Council of 6 specialist agents** to review the design | Theatrical / overkill for the scope. Reviewer push-back collapsed it to 1 platform researcher + 1 devil's advocate. | Anyone proposing more than 2–3 sub-agents for design review of locked architecture |
-| **Hooks-based rules validation** (UserPromptSubmit hook per rule) | Clunky pattern that the user correctly called "stupid." Rules aren't installable as plugins on any platform; format validation in the test suite is the right primitive. | Anyone proposing `UserPromptSubmit` / `PreToolUse` hooks to inject rule content |
-| **`force-for-plugin: true` output styles for rules** | Single-winner (only one can apply at a time). Doesn't compose across multiple installed rule plugins. | Anyone proposing output styles as a rule-distribution mechanism |
-| **`vars.CODEX_WHITELIST_GRANTED` gating mechanism** | Adds a state variable nobody would remember to flip. `continue-on-error: true` alone makes the workflow advisory; when the block lifts, the install just succeeds. Zero ceremony. | Anyone proposing a `vars.*` or repo-secret toggle for any CI workflow gate |
-| **Soft-deprecation of the TUI installer** | User wanted full removal in the migration branch, not a deprecation period. Single PR ships the breaking change with migration notes. | Anyone proposing to keep `install.py` or `install.sh` "for backwards compat" |
-| **Per-platform workflow organization** | Was the initial framing. User reframed to per-construct ("new construct = one workflow; new platform = matrix row in N workflows"). Cleaner. | Anyone proposing `compat-claude.yml`, `compat-codex.yml` etc. as the primary organization |
-| **Trying to install `@openai/codex` / `@google/gemini-cli` in GitHub Actions** | Blocked at the org policy level (0-second failures across 12+ variants). Local exploration is the empirical fallback; whitelist request is the long-term unblock. | Anyone proposing to add an `npm install -g @openai/codex` step to a github.com-hosted CI workflow and expect it to succeed |
-| **Pinning CLI versions in CI** | Decided against — pinning lies about reproducibility because the upstream CLI evolves regardless. Float to `@latest` and let the platform-breakage policy handle change. | Anyone proposing `npm install -g @openai/codex@0.130.0` in setup actions |
-| **Caching CLI installs across CI runs** | Deferred to Wave 1/2 implementation. Empirical decision: measure first, optimize if CI minutes become a problem. | Anyone proposing `actions/cache` for npm globals before we have CI runtime data |
-
----
-
-## Methods That Worked
-
-Patterns to reuse. These shaped how this session reached convergence.
-
-- **Spawn a reviewer agent after locking decisions** — second-opinion review catches blind spots the locked-in author misses. We did this twice; both caught real issues.
-- **`AskUserQuestion` with 3 explicit options + a Recommended marker** — concrete picks beat open-ended prose. Most decisions took less than 30 seconds once posed as choices with defaults.
-- **Empirical CI exploration on a research branch** — when stale docs distrust, push experiment workflows to a throwaway branch and let CI logs be the evidence. `exp/cli-empirical-discovery` has the logs.
-- **Local CLI exploration when CI is blocked** — GitHub Actions can't install everything; the local dev machine can. Two complementary empirical vantage points.
-- **Never use web research for current CLI surfaces** — documented dead end; docs are months stale for fast-moving CLIs like Codex and Gemini. When tempted to "just search the docs," install the CLI instead and run `--help` recursively.
-- **Per-decision iteration cycle** — reviewer flags ambiguity → AskUserQuestion → doc edit → next reviewer pass. Three rounds converged on a clean design.
-- **Catalog-as-executable-spec** — `PLATFORM_INSPECTION_CATALOG.md` rows transcribe 1:1 into CI assertions. Catalog + workflow stay synchronized because one drives the other.
-- **Single source of truth for identity** — `MARKETPLACE.toml` is the only place where owner / repo URL / version / license live. Generated manifests inherit from there. Renames or version bumps are one-line edits.
-- **Construct-axis organization** — when in doubt, organize by what's being shipped (skill, rule, command…), not by what's consuming it (Claude, Codex, Gemini…).
-- **"If it fails it fails" gating** — for blocked external dependencies, the failure itself is the gate. No state variable, no toggle, no promotion ceremony.
-
-### Doc-conflict tie-breaker rule
-
-**If any prose document contradicts the locked decisions table, the decisions table wins.** Update the drifting prose to match; do not interpret prose against the decisions table. The decisions table lives in two places: the "Top Decisions with Rationale" section above (top 10) and `docs/PLATFORM_VALIDATION_CICD_PLAN.md` Section 4 (full 20). Either is canonical over any other prose.
-
----
-
-## Active Branches and Their State
-
-| Branch | Purpose | Status |
-|--------|---------|--------|
-| `main` | Production | Current; doesn't yet have the migration |
-| `feat/claude-plugin-compliance` | Migration + validation design | PR #1 open; ready to merge |
-| `exp/cli-empirical-discovery` | Sub-agent's empirical CLI research | Contains CI experiment workflows + per-platform findings docs; not for production merge |
-| `feat/multi-platform-validation` | The implementation of the validation design | **COMPLETE.** PR #2 pending. 10 workflows + 5 actions + 2 local scripts. |
-
----
-
-## Task List Snapshot
-
-```
-#1–#13  ✅ Migration work (catalog, generator, examples, mirrors, deprecation, tests, docs, e2e verification, PR open)
-#14     ✅ GitHub whitelist request drafted (docs/CI_WHITELIST_REQUEST.md — ready to file)
-#15     ✅ First reviewer pass complete (14 items flagged)
-#16     ✅ Critique iteration cycle complete (3 decision rounds + 2 reviewer passes → clean)
-#17     ✅ Multi-platform validation implementation — COMPLETE (branch feat/multi-platform-validation)
-#18     ⏳ File GitHub whitelist request — independent, can happen any time
-#19     ⏳ Wave 4 — flip Codex/Gemini advisory → required after whitelist granted
-```
+- **`members_from_construct` field in catalog.toml** — removed (decision #24). Catch-alls are code-generated, not catalog-declared.
+- **`[bundle.<prefix>-all]` in catalog.toml** — reserved names; `load_bundles` raises ValueError.
+- **`example-<construct>` directory naming** — renamed to `example/` (decision #18). Don't revert.
+- **Hardcoding plugin count (e.g., `== 81`)** — the test suite uses a computed formula now (NICE 1 fix).
 
 ---
 
@@ -173,13 +150,9 @@ Patterns to reuse. These shaped how this session reached convergence.
 
 Re-read this file. Then:
 
-1. If you need WHAT to do next → "Next Concrete Actions" section above
-2. If you need WHY a decision was made → "Top Decisions with Rationale" section
-3. If you're about to repeat a mistake → "Dead Ends" section
-4. If you don't recognize a term → "Project Glossary"
-5. If you need full architecture → `docs/PLAN_PLUGIN_COMPLIANCE.md` + `docs/PLATFORM_VALIDATION_CICD_PLAN.md`
-6. If you're the implementer → `docs/IMPLEMENTING_AGENT_PROMPT.md` is the brief
-
-The work from May 2026 was deliberate. Each decision recorded here was made with at least one round of review. When in doubt, trust the locked decisions over fresh intuition — the rationale is documented; the alternatives were considered and rejected.
-
-If anything seems wrong, the planning docs aren't the bug — start by reading carefully. The architecture earned its complexity through deliberate iteration; reverting it without going through the same depth of review will introduce the dead ends listed above.
+1. What to do next → "Next Concrete Actions" above
+2. Why a decision was made → `docs/PLAN_DI_REFACTOR.md` Locked Decisions table
+3. About to repeat a mistake → "Dead Ends" above
+4. Don't recognize a term → "Project Glossary" above
+5. Need full architecture → `docs/PLAN_DI_REFACTOR.md` + `docs/PLATFORM_VALIDATION_CICD_PLAN.md`
+6. Implementing a new construct or bundle → `docs/ADDING_A_CONSTRUCT.md`

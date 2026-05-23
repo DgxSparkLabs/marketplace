@@ -1,14 +1,11 @@
 {
   "name": "skill-web-scraper",
-  "description": "Fetch a web page and extract its main content as clean readable text",
   "version": "1.0.0",
   "author": {
     "name": "DgxSparkLabs",
     "url": "https://github.com/DgxSparkLabs"
   },
-  "homepage": "https://github.com/DgxSparkLabs/marketplace/tree/main/_generated/skill-web-scraper",
-  "repository": "https://github.com/DgxSparkLabs/marketplace",
-  "license": "MIT",
+  "description": "Fetch a web page and extract its main content as clean readable text",
   "skills": [
     "./"
   ],

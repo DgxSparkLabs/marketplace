@@ -12,7 +12,7 @@
 # to file copy. After a plugin update, re-run activate.sh to refresh.
 set -euo pipefail
 
-RULES_DIR="${1:-.claude/rules}"
+RULES_DIR="${{1:-.claude/rules}}"
 PLUGIN_DIR="$(cd "$(dirname "$0")" && pwd)"
 
 mkdir -p "$RULES_DIR"
