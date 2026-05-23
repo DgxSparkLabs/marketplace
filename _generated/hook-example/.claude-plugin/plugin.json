@@ -5,8 +5,5 @@
     "name": "DgxSparkLabs",
     "url": "https://github.com/DgxSparkLabs"
   },
-  "description": "Reference example hook. Prepends a timestamp marker to every user prompt so Claude sees session context.",
-  "hooks": [
-    "./hooks"
-  ]
+  "description": "Reference example hook. Prepends a timestamp marker to every user prompt so Claude sees session context."
 }

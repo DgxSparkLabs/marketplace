@@ -218,7 +218,8 @@ class AgentConstruct:
                 description = fm.get("description", name)
                 break
         base["description"] = description
-        base["agents"] = ["./agents"]
+        # Note: Claude Code reads agents from the plugin's agents/ subdir automatically.
+        # No "agents" field is needed in plugin.json (the spec doesn't define one).
         return base
 
     def emit(self, name: str, target_dir: Path) -> None:
@@ -245,7 +246,8 @@ class HookConstruct:
             hooks_data = json.loads(hooks_json_path.read_text(encoding="utf-8"))
             description = hooks_data.get("description", name)
         base["description"] = description
-        base["hooks"] = ["./hooks"]
+        # Note: Claude Code reads hooks from the plugin's hooks/hooks.json automatically.
+        # No "hooks" field is needed in plugin.json (the spec doesn't define one).
         return base
 
     def emit(self, name: str, target_dir: Path) -> None:
