@@ -4,14 +4,13 @@
 
 Themes ship UI color palettes for Claude Code. Use them to distribute team color schemes or to pair with other plugins (e.g., a theme that complements a specific output style).
 
-For the file structure, read [`examples/example-theme/README.md`](../examples/example-theme/README.md).
+For the file structure, read [`themes/example-theme/README.md`](../themes/example-theme/README.md).
 
 ## Workflow
 
 1. **Copy the example**:
    ```bash
-   mkdir -p themes
-   cp -r examples/example-theme themes/my-theme
+   cp -r themes/example-theme themes/my-theme
    ```
 
 2. **Edit**:
@@ -47,4 +46,4 @@ For personal taste tweaks, the built-in `/theme` picker is usually enough — no
 ## Related docs
 
 - [`CONSTRUCT_TYPES.md`](./CONSTRUCT_TYPES.md)
-- [`examples/example-theme/README.md`](../examples/example-theme/README.md)
+- [`themes/example-theme/README.md`](../themes/example-theme/README.md)

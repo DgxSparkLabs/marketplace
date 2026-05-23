@@ -2,14 +2,13 @@
 
 LSP servers give Claude type information, definitions, and diagnostics for a language. Use them when working in a project that benefits from compile/type signals.
 
-For the file structure, read [`examples/example-lsp/README.md`](../examples/example-lsp/README.md).
+For the file structure, read [`lsp-servers/example-lsp/README.md`](../lsp-servers/example-lsp/README.md).
 
 ## Workflow
 
 1. **Copy the example**:
    ```bash
-   mkdir -p lsp-servers
-   cp -r examples/example-lsp lsp-servers/my-lsp
+   cp -r lsp-servers/example-lsp lsp-servers/my-lsp
    ```
 
 2. **Edit**:
@@ -49,4 +48,4 @@ Multiple plugins can register different LSP servers for different file extension
 ## Related docs
 
 - [`CONSTRUCT_TYPES.md`](./CONSTRUCT_TYPES.md)
-- [`examples/example-lsp/README.md`](../examples/example-lsp/README.md)
+- [`lsp-servers/example-lsp/README.md`](../lsp-servers/example-lsp/README.md)

@@ -6,16 +6,16 @@ A Claude Code plugin can ship ten distinct **construct types**. This marketplace
 
 | Construct | What it is | Source dir | Example | Tutorial |
 |-----------|-----------|------------|---------|----------|
-| **Skill** | On-demand domain expertise. Invoked by user (`/skill-name`) or auto-invoked by Claude when the description matches. | `skills/<name>/` | `examples/example-skill/` | [ADDING_A_SKILL.md](./ADDING_A_SKILL.md) |
-| **Rule** | Always-on behavioral guideline injected into every session via `.claude/rules/`. Requires a manual `activate.sh` symlink step after install. | `rules/<name>/` | `examples/example-rule/` | [ADDING_A_RULE.md](./ADDING_A_RULE.md) |
-| **Command** | A custom slash command. Lighter-weight than a skill — single markdown file, user-invoked only. | `commands/<name>.md` (within a plugin) | `examples/example-command/` | [ADDING_A_COMMAND.md](./ADDING_A_COMMAND.md) |
-| **Agent** | A sub-agent persona with its own system prompt and scoped tool access. | `agents/<name>.md` (within a plugin) | `examples/example-agent/` | [ADDING_AN_AGENT.md](./ADDING_AN_AGENT.md) |
-| **Hook** | Event-triggered script (`UserPromptSubmit`, `PreToolUse`, `SessionStart`, `Stop`, etc.). | `hooks/hooks.json` (within a plugin) | `examples/example-hook/` | [ADDING_A_HOOK.md](./ADDING_A_HOOK.md) |
-| **MCP server** | A Model Context Protocol server. Exposes tools, resources, and prompts to Claude. | `mcp-config.json` (within a plugin, `mcpServers` field) | `examples/example-mcp/` | [ADDING_AN_MCP_SERVER.md](./ADDING_AN_MCP_SERVER.md) |
-| **LSP server** | A Language Server Protocol server. Gives Claude type info, definitions, and diagnostics for a language. | `lsp-config.json` (within a plugin, `lspServers` field) | `examples/example-lsp/` | [ADDING_AN_LSP_SERVER.md](./ADDING_AN_LSP_SERVER.md) |
-| **Monitor** | Background process that runs on an interval and surfaces output to Claude on demand. | `monitors/monitors.json` (within a plugin, `experimental.monitors`) | `examples/example-monitor/` | [ADDING_A_MONITOR.md](./ADDING_A_MONITOR.md) |
-| **Output style** | System-prompt modification — adjusts Claude's voice, format, or behavior. Can be user-selectable or auto-applied (`force-for-plugin: true`). | `output-styles/<name>.md` (within a plugin) | `examples/example-output-style/` | [ADDING_AN_OUTPUT_STYLE.md](./ADDING_AN_OUTPUT_STYLE.md) |
-| **Theme** | UI color theme (experimental). | `themes/<name>.json` (within a plugin, `experimental.themes`) | `examples/example-theme/` | [ADDING_A_THEME.md](./ADDING_A_THEME.md) |
+| **Skill** | On-demand domain expertise. Invoked by user (`/skill-name`) or auto-invoked by Claude when the description matches. | `skills/<name>/` | `skills/example-skill/` | [ADDING_A_SKILL.md](./ADDING_A_SKILL.md) |
+| **Rule** | Always-on behavioral guideline injected into every session via `.claude/rules/`. Requires a manual `activate.sh` symlink step after install. | `rules/<name>/` | `rules/example-rule/` | [ADDING_A_RULE.md](./ADDING_A_RULE.md) |
+| **Command** | A custom slash command. Lighter-weight than a skill — single markdown file, user-invoked only. | `commands/<name>.md` (within a plugin) | `commands/example-command/` | [ADDING_A_COMMAND.md](./ADDING_A_COMMAND.md) |
+| **Agent** | A sub-agent persona with its own system prompt and scoped tool access. | `agents/<name>.md` (within a plugin) | `agents/example-agent/` | [ADDING_AN_AGENT.md](./ADDING_AN_AGENT.md) |
+| **Hook** | Event-triggered script (`UserPromptSubmit`, `PreToolUse`, `SessionStart`, `Stop`, etc.). | `hooks/hooks.json` (within a plugin) | `hooks/example-hook/` | [ADDING_A_HOOK.md](./ADDING_A_HOOK.md) |
+| **MCP server** | A Model Context Protocol server. Exposes tools, resources, and prompts to Claude. | `mcp-config.json` (within a plugin, `mcpServers` field) | `mcp-servers/example-mcp/` | [ADDING_AN_MCP_SERVER.md](./ADDING_AN_MCP_SERVER.md) |
+| **LSP server** | A Language Server Protocol server. Gives Claude type info, definitions, and diagnostics for a language. | `lsp-config.json` (within a plugin, `lspServers` field) | `lsp-servers/example-lsp/` | [ADDING_AN_LSP_SERVER.md](./ADDING_AN_LSP_SERVER.md) |
+| **Monitor** | Background process that runs on an interval and surfaces output to Claude on demand. | `monitors/monitors.json` (within a plugin, `experimental.monitors`) | `monitors/example-monitor/` | [ADDING_A_MONITOR.md](./ADDING_A_MONITOR.md) |
+| **Output style** | System-prompt modification — adjusts Claude's voice, format, or behavior. Can be user-selectable or auto-applied (`force-for-plugin: true`). | `output-styles/<name>.md` (within a plugin) | `output-styles/example-output-style/` | [ADDING_AN_OUTPUT_STYLE.md](./ADDING_AN_OUTPUT_STYLE.md) |
+| **Theme** | UI color theme (experimental). | `themes/<name>.json` (within a plugin, `experimental.themes`) | `themes/example-theme/` | [ADDING_A_THEME.md](./ADDING_A_THEME.md) |
 
 Plus a meta-construct:
 
@@ -40,7 +40,7 @@ Every plugin in this marketplace follows a strict prefix convention so the plugi
 | output style | `output-style-<name>` | `output-styles-<domain>` |
 | theme | `theme-<name>` | `themes-<domain>` |
 
-Plus `example-<type>` for the reference templates in `examples/`.
+Plus `example-<type>` for the reference templates living in each construct's native folder.
 
 ## Install paths
 
@@ -62,8 +62,8 @@ bash ~/.local/share/marketplace/activate-installed-rules.sh
 
 ## Architecture notes
 
-- **Source of truth**: `skills/<name>/` and `rules/<name>/` are hand-edited content. `examples/<name>/` are hand-edited reference plugins.
-- **Generated output**: `_generated/skill-<name>/`, `_generated/rule-<name>/`, `_generated/skills-<domain>/`, `_generated/rules-<domain>/` are produced by `uv run scripts/generate_manifest.py` from sources + `catalog.toml` tagging. Never edit `_generated/` files by hand.
+- **Source of truth**: `skills/<name>/`, `rules/<name>/`, and the 8 other construct directories (`commands/`, `agents/`, `hooks/`, `mcp-servers/`, `lsp-servers/`, `monitors/`, `output-styles/`, `themes/`) are hand-edited content. Each construct directory also contains its own `example-<type>/` reference plugin.
+- **Generated output**: `_generated/skill-<name>/`, `_generated/rule-<name>/`, `_generated/skills-<domain>/`, `_generated/rules-<domain>/`, and `_generated/<construct>s-examples/` (one per construct type) are produced by `uv run scripts/generate_manifest.py` from sources + `catalog.toml` tagging. Never edit `_generated/` files by hand.
 - **Cross-platform mirrors**: `.codex/`, `.gemini/`, `.cursor/`, `.windsurf/`, `.devin/` are auto-generated for users on non-Claude-Code tools.
 - **Single source for identity**: `MARKETPLACE.toml` declares owner, repo URL, version, license. All generated plugin.json files inherit from this.
 
@@ -71,7 +71,7 @@ bash ~/.local/share/marketplace/activate-installed-rules.sh
 
 For each construct type, the workflow is:
 
-1. Copy the matching `examples/example-<type>/` directory to a new location.
+1. Copy the matching example from the same folder — e.g., `cp -r skills/example-skill skills/my-skill`.
 2. Edit the plugin manifest (`.claude-plugin/plugin.json`) and the construct content.
 3. (Skills and rules only) Add the new entry to `catalog.toml` under the appropriate `[skill_domain.*]` or `[rule_domain.*]` so it lands in a bundle.
 4. Run `uv run scripts/generate_manifest.py` to regenerate manifests and mirrors.

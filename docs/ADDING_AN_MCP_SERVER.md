@@ -2,14 +2,13 @@
 
 MCP servers expose tools, resources, and prompts to Claude over the Model Context Protocol. Use them for stateful services (database, API session, headless browser, search index).
 
-For the file structure, read [`examples/example-mcp/README.md`](../examples/example-mcp/README.md).
+For the file structure, read [`mcp-servers/example-mcp/README.md`](../mcp-servers/example-mcp/README.md).
 
 ## Workflow
 
 1. **Copy the example**:
    ```bash
-   mkdir -p mcp-servers
-   cp -r examples/example-mcp mcp-servers/my-mcp
+   cp -r mcp-servers/example-mcp mcp-servers/my-mcp
    ```
 
 2. **Edit**:
@@ -56,4 +55,4 @@ Tools provided by the server become available as `mcp__my-server__<tool-name>`.
 
 - [`CONSTRUCT_TYPES.md`](./CONSTRUCT_TYPES.md)
 - [Anthropic MCP documentation](https://docs.anthropic.com/claude/docs/mcp) — protocol spec
-- [`examples/example-mcp/README.md`](../examples/example-mcp/README.md)
+- [`mcp-servers/example-mcp/README.md`](../mcp-servers/example-mcp/README.md)

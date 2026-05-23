@@ -2,13 +2,13 @@
 
 Skills are on-demand domain expertise invoked via slash command. Examples in this marketplace include `skill-telegram-notify`, `skill-github-search`, `skill-web-scraper`.
 
-For the file-by-file walkthrough of skill structure, read [`examples/example-skill/README.md`](../examples/example-skill/README.md).
+For the file-by-file walkthrough of skill structure, read [`skills/example-skill/README.md`](../skills/example-skill/README.md).
 
 ## Workflow
 
 1. **Copy the example** as your starting template:
    ```bash
-   cp -r examples/example-skill skills/my-skill
+   cp -r skills/example-skill skills/my-skill
    ```
    `my-skill` must be kebab-case.
 

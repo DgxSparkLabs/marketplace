@@ -29,70 +29,70 @@
 prefix_individual = "skill-"
 prefix_domain = "skills-"
 source_directory = "skills/"
-example_directory = "examples/example-skill/"
+example_directory = "skills/example-skill/"
 description = "On-demand domain expertise invoked via slash command"
 
 [construct.rule]
 prefix_individual = "rule-"
 prefix_domain = "rules-"
 source_directory = "rules/"
-example_directory = "examples/example-rule/"
+example_directory = "rules/example-rule/"
 description = "Always-on behavioral guideline (ships as plugin + activate.sh symlink into .claude/rules/)"
 
 [construct.command]
 prefix_individual = "command-"
 prefix_domain = "commands-"
 source_directory = "commands/"
-example_directory = "examples/example-command/"
+example_directory = "commands/example-command/"
 description = "Custom slash command"
 
 [construct.agent]
 prefix_individual = "agent-"
 prefix_domain = "agents-"
 source_directory = "agents/"
-example_directory = "examples/example-agent/"
+example_directory = "agents/example-agent/"
 description = "Sub-agent with its own system prompt and scoped execution"
 
 [construct.hook]
 prefix_individual = "hook-"
 prefix_domain = "hooks-"
 source_directory = "hooks/"
-example_directory = "examples/example-hook/"
+example_directory = "hooks/example-hook/"
 description = "Event-triggered script (PreToolUse, UserPromptSubmit, SessionStart, etc.)"
 
 [construct.mcp]
 prefix_individual = "mcp-"
 prefix_domain = "mcps-"
 source_directory = "mcp-servers/"
-example_directory = "examples/example-mcp/"
+example_directory = "mcp-servers/example-mcp/"
 description = "Model Context Protocol server registration"
 
 [construct.lsp]
 prefix_individual = "lsp-"
 prefix_domain = "lsps-"
 source_directory = "lsp-servers/"
-example_directory = "examples/example-lsp/"
+example_directory = "lsp-servers/example-lsp/"
 description = "Language Server Protocol server registration"
 
 [construct.monitor]
 prefix_individual = "monitor-"
 prefix_domain = "monitors-"
 source_directory = "monitors/"
-example_directory = "examples/example-monitor/"
+example_directory = "monitors/example-monitor/"
 description = "Background monitor process"
 
 [construct.output-style]
 prefix_individual = "output-style-"
 prefix_domain = "output-styles-"
 source_directory = "output-styles/"
-example_directory = "examples/example-output-style/"
+example_directory = "output-styles/example-output-style/"
 description = "System prompt modification (use force-for-plugin: true to inject always-on)"
 
 [construct.theme]
 prefix_individual = "theme-"
 prefix_domain = "themes-"
 source_directory = "themes/"
-example_directory = "examples/example-theme/"
+example_directory = "themes/example-theme/"
 description = "Claude Code UI theme"
 
 # ── Skill Domains ───────────────────────────────────────────────────────────
@@ -171,6 +171,52 @@ members = ["no-ai-credit", "output-discipline", "python-uv"]
 display_name = "Notifications"
 description = "Alert hooks for important events"
 members = ["telegram-on-complete"]
+
+# ── Examples Domains ────────────────────────────────────────────────────────
+# One [<construct>_domain.examples] entry per construct type.
+# Each becomes a dep-only bundle plugin named "<construct>s-examples"
+# whose sole dependency is the reference example for that construct.
+# "examples" is the reserved domain name for the template fixtures.
+
+[skill_domain.examples]
+description = "Reference example skill — template for contributors adding new skills"
+members = ["example-skill"]
+
+[rule_domain.examples]
+description = "Reference example rule — template for contributors adding new rules"
+members = ["example-rule"]
+
+[command_domain.examples]
+description = "Reference example command — template for contributors adding new commands"
+members = ["example-command"]
+
+[agent_domain.examples]
+description = "Reference example agent — template for contributors adding new agents"
+members = ["example-agent"]
+
+[hook_domain.examples]
+description = "Reference example hook — template for contributors adding new hooks"
+members = ["example-hook"]
+
+[mcp_domain.examples]
+description = "Reference example MCP server — template for contributors adding new MCP servers"
+members = ["example-mcp"]
+
+[lsp_domain.examples]
+description = "Reference example LSP server — template for contributors adding new LSP servers"
+members = ["example-lsp"]
+
+[monitor_domain.examples]
+description = "Reference example monitor — template for contributors adding new monitors"
+members = ["example-monitor"]
+
+[output_style_domain.examples]
+description = "Reference example output style — template for contributors adding new output styles"
+members = ["example-output-style"]
+
+[theme_domain.examples]
+description = "Reference example theme — template for contributors adding new themes"
+members = ["example-theme"]
 
 # ── Cross-Platform Mirrors ──────────────────────────────────────────────────
 # The generator produces a mirror directory for each non-Claude-Code platform

@@ -2,14 +2,13 @@
 
 Agents are sub-agent personas with their own system prompt and scoped tool access. Use them when you want Claude to take on a distinct persona for a task (peer reviewer, security auditor, technical writer).
 
-For the file structure, read [`examples/example-agent/README.md`](../examples/example-agent/README.md).
+For the file structure, read [`agents/example-agent/README.md`](../agents/example-agent/README.md).
 
 ## Workflow
 
 1. **Copy the example**:
    ```bash
-   mkdir -p agents
-   cp -r examples/example-agent agents/my-agent
+   cp -r agents/example-agent agents/my-agent
    ```
 
 2. **Edit**:
@@ -40,4 +39,4 @@ Invoke via Claude Code's agent picker or `--agent my-agent`.
 ## Related docs
 
 - [`CONSTRUCT_TYPES.md`](./CONSTRUCT_TYPES.md)
-- Agent vs. skill vs. command guidance: see [`examples/example-agent/README.md`](../examples/example-agent/README.md)
+- Agent vs. skill vs. command guidance: see [`agents/example-agent/README.md`](../agents/example-agent/README.md)

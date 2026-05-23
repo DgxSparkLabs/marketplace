@@ -67,7 +67,7 @@ The tradeoff: we depend on Claude Code's `dependencies` auto-install behavior. T
 
 ## Cross-construct bundles?
 
-The current marketplace ships bundles for `skill_domain` and `rule_domain` only. The generator does not yet produce bundles for other construct types (commands, agents, hooks, etc.) because the marketplace only ships one example of each. When a future PR adds multiple commands/agents/hooks/etc., extend `catalog.toml` with `[command_domain.*]`, `[agent_domain.*]`, etc., and update `generate_manifest.py` to emit the corresponding bundles.
+The generator supports bundles for all 10 construct types. Each construct type already has a `[<construct>_domain.examples]` entry in `catalog.toml` that produces a `<construct>s-examples` bundle pointing at the reference example plugin. When a future PR adds multiple commands, agents, hooks, etc., add `[command_domain.my-domain]`, `[agent_domain.my-domain]`, etc. sections to `catalog.toml` — the generator will automatically produce `commands-my-domain`, `agents-my-domain`, etc. bundles.
 
 ## Related docs
 

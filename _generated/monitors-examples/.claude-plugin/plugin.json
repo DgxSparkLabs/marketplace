@@ -1,0 +1,20 @@
+{
+  "name": "monitors-examples",
+  "description": "Reference example monitor \u2014 template for contributors adding new monitors",
+  "version": "1.0.0",
+  "author": {
+    "name": "DgxSparkLabs",
+    "url": "https://github.com/DgxSparkLabs"
+  },
+  "homepage": "https://github.com/DgxSparkLabs/marketplace/tree/main/_generated/monitors-examples",
+  "repository": "https://github.com/DgxSparkLabs/marketplace",
+  "license": "MIT",
+  "dependencies": [
+    "example-monitor"
+  ],
+  "keywords": [
+    "bundle",
+    "examples",
+    "monitor"
+  ]
+}

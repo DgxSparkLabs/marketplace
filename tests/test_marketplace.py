@@ -7,9 +7,10 @@
 Marketplace test suite.
 
 Validates the post-migration structure:
-  - Source layout (skills/, rules/, examples/)
+  - Source layout (skills/, rules/, commands/, agents/, hooks/, mcp-servers/,
+    lsp-servers/, monitors/, output-styles/, themes/)
   - MARKETPLACE.toml + catalog.toml integrity and cross-references
-  - Example plugin completeness
+  - Example plugins in their native construct folders
   - Generator drift (running --check must succeed)
   - Generated marketplace.json + plugin.json schemas
   - Per-rule activate.sh executability and shebang
@@ -41,8 +42,33 @@ MARKETPLACE_JSON = REPO_ROOT / ".claude-plugin" / "marketplace.json"
 
 SKILLS_DIR = REPO_ROOT / "skills"
 RULES_DIR = REPO_ROOT / "rules"
-EXAMPLES_DIR = REPO_ROOT / "examples"
 GENERATED_DIR = REPO_ROOT / "_generated"
+
+# The 8 new top-level construct source directories (skills/ and rules/ also exist)
+CONSTRUCT_DIRS = {
+    "commands":       REPO_ROOT / "commands",
+    "agents":         REPO_ROOT / "agents",
+    "hooks":          REPO_ROOT / "hooks",
+    "mcp-servers":    REPO_ROOT / "mcp-servers",
+    "lsp-servers":    REPO_ROOT / "lsp-servers",
+    "monitors":       REPO_ROOT / "monitors",
+    "output-styles":  REPO_ROOT / "output-styles",
+    "themes":         REPO_ROOT / "themes",
+}
+
+# Map from construct folder name → expected example directory name
+CONSTRUCT_EXAMPLES = {
+    "skills":         "example-skill",
+    "rules":          "example-rule",
+    "commands":       "example-command",
+    "agents":         "example-agent",
+    "hooks":          "example-hook",
+    "mcp-servers":    "example-mcp",
+    "lsp-servers":    "example-lsp",
+    "monitors":       "example-monitor",
+    "output-styles":  "example-output-style",
+    "themes":         "example-theme",
+}
 
 MIRROR_DIRS = {
     "codex":    REPO_ROOT / ".codex" / "skills",
@@ -72,17 +98,35 @@ def load_catalog() -> dict:
 
 
 def list_skills() -> list[Path]:
-    return sorted(d for d in SKILLS_DIR.iterdir() if d.is_dir() and (d / "SKILL.md").exists())
+    """Return real skills (exclude example-* directories)."""
+    return sorted(
+        d for d in SKILLS_DIR.iterdir()
+        if d.is_dir() and (d / "SKILL.md").exists() and not d.name.startswith("example-")
+    )
 
 
 def list_rules() -> list[Path]:
-    return sorted(d for d in RULES_DIR.iterdir() if d.is_dir() and (d / "rule.md").exists())
+    """Return real rules (exclude example-* directories)."""
+    return sorted(
+        d for d in RULES_DIR.iterdir()
+        if d.is_dir() and (d / "rule.md").exists() and not d.name.startswith("example-")
+    )
 
 
-def list_examples() -> list[Path]:
-    if not EXAMPLES_DIR.exists():
-        return []
-    return sorted(d for d in EXAMPLES_DIR.iterdir() if d.is_dir())
+def list_examples_native() -> list[Path]:
+    """Return all 10 example plugins from their native construct folders."""
+    examples = []
+    for folder_name, example_name in CONSTRUCT_EXAMPLES.items():
+        if folder_name == "skills":
+            folder = SKILLS_DIR
+        elif folder_name == "rules":
+            folder = RULES_DIR
+        else:
+            folder = REPO_ROOT / folder_name
+        ex_path = folder / example_name
+        if ex_path.is_dir():
+            examples.append(ex_path)
+    return sorted(examples, key=lambda p: p.name)
 
 
 # ────────────────────────── tests ────────────────────────────────────────────
@@ -96,8 +140,32 @@ class TestSourceLayout(unittest.TestCase):
     def test_rules_dir_exists(self):
         self.assertTrue(RULES_DIR.is_dir(), "rules/ must exist")
 
-    def test_examples_dir_exists(self):
-        self.assertTrue(EXAMPLES_DIR.is_dir(), "examples/ must exist")
+    def test_commands_dir_exists(self):
+        self.assertTrue(CONSTRUCT_DIRS["commands"].is_dir(), "commands/ must exist")
+
+    def test_agents_dir_exists(self):
+        self.assertTrue(CONSTRUCT_DIRS["agents"].is_dir(), "agents/ must exist")
+
+    def test_hooks_dir_exists(self):
+        self.assertTrue(CONSTRUCT_DIRS["hooks"].is_dir(), "hooks/ must exist")
+
+    def test_mcp_servers_dir_exists(self):
+        self.assertTrue(CONSTRUCT_DIRS["mcp-servers"].is_dir(), "mcp-servers/ must exist")
+
+    def test_lsp_servers_dir_exists(self):
+        self.assertTrue(CONSTRUCT_DIRS["lsp-servers"].is_dir(), "lsp-servers/ must exist")
+
+    def test_monitors_dir_exists(self):
+        self.assertTrue(CONSTRUCT_DIRS["monitors"].is_dir(), "monitors/ must exist")
+
+    def test_output_styles_dir_exists(self):
+        self.assertTrue(CONSTRUCT_DIRS["output-styles"].is_dir(), "output-styles/ must exist")
+
+    def test_themes_dir_exists(self):
+        self.assertTrue(CONSTRUCT_DIRS["themes"].is_dir(), "themes/ must exist")
+
+    def test_examples_not_in_separate_dir(self):
+        self.assertFalse((REPO_ROOT / "examples").exists(), "examples/ must not exist — examples live in native construct folders")
 
     def test_skill_names_kebab_case(self):
         for skill in list_skills():
@@ -114,6 +182,20 @@ class TestSourceLayout(unittest.TestCase):
     def test_rules_have_rule_md(self):
         for rule in list_rules():
             self.assertTrue((rule / "rule.md").exists(), f"{rule.name} missing rule.md")
+
+    def test_each_construct_dir_has_its_example(self):
+        """Every native construct folder must contain its reference example."""
+        for folder_name, example_name in CONSTRUCT_EXAMPLES.items():
+            if folder_name == "skills":
+                folder = SKILLS_DIR
+            elif folder_name == "rules":
+                folder = RULES_DIR
+            else:
+                folder = REPO_ROOT / folder_name
+            self.assertTrue(
+                (folder / example_name).is_dir(),
+                f"{folder_name}/{example_name}/ must exist as the reference example",
+            )
 
 
 class TestConfigFiles(unittest.TestCase):
@@ -144,11 +226,46 @@ class TestConfigFiles(unittest.TestCase):
         self.assertIn("skill_domain", cat)
         self.assertIn("rule_domain", cat)
 
+    def test_catalog_has_all_ten_construct_types(self):
+        cat = load_catalog()
+        expected = {"skill", "rule", "command", "agent", "hook", "mcp", "lsp", "monitor", "output-style", "theme"}
+        actual = set(cat.get("construct", {}).keys())
+        self.assertEqual(actual, expected, "catalog.toml must define all 10 construct types")
+
+    def test_catalog_has_examples_domain_for_each_construct(self):
+        """Every construct type must have a [<construct>_domain.examples] entry."""
+        cat = load_catalog()
+        for ckey in cat.get("construct", {}):
+            domain_table = ckey.replace("-", "_") + "_domain"
+            domain_data = cat.get(domain_table, {})
+            self.assertIn(
+                "examples",
+                domain_data,
+                f"catalog.toml must have [{domain_table}.examples] for construct '{ckey}'",
+            )
+
+    def test_examples_domain_members_exist_in_source_dirs(self):
+        """Each [<construct>_domain.examples] member must resolve to a real directory."""
+        cat = load_catalog()
+        for ckey, cconf in cat.get("construct", {}).items():
+            src_dir_rel = cconf.get("source_directory", "").rstrip("/")
+            domain_table = ckey.replace("-", "_") + "_domain"
+            domain_data = cat.get(domain_table, {})
+            examples_domain = domain_data.get("examples", {})
+            for member in examples_domain.get("members", []):
+                member_path = REPO_ROOT / src_dir_rel / member
+                self.assertTrue(
+                    member_path.is_dir(),
+                    f"[{domain_table}.examples] member '{member}' not found at {src_dir_rel}/{member}/",
+                )
+
     def test_every_skill_in_one_domain(self):
         cat = load_catalog()
         actual = {s.name for s in list_skills()}
         referenced: set[str] = set()
         for dname, dconf in cat["skill_domain"].items():
+            if dname == "examples":
+                continue
             for m in dconf.get("members", []):
                 self.assertNotIn(m, referenced, f"skill '{m}' appears in multiple domains")
                 referenced.add(m)
@@ -161,6 +278,8 @@ class TestConfigFiles(unittest.TestCase):
         actual = {r.name for r in list_rules()}
         referenced: set[str] = set()
         for dname, dconf in cat["rule_domain"].items():
+            if dname == "examples":
+                continue
             for m in dconf.get("members", []):
                 self.assertNotIn(m, referenced, f"rule '{m}' appears in multiple domains")
                 referenced.add(m)
@@ -186,17 +305,17 @@ class TestExamples(unittest.TestCase):
     }
 
     def test_all_ten_examples_present(self):
-        actual = {e.name for e in list_examples()}
+        actual = {e.name for e in list_examples_native()}
         missing = self.EXPECTED_EXAMPLES - actual
         self.assertFalse(missing, f"missing example plugins: {sorted(missing)}")
 
     def test_each_example_has_plugin_json(self):
-        for ex in list_examples():
+        for ex in list_examples_native():
             pj = ex / ".claude-plugin" / "plugin.json"
             self.assertTrue(pj.exists(), f"{ex.name} missing .claude-plugin/plugin.json")
 
     def test_each_example_plugin_json_valid(self):
-        for ex in list_examples():
+        for ex in list_examples_native():
             pj_path = ex / ".claude-plugin" / "plugin.json"
             pj = json.loads(pj_path.read_text(encoding="utf-8"))
             self.assertEqual(pj["name"], ex.name, f"{ex.name} plugin.json name field mismatch")
@@ -205,8 +324,22 @@ class TestExamples(unittest.TestCase):
             self.assertIsInstance(pj.get("author"), dict, f"{ex.name} author must be object not string")
 
     def test_each_example_has_readme(self):
-        for ex in list_examples():
+        for ex in list_examples_native():
             self.assertTrue((ex / "README.md").exists(), f"{ex.name} missing README.md tutorial")
+
+    def test_examples_live_in_native_dirs_not_examples_folder(self):
+        """All 10 examples must be in their construct's native folder, not examples/."""
+        for folder_name, example_name in CONSTRUCT_EXAMPLES.items():
+            if folder_name == "skills":
+                folder = SKILLS_DIR
+            elif folder_name == "rules":
+                folder = RULES_DIR
+            else:
+                folder = REPO_ROOT / folder_name
+            self.assertTrue(
+                (folder / example_name).is_dir(),
+                f"{example_name} must live in {folder_name}/{example_name}/, not examples/",
+            )
 
 
 class TestGeneratorDrift(unittest.TestCase):
@@ -253,9 +386,9 @@ class TestGeneratedManifests(unittest.TestCase):
             self.assertRegex(p["name"], KEBAB_CASE, f"plugin name '{p['name']}' must be kebab-case")
 
     def test_plugin_count(self):
-        """71 = 26 skills + 8 skill bundles + 21 rules + 6 rule bundles + 10 examples."""
+        """81 = 26 skills + 8 skill-bundles + 21 rules + 6 rule-bundles + 10 examples + 10 example-bundles."""
         data = json.loads(MARKETPLACE_JSON.read_text(encoding="utf-8"))
-        self.assertEqual(len(data["plugins"]), 71, "expected 71 plugin entries in marketplace.json")
+        self.assertEqual(len(data["plugins"]), 81, "expected 81 plugin entries in marketplace.json")
 
     def test_generated_skill_wrappers_exist(self):
         for skill in list_skills():
@@ -272,6 +405,8 @@ class TestGeneratedManifests(unittest.TestCase):
     def test_skill_bundle_plugins_have_dependencies(self):
         cat = load_catalog()
         for dname in cat.get("skill_domain", {}):
+            if dname == "examples":
+                continue
             pj_path = GENERATED_DIR / f"skills-{dname}" / ".claude-plugin" / "plugin.json"
             self.assertTrue(pj_path.exists(), f"missing skills-{dname} bundle")
             pj = json.loads(pj_path.read_text(encoding="utf-8"))
@@ -283,6 +418,8 @@ class TestGeneratedManifests(unittest.TestCase):
     def test_rule_bundle_plugins_have_dependencies(self):
         cat = load_catalog()
         for dname in cat.get("rule_domain", {}):
+            if dname == "examples":
+                continue
             pj_path = GENERATED_DIR / f"rules-{dname}" / ".claude-plugin" / "plugin.json"
             self.assertTrue(pj_path.exists(), f"missing rules-{dname} bundle")
             pj = json.loads(pj_path.read_text(encoding="utf-8"))
@@ -296,6 +433,27 @@ class TestGeneratedManifests(unittest.TestCase):
         pj = json.loads(pj_path.read_text(encoding="utf-8"))
         expected_deps = {f"rule-{r.name}" for r in list_rules()}
         self.assertEqual(set(pj["dependencies"]), expected_deps, "rules-all dependencies must include every rule")
+
+    def test_example_bundle_plugins_exist(self):
+        """Each construct type must have a generated <construct>s-examples bundle."""
+        cat = load_catalog()
+        for ckey, cconf in cat.get("construct", {}).items():
+            bundle_prefix = cconf.get("prefix_domain", f"{ckey}s-")
+            bundle_name = f"{bundle_prefix}examples"
+            pj_path = GENERATED_DIR / bundle_name / ".claude-plugin" / "plugin.json"
+            self.assertTrue(pj_path.exists(), f"missing example bundle plugin: {bundle_name}")
+
+    def test_example_bundle_plugins_have_dependencies(self):
+        """Each <construct>s-examples bundle must have at least one dependency."""
+        cat = load_catalog()
+        for ckey, cconf in cat.get("construct", {}).items():
+            bundle_prefix = cconf.get("prefix_domain", f"{ckey}s-")
+            bundle_name = f"{bundle_prefix}examples"
+            pj_path = GENERATED_DIR / bundle_name / ".claude-plugin" / "plugin.json"
+            if pj_path.exists():
+                pj = json.loads(pj_path.read_text(encoding="utf-8"))
+                self.assertIn("dependencies", pj, f"{bundle_name} missing dependencies field")
+                self.assertGreater(len(pj["dependencies"]), 0, f"{bundle_name} has empty dependencies")
 
 
 class TestActivateScripts(unittest.TestCase):

@@ -1,0 +1,20 @@
+{
+  "name": "mcps-examples",
+  "description": "Reference example MCP server \u2014 template for contributors adding new MCP servers",
+  "version": "1.0.0",
+  "author": {
+    "name": "DgxSparkLabs",
+    "url": "https://github.com/DgxSparkLabs"
+  },
+  "homepage": "https://github.com/DgxSparkLabs/marketplace/tree/main/_generated/mcps-examples",
+  "repository": "https://github.com/DgxSparkLabs/marketplace",
+  "license": "MIT",
+  "dependencies": [
+    "example-mcp"
+  ],
+  "keywords": [
+    "bundle",
+    "examples",
+    "mcp"
+  ]
+}

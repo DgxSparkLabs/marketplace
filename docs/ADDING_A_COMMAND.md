@@ -2,14 +2,13 @@
 
 Commands are custom slash commands. Lighter than skills — single markdown file, user-invoked only.
 
-For the file structure walkthrough, read [`examples/example-command/README.md`](../examples/example-command/README.md).
+For the file structure walkthrough, read [`commands/example-command/README.md`](../commands/example-command/README.md).
 
 ## Workflow
 
-1. **Copy the example** into a new directory under `commands/` (top-level — this marketplace does not yet have a `commands/` source directory of its own, so create one if it doesn't exist):
+1. **Copy the example** as your starting template:
    ```bash
-   mkdir -p commands
-   cp -r examples/example-command commands/my-command
+   cp -r commands/example-command commands/my-command
    ```
 
 2. **Edit**:

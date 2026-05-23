@@ -1,0 +1,20 @@
+{
+  "name": "skills-examples",
+  "description": "Reference example skill \u2014 template for contributors adding new skills",
+  "version": "1.0.0",
+  "author": {
+    "name": "DgxSparkLabs",
+    "url": "https://github.com/DgxSparkLabs"
+  },
+  "homepage": "https://github.com/DgxSparkLabs/marketplace/tree/main/_generated/skills-examples",
+  "repository": "https://github.com/DgxSparkLabs/marketplace",
+  "license": "MIT",
+  "dependencies": [
+    "example-skill"
+  ],
+  "keywords": [
+    "bundle",
+    "examples",
+    "skill"
+  ]
+}

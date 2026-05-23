@@ -7,14 +7,13 @@ Output styles modify Claude's system prompt — adjust voice, format, or behavio
 
 Only **one** force-applied output style can be active at a time. If multiple plugins try, the first loaded wins.
 
-For the file structure, read [`examples/example-output-style/README.md`](../examples/example-output-style/README.md).
+For the file structure, read [`output-styles/example-output-style/README.md`](../output-styles/example-output-style/README.md).
 
 ## Workflow
 
 1. **Copy the example**:
    ```bash
-   mkdir -p output-styles
-   cp -r examples/example-output-style output-styles/my-style
+   cp -r output-styles/example-output-style output-styles/my-style
    ```
 
 2. **Edit**:
@@ -50,4 +49,4 @@ Then select via `/output-style My Style` — or, if `force-for-plugin: true`, it
 ## Related docs
 
 - [`CONSTRUCT_TYPES.md`](./CONSTRUCT_TYPES.md)
-- [`examples/example-output-style/README.md`](../examples/example-output-style/README.md)
+- [`output-styles/example-output-style/README.md`](../output-styles/example-output-style/README.md)

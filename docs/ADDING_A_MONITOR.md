@@ -4,14 +4,13 @@
 
 Monitors are background processes that run on an interval and surface output to Claude on demand. Use them for periodic observation (disk, network, process, queue health).
 
-For the file structure, read [`examples/example-monitor/README.md`](../examples/example-monitor/README.md).
+For the file structure, read [`monitors/example-monitor/README.md`](../monitors/example-monitor/README.md).
 
 ## Workflow
 
 1. **Copy the example**:
    ```bash
-   mkdir -p monitors
-   cp -r examples/example-monitor monitors/my-monitor
+   cp -r monitors/example-monitor monitors/my-monitor
    ```
 
 2. **Edit**:
@@ -40,4 +39,4 @@ The monitor starts running in the background once the plugin is enabled. Track C
 ## Related docs
 
 - [`CONSTRUCT_TYPES.md`](./CONSTRUCT_TYPES.md)
-- [`examples/example-monitor/README.md`](../examples/example-monitor/README.md)
+- [`monitors/example-monitor/README.md`](../monitors/example-monitor/README.md)

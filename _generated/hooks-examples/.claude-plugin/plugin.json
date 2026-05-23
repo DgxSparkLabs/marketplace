@@ -1,0 +1,20 @@
+{
+  "name": "hooks-examples",
+  "description": "Reference example hook \u2014 template for contributors adding new hooks",
+  "version": "1.0.0",
+  "author": {
+    "name": "DgxSparkLabs",
+    "url": "https://github.com/DgxSparkLabs"
+  },
+  "homepage": "https://github.com/DgxSparkLabs/marketplace/tree/main/_generated/hooks-examples",
+  "repository": "https://github.com/DgxSparkLabs/marketplace",
+  "license": "MIT",
+  "dependencies": [
+    "example-hook"
+  ],
+  "keywords": [
+    "bundle",
+    "examples",
+    "hook"
+  ]
+}

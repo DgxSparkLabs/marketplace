@@ -14,7 +14,7 @@
   "plugins": [
     {
       "name": "example-agent",
-      "source": "./examples/example-agent",
+      "source": "./agents/example-agent",
       "description": "Reference template for a sub-agent plugin \u2014 copy to scaffold your own.",
       "version": "1.0.0",
       "author": {
@@ -25,7 +25,7 @@
     },
     {
       "name": "example-command",
-      "source": "./examples/example-command",
+      "source": "./commands/example-command",
       "description": "Reference template for a slash command plugin \u2014 copy to scaffold your own.",
       "version": "1.0.0",
       "author": {
@@ -36,7 +36,7 @@
     },
     {
       "name": "example-hook",
-      "source": "./examples/example-hook",
+      "source": "./hooks/example-hook",
       "description": "Reference template for a hook plugin \u2014 copy to scaffold your own.",
       "version": "1.0.0",
       "author": {
@@ -47,7 +47,7 @@
     },
     {
       "name": "example-lsp",
-      "source": "./examples/example-lsp",
+      "source": "./lsp-servers/example-lsp",
       "description": "Reference template for an LSP server plugin \u2014 copy to scaffold your own.",
       "version": "1.0.0",
       "author": {
@@ -58,7 +58,7 @@
     },
     {
       "name": "example-mcp",
-      "source": "./examples/example-mcp",
+      "source": "./mcp-servers/example-mcp",
       "description": "Reference template for an MCP server plugin \u2014 copy to scaffold your own.",
       "version": "1.0.0",
       "author": {
@@ -69,7 +69,7 @@
     },
     {
       "name": "example-monitor",
-      "source": "./examples/example-monitor",
+      "source": "./monitors/example-monitor",
       "description": "Reference template for a background monitor plugin \u2014 copy to scaffold your own.",
       "version": "1.0.0",
       "author": {
@@ -80,7 +80,7 @@
     },
     {
       "name": "example-output-style",
-      "source": "./examples/example-output-style",
+      "source": "./output-styles/example-output-style",
       "description": "Reference template for an output style plugin \u2014 copy to scaffold your own.",
       "version": "1.0.0",
       "author": {
@@ -91,7 +91,7 @@
     },
     {
       "name": "example-rule",
-      "source": "./examples/example-rule",
+      "source": "./rules/example-rule",
       "description": "Reference template for a rule plugin \u2014 ships rule content + activate.sh symlink helper. Copy to scaffold your own.",
       "version": "1.0.0",
       "author": {
@@ -102,7 +102,7 @@
     },
     {
       "name": "example-skill",
-      "source": "./examples/example-skill",
+      "source": "./skills/example-skill",
       "description": "Reference template for a Claude Code skill plugin \u2014 copy this directory to scaffold your own.",
       "version": "1.0.0",
       "author": {
@@ -113,7 +113,7 @@
     },
     {
       "name": "example-theme",
-      "source": "./examples/example-theme",
+      "source": "./themes/example-theme",
       "description": "Reference template for a theme plugin (experimental) \u2014 copy to scaffold your own.",
       "version": "1.0.0",
       "author": {
@@ -121,6 +121,116 @@
         "url": "https://github.com/DgxSparkLabs"
       },
       "category": "example"
+    },
+    {
+      "name": "agents-examples",
+      "source": "./_generated/agents-examples",
+      "description": "Reference example agent \u2014 template for contributors adding new agents",
+      "version": "1.0.0",
+      "author": {
+        "name": "DgxSparkLabs",
+        "url": "https://github.com/DgxSparkLabs"
+      },
+      "category": "example-bundle"
+    },
+    {
+      "name": "commands-examples",
+      "source": "./_generated/commands-examples",
+      "description": "Reference example command \u2014 template for contributors adding new commands",
+      "version": "1.0.0",
+      "author": {
+        "name": "DgxSparkLabs",
+        "url": "https://github.com/DgxSparkLabs"
+      },
+      "category": "example-bundle"
+    },
+    {
+      "name": "hooks-examples",
+      "source": "./_generated/hooks-examples",
+      "description": "Reference example hook \u2014 template for contributors adding new hooks",
+      "version": "1.0.0",
+      "author": {
+        "name": "DgxSparkLabs",
+        "url": "https://github.com/DgxSparkLabs"
+      },
+      "category": "example-bundle"
+    },
+    {
+      "name": "lsps-examples",
+      "source": "./_generated/lsps-examples",
+      "description": "Reference example LSP server \u2014 template for contributors adding new LSP servers",
+      "version": "1.0.0",
+      "author": {
+        "name": "DgxSparkLabs",
+        "url": "https://github.com/DgxSparkLabs"
+      },
+      "category": "example-bundle"
+    },
+    {
+      "name": "mcps-examples",
+      "source": "./_generated/mcps-examples",
+      "description": "Reference example MCP server \u2014 template for contributors adding new MCP servers",
+      "version": "1.0.0",
+      "author": {
+        "name": "DgxSparkLabs",
+        "url": "https://github.com/DgxSparkLabs"
+      },
+      "category": "example-bundle"
+    },
+    {
+      "name": "monitors-examples",
+      "source": "./_generated/monitors-examples",
+      "description": "Reference example monitor \u2014 template for contributors adding new monitors",
+      "version": "1.0.0",
+      "author": {
+        "name": "DgxSparkLabs",
+        "url": "https://github.com/DgxSparkLabs"
+      },
+      "category": "example-bundle"
+    },
+    {
+      "name": "output-styles-examples",
+      "source": "./_generated/output-styles-examples",
+      "description": "Reference example output style \u2014 template for contributors adding new output styles",
+      "version": "1.0.0",
+      "author": {
+        "name": "DgxSparkLabs",
+        "url": "https://github.com/DgxSparkLabs"
+      },
+      "category": "example-bundle"
+    },
+    {
+      "name": "rules-examples",
+      "source": "./_generated/rules-examples",
+      "description": "Reference example rule \u2014 template for contributors adding new rules",
+      "version": "1.0.0",
+      "author": {
+        "name": "DgxSparkLabs",
+        "url": "https://github.com/DgxSparkLabs"
+      },
+      "category": "example-bundle"
+    },
+    {
+      "name": "skills-examples",
+      "source": "./_generated/skills-examples",
+      "description": "Reference example skill \u2014 template for contributors adding new skills",
+      "version": "1.0.0",
+      "author": {
+        "name": "DgxSparkLabs",
+        "url": "https://github.com/DgxSparkLabs"
+      },
+      "category": "example-bundle"
+    },
+    {
+      "name": "themes-examples",
+      "source": "./_generated/themes-examples",
+      "description": "Reference example theme \u2014 template for contributors adding new themes",
+      "version": "1.0.0",
+      "author": {
+        "name": "DgxSparkLabs",
+        "url": "https://github.com/DgxSparkLabs"
+      },
+      "category": "example-bundle"
     },
     {
       "name": "rule-autonomous-persistence",

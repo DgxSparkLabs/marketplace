@@ -2,14 +2,13 @@
 
 Hooks fire on Claude Code lifecycle events (`UserPromptSubmit`, `PreToolUse`, `PostToolUse`, `SessionStart`, `Stop`, `SubagentStop`). Use them for logging, enforcement, context injection, or notifications.
 
-For the file structure, read [`examples/example-hook/README.md`](../examples/example-hook/README.md).
+For the file structure, read [`hooks/example-hook/README.md`](../hooks/example-hook/README.md).
 
 ## Workflow
 
 1. **Copy the example**:
    ```bash
-   mkdir -p hooks
-   cp -r examples/example-hook hooks/my-hook
+   cp -r hooks/example-hook hooks/my-hook
    ```
 
 2. **Edit**:
@@ -50,4 +49,4 @@ The hook fires automatically once enabled.
 ## Related docs
 
 - [`CONSTRUCT_TYPES.md`](./CONSTRUCT_TYPES.md)
-- [`examples/example-hook/README.md`](../examples/example-hook/README.md) — full format reference
+- [`hooks/example-hook/README.md`](../hooks/example-hook/README.md) — full format reference

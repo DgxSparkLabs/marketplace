@@ -2,13 +2,13 @@
 
 Rules are always-on behavioral guidelines loaded into every Claude session via `.claude/rules/`. Examples in this marketplace include `rule-blast-radius`, `rule-verify-your-work`, `rule-no-ai-credit`.
 
-For the architectural rationale (why rules need a manual `activate.sh` step), see [`INVESTIGATION_PLUGIN_DEPENDENCIES.md`](./INVESTIGATION_PLUGIN_DEPENDENCIES.md). For the file structure walkthrough, see [`examples/example-rule/README.md`](../examples/example-rule/README.md).
+For the architectural rationale (why rules need a manual `activate.sh` step), see [`INVESTIGATION_PLUGIN_DEPENDENCIES.md`](./INVESTIGATION_PLUGIN_DEPENDENCIES.md). For the file structure walkthrough, see [`rules/example-rule/README.md`](../rules/example-rule/README.md).
 
 ## Workflow
 
 1. **Copy the example**:
    ```bash
-   cp -r examples/example-rule rules/my-rule
+   cp -r rules/example-rule rules/my-rule
    ```
 
 2. **Edit the rule body**:
