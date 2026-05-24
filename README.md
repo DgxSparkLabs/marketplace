@@ -24,6 +24,7 @@ Pick your platform, copy the block, and you're running.
 
 ```bash
 # In a Claude Code session — register the marketplace, then install what you want
+# Install + list both work end-to-end (verified: CL1/CL2/CL3 PASS)
 /plugin marketplace add DgxSparkLabs/marketplace
 /plugin install bundle-skill-all@dgxsparklabs-marketplace
 # Or a single skill:
@@ -35,39 +36,62 @@ Pick your platform, copy the block, and you're running.
 ### Codex
 
 ```bash
-# Register the marketplace (reads from local clone or GitHub shortform)
-codex plugin marketplace add ./
-# Codex registers it as dgxsparklabs-marketplace in ~/.codex/config.toml
-# Individual plugin install follows the same pattern as Claude Code
+# Register the marketplace via GitHub shortform
+codex plugin marketplace add DgxSparkLabs/marketplace --ref feat/claude-plugin-compliance
+# Note: until PR #1 lands on main, --ref feat/claude-plugin-compliance is required.
+# After merge, the shorter form works: codex plugin marketplace add DgxSparkLabs/marketplace
+
+# Browse what's available
+codex plugin list
+
+# Install a specific plugin
+codex plugin add skill-telegram-notify@dgxsparklabs-marketplace
 ```
 
 ### Gemini
 
 ```bash
-# Install an individual skill from the generated plugin directory
-echo "y" | gemini skills install ./_generated/skill-telegram-notify
-# Validate the extension manifest
-gemini extensions validate ./.gemini/
-# Install as a Gemini extension (answers the workspace-trust prompt)
+# Install the whole marketplace as a Gemini extension directly from GitHub (no clone required)
+gemini extensions install https://github.com/DgxSparkLabs/marketplace --ref feat/claude-plugin-compliance --consent
+# Note: until PR #1 lands on main, --ref feat/claude-plugin-compliance is required.
+# After merge: gemini extensions install https://github.com/DgxSparkLabs/marketplace --consent
+
+# Verify the extension is registered (note: list output goes to stderr — pipe with 2>&1)
+gemini extensions list 2>&1
+
+# List discovered skills (project + user + built-in)
+gemini skills list --all 2>&1
+
+# Or, from a local clone (still works):
 echo "y" | gemini extensions install ./.gemini/ --consent
 ```
 
 ### Cursor
 
-Clone the repo and open it in the Cursor IDE. Cursor auto-detects `.cursor/rules/*.md` at project open — no install command exists or is needed.
-
 ```bash
+# Path 1: Cursor team marketplace (Cursor 2.6+, admin Dashboard import)
+#   Dashboard → Settings → Plugins → Import → paste GitHub repo URL → save
+#   Requires .cursor-plugin/marketplace.json at repo root (present in this repo)
+#   See: https://cursor.com/docs/plugins
+
+# Path 2: Clone + open (works for all Cursor versions)
 git clone https://github.com/DgxSparkLabs/marketplace
 # Open the cloned directory in Cursor IDE
+# Rules auto-load from .cursor/rules/; skills auto-load from .agents/skills/
+
+# Note: the Cursor CLI ('agent' binary) exists but has NO plugin install commands.
+# Install Cursor CLI (macOS/Linux/WSL): curl https://cursor.com/install -fsS | bash
+# Install Cursor CLI (Windows PowerShell): irm 'https://cursor.com/install?win32=true' | iex
 ```
 
 ### Windsurf
 
-Same clone-and-open pattern. Windsurf reads `.windsurf/rules/*.md` automatically.
-
 ```bash
+# Clone and open in Windsurf IDE
 git clone https://github.com/DgxSparkLabs/marketplace
-# Open the cloned directory in Windsurf IDE
+# Rules auto-load from .windsurf/rules/
+# Skills auto-load from .agents/skills/ (per Windsurf Cascade docs)
+# Invoke any skill via @skill-name in Cascade chat
 ```
 
 ### Devin
@@ -81,22 +105,24 @@ devin skills list
 devin rules list
 ```
 
+Note: skills come from both `.devin/skills/` and `.agents/skills/` — Devin reads both paths natively.
+
 ---
 
 ## Construct Types Available
 
 | Type | Prefix | Description | Count |
 |------|--------|-------------|-------|
-| skill | `skill-` | Slash-command invoked on demand | 27 |
-| rule | `rule-` | Always-on context loaded every session | 21 |
-| command | `command-` | Structured agent command definitions | 1 (example) |
-| agent | `agent-` | Autonomous agent configuration | 1 (example) |
-| hook | `hook-` | Event-triggered automation | 1 (example) |
-| mcp | `mcp-` | Model Context Protocol server config | 1 (example) |
-| lsp | `lsp-` | Language Server Protocol integration | 1 (example) |
-| monitor | `monitor-` | Continuous monitoring setup | 1 (example) |
-| output-style | `output-style-` | Output formatting rules | 1 (example) |
-| theme | `theme-` | Visual theme configuration | 1 (example) |
+| [skill](skills/) | `skill-` | Slash-command invoked on demand | 27 |
+| [rule](rules/) | `rule-` | Always-on context loaded every session | 21 |
+| [command](commands/) | `command-` | Structured agent command definitions | 1 (example) |
+| [agent](agents/) | `agent-` | Autonomous agent configuration | 1 (example) |
+| [hook](hooks/) | `hook-` | Event-triggered automation | 1 (example) |
+| [mcp](mcp-servers/) | `mcp-` | Model Context Protocol server config | 1 (example) |
+| [lsp](lsp-servers/) | `lsp-` | Language Server Protocol integration | 1 (example) |
+| [monitor](monitors/) | `monitor-` | Continuous monitoring setup | 1 (example) |
+| [output-style](output-styles/) | `output-style-` | Output formatting rules | 1 (example) |
+| [theme](themes/) | `theme-` | Visual theme configuration | 1 (example) |
 
 To add a new construct of any type, see [`docs/ADDING_A_CONSTRUCT.md`](docs/ADDING_A_CONSTRUCT.md).
 
@@ -180,7 +206,7 @@ claude plugin list
 claude plugin details skill-telegram-notify
 ```
 
-**Notable behavior:** Installing a bundle automatically installs its member plugins as dependencies. The install output reports `(+ N dependencies: ...)`. Marketplace is registered as `dgxsparklabs-marketplace`.
+**Notable behavior:** Installing a bundle automatically installs its member plugins as dependencies. The install output reports `(+ N dependencies: ...)`. Marketplace is registered as `dgxsparklabs-marketplace`. Install + list both verified end-to-end (CL1/CL2/CL3 PASS).
 
 **Cleanup:**
 
@@ -194,25 +220,33 @@ claude plugin marketplace remove dgxsparklabs-marketplace
 
 ### Codex
 
-**What it reads:** Reads `.claude-plugin/marketplace.json` when registered. Rules are read from `AGENTS.md`, `.cursor/rules/*.md`, and `.windsurf/rules/*.md` via filesystem — no `codex rules` subcommand exists.
+**What it reads:** Reads `.claude-plugin/marketplace.json` for marketplace registration. Per-plugin install reads `_generated/<plugin>/.codex-plugin/plugin.json` (emitted by the generator for every construct type in `CodexPlatform.supports`). Rules are read from `AGENTS.md`, `.cursor/rules/*.md`, and `.windsurf/rules/*.md` via filesystem.
 
 **Install + use:**
 
 ```bash
-# 1. Register from local clone
+# 1. Register the marketplace via GitHub shortform
+codex plugin marketplace add DgxSparkLabs/marketplace --ref feat/claude-plugin-compliance
+# Note: until PR #1 lands on main, --ref feat/claude-plugin-compliance is required.
+# After merge: codex plugin marketplace add DgxSparkLabs/marketplace
+
+# Or from a local clone:
 codex plugin marketplace add ./
 
-# 2. Verify registration
-cat ~/.codex/config.toml | grep dgxsparklabs-marketplace
+# 2. Browse what's available
+codex plugin list
 
-# 3. List configured MCP servers
+# 3. Install a specific plugin (requires .codex-plugin/plugin.json per plugin — present post-Phase-1)
+codex plugin add skill-telegram-notify@dgxsparklabs-marketplace
+
+# 4. List configured MCP servers
 codex mcp list
 
-# 4. Add an MCP server manually (Codex has no skills concept)
+# 5. Add an MCP server manually
 codex mcp add my-tool -- uvx mcp-server-fetch
 ```
 
-**Limitations:** Codex has no `skills` subcommand. Skills are conveyed via `AGENTS.md` instructions, not named slash-commands. Plugin install uses the same `/plugin install` convention as Claude Code, but Codex plugin manifests use a different format internally.
+**How per-plugin install works:** Each `_generated/<plugin>/` directory now contains `.codex-plugin/plugin.json` alongside `.claude-plugin/plugin.json`. Codex reads its own manifest; Claude reads its own. The per-plugin Codex manifest includes a construct-type pointer (`skills: "./skills/"` for skills, `mcpServers: "./mcp.json"` for MCP, `hooks: "./hooks/hooks.json"` for hooks).
 
 **Cleanup:**
 
@@ -224,25 +258,24 @@ codex plugin marketplace remove dgxsparklabs-marketplace
 
 ### Gemini
 
-**What it reads:** Skills from `.gemini/skills/<name>/SKILL.md` or individual install paths. Extension manifest at `.gemini/gemini-extension.json`. MCP servers from `~/.gemini/settings.json`. Rules via `GEMINI.md` and `AGENTS.md` — no `gemini rules` subcommand exists.
+**What it reads:** Skills from `.gemini/skills/<name>/SKILL.md` or individual install paths. Extension manifest at `.gemini/gemini-extension.json` (for local installs) and `gemini-extension.json` at repo root (for GitHub URL installs — both files are byte-identical). MCP servers from `~/.gemini/settings.json`. Rules via `GEMINI.md` and `AGENTS.md`.
 
 **Install + use:**
 
 ```bash
-# Install an individual skill (our SKILL.md format is directly detected)
-echo "y" | gemini skills install ./_generated/skill-telegram-notify
+# Install directly from GitHub (no clone required) — primary path post-Phase-1
+gemini extensions install https://github.com/DgxSparkLabs/marketplace --ref feat/claude-plugin-compliance --consent
+# Note: until PR #1 lands on main, --ref feat/claude-plugin-compliance is required.
+# After merge: gemini extensions install https://github.com/DgxSparkLabs/marketplace --consent
+
+# Verify the extension is registered (NOTE: output goes to stderr — pipe with 2>&1)
+gemini extensions list 2>&1
 
 # List discovered skills (project + user + built-in)
-gemini skills list --all
+gemini skills list --all 2>&1
 
-# Validate our extension manifest
-gemini extensions validate ./.gemini/
-
-# Install as a Gemini extension
+# Or, from a local clone (still works):
 echo "y" | gemini extensions install ./.gemini/ --consent
-
-# List installed extensions (NOTE: output goes to stderr — pipe with 2>&1)
-gemini extensions list 2>&1
 
 # List configured MCP servers (NOTE: output goes to stderr — pipe with 2>&1)
 gemini mcp list 2>&1
@@ -251,6 +284,7 @@ gemini mcp list 2>&1
 **Quirks:**
 - `gemini extensions list` and `gemini mcp list` write all output to **stderr**, not stdout. Always pipe with `2>&1` when grepping.
 - `gemini --list-extensions` (top-level flag) requires auth and exits 41. Use the `gemini extensions list` subcommand form instead — it is auth-free.
+- The `gemini-extension.json` at the repo root is byte-identical to `.gemini/gemini-extension.json`. The root copy exists solely to enable GitHub-URL install (`gemini extensions install <github-url>` expects the file at the cloned repo root).
 - No marketplace concept: skills and extensions are installed individually.
 - Gemini reports `Skipping project agents due to untrusted folder` until the workspace is trusted.
 
@@ -266,35 +300,61 @@ gemini mcp remove <name>
 
 ### Cursor
 
-**What it reads:** `.cursor/rules/*.md` files with YAML frontmatter (`description`, `globs`, `alwaysApply`). Auto-detected when the directory is opened in the IDE.
+**What it reads:** `.cursor/rules/*.md` files with YAML frontmatter (`description`, `globs`, `alwaysApply`). Skills from `.agents/skills/<name>/SKILL.md` (primary project-level skill path per Cursor docs). Auto-detected when the directory is opened in the IDE.
 
-**Install:** No CLI exists for Cursor. Clone the repo and open the directory in the IDE.
+**Install paths:**
+
+**Path 1 — Cursor team marketplace (Cursor 2.6+, admin only):**
+Import via Dashboard: Settings → Plugins → Import → paste the GitHub repo URL → save. This uses `.cursor-plugin/marketplace.json` at the repo root (present post-Phase-1). See: https://cursor.com/docs/plugins
+
+**Path 2 — Clone and open (all Cursor versions):**
 
 ```bash
 git clone https://github.com/DgxSparkLabs/marketplace
 # Open in Cursor IDE — rules appear automatically in the rules panel
+# Skills are available from .agents/skills/ via @skill-name
 ```
 
-**Validate format (third-party, auth-free):**
+**Cursor CLI (`agent` binary):**
+
+The `agent` CLI exists but has no plugin install commands. It is useful for interactive sessions only.
+
+```bash
+# Install (macOS/Linux/WSL):
+curl https://cursor.com/install -fsS | bash
+
+# Install (Windows PowerShell):
+irm 'https://cursor.com/install?win32=true' | iex
+
+# Verify:
+agent --version
+```
+
+Available commands: `install-shell-integration`, `login`, `logout`, `mcp`, `worker`, `models`, `create-chat`, `generate-rule`, `agent`, and others. No `plugin install`, `plugin list`, or `marketplace` subcommands exist. The `--plugin-dir <path>` flag loads a local plugin directory at runtime (not a persistent install).
+
+**Validate rule format (third-party, auth-free):**
 
 ```bash
 npx --yes cursor-doctor@1.11.0 scan .cursor/rules/
 ```
 
-**Limitations:** No headless CLI. No install command. The IDE does all the detection.
-
 ---
 
 ### Windsurf
 
-**What it reads:** `.windsurf/rules/*.md` files with a required `trigger:` frontmatter field (`always_on`, `model_decision`, `glob`, or `manual`). Body limit: 12,000 characters per file.
+**What it reads:** `.windsurf/rules/*.md` files with a required `trigger:` frontmatter field (`always_on`, `model_decision`, `glob`, or `manual`). Body limit: 12,000 characters per file. Skills from `.windsurf/skills/<name>/SKILL.md` AND `.agents/skills/<name>/SKILL.md` — both auto-discovered by Windsurf Cascade (per `docs.windsurf.com/windsurf/cascade/skills`).
 
 **Install:** Clone and open in the Windsurf IDE. No CLI exists.
 
 ```bash
 git clone https://github.com/DgxSparkLabs/marketplace
-# Open in Windsurf IDE — rules auto-load from .windsurf/rules/
+# Open in Windsurf IDE
+# Rules auto-load from .windsurf/rules/
+# Skills auto-load from .agents/skills/ (per Windsurf Cascade docs)
+# Invoke any skill via @skill-name in Cascade chat
 ```
+
+**Skills story post-Phase-1:** The generator now emits `.agents/skills/<name>/SKILL.md` for all 27 skills via `AgentsPlatform`. Windsurf Cascade picks these up automatically — all 27 skills are visible where previously they were not.
 
 **Limitations:** No headless CLI. No install command.
 
@@ -303,7 +363,7 @@ git clone https://github.com/DgxSparkLabs/marketplace
 ### Devin
 
 **What it reads:**
-- Skills: `.devin/skills/<name>/SKILL.md` (project) or `~/.config/devin/skills/<name>/SKILL.md` (user)
+- Skills: `.devin/skills/<name>/SKILL.md` (project) AND `.agents/skills/<name>/SKILL.md` — Devin reads both paths natively
 - Rules: `.windsurf/rules/*.md`, `.cursor/rules/*.md`, `.cursorrules`, `AGENTS.md` — all read natively
 
 **Install + use:**
@@ -327,7 +387,7 @@ devin skills paths
 devin rules paths
 ```
 
-**Notable behavior:** Devin reads `.cursor/rules/` and `.windsurf/rules/` natively — it sees all 21 of our rules automatically from those mirror directories. No configuration required. This is the broadest cross-platform coverage: one clone and all skills plus rules are immediately visible. `devin auth login` says "Log in to Windsurf" — Devin is built on Windsurf/Codeium infrastructure.
+**Notable behavior:** Devin reads `.cursor/rules/` and `.windsurf/rules/` natively — it sees all 21 of our rules automatically from those mirror directories. Skills come from both `.devin/skills/` and `.agents/skills/`; the `.agents/skills/` path is the cross-platform convergence point shared with Windsurf and Cursor. `devin auth login` says "Log in to Windsurf" — Devin is built on Windsurf/Codeium infrastructure.
 
 ---
 
@@ -337,8 +397,11 @@ devin rules paths
 marketplace/
 ├── MARKETPLACE.toml              # Marketplace identity (owner, version, license)
 ├── catalog.toml                  # Bundle definitions only
+├── gemini-extension.json         # Root-level copy for gemini extensions install <github-url>
 ├── .claude-plugin/
 │   └── marketplace.json          # Generated root manifest
+├── .cursor-plugin/
+│   └── marketplace.json          # Cursor team-marketplace manifest (Cursor 2.6+)
 ├── skills/                       # Source skill directories (one per skill)
 ├── rules/                        # Source rule directories (one per rule)
 ├── commands/                     # Command construct sources
@@ -350,12 +413,14 @@ marketplace/
 ├── output-styles/                # Output style construct sources
 ├── themes/                       # Theme construct sources
 ├── _generated/                   # Generated plugin wrappers + bundles
+├── .agents/
+│   └── skills/                   # Cross-platform skills mirror (Windsurf, Cursor, Devin)
 ├── .codex/   .gemini/            # Cross-platform mirrors (Codex, Gemini)
 ├── .cursor/  .windsurf/  .devin/ # Cross-platform mirrors (Cursor, Windsurf, Devin)
 ├── scripts/
-│   ├── generate_manifest.py      # Generator entry point (5-phase orchestrator)
+│   ├── generate_manifest.py      # Generator entry point (6-phase orchestrator)
 │   ├── constructs.py             # 10 Construct classes
-│   ├── platforms.py              # 6 Platform classes
+│   ├── platforms.py              # 7 Platform classes (incl. AgentsPlatform)
 │   ├── bundles.py                # Bundle + BundleMember dataclasses
 │   └── utils.py                  # Shared helpers
 └── docs/                         # Architecture docs, platform findings, plans
