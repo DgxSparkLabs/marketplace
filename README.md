@@ -1,9 +1,10 @@
 # DgxSparkLabs Marketplace
 
-A multi-platform marketplace of agent skills, rules, and other constructs for Claude Code, with auto-generated mirrors for Codex, Gemini, Cursor, Windsurf, and Devin. Install a single plugin and get a curated tool; install a bundle and get a whole domain. Every construct lives in one source directory and the generator propagates it to all six platforms automatically.
+A multi-platform marketplace of agent skills, rules, and other constructs. Install natively on Claude Code, Codex, and Gemini with one-command GitHub fetches; import directly from GitHub into Cursor's team marketplace (IDE); or clone-and-open on Windsurf and Devin. Every construct lives in one source directory and the generator emits platform-native manifests (`.claude-plugin/`, `.codex-plugin/`, `.cursor-plugin/`) plus a shared `.agents/skills/` mirror that Windsurf, Cursor, and Devin all read natively.
 
 ## Table of Contents
 
+- [GitHub-Direct Install Support](#github-direct-install-support)
 - [Quick Start](#quick-start)
   - [Claude Code](#claude-code) · [Codex](#codex) · [Gemini](#gemini) · [Cursor](#cursor) · [Windsurf](#windsurf) · [Devin](#devin)
 - [Construct Types Available](#construct-types-available)
@@ -15,6 +16,21 @@ A multi-platform marketplace of agent skills, rules, and other constructs for Cl
 - [Contributing](#contributing)
 - [Deep Dives](#deep-dives)
 - [License](#license)
+
+## GitHub-Direct Install Support
+
+At-a-glance: which platforms install this marketplace directly from a GitHub URL or shortform, and which require cloning first.
+
+| Platform | One-command GitHub install | Command / action |
+|----------|---------------------------|------------------|
+| Claude Code | ✅ Yes (CLI shortform) | `/plugin marketplace add DgxSparkLabs/marketplace` |
+| Codex | ✅ Yes (CLI shortform) | `codex plugin marketplace add DgxSparkLabs/marketplace --ref <branch>` |
+| Gemini | ✅ Yes (CLI HTTPS URL) | `gemini extensions install https://github.com/DgxSparkLabs/marketplace --consent` |
+| Cursor | ⚙️ IDE-only (paste GitHub URL) | Dashboard → Settings → Plugins → Import → paste repo URL (Cursor 2.6+) |
+| Windsurf | ❌ Clone required (no CLI exists) | `git clone https://github.com/DgxSparkLabs/marketplace` then open in IDE |
+| Devin | ❌ Clone required (no marketplace concept) | `git clone https://github.com/DgxSparkLabs/marketplace` then `devin skills list` |
+
+**Pre-merge note**: while PR #1 is open and not yet merged to main, the Codex and Gemini one-command installs above require `--ref feat/claude-plugin-compliance`. After merge to main, the `--ref` argument becomes optional. Cursor's team-marketplace import always reads the default branch by default.
 
 ## Quick Start
 
@@ -129,6 +145,8 @@ To add a new construct of any type, see [`docs/ADDING_A_CONSTRUCT.md`](docs/ADDI
 ---
 
 ## Installation Patterns
+
+These examples show Claude Code's `/plugin install` slash-command syntax (most expressive). Equivalent commands exist for Codex (`codex plugin add <name>@dgxsparklabs-marketplace`) and Gemini (`gemini extensions install` for the whole marketplace, or `gemini skills install` for individual skills). See [Per-Platform Details](#per-platform-details) for each platform's exact command form.
 
 ### Individual plugins
 
