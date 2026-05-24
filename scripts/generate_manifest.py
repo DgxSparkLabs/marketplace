@@ -180,7 +180,11 @@ def main() -> None:
         )
 
     # ── Phase 3: Cross-platform mirrors ───────────────────────────────────────
-    # Wipe all mirror roots first for a clean slate
+    # Wipe all mirror roots first for a clean slate. Platforms whose
+    # ``mirror_directory`` is None (DevinPlatform after D-1; ClaudeCodePlatform)
+    # are filtered both here and below. CodexPlatform still has a mirror_directory
+    # because Unit 4 emits .codex/agents/<n>.toml; only its skill mirror was
+    # retired (D-1) — the emit method short-circuits non-Agent construct types.
     for platform in PLATFORMS.values():
         if platform.mirror_directory is not None and platform.mirror_directory.exists():
             shutil.rmtree(platform.mirror_directory)

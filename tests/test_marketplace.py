@@ -208,23 +208,22 @@ class TestCatchAllBundles(unittest.TestCase):
 class TestPlatformMirrors(unittest.TestCase):
     """Per-platform mirror contents — integration tests."""
 
-    def test_codex_skills_mirror(self):
-        """Codex mirror must contain a directory for every skill."""
+    def test_codex_no_skills_mirror(self):
+        """Codex skills mirror retired (D-1) — .codex/skills/ must not exist.
+
+        SkillConstruct stays in CodexPlatform.supports so per-plugin
+        .codex-plugin/plugin.json is still emitted (Phase 1.5); but the
+        repo-root .codex/skills/ mirror tree is gone (Codex never read it —
+        hermetic act run Q-A1 confirmation).
+        """
         codex = PLATFORMS["codex"]
-        if SkillConstruct not in codex.supports:
-            self.skipTest("Codex does not declare skill support")
-        skill = next(c for c in CONSTRUCTS.values() if isinstance(c, SkillConstruct))
-        for name in scan_source_dir(skill.source_directory):
-            with self.subTest(skill=name):
-                mirror_dir = codex.mirror_directory / "skills" / name
-                self.assertTrue(
-                    mirror_dir.exists(),
-                    f"Codex mirror missing skills/{name}/",
-                )
-                self.assertTrue(
-                    (mirror_dir / "SKILL.md").exists(),
-                    f"Codex mirror skills/{name}/ missing SKILL.md",
-                )
+        # mirror_directory is intentionally kept (.codex/) so Unit 4 can write
+        # .codex/agents/<n>.toml; only the skills/ subtree was retired.
+        skills_dir = codex.mirror_directory / "skills"
+        self.assertFalse(
+            skills_dir.exists(),
+            f"Codex skills mirror retired but {skills_dir} still exists",
+        )
 
     def test_gemini_skills_mirror_and_extension_manifest(self):
         """Gemini mirror must contain skills and a valid gemini-extension.json."""
@@ -270,20 +269,23 @@ class TestPlatformMirrors(unittest.TestCase):
                     f"Windsurf mirror missing rules/{name}.md",
                 )
 
-    def test_devin_skills_mirror(self):
-        """Devin mirror must contain a directory for every skill.
+    def test_devin_no_mirror_directory(self):
+        """DevinPlatform.mirror_directory is None after D-1 retirement.
 
-        Devin reads rules from .cursor/ and .windsurf/ natively (empirically
-        verified); we emit a Devin-native skills mirror only.
+        Devin enumerates .agents/skills/ natively (verified hermetic act run
+        Q-B1 2026-05-25); the .devin/skills/ mirror was a redundant copy.
+        SkillConstruct stays in DevinPlatform.supports so a future per-plugin
+        Devin manifest format can plug into Phase 1.5 without code changes.
         """
         devin = PLATFORMS["devin"]
-        skill = next(c for c in CONSTRUCTS.values() if isinstance(c, SkillConstruct))
-        for name in scan_source_dir(skill.source_directory):
-            with self.subTest(skill=name):
-                self.assertTrue(
-                    (devin.mirror_directory / "skills" / name / "SKILL.md").exists(),
-                    f"Devin mirror missing skills/{name}/SKILL.md",
-                )
+        self.assertIsNone(
+            devin.mirror_directory,
+            "DevinPlatform.mirror_directory must be None after D-1 retirement",
+        )
+        self.assertFalse(
+            (REPO_ROOT / ".devin").exists(),
+            ".devin/ directory must not exist after D-1 retirement",
+        )
 
 
 # ─── TestMarketplaceJson ──────────────────────────────────────────────────────
@@ -864,7 +866,9 @@ class TestMirrorHygiene(unittest.TestCase):
     Verifies no cross-platform manifest directories leaked into mirror dirs.
     """
 
-    MIRROR_DIRS_TO_CHECK = [".codex", ".gemini", ".devin", ".agents"]
+    # .devin removed post-D-1 (DevinPlatform.mirror_directory = None).
+    # .codex retained — mirror_directory still set (.codex/agents/ in Unit 4).
+    MIRROR_DIRS_TO_CHECK = [".codex", ".gemini", ".agents"]
 
     def _find_leaked_dirs(self, mirror_root: Path, leak_pattern: str) -> list[str]:
         """Walk mirror_root and return paths of any leak_pattern subdirs."""
@@ -888,8 +892,8 @@ class TestMirrorHygiene(unittest.TestCase):
                 )
 
     def test_no_codex_plugin_in_mirror_dirs(self):
-        """No .codex-plugin/ must appear inside .gemini/, .devin/, .agents/ mirrors."""
-        for mirror_name in [".gemini", ".devin", ".agents"]:
+        """No .codex-plugin/ must appear inside .gemini/, .agents/ mirrors."""
+        for mirror_name in [".gemini", ".agents"]:
             mirror_root = REPO_ROOT / mirror_name
             with self.subTest(mirror=mirror_name):
                 leaked = self._find_leaked_dirs(mirror_root, ".codex-plugin")

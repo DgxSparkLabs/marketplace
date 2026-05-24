@@ -128,14 +128,15 @@ class ClaudeCodePlatform:
 class CodexPlatform:
     """Codex CLI platform.
 
-    Codex reuses our .claude-plugin/marketplace.json directly and also
-    supports skill mirrors at .codex/skills/<name>/.
+    Codex reuses our .claude-plugin/marketplace.json directly. Skills are
+    served per-plugin via _generated/<plugin>/.codex-plugin/plugin.json
+    (Phase 1.5) — the legacy repo-root .codex/skills/ mirror was retired
+    (D-1, hermetic act run Q-A1 confirmed Codex never consumed it).
 
     ``supports`` controls both Phase 3 mirror emission AND Phase 1.5 plugin
-    manifest emission. ``emit`` only writes mirrors for SkillConstruct (skills
-    are the only content that maps to a Codex mirror directory). For
-    MCPConstruct and HookConstruct, only the ``build_plugin_json`` plugin
-    manifest is emitted (Phase 1.5); no mirror directory content is written.
+    manifest emission. For SkillConstruct, MCPConstruct, and HookConstruct,
+    only the ``build_plugin_json`` plugin manifest is emitted (Phase 1.5);
+    no mirror directory content is written for these types.
 
     build_plugin_json produces a Codex-shaped manifest per
     developers.openai.com/codex/plugins/build (fetched 2026-05-24):
@@ -148,17 +149,11 @@ class CodexPlatform:
     supports: set[type[Construct]] = {SkillConstruct, MCPConstruct, HookConstruct}
 
     def emit(self, construct: Construct, name: str) -> None:
-        # Only skill content has a Codex mirror directory (.codex/skills/).
-        # MCP and hook manifests are handled by build_plugin_json only.
-        if not isinstance(construct, SkillConstruct):
-            return
-        dst = self.mirror_directory / "skills" / name
-        shutil.copytree(
-            construct.source_directory / name,
-            dst,
-            dirs_exist_ok=True,
-            ignore=_COPY_IGNORE,
-        )
+        # Skill mirror retired (D-1): skills are surfaced via Phase 1.5
+        # _generated/<plugin>/.codex-plugin/plugin.json only.
+        # MCP and hook manifests are also handled by build_plugin_json only.
+        # Unit 4 adds the AgentConstruct branch writing .codex/agents/<n>.toml.
+        return
 
     def build_plugin_json(self, construct: Construct, name: str) -> dict:
         full_name = f"{construct.prefix}-{name}"
@@ -285,21 +280,19 @@ class DevinPlatform:
 
     Devin reads rules from .cursor/rules/ and .windsurf/rules/ natively
     (verified empirically — no separate .devin/rules/ emission needed).
-    Skills are mirrored at .devin/skills/<name>/.
+    Skills are read from .agents/skills/ natively (verified hermetic act
+    run Q-B1 2026-05-25); the legacy .devin/skills/ mirror was retired
+    per D-1. SkillConstruct stays in ``supports`` so a future per-plugin
+    Devin manifest schema can plug in via Phase 1.5 without code changes.
     """
 
     name = "devin"
-    mirror_directory: Path = REPO_ROOT / ".devin"
+    mirror_directory: Path | None = None
     supports: set[type[Construct]] = {SkillConstruct}
 
     def emit(self, construct: Construct, name: str) -> None:
-        dst = self.mirror_directory / "skills" / name
-        shutil.copytree(
-            construct.source_directory / name,
-            dst,
-            dirs_exist_ok=True,
-            ignore=_COPY_IGNORE,
-        )
+        # No mirror directory (D-1): Devin reads .agents/skills/ natively.
+        return
 
     def build_plugin_json(self, construct: Construct, name: str) -> dict:
         # Devin has no plugin manifest format; return {} to skip emission.
