@@ -17,7 +17,7 @@ my-rule/
     └── cursor.md       # Cursor format (alwaysApply: true)
 ```
 
-There is no `install.sh` in the source directory — the marketplace installer (`scripts/generate_manifest.py`) auto-generates a `_generated/rule-<name>/` plugin wrapper containing its own `activate.sh` for symlinking into `.claude/rules/`. See [`ADDING_A_RULE.md`](./ADDING_A_RULE.md) for the workflow.
+There is no `install.sh` in the source directory — the marketplace installer (`scripts/generate_manifest.py`) auto-generates a `_generated/rule-<name>/` plugin wrapper containing its own `activate.sh` for symlinking into `.claude/rules/`. See [[ADDING_A_CONSTRUCT]] for the workflow (the single contributor walkthrough covers rules along with the other 9 construct types).
 
 ---
 

@@ -61,7 +61,7 @@ bash ~/.claude/plugins/cache/dgxsparklabs-marketplace/rule-blast-radius/activate
 The generator (`scripts/generate_manifest.py`) reads sources and produces everything else. The architecture after the DI refactor:
 
 - `scripts/constructs.py` — 10 typed Construct classes; each implements `build_plugin_json` + `emit`
-- `scripts/platforms.py` — 6 typed Platform classes; each declares `supports` + implements `emit`
+- `scripts/platforms.py` — 7 typed Platform classes (Claude, Codex, Gemini, Cursor, Windsurf, Devin, Agents); each declares `supports` + implements `emit`
 - `scripts/bundles.py` — Bundle dataclass + loader for `catalog.toml`
 - `scripts/utils.py` — shared helpers
 - `catalog.toml` — bundle definitions ONLY (no construct-type config, no platform config)

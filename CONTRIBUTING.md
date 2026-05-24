@@ -1,68 +1,168 @@
+---
+date: 2026-05-24
+purpose: how to add things, test, follow conventions
+status: live
+---
+
 # Contributing
 
-Thanks for your interest in contributing to the marketplace.
+This is the canonical contributor doc. For the step-by-step "how do I add a skill / rule / hook / ...?" walkthrough, the authoritative file is [[ADDING_A_CONSTRUCT]] — this doc covers the broader workflow (quickstart, testing, conventions, output discipline). Hub-and-spoke: when this file mentions adding a construct type, it points at [[ADDING_A_CONSTRUCT]] rather than duplicating the steps.
 
-The marketplace ships **plugins** for ten Claude Code construct types: skills, rules, commands, agents, hooks, MCP servers, LSP servers, monitors, output styles, and themes — plus **domain bundles** that auto-install a curated group of related plugins.
+## Quickstart
 
-The fastest path to adding anything is **copy the matching `examples/example-<type>/` directory** and adapt. Each example is both a working installable plugin and a tutorial.
+```bash
+# 1. Clone
+git clone https://github.com/DgxSparkLabs/marketplace
+cd marketplace
 
-## Adding something — pick your construct
+# 2. Install uv (Python's modern dep manager — required; we don't use pip)
+# macOS/Linux:    curl -LsSf https://astral.sh/uv/install.sh | sh
+# Windows (PS):   irm https://astral.sh/uv/install.ps1 | iex
 
-Detailed walkthroughs (each takes ~5 minutes to read):
+# 3. Run the test suite (52 tests; should all pass)
+uv run tests/test_marketplace.py
 
-| Construct type | Tutorial |
-|----------------|----------|
-| Skill | [`docs/ADDING_A_SKILL.md`](./docs/ADDING_A_SKILL.md) |
-| Rule | [`docs/ADDING_A_RULE.md`](./docs/ADDING_A_RULE.md) |
-| Command | [`docs/ADDING_A_COMMAND.md`](./docs/ADDING_A_COMMAND.md) |
-| Agent | [`docs/ADDING_AN_AGENT.md`](./docs/ADDING_AN_AGENT.md) |
-| Hook | [`docs/ADDING_A_HOOK.md`](./docs/ADDING_A_HOOK.md) |
-| MCP server | [`docs/ADDING_AN_MCP_SERVER.md`](./docs/ADDING_AN_MCP_SERVER.md) |
-| LSP server | [`docs/ADDING_AN_LSP_SERVER.md`](./docs/ADDING_AN_LSP_SERVER.md) |
-| Monitor | [`docs/ADDING_A_MONITOR.md`](./docs/ADDING_A_MONITOR.md) |
-| Output style | [`docs/ADDING_AN_OUTPUT_STYLE.md`](./docs/ADDING_AN_OUTPUT_STYLE.md) |
-| Theme | [`docs/ADDING_A_THEME.md`](./docs/ADDING_A_THEME.md) |
-| **Domain bundle** | [`docs/ADDING_A_DOMAIN_BUNDLE.md`](./docs/ADDING_A_DOMAIN_BUNDLE.md) |
+# 4. Regenerate manifests + mirrors from sources
+uv run scripts/generate_manifest.py
 
-For the construct-types overview and naming convention, see [`docs/CONSTRUCT_TYPES.md`](./docs/CONSTRUCT_TYPES.md).
+# 5. View the generated outputs
+ls _generated/                          # per-plugin wrappers (one per construct + bundles)
+cat .claude-plugin/marketplace.json     # top-level manifest (81 plugin entries)
+ls .agents/skills/                      # cross-platform skill mirror (Windsurf/Cursor/Devin)
+```
 
-## Architecture in one paragraph
+No project-level Python deps. Every script declares its own dependencies via PEP 723 inline metadata and runs via `uv run script.py`.
 
-Human-edited content lives in `skills/`, `rules/`, and `examples/`. Tagging lives in `catalog.toml` (which skill/rule belongs to which domain). The script `scripts/generate_manifest.py` consumes both plus `MARKETPLACE.toml` (single source for owner/version/license) and produces everything else: `.claude-plugin/marketplace.json`, per-plugin wrappers in `_generated/`, and cross-platform mirrors in `.codex/`, `.gemini/`, `.cursor/`, `.windsurf/`, `.devin/`. CI fails any PR where generated content drifts from sources.
+## Adding things
 
-## The contributor checklist
+### Add a new skill
 
-For every PR:
+Copy `skills/example/` to `skills/<your-skill-name>/`, edit the `SKILL.md` frontmatter and body, optionally add to a bundle in `catalog.toml`, then regenerate. The full step-by-step is in [[ADDING_A_CONSTRUCT]]; the frontmatter field reference is in [[SKILL_FORMAT]].
 
-1. **Edit source content only** — never edit `_generated/` or the cross-platform mirror directories. The generator overwrites them.
-2. **Tag new skills/rules in `catalog.toml`** — every skill must belong to exactly one `[skill_domain.*]`; every rule must belong to exactly one `[rule_domain.*]`. The test suite enforces this.
-3. **Regenerate** — `uv run scripts/generate_manifest.py`
-4. **Test** — `uv run tests/test_marketplace.py` (must pass)
-5. **Validate the plugin manifest** — `claude plugin validate <new-plugin-dir>` (if the `claude` CLI is available locally)
-6. **Commit** with a clear conventional message. Do not include AI co-author attribution.
+### Add a new rule
 
-## Quality bar
+Copy `rules/example/` to `rules/<your-rule-name>/`, edit `rule.md` (and the `formats/` files for Cursor/Windsurf if needed), regenerate. See [[ADDING_A_CONSTRUCT]] for the workflow and [[RULE_FORMAT]] for the multi-format spec (rule.md + Windsurf + Cursor + AGENTS.md).
 
-- **Names are kebab-case.** Skill, rule, domain, and plugin names: lowercase letters, digits, hyphens only.
-- **Author is an object.** `{ "name": "...", "url": "..." }`, never a string.
-- **Paths start with `./`.** Marketplace.json `source` paths and `skills`/`commands`/`agents` arrays.
-- **No hardcoded secrets.** Use environment variables for all credentials. The secret scanner in `tests/test_marketplace.py` will block obvious patterns.
-- **Python scripts use PEP 723 + `uv run`.** Inline dependency metadata, no project-level `pyproject.toml`.
-- **Shell scripts use `set -euo pipefail` and a shebang.**
-- **One construct, one purpose.** Keep skills, rules, commands, and agents focused on a single concern.
+### Add a new MCP server / hook / agent / etc.
 
-## Submission
+Same pattern — copy `<source-dir>/example/`, edit, regenerate. The full per-construct table (source dir, example template, description source) is in [[CONSTRUCT_TYPES]]; the workflow is identical for all 10 construct types per [[ADDING_A_CONSTRUCT]].
 
-1. Fork the repository.
-2. Create a branch: `feat/<short-description>`.
-3. Make your changes (source + catalog.toml tagging only — let the generator handle the rest).
-4. Run `uv run scripts/generate_manifest.py` and commit the generated output too.
-5. Run `uv run tests/test_marketplace.py` — all 35+ tests must pass.
-6. Open a PR to `main`. CI runs the generator with `--check` and the test suite.
+### Add a new construct type
 
-## Related reading
+Adding an 11th construct type means writing a new class in `scripts/constructs.py` implementing the `Construct` protocol (`prefix`, `source_directory`, `category`, `build_plugin_json`, `emit`) and registering it in the `CONSTRUCTS` dict. Then declare `supports` membership in any `Platform` class that should host it (see [[ARCHITECTURE#The two protocols]]). Phase 1 picks up the new construct automatically; Phase 1.5 emits per-platform manifests via the `supports` gate; the code-generated `bundle-<prefix>-all` catch-all is created by Phase 2b. No generator-loop changes needed.
 
-- [`docs/CONSTRUCT_TYPES.md`](./docs/CONSTRUCT_TYPES.md) — what each construct is and when to use it
-- [`AGENTS.md`](./AGENTS.md) — project conventions for AI agents
-- [`docs/PLAN_PLUGIN_COMPLIANCE.md`](./docs/PLAN_PLUGIN_COMPLIANCE.md) — full architecture
-- [`docs/INVESTIGATION_PLUGIN_DEPENDENCIES.md`](./docs/INVESTIGATION_PLUGIN_DEPENDENCIES.md) — why bundles use the `dependencies` field
+### Add a new platform
+
+Adding a new platform means writing a new class in `scripts/platforms.py` implementing the `Platform` protocol (`name`, `mirror_directory`, `supports`, `emit`, `build_plugin_json`) and registering it in the `PLATFORMS` dict. Phase 1.5 emits per-plugin manifests automatically wherever `type(construct) in platform.supports`; Phase 3 calls `platform.emit` for every supported construct instance. See [[ARCHITECTURE#The seven platform classes]] for shape examples (especially `AgentsPlatform` as the simplest case).
+
+## Submission flow
+
+When you're ready to contribute changes back upstream:
+
+1. **Fork the repository** on GitHub (outside contributors need a fork; team members with write access can skip this).
+2. **Create a branch** from `main`: `git checkout -b your-branch-name`.
+3. **Make your changes** per the [[#Adding things]] section above.
+4. **Regenerate and check for drift**: `uv run scripts/generate_manifest.py --check`. This must exit 0.
+5. **Validate generated plugin manifests**: `claude plugin validate _generated/<your-plugin>` for each plugin you added or changed. Catches manifest errors before CI does.
+6. **Run the test suite**: `uv run tests/test_marketplace.py` (52 tests, all must pass).
+7. **Open a PR** against `main`. See the [[#PR-only flow (never push to main)]] convention below.
+
+## Testing
+
+### Running the test suite
+
+```bash
+uv run tests/test_marketplace.py        # all 52 tests
+uv run tests/test_marketplace.py -v     # verbose
+uv run tests/test_marketplace.py -k rule  # only rule-related tests
+```
+
+Tests live in `tests/test_marketplace.py` and cover: directory structure, YAML frontmatter parity, catalog consistency, generator drift, manifest schema, per-platform per-plugin manifest emission, mirror dir hygiene (no leaked `.claude-plugin/`), and secret scanning. Always run before committing.
+
+The drift gate (`uv run scripts/generate_manifest.py --check`) runs in CI and exits 1 if regenerated output differs from committed output. Run it before pushing if you've changed anything under `scripts/`, `<construct>/`, or `MARKETPLACE.toml`/`catalog.toml`.
+
+### Running act-based verification
+
+For hermetic local-container CI re-verification before pushing:
+
+```powershell
+# From repo root (Windows PowerShell)
+docs/VERIFICATION_2026-05/reproduce.ps1
+```
+
+The script runs four verification workflows (`verify-codex.yml`, `verify-gemini.yml`, `verify-cursor.yml`, `verify-claude.yml`) via nektos/act 0.2.63+ in Docker containers. Each workflow's full stdout/stderr lands in `docs/VERIFICATION_2026-05/logs/verify-<platform>-run.log`; per-claim snippets are extracted to `logs/<ID>.txt`. Prerequisites: act + Docker Desktop + the `catthehacker/ubuntu:act-latest` image pulled. See the script for the full command sequence.
+
+## Conventions
+
+### No AI co-author attribution in commits
+
+Never attribute work to any AI agent, tool, or assistant in commits, PRs, code comments, documentation, READMEs, changelogs, or any other output. No "Co-Authored-By" lines referencing an AI/bot. No "Generated with", "Created by", "Built with", "Powered by" followed by an AI tool name. No `noreply@` email addresses for AI bots. The repo's own [`rules/no-ai-credit/`](../rules/no-ai-credit/) rule documents this; check for and remove any such lines before finishing a task.
+
+### PR-only flow (never push to main)
+
+`main` is protected. All changes go through PRs. The branch policy at `HANDOFF.md` keeps a record of which branch each phase shipped on. The Phase 5 work shipped on `feat/claude-plugin-compliance` and was merged to `main` at `bfb476d`. Follow-up cleanup typically gets its own branch (e.g., `docs/post-merge-cleanup`).
+
+### Use uv, not pip
+
+ALWAYS use `uv`. NEVER use `pip`, `pip install`, `virtualenv`, `venv`, `pyenv`, `conda`, or `poetry`.
+
+- Scripts: PEP 723 inline metadata + `uv run script.py`
+- Projects: `uv init`, `uv add`, `uv sync`, `uv run`
+- Virtualenvs: `uv venv` (never `python -m venv`)
+- Global tools: `uv tool install` (never `pip install --user` or `pipx`)
+
+Python 3.11+ (we use `match`, `Protocol[runtime_checkable]`, etc.). Shell scripts need `set -euo pipefail` and a shebang.
+
+### Obsidian vault conventions
+
+This repo is also an Obsidian vault. When you write `.md` files:
+
+- `[[Note]]` — link for *further reading*. Each link should mean something; don't link every mention of a word.
+- `[[Note#Heading]]` — section-level link.
+- `![[Note]]` / `![[Note#Heading]]` — transclude when content is needed *in place*. Use sparingly.
+- `#tag` (nested `#topic/sub` welcome) — group by topic. lowercase, singular.
+- Frontmatter properties — for facts *about* the note (status, type, date). Use these instead of tags for anything typed.
+- Folders — group by type, not topic. A file has many tags but one location.
+
+### Output discipline (no emojis unless asked, no narration without artifacts)
+
+The user explicitly distrusts narration-without-artifacts. The work product is the file on disk, not the chat summary. Some specific rules carried into the project from the user's global discipline:
+
+- **Verify your work.** Run the code. If it produces output, inspect it. If it has side effects, confirm they occurred. Never say "should work" — say "verified, here's the evidence."
+- **State what was tested and what remains untested.** Pause for what only the user can provide (API keys, OAuth, policy decisions). Everything else, figure it out yourself.
+- **Redirect verbose commands to files.** Use `command > output.log 2>&1` for anything that produces more than a screenful. Never pipe long output into your context. Extract with targeted reads (`tail`, `grep`).
+- **Diagnose failures from the end.** `tail -n 50 output.log` gets you the stack trace; do not read from the top.
+- **Never use `tee` for long-running commands.** It floods context with the same output you saved to disk.
+- **Delete temporary output files when done.** Log files are diagnostic tools, not artifacts.
+- **Blast-radius estimation.** Before any change: how many files? (>5 = break it up.) How complex? Can you revert cleanly? Small atomic changes, one commit one purpose.
+- **Simple > clever.** Removing code that preserves results is always a win. Marginal gains do not justify ugly complexity. Every line you add must be read, maintained, and debugged by the next agent — earn each line.
+- **Revert on failure.** Commit a known-good state before experimenting. Define "better" before changing code. If the metric didn't improve, `git reset --hard HEAD` and try a different angle. Three tries without improvement → abandon and pivot.
+- **Document lifecycle.** Three tiers, no more. Rules in `AGENTS.md` (conventions; max ~200 lines; no changelogs). Reference in `HANDOFF.md` (current state; updated in-place after behavior-changing commits). History in `CHANGELOG.md` (append-only).
+- **Autonomous persistence.** Don't pause to ask "should I keep going?" The human may be away. Only pause for what you genuinely cannot provide yourself.
+
+For the longer-form versions of these rules (Verification Ladder, Improve the Process, Session Resilience, Stay Motivated, Task Formation, Continuous Improvement), see the user-global excerpts imported into [`../AGENTS.md`](../AGENTS.md) — they apply project-wide and are not duplicated here.
+
+### Writing rules — keep them concise
+
+Rules consume agent context in every session. Verbose rules dilute attention and waste context budget.
+
+- Aim for actionable checklists, not documentation. If a rule reads like an essay, it's too long.
+- Every line should be an instruction the agent can act on. Remove explanations of *why* — agents need *what* and *when*.
+- Consolidate — 5 crisp bullet points beat 40 lines of prose.
+- No code execution. Rules are passive instructions, not scripts. If you need to run code, make it a skill instead.
+
+## References
+
+- [[../HANDOFF]] — long-form project state tracker
+- [[../README]] — user-facing entry point (install + Quick Start)
+- [[ARCHITECTURE]] — generator architecture (Construct + Platform protocols, six phases)
+- [[ARCHITECTURE#Things worth knowing]] — system invariants worth knowing when contributing (bundle dependency auto-install, kebab-case validation, mirror hygiene)
+- [[PLATFORMS]] — per-platform install/support reference
+- [[ADDING_A_CONSTRUCT]] — primary contributor walkthrough
+- [[CONSTRUCT_TYPES]] — 10-construct reference table
+- [[RULE_FORMAT]] — rule format spec (rule.md + Windsurf + Cursor + AGENTS.md)
+- [[SKILL_FORMAT]] — SKILL.md frontmatter and body spec
+
+---
+
+*Last updated: 2026-05-24.*

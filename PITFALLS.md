@@ -1,43 +1,29 @@
+---
+status: live
+purpose: knowledge-base-of-bugs-and-fixes
+---
+
 # Pitfalls
 
-## Confirm summary misrepresents scope when multiple platforms selected
+Knowledge base of bugs that occurred in this project and how they were fixed. Per `AGENTS.md`, after fixing any bug worth remembering, add an entry here so the next agent can avoid the same trap.
 
-- **Symptom:** Selecting Devin + Windsurf with all rules in global scope showed everything in "Workspace" section, nothing in "Global."
-- **Cause:** `has_forced_ws` is True if ANY platform lacks global rules. The summary code treated this as "all items are workspace," but actual install correctly handles per-platform forcing.
-- **Fix:** Show items in user-chosen scope (global), add a note naming which platforms redirect to workspace. Commit `404b181`.
+Pre-1.0 entries (Textual TUI installer era — installer crashes, banner glyphs, secret-leak skill setup, dangling-symlink bootstrap) are preserved at [`docs/archive/pre-1.0-pitfalls.md`](docs/archive/pre-1.0-pitfalls.md). They reference code paths that no longer exist after the v1.0.0 plugin-compliance migration and Phase 4 DI refactor.
 
-## Banner K glyph doesn't read as K
+## Format
 
-- **Symptom:** The letter K in both SKILLS and MARKET banner text didn't look like K (first fix made it `╦ ╦` / `╠╩╗` / `╩ ╩` — two parallel verticals on top, reads as H).
-- **Cause:** The banner uses the `calvin_s` pyfiglet font. The canonical K top row is `╦╔═` (vertical + upper diagonal arm), not `╦ ╦` (two parallel verticals).
-- **Fix:** Changed K top row from `╦ ╦` to `╦╔═` in both SKILLS and MARKET lines. Commit `404b181`, then corrected again.
+Each entry uses this template:
 
-## Installed marker only checks primary platform
+```markdown
+## <Short symptom title>
 
-- **Symptom:** Rules showed as "not installed" even when installed on other platforms.
-- **Cause:** `is_rule_installed` / `is_skill_installed` only checked the first detected platform's global paths. If Devin was primary, `global.rules = None` meant all rules showed as uninstalled.
-- **Fix:** Added `_is_rule_installed_any()` / `_is_skill_installed_any()` that check across all detected platforms. Commit `404b181`.
+- **Symptom:** What you observed (the visible failure mode).
+- **Cause:** Root cause — the actual reason it broke.
+- **Fix:** What resolved it.
+- **Commit:** `<short-sha>` (optional but preferred).
+```
 
-## IndexError crash when catalog.toml missing
+Keep entries 2-4 lines per field. Link to the commit so the next agent can read the diff. If a pitfall is structural (would have been caught by a test or hook), add the guardrail too and note it in the entry.
 
-- **Symptom:** `list(PLATFORMS.keys())[0]` crashes if PLATFORMS is empty.
-- **Cause:** `_load_catalog()` returns `{}` when catalog.toml is absent, making PLATFORMS empty.
-- **Fix:** Guard with error message before indexing. Commit `d6f254a`.
+## Entries
 
-## install_rule exists check after open(a)
-
-- **Symptom:** Confusing logic: `target.exists()` checked after `open(target, "a")` which always creates the file.
-- **Cause:** The append-mode open creates the file, making the exists check always True.
-- **Fix:** Capture `needs_separator` before opening. Commit `d6f254a`.
-
-## telegram-notify skill leaks secrets via agent echo
-
-- **Symptom:** SKILL.md told the agent to run `echo "$TELEGRAM_BOT_TOKEN" "$TELEGRAM_CHAT_ID"` to check config, printing raw secrets into the conversation context. Also, `setup.py` printed the full bot token in a URL during fallback.
-- **Cause:** Env var validation was delegated to the agent (via shell echo) instead of to the script. The setup script interpolated the token into a user-facing URL.
-- **Fix:** Added `--check` flag to `send_telegram.py` that validates env vars and tests the token against the API without revealing secret values. Updated SKILL.md to use `--check`. Masked the token in setup.py's fallback URL.
-
-## One-liner install creates dangling symlinks after symlink migration
-
-- **Symptom:** Skills installed via `curl | bash` one-liner would be broken immediately after install — all symlinks dangling.
-- **Cause:** `scripts/install.sh` cloned to a temp directory and cleaned it up on exit. After commit `1471299` switched `install.py` from `shutil.copytree` to `dest.symlink_to(source)`, the symlink targets were deleted by the cleanup trap.
-- **Fix:** Changed `install.sh` to clone to a persistent location (`~/.local/share/marketplace`, overridable via `MARKETPLACE_HOME`). On subsequent runs it fetches + resets instead of re-cloning. Removed the cleanup trap.
+_No active post-1.0 entries yet. Add the first one here when the next bug is fixed._
