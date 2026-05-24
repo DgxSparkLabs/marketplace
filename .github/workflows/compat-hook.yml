@@ -1,0 +1,46 @@
+name: Compat — Hook (Claude + Gemini migration check)
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main, "feat/**"]
+  workflow_dispatch:
+
+concurrency:
+  group: '${{ github.workflow }}-${{ github.ref }}'
+  cancel-in-progress: true
+
+jobs:
+  claude:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: astral-sh/setup-uv@v4
+        with:
+          version: "latest"
+
+      - name: Regenerate manifests from sources
+        run: uv run scripts/generate_manifest.py
+
+      - uses: ./.github/actions/setup-claude
+        id: claude
+
+      - name: Register marketplace
+        run: claude plugin marketplace add ./
+
+      - name: Install hook-example plugin
+        run: claude plugin install hook-example@dgxsparklabs-marketplace --scope project
+
+      - name: Assert plugin details shows hooks section with UserPromptSubmit entry
+        # Match mode: grep substring — catalog row: claude plugin details hook-example shows hooks section including UserPromptSubmit entry
+        run: claude plugin details hook-example | grep -F "UserPromptSubmit"
+
+      - name: Cleanup
+        if: always()
+        run: |
+          claude plugin uninstall hook-example --scope project || true
+          claude plugin prune --scope project -y || true
+          claude plugin marketplace remove dgxsparklabs-marketplace || true
+

@@ -1,0 +1,6 @@
+{
+  "name": "skill-skill-creator",
+  "version": "1.0.0",
+  "description": "Create, test, and iteratively improve agent skills with evals",
+  "skills": "./skills/"
+}

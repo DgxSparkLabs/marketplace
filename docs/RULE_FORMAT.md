@@ -6,17 +6,18 @@ This marketplace distributes rules in multiple formats to support different AI a
 
 ---
 
-## Rule Directory Structure
+## Rule Directory Structure (source — `rules/<name>/`)
 
 ```
 my-rule/
 ├── rule.md             # Required — rule content in plain Markdown (AGENTS.md format)
 ├── README.md           # Required — documentation with install instructions
-├── install.sh          # Required — install script supporting all formats
-└── formats/            # Required — tool-specific rule files
+└── formats/            # Required — tool-specific rule files (for cross-platform mirrors)
     ├── windsurf.md     # Windsurf format (trigger: always_on)
     └── cursor.md       # Cursor format (alwaysApply: true)
 ```
+
+There is no `install.sh` in the source directory — the marketplace installer (`scripts/generate_manifest.py`) auto-generates a `_generated/rule-<name>/` plugin wrapper containing its own `activate.sh` for symlinking into `.claude/rules/`. See [`ADDING_A_RULE.md`](./ADDING_A_RULE.md) for the workflow.
 
 ---
 
@@ -98,17 +99,24 @@ cat rule.md >> AGENTS.md
 
 ---
 
-## Install Script
+## Installation Mechanism
 
-Every rule must include an `install.sh` script that handles installation for all supported formats. The script should:
+Claude Code's plugin system does not yet support installing rules natively (no `rules` field in `plugin.json`; see [`INVESTIGATION_PLUGIN_DEPENDENCIES.md`](./INVESTIGATION_PLUGIN_DEPENDENCIES.md)). The workaround:
 
-1. Accept `--global` flag for global installation
-2. Accept `--format <name>` to install a specific format only
-3. Default to installing the `agents` format (AGENTS.md)
-4. Be idempotent — check if the rule is already installed before appending
-5. Print what was installed and where
+1. Rules ship as plugins under `_generated/rule-<name>/` with a small `activate.sh` helper.
+2. Users run `/plugin install rule-<name>@dgxsparklabs-marketplace` to extract the plugin to `~/.claude/plugins/cache/`.
+3. Users run the plugin's `activate.sh`, which symlinks the rule body into `.claude/rules/`.
+4. Claude Code loads `.claude/rules/*.md` automatically at session start.
 
-Use `no-ai-credit/install.sh` as the reference implementation.
+The generator builds all this — contributors editing `rules/<name>/rule.md` do not need to write or maintain install scripts.
+
+For non-Claude-Code platforms (Cursor, Windsurf, Devin), the generator produces auto-committed mirrors:
+
+- `.cursor/rules/<name>.md` — from `rules/<name>/formats/cursor.md`
+- `.windsurf/rules/<name>.md` — from `rules/<name>/formats/windsurf.md`
+- `.devin/rules/<name>.md` — from the raw `rule.md`
+
+Users `git clone` the repo and point their tool at the matching directory.
 
 ---
 

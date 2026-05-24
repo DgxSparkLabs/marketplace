@@ -2,6 +2,8 @@
 
 Complete specification for the `SKILL.md` file format used by agent skills.
 
+> **Marketplace note**: When you add a skill to this marketplace (in `skills/<name>/SKILL.md`), the generator (`scripts/generate_manifest.py`) automatically produces a Claude Code plugin wrapper at `_generated/skill-<name>/` containing a `.claude-plugin/plugin.json` and a copy of your skill content. You never write `plugin.json` yourself for a skill — it's derived from `SKILL.md` frontmatter + `MARKETPLACE.toml` identity. See [`ADDING_A_SKILL.md`](./ADDING_A_SKILL.md) for the contributor workflow.
+
 ## File Structure
 
 A `SKILL.md` file has two parts:

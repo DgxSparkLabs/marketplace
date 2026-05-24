@@ -1,0 +1,33 @@
+name: 'Setup Claude Code CLI'
+description: 'Install the Claude Code CLI and verify it is available'
+
+inputs:
+  version:
+    description: 'CLI version to install. Default: latest'
+    default: 'latest'
+    required: false
+
+outputs:
+  installed:
+    description: 'Boolean — true if the CLI binary is available after setup'
+    value: ${{ steps.verify.outputs.installed }}
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Install Claude Code CLI
+      shell: bash
+      run: |
+        # Claude Code CLI is installed via npm
+        npm install -g @anthropic-ai/claude-code@${{ inputs.version }}
+
+    - name: Verify installation
+      id: verify
+      shell: bash
+      run: |
+        if claude --version; then
+          echo "installed=true" >> "$GITHUB_OUTPUT"
+        else
+          echo "installed=false" >> "$GITHUB_OUTPUT"
+          exit 1
+        fi

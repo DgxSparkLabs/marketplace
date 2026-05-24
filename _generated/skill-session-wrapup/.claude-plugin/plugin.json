@@ -1,0 +1,16 @@
+{
+  "name": "skill-session-wrapup",
+  "version": "1.0.0",
+  "author": {
+    "name": "DgxSparkLabs",
+    "url": "https://github.com/DgxSparkLabs"
+  },
+  "description": "End-of-session audit \u2014 check docs, commits, and readiness for the next agent",
+  "skills": [
+    "./"
+  ],
+  "keywords": [
+    "skill",
+    "session-wrapup"
+  ]
+}

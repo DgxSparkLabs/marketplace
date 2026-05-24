@@ -1,0 +1,16 @@
+{
+  "name": "skill-gemini-chat",
+  "version": "1.0.0",
+  "author": {
+    "name": "DgxSparkLabs",
+    "url": "https://github.com/DgxSparkLabs"
+  },
+  "description": "Interactive multi-turn chat with Google Gemini",
+  "skills": [
+    "./"
+  ],
+  "keywords": [
+    "skill",
+    "gemini-chat"
+  ]
+}

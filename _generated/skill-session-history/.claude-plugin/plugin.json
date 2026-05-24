@@ -1,0 +1,16 @@
+{
+  "name": "skill-session-history",
+  "version": "1.0.0",
+  "author": {
+    "name": "DgxSparkLabs",
+    "url": "https://github.com/DgxSparkLabs"
+  },
+  "description": "Query past Devin CLI conversations from the local session database",
+  "skills": [
+    "./"
+  ],
+  "keywords": [
+    "skill",
+    "session-history"
+  ]
+}

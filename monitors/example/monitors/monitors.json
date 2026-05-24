@@ -1,0 +1,10 @@
+{
+  "monitors": {
+    "example-disk": {
+      "command": "df",
+      "args": ["-h", "."],
+      "intervalSeconds": 300,
+      "description": "Sample disk usage every 5 minutes and surface to Claude on demand."
+    }
+  }
+}

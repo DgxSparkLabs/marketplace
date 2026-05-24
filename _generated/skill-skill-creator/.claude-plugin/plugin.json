@@ -1,0 +1,16 @@
+{
+  "name": "skill-skill-creator",
+  "version": "1.0.0",
+  "author": {
+    "name": "DgxSparkLabs",
+    "url": "https://github.com/DgxSparkLabs"
+  },
+  "description": "Create, test, and iteratively improve agent skills with evals",
+  "skills": [
+    "./"
+  ],
+  "keywords": [
+    "skill",
+    "skill-creator"
+  ]
+}

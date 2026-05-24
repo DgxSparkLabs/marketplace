@@ -1,0 +1,16 @@
+{
+  "name": "skill-telegram-notify",
+  "version": "1.0.0",
+  "author": {
+    "name": "DgxSparkLabs",
+    "url": "https://github.com/DgxSparkLabs"
+  },
+  "description": "Send a Telegram notification with a task summary",
+  "skills": [
+    "./"
+  ],
+  "keywords": [
+    "skill",
+    "telegram-notify"
+  ]
+}

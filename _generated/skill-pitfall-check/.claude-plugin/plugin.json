@@ -1,0 +1,16 @@
+{
+  "name": "skill-pitfall-check",
+  "version": "1.0.0",
+  "author": {
+    "name": "DgxSparkLabs",
+    "url": "https://github.com/DgxSparkLabs"
+  },
+  "description": "Search PITFALLS.md and git log for known issues before starting work",
+  "skills": [
+    "./"
+  ],
+  "keywords": [
+    "skill",
+    "pitfall-check"
+  ]
+}

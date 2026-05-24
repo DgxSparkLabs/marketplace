@@ -1,191 +1,194 @@
 # Handoff
 
+> **First file to read on re-entry:** [`docs/RESUME_HERE.md`](./docs/RESUME_HERE.md) — 90-second orientation. This document is the longer state tracker; complements RESUME_HERE rather than duplicating it.
+
+**Last updated:** 2026-05-24, end of DI-refactor session
+**Branch state:** `feat/claude-plugin-compliance` at commit `a872e69` (TOC addition). PR #1 open: https://github.com/DgxSparkLabs/marketplace/pull/1 — **MERGEABLE, awaiting merge call**.
+**Net status:** Every work phase complete. CI green. README rewritten with per-platform install + use examples. The only decision left is "merge or not."
+
+---
+
 ## What This Is
 
-A **skills and rules marketplace** for AI coding agents. Not a software project — the "product" is the skills, rules, and research themselves. Cross-platform: Devin CLI, Claude Code, Cursor, Windsurf.
+A **Claude Code plugin marketplace** for AI coding agents. Natively installable via `/plugin marketplace add DgxSparkLabs/marketplace`, with auto-generated mirrors for Devin CLI, Cursor, Windsurf, Codex CLI, and Gemini CLI.
 
-- **Skills** = on-demand capabilities invoked with `/skill-name` (24 skills)
-- **Rules** = always-on behavioral guidelines loaded every session (15 rules)
-- **Research** = 250+ sources across 12 rounds of market intelligence
-- **TUI installer** = interactive terminal UI for installing everything (`install.py`)
+Current inventory (post-refactor):
 
-## How to Build/Test
+- **26 skills** (`skills/<name>/`) + `skills/example/`
+- **21 rules** (`rules/<name>/`) + `rules/example/`
+- **`commands/`, `agents/`, `hooks/`, `mcp-servers/`, `lsp-servers/`, `monitors/`, `output-styles/`, `themes/`** — each has `example/` (real content TBD as Claude Code's plugin spec stabilizes)
+- **81 plugin entries** in `.claude-plugin/marketplace.json`:
+  - 26 individual skills (`skill-<name>`) + 1 `skill-example`
+  - 21 individual rules (`rule-<name>`) + 1 `rule-example`
+  - 8 individual examples for the other constructs (`command-example`, `agent-example`, `hook-example`, `mcp-example`, `lsp-example`, `monitor-example`, `output-style-example`, `theme-example`)
+  - 8 skill domain bundles (`bundle-<domain>-skills`)
+  - 5 rule domain bundles (`bundle-<domain>-rules`)
+  - 10 catch-all bundles (`bundle-skill-all`, `bundle-rule-all`, ..., `bundle-theme-all`) — code-generated
+  - 1 cross-construct `bundle-examples` (one of every construct's example)
+- **250+ research sources** across 12 rounds in `research/`
+
+---
+
+## Completed Work Phases (4 total)
+
+### Phase 1 — Plugin Compliance Migration (DONE, merged via Option D restructure)
+
+Migrated from curl-bash + Textual TUI installer to native Claude Code `/plugin marketplace add`. Built the first version of `scripts/generate_manifest.py`. Wrote 12 contributor tutorials. Verified empirically that Claude Code auto-installs plugin dependencies (see [`docs/INVESTIGATION_PLUGIN_DEPENDENCIES.md`](./docs/INVESTIGATION_PLUGIN_DEPENDENCIES.md)).
+
+### Phase 2 — Multi-Platform Validation Implementation (DONE)
+
+Built 10 `compat-*.yml` workflows + 5 composite actions + 2 local-dev fallback scripts. All 10 compat workflows + the existing CI workflow run green on every push. Wave 4 promoted: Codex/Gemini matrix entries flipped from `continue-on-error: true` to `false` after the empirically-discovered transient install block lifted. Detailed reports: [`docs/VERIFICATION_REPORT.md`](./docs/VERIFICATION_REPORT.md), [`docs/FIX_REPORT.md`](./docs/FIX_REPORT.md), [`docs/FINALIZATION_REPORT.md`](./docs/FINALIZATION_REPORT.md).
+
+### Phase 3 — Examples In Native Folders (DONE)
+
+Restructured examples from a centralized `examples/example-<construct>/` layout to native `<construct>/example/` directories. Eliminated the catalog/code asymmetry where skills and rules were privileged. See [`docs/RESTRUCTURE_REPORT.md`](./docs/RESTRUCTURE_REPORT.md).
+
+### Phase 4 — Dependency-Injection Refactor (DONE — most recent session)
+
+Refactored the generator from per-construct procedural code (~600 lines of special cases) to a strategy-pattern architecture:
+
+- `scripts/utils.py` — shared helpers
+- `scripts/constructs.py` — 10 Construct classes + `CONSTRUCTS` registry (each with `build_plugin_json` + `emit`)
+- `scripts/platforms.py` — 6 Platform classes + `PLATFORMS` registry
+- `scripts/bundles.py` — `Bundle` dataclass + parser with reserved-name validation
+- `scripts/generate_manifest.py` — thin orchestrator, 5 phases (~120 lines)
+- `catalog.toml` reduced from 258 to 161 lines — bundle definitions only
+- Examples renamed `example-<construct>` → `example` (so plugin names are `skill-example`, `mcp-example`, etc., not `example-skill`, `example-mcp`)
+- 11 `ADDING_*.md` docs consolidated to 1 `ADDING_A_CONSTRUCT.md`
+- README rewritten with per-platform install + use examples (verified empirically; no fabricated commands)
+- README TOC added (`a872e69`)
+
+Plan: [`docs/PLAN_DI_REFACTOR.md`](./docs/PLAN_DI_REFACTOR.md). Reviewer findings: [`docs/PLAN_DI_REFACTOR_CRITIQUE.md`](./docs/PLAN_DI_REFACTOR_CRITIQUE.md), [`docs/PLAN_DI_REFACTOR_CRITIQUE_V2.md`](./docs/PLAN_DI_REFACTOR_CRITIQUE_V2.md). Implementation report: [`docs/DI_REFACTOR_REPORT.md`](./docs/DI_REFACTOR_REPORT.md). Validation: [`docs/DI_REFACTOR_VALIDATION_REPORT.md`](./docs/DI_REFACTOR_VALIDATION_REPORT.md) — verdict: "validated, ready to merge."
+
+---
+
+## What's Next
+
+In priority order:
+
+1. **Review and merge PR #1** (`feat/claude-plugin-compliance` → `main`). Everything is on this branch; this is the single remaining decision. `gh pr merge 1 --merge` (or `--squash`, your call).
+2. **(Optional) File the GitHub Support whitelist request** — [`docs/CI_WHITELIST_REQUEST.md`](./docs/CI_WHITELIST_REQUEST.md). Likely moot per [`docs/ORG_POLICY_INVESTIGATION.md`](./docs/ORG_POLICY_INVESTIGATION.md) (no policy was ever in effect; the original "block" was a transient infrastructure event). Submit only if a similar incident recurs.
+3. **(Optional) Update validation CI for new construct contributions** as Claude Code's plugin spec evolves (e.g., when native rule install ships, retire the `activate.sh` workaround per `docs/RULE_FORMAT.md`).
+
+---
+
+## How to Build / Test
 
 ```bash
-uv run install.py                    # run the TUI installer
-uv run install.py --uninstall        # uninstall mode
-uv run tests/test_marketplace.py     # 112 tests (must all pass)
-uv run tests/test_marketplace.py -v  # verbose
-uvx ruff check install.py            # lint
-./tests/run-ci-local.sh              # run GitHub Actions locally with act+podman
+uv run scripts/generate_manifest.py           # regenerate _generated/ + cross-platform mirrors
+uv run scripts/generate_manifest.py --check   # CI gate: drift-detection mode
+uv run tests/test_marketplace.py              # 34 tests, must all pass
+uv run tests/test_marketplace.py -v           # verbose
 ```
 
-**Always run `uv run tests/test_marketplace.py` before committing.** This is the quality gate.
+Always regenerate and re-run tests before committing. CI does both as separate steps so failures are clearly distinguishable.
+
+---
 
 ## Project Layout
 
 ```
 marketplace/
-├── AGENTS.md                ← Project conventions (read this)
-├── README.md                ← Catalog of all skills and rules
-├── catalog.toml             ← TUI config: platforms, MCP servers, families
-├── install.py               ← Single-file Textual TUI (1,991 lines, PEP 723)
-├── scripts/install.sh       ← One-command bootstrap (curl | bash)
-├── _template/               ← Starter for new skills
+├── MARKETPLACE.toml                    Single source for identity (owner, version, license)
+├── catalog.toml                        Bundles only (no [construct.*], no [<>_domain.*])
+├── README.md                           Per-platform install + use examples (392 lines, TOC at top)
+├── .claude-plugin/marketplace.json     Generated root manifest (81 entries)
+├── skills/<name>/                      Real skills + skills/example/
+├── rules/<name>/                       Real rules + rules/example/
+├── commands/example/                   Example only (no real commands yet)
+├── agents/example/, hooks/example/, mcp-servers/example/, lsp-servers/example/,
+│   monitors/example/, output-styles/example/, themes/example/   Examples only
+├── _generated/                         Per-plugin wrappers + bundles
+├── .codex/, .gemini/, .cursor/, .windsurf/, .devin/   Cross-platform mirrors
+├── activate-installed-rules.sh         Bulk helper for rule activation
+├── .github/
+│   ├── workflows/ci.yml                Manifest drift check + test suite
+│   ├── workflows/compat-*.yml (10)     Per-construct multi-platform validation
+│   └── actions/setup-<platform>/ (5)   Composite actions per platform
+├── scripts/utils.py                    Shared helpers
+├── scripts/constructs.py               10 Construct classes + CONSTRUCTS registry
+├── scripts/platforms.py                6 Platform classes + PLATFORMS registry
+├── scripts/bundles.py                  Bundle dataclass + load_bundles + BundleMember
+├── scripts/generate_manifest.py        Thin orchestrator (5 phases)
+├── scripts/validate-codex-local.sh     Local-dev Codex validation
+├── scripts/validate-gemini-local.sh    Local-dev Gemini validation
+├── tests/test_marketplace.py           34 tests
 ├── docs/
-│   ├── ONBOARDING.md        ← 3-minute orientation for new agents
-│   ├── SKILL_FORMAT.md      ← Full SKILL.md spec
-│   └── RULE_FORMAT.md       ← Full rule spec
-├── skills/                  ← 24 skill directories
-├── rules/                   ← 15 rule directories
-├── research/                ← 90+ files, 12 research rounds
-└── tests/
-    ├── test_marketplace.py  ← 112 tests (structure, conventions, installer)
-    └── run-ci-local.sh      ← Local CI with act+podman
+│   ├── RESUME_HERE.md                  ★ Start here on re-entry (90-second orientation)
+│   ├── PLAN_DI_REFACTOR.md             DI refactor architecture + 25 locked decisions
+│   ├── PLAN_DI_REFACTOR_CRITIQUE.md    v1 reviewer findings
+│   ├── PLAN_DI_REFACTOR_CRITIQUE_V2.md v2 reviewer findings
+│   ├── DI_REFACTOR_REPORT.md           Implementation report (snapshot diff + CI results)
+│   ├── DI_REFACTOR_VALIDATION_REPORT.md Post-impl validator's verdict
+│   ├── GOAL_PLUGIN_COMPLIANCE.md       Migration success criteria (original)
+│   ├── PLAN_PLUGIN_COMPLIANCE.md       Migration architecture (original)
+│   ├── INVESTIGATION_PLUGIN_DEPENDENCIES.md  Empirical dep auto-install proof
+│   ├── PLATFORM_INSPECTION_CATALOG.md  Canonical CLI commands per platform
+│   ├── PLATFORM_VALIDATION_CICD_PLAN.md  Validation CI design + 20 locked decisions
+│   ├── EMPIRICAL_CLI_FINDINGS/         Raw research notes per platform
+│   ├── ORG_POLICY_INVESTIGATION.md     Root-cause analysis (transient install block)
+│   ├── RESTRUCTURE_REPORT.md           Phase 3 restructure outcome
+│   ├── CONSTRUCT_TYPES.md              Concise reference table
+│   ├── ADDING_A_CONSTRUCT.md           Single contributor tutorial (consolidates the old 11)
+│   ├── SKILL_FORMAT.md, RULE_FORMAT.md, ONBOARDING.md  Format references
+│   └── (earlier-cycle reports: VERIFICATION, FIX, FINALIZATION)
+└── research/                           Market intelligence (research/README.md first)
 ```
 
-## Inventory
+---
 
-### Skills (24)
+## Architecture Summary
 
-| Skill | What it does | Key deps |
-|-------|-------------|----------|
-| act-runner | Run GitHub Actions locally with act+podman | podman, act |
-| check | Mid-session course correction — stop, review rules, realign | none |
-| duckduckgo-search | Search DuckDuckGo, triage, scrape results | web-scraper skill |
-| expose-port | Expose local port via HTTPS or TCP | ssh, bore (optional) |
-| gemini-chat | Multi-turn chat with Google Gemini | GEMINI_API_KEY |
-| github-search | Search GitHub repos for prior art | gh CLI |
-| google-drive-reader | Read Google Docs from Drive | Google OAuth creds |
-| motivation | Completeness checker before stopping | none |
-| pitfall-check | Search PITFALLS.md and git log for known issues | none |
-| project-bootstrap | Init AGENTS.md, HANDOFF.md, CHANGELOG.md, PITFALLS.md | none |
-| recall-rules | Re-read global rules and thinking framework mid-session | none |
-| send-email | Send email via Resend API | RESEND_API_KEY |
-| session-history | Query past Devin CLI conversations | Devin sessions.db |
-| session-wrapup | End-of-session audit for handoff readiness | none |
-| skill-creator | Full skill authoring lifecycle with evals | claude CLI |
-| ssh-tunnel | SSH port forwarding (local, remote, SOCKS) | OpenSSH |
-| structured-handoff | Generate .tasks/ directory for autonomous sessions | none |
-| sync-rules | Sync global agent rules into workspace | none |
-| telegram-notify | Send Telegram notifications + wait for input | TELEGRAM_BOT_TOKEN |
-| textual-tui-guide | Reference for building Textual TUIs | none |
-| web-scraper | Fetch web page, extract clean text | none |
-| youtube-search | Search YouTube for technical videos | none |
-| youtube-wisdom | Extract knowledge from YouTube transcripts | none |
-| devin-for-terminal | Look up Devin CLI documentation | none |
+- **Sources of truth**: `MARKETPLACE.toml`, `catalog.toml`, source content under `<construct>/<name>/`. Humans edit these.
+- **Generated**: `_generated/`, `.codex/`, `.gemini/`, `.cursor/`, `.windsurf/`, `.devin/`, `.claude-plugin/marketplace.json`. The generator produces these from sources.
+- **Construct classes** (in `scripts/constructs.py`) encapsulate each of the 10 plugin types' build + emit logic. Adding a new construct = new class + entry in `CONSTRUCTS` registry.
+- **Platform classes** (in `scripts/platforms.py`) encapsulate each of the 6 platforms' mirror logic and which constructs they `supports`. Adding a new platform = new class + entry in `PLATFORMS` registry.
+- **Bundles** are dep-only plugins. Two kinds:
+  - **Catalog bundles**: declared in `catalog.toml` `[bundle.*]` with explicit `members`. Generator's Phase 2a emits them.
+  - **Catch-all bundles**: `bundle-<prefix>-all`, one per construct. Code-generated by Phase 2b. NOT in catalog.toml; catalog parsing rejects reserved names.
+- **Rules** install via `/plugin install` then activate via `activate.sh` symlink into `.claude/rules/`. Workaround for the lack of a `rules` field in Claude Code's plugin spec. See `docs/RULE_FORMAT.md`.
+- **Multi-platform validation**: 10 compat workflows in `.github/workflows/compat-*.yml` organized per-construct with platform matrix per workflow. Verified end-to-end empirically.
 
-### Rules (15)
-
-| Rule | What it enforces |
-|------|-----------------|
-| blast-radius | Scope changes, prefer small atomic edits |
-| continuous-improvement | Seven-phase workflow for codebase hardening |
-| document-lifecycle | Three-tier docs: rules, reference, history |
-| document-progress | Plan tasks upfront, write progress to disk |
-| improve-the-process | Every session improves the workflow |
-| no-ai-credit | Never attribute work to AI agents |
-| pitfalls-discipline | Maintain PITFALLS.md read/write loop |
-| prior-art | Search before building |
-| python-uv | Always use uv, never pip |
-| session-resilience | Write state continuously to survive context loss |
-| stay-motivated | Check todo list before stopping |
-| task-formation | Decompose requests into goals, then tasks |
-| telegram-on-complete | Notify via Telegram after completing work |
-| verification-ladder | Five-layer automated testing |
-| verify-your-work | Prove correctness, don't assume it |
-
-## TUI Installer Architecture
-
-`install.py` is a single-file Textual app with PEP 723 inline deps.
-
-**Key components:**
-- `catalog.toml` drives all configuration (platforms, MCP servers, skill/rule families, defaults)
-- `_build_platforms()` converts TOML to runtime `PLATFORMS` dict; empty string `""` becomes `None` (falsy)
-- `_execute_install()` handles per-platform scope forcing: if a platform has `global.rules = None`, rules redirect to workspace scope
-- `MarketplaceList` — click-to-focus selection list
-- `PathInput` — input with dropdown autocomplete for filesystem paths
-- `AnimatedBanner` — spinning 3D wireframe cube with HSV color cycling
-- Modal screens: PathPicker, Preview, Confirm (with scope breakdown), Results
-
-**Platform support:**
-- Devin CLI: skills to `~/.config/devin/skills/`, rules to `~/.config/devin/AGENTS.md` (global) or `AGENTS.md` (workspace)
-- Claude Code: skills to `~/.claude/skills/`, rules to CLAUDE.md
-- Cursor: skills to `.cursor/skills/`, rules to `.cursor/rules/` (YAML frontmatter)
-- Windsurf: skills to `.windsurf/skills/`, rules to `.windsurf/rules/` (YAML frontmatter)
-
-**Install operations are idempotent.** Running twice produces the same result.
-
-## Research Library
-
-90+ files across 12 rounds. 250+ sources from GitHub, arXiv, Reddit, Twitter/X, Kaggle, web.
-
-**Reading order:**
-1. `research/KNOWLEDGE_BASE.md` — distilled insights (307 lines)
-2. `research/ANTI_PATTERNS.md` — dead ends and traps (217 lines)
-3. `research/SUMMARY_AND_CONCLUSIONS.md` — master synthesis (526 lines)
-4. Platform-specific findings (arxiv, github, reddit, kaggle, etc.)
-5. `research/METHODOLOGY.md` — how the research was done
-
-**Key findings from 200+ sources:**
-- $7.5-8.3B market in 2025, projected $47-53B by 2030 (41-46% CAGR)
-- Trust is the product, not skills (26.1% of community skills have vulnerabilities)
-- SKILL.md is the de facto standard (Anthropic, OpenAI, Microsoft, Cursor, Windsurf, 38+ agents)
-- Nobody has won yet — 15+ competing platforms, all pre-PMF
-- Narrow verticals beat general catalogs
-- Composability (DAG orchestration) is the moat
-
-**Critical research rules:**
-- Never wholesale-rewrite canonical files — merge incrementally
-- New research rounds go in `skill-marketplaces-N+1/`
-- Verify star counts against live sources before citing
-- Note provenance (which research round)
-- See `research/TASKS.md` for maintenance backlog (T6, T7, T10 pending)
-
-## Adding Skills/Rules
-
-### New skill
-1. Copy `_template/` to `skills/your-skill-name/`
-2. Write `SKILL.md` (YAML frontmatter + prompt) — see `docs/SKILL_FORMAT.md`
-3. Scripts in `scripts/` use PEP 723 inline deps
-4. Set `allowed-tools` to minimum needed
-5. Add README.md, update root README.md catalog (alphabetical)
-6. Run tests
-
-### New rule
-1. Reference: `rules/no-ai-credit/`
-2. Write `rule.md` (plain Markdown, no frontmatter)
-3. Create `formats/windsurf.md` and `formats/cursor.md`
-4. Adapt `install.sh` (delegates to `scripts/install-rule.sh`)
-5. Add README.md, update root README.md catalog (alphabetical)
-6. Run tests
+---
 
 ## Conventions
 
-- Directory names: **kebab-case**
-- Python scripts: **snake_case**, PEP 723 inline deps, `uv run`
-- Shell scripts: shebang + `set -euo pipefail`
-- No project-level config at root (no pyproject.toml, package.json)
-- No secrets committed
-- Don't mix skill and rule formats in one directory
-- Rules should be concise checklists, not essays
+- Names: kebab-case for everything (skills, rules, domains, plugin names, bundle names).
+- Python scripts: PEP 723 inline metadata, `uv run`. Python 3.11+ (uses `match` statement + `Protocol[runtime_checkable]`).
+- Shell scripts: shebang + `set -euo pipefail`.
+- No project-level Python deps (no `pyproject.toml` at root).
+- `author` in plugin.json is always an object `{ "name": "...", "url": "..." }`, never a string.
+- `source` paths in marketplace.json start with `./`.
+- Commit messages have no AI co-author attribution (see `rules/no-ai-credit/`).
 
-## Recent Changes
+---
 
-- **Symlink-safe one-liner install**: `scripts/install.sh` now clones to `~/.local/share/marketplace` (persistent) instead of a temp dir. Required after skill installation switched from copy to symlink (commit `1471299`). README updated to document symlink behavior and `MARKETPLACE_HOME` override.
-- **sync-rules skill** (`d1db0ca`→`0958aa3`): Import global agent rules into workspace. Fixed YAML escaping, slug collisions, empty slugs, avoids overwriting existing files.
-- **catalog.toml + installer upgrade** (`9edc9de`): Per-item scope toggle, workspace paths with autocomplete, catalog externalization, platform-aware scope forcing.
-- **Installer bug fixes** (`d6f254a`, `404b181`, `b2adcb6`): Crash on empty catalog, duplicate summary, race condition, banner K glyph, dropdown cap, installed marker across platforms, confirm summary scope breakdown.
-- **Session resilience** (`2e5dccf`): Added HANDOFF.md, PITFALLS.md, CHANGELOG.md.
+## Adding Skills / Rules / Anything
+
+See [`docs/ADDING_A_CONSTRUCT.md`](./docs/ADDING_A_CONSTRUCT.md) — single tutorial covering all 10 construct types.
+
+General workflow:
+
+1. Copy `<construct>/example/` to `<construct>/<your-name>/`
+2. Edit the copied content
+3. If skill or rule: add to a bundle in `catalog.toml` (existing or new `[bundle.<your-domain>-<construct>]`)
+4. `uv run scripts/generate_manifest.py`
+5. `uv run tests/test_marketplace.py`
+6. Commit (no AI co-author attribution)
+
+---
 
 ## Known Limitations
 
-- Installed marker only checks global scope per platform. Workspace-installed items aren't reflected.
-- Path autocomplete dropdown shows all results — very large directories may produce long lists.
-- The `devin-for-terminal` skill is referenced in README but ships with Devin CLI itself, not in the repo.
+- Rule activation is a manual step (`activate.sh`). No native plugin-installable rules in Claude Code yet (feature request open at `anthropics/claude-code#21163`).
+- Generator regenerates `_generated/` and mirrors from scratch each run — fast (~1s) but means hand-edits there are always lost.
+- Cross-platform mirrors are best-effort. Platform-specific tooling may evolve faster than this repo tracks.
+- Cursor and Windsurf have no headless CLI. Clone-and-detect is the only install path.
+- Devin's installer exits 1 in non-TTY environments (binary lands at `~/.local/bin/devin` regardless; CI works around this with `|| true`).
+- Gemini's `extensions list` and `mcp list` write output to stderr — pipes must use `2>&1`.
 
-## What's Next
+---
 
-- Research backlog: T6 (synthesize R10-R12 into canonical files), T7 (reconcile star counts), T10 (archive raw search artifacts in R1)
-- Consider lazy loading for path autocomplete on large directories
-- Consider workspace-scope detection for installed markers
+## If You're Forgetting Everything
+
+Read [`docs/RESUME_HERE.md`](./docs/RESUME_HERE.md) first. It has the 30-second tldr, the "you are here" bookmark, the next concrete actions in priority order, the project glossary, the top decisions with rationale, and the dead-ends list. This `HANDOFF.md` is for ongoing tracking; `RESUME_HERE.md` is for re-entry.

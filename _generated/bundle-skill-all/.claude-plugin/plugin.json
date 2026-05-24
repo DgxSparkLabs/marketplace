@@ -1,0 +1,38 @@
+{
+  "name": "bundle-skill-all",
+  "version": "1.0.0",
+  "description": "Every skill in the marketplace",
+  "author": {
+    "name": "DgxSparkLabs",
+    "url": "https://github.com/DgxSparkLabs"
+  },
+  "dependencies": [
+    "skill-act-runner",
+    "skill-check",
+    "skill-code-health-audit",
+    "skill-duckduckgo-search",
+    "skill-example",
+    "skill-expose-port",
+    "skill-gemini-chat",
+    "skill-github-repo-setup",
+    "skill-github-search",
+    "skill-google-drive-reader",
+    "skill-motivation",
+    "skill-pitfall-check",
+    "skill-project-bootstrap",
+    "skill-recall-rules",
+    "skill-send-email",
+    "skill-session-history",
+    "skill-session-wrapup",
+    "skill-skill-analytics",
+    "skill-skill-creator",
+    "skill-ssh-tunnel",
+    "skill-structured-handoff",
+    "skill-sync-rules",
+    "skill-telegram-notify",
+    "skill-textual-tui-guide",
+    "skill-web-scraper",
+    "skill-youtube-search",
+    "skill-youtube-wisdom"
+  ]
+}

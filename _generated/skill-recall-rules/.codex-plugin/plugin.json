@@ -1,0 +1,6 @@
+{
+  "name": "skill-recall-rules",
+  "version": "1.0.0",
+  "description": "Re-read global rules and thinking framework to realign mid-session",
+  "skills": "./skills/"
+}

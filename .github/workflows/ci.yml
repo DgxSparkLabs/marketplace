@@ -2,7 +2,7 @@ name: CI
 
 on:
   push:
-    branches: [main]
+    branches: [main, "feat/**"]
   pull_request:
     branches: [main]
 
@@ -16,5 +16,8 @@ jobs:
         with:
           version: "latest"
 
-      - name: Run marketplace tests
+      - name: Validate generated manifests are in sync with sources
+        run: uv run scripts/generate_manifest.py --check
+
+      - name: Run marketplace test suite
         run: uv run tests/test_marketplace.py -v

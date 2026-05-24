@@ -1,0 +1,36 @@
+name: 'Setup Codex CLI'
+description: 'Install the OpenAI Codex CLI and verify it is available'
+
+inputs:
+  version:
+    description: 'CLI version to install. Default: latest'
+    default: 'latest'
+    required: false
+
+outputs:
+  installed:
+    description: 'Boolean — true if the CLI binary is available after setup'
+    value: ${{ steps.verify.outputs.installed }}
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Install Codex CLI
+      shell: bash
+      run: |
+        # NOTE: @openai/codex is blocked by GitHub Actions org policy.
+        # This step will fail with a 0-second policy error on github.com-hosted runners.
+        # The job has continue-on-error: true to make this advisory.
+        # When the GitHub whitelist lands, this install will succeed automatically.
+        npm install -g @openai/codex@${{ inputs.version }}
+
+    - name: Verify installation
+      id: verify
+      shell: bash
+      run: |
+        if codex --version; then
+          echo "installed=true" >> "$GITHUB_OUTPUT"
+        else
+          echo "installed=false" >> "$GITHUB_OUTPUT"
+          exit 1
+        fi

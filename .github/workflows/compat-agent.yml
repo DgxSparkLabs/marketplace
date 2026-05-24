@@ -1,0 +1,45 @@
+name: Compat — Agent (Claude)
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main, "feat/**"]
+  workflow_dispatch:
+
+concurrency:
+  group: '${{ github.workflow }}-${{ github.ref }}'
+  cancel-in-progress: true
+
+jobs:
+  claude:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: astral-sh/setup-uv@v4
+        with:
+          version: "latest"
+
+      - name: Regenerate manifests from sources
+        run: uv run scripts/generate_manifest.py
+
+      - uses: ./.github/actions/setup-claude
+        id: claude
+
+      - name: Register marketplace
+        run: claude plugin marketplace add ./
+
+      - name: Install agent-example plugin
+        run: claude plugin install agent-example@dgxsparklabs-marketplace --scope project
+
+      - name: Assert plugin details shows agents section with notebook-reviewer
+        # Match mode: grep substring — catalog row: claude plugin details agent-example shows agents section with notebook-reviewer
+        run: claude plugin details agent-example | grep -F "notebook-reviewer"
+
+      - name: Cleanup
+        if: always()
+        run: |
+          claude plugin uninstall agent-example --scope project || true
+          claude plugin prune --scope project -y || true
+          claude plugin marketplace remove dgxsparklabs-marketplace || true

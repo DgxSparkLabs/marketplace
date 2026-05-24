@@ -1,155 +1,161 @@
-# catalog.toml — TUI installer configuration
+# catalog.toml — bundle definitions ONLY
 #
-# Edit this file to control what appears in the installer.
-# Run: uv run install.py
+# After the DI refactor (see docs/PLAN_DI_REFACTOR.md), this file contains
+# ONLY [bundle.*] blocks. Construct types, platforms, and catch-all bundles
+# are defined in code (scripts/constructs.py, scripts/platforms.py,
+# scripts/generate_manifest.py Phase 2b) — not in configuration files.
 #
-# ─────────────────────────────────────────────────────────────────────────────
+# Bundle member syntax: "<kind>:<name>"
+#   skill:telegram-notify       → individual plugin "skill-telegram-notify"
+#   rule:no-ai-credit           → individual plugin "rule-no-ai-credit"
+#   bundle:communication-skills → bundle plugin "bundle-communication-skills"
+#
+# Reserved names: <prefix>-all (e.g., skill-all, rule-all) are auto-generated
+# by Phase 2b of the generator. Defining them here raises a ValueError.
+#
+# Then run: uv run scripts/generate_manifest.py
 
-# Items that default to workspace scope (all others default to global).
-# Toggle individual items with the S key in the TUI.
-workspace_scope_defaults = []
+# ─── Skill domain bundles (migrated from [skill_domain.*]) ───────────────────
 
-# Skills unchecked by default in install mode (e.g. require API keys).
-skills_disabled_by_default = ["web-scraper", "expose-port", "gemini-chat", "google-drive-reader"]
-
-
-# ── Platforms ────────────────────────────────────────────────────────────────
-# Each platform defines where skills, rules, and configs get installed.
-# Paths starting with ~ are expanded at runtime.
-# Leave global_rules or global_skills empty ("") if not supported.
-
-[platforms.devin]
-label = "Devin CLI"
-rule_format = "agents"
-detection_binary = "devin"
-global_config = "~/.config/devin/config.json"
-global_rules  = "~/.config/devin/AGENTS.md"
-global_skills = "~/.config/devin/skills"
-project_config = ".devin/config.json"
-project_rules  = "AGENTS.md"
-project_skills = ".devin/skills"
-
-[platforms.claude-code]
-label = "Claude Code"
-rule_format = "agents"
-detection_binary = "claude"
-global_config = "~/.claude/settings.json"
-global_rules  = "~/.claude/CLAUDE.md"
-global_skills = "~/.claude/skills"
-project_config = ".claude/settings.local.json"
-project_rules  = "CLAUDE.md"
-project_skills = ".claude/skills"
-
-[platforms.cursor]
-label = "Cursor"
-rule_format = "cursor"
-detection_binary = "cursor"
-global_config = "~/.cursor/mcp.json"
-global_rules  = "~/.cursor/rules"
-global_skills = "~/.cursor/skills"
-project_config = ".cursor/mcp.json"
-project_rules  = ".cursor/rules"
-project_skills = ".cursor/skills"
-
-[platforms.windsurf]
-label = "Windsurf"
-rule_format = "windsurf"
-detection_binary = "windsurf"
-global_config = "~/.codeium/windsurf/mcp_config.json"
-global_rules  = "~/.windsurf/rules"
-global_skills = "~/.windsurf/skills"
-project_config = ".windsurf/mcp.json"
-project_rules  = ".windsurf/rules"
-project_skills = ".windsurf/skills"
-
-
-# ── MCP Servers ──────────────────────────────────────────────────────────────
-# External tool connections. Each entry appears as a checkbox in the TUI.
-
-[mcp_servers.fetch]
-description = "Fetch web pages and return content"
-config = { command = "uvx", args = ["mcp-server-fetch"] }
-
-[mcp_servers.github]
-description = "GitHub API — issues, PRs, repos, search"
-config = { command = "npx", args = ["-y", "@github/mcp-server"] }
-
-[mcp_servers.playwright]
-description = "Browser automation for web testing"
-config = { command = "npx", args = ["-y", "@playwright/mcp-server"] }
-
-[mcp_servers.filesystem]
-description = "Read/write/search local files"
-config = { command = "npx", args = ["-y", "@modelcontextprotocol/server-filesystem"] }
-
-[mcp_servers.sqlite]
-description = "Query and manage SQLite databases"
-config = { command = "uvx", args = ["mcp-server-sqlite"] }
-
-[mcp_servers.brave-search]
-description = "Web search via Brave Search API"
-config = { command = "npx", args = ["-y", "@anthropic/mcp-server-brave-search"] }
-
-[mcp_servers.memory]
-description = "Persistent knowledge graph memory"
-config = { command = "npx", args = ["-y", "@anthropic/mcp-server-memory"] }
-
-
-# ── Skill Families ───────────────────────────────────────────────────────────
-# Organize skills into collapsible groups in the TUI.
-# Add a skill's directory name to "members" to place it in a family.
-# Skills not listed in any family appear under "Other".
-
-[skill_families."Search & Research"]
-icon = "\U0001F50D"
+[bundle.search-research-skills]
 description = "Find information across web, code repos, and video"
-members = ["duckduckgo-search", "github-search", "web-scraper", "youtube-search", "youtube-wisdom"]
+members = [
+  "skill:duckduckgo-search",
+  "skill:github-search",
+  "skill:web-scraper",
+  "skill:youtube-search",
+  "skill:youtube-wisdom",
+]
 
-[skill_families."Communication"]
-icon = "\u2709"
+[bundle.communication-skills]
 description = "Send emails, messages, and notifications"
-members = ["send-email", "telegram-notify"]
+members = [
+  "skill:send-email",
+  "skill:telegram-notify",
+]
 
-[skill_families."DevOps & Infrastructure"]
-icon = "\U0001F680"
-description = "Run CI locally, expose ports, manage tunnels"
-members = ["act-runner", "expose-port", "github-repo-setup", "ssh-tunnel"]
+[bundle.devops-skills]
+description = "CI/CD, repository setup, port tunneling, infrastructure tools"
+members = [
+  "skill:act-runner",
+  "skill:expose-port",
+  "skill:github-repo-setup",
+  "skill:ssh-tunnel",
+]
 
-[skill_families."Productivity & Meta"]
-icon = "\u2B50"
-description = "Session management, handoffs, and skill development"
-members = ["check", "code-health-audit", "motivation", "pitfall-check", "project-bootstrap", "recall-rules", "session-history", "session-wrapup", "skill-analytics", "structured-handoff", "skill-creator", "sync-rules", "textual-tui-guide"]
+[bundle.session-management-skills]
+description = "Mid-session realignment, motivation, recall, history, audits"
+members = [
+  "skill:check",
+  "skill:motivation",
+  "skill:recall-rules",
+  "skill:session-wrapup",
+  "skill:session-history",
+  "skill:pitfall-check",
+]
 
-[skill_families."AI & External Services"]
-icon = "\U0001F916"
-description = "Connect to AI models and cloud APIs"
-members = ["gemini-chat", "google-drive-reader"]
+[bundle.project-scaffolding-skills]
+description = "Initialize project documentation and structured handoffs"
+members = [
+  "skill:project-bootstrap",
+  "skill:structured-handoff",
+]
 
+[bundle.code-analysis-skills]
+description = "Codebase audits and domain-specific reference guides"
+members = [
+  "skill:code-health-audit",
+  "skill:textual-tui-guide",
+]
 
-# ── Rule Families ────────────────────────────────────────────────────────────
-# Same as skill families, but for rules.
+[bundle.meta-tooling-skills]
+description = "Skill creation, analytics, and configuration synchronization"
+members = [
+  "skill:skill-creator",
+  "skill:skill-analytics",
+  "skill:sync-rules",
+]
 
-[rule_families."Quality & Verification"]
-icon = "\u2714"
-description = "Enforce code quality, testing, and review standards"
-members = ["blast-radius", "code-hygiene", "pitfalls-discipline", "prior-art", "simplicity-bar", "verification-ladder", "verify-your-work"]
+[bundle.ai-services-skills]
+description = "External AI APIs and cloud service integrations"
+members = [
+  "skill:gemini-chat",
+  "skill:google-drive-reader",
+]
 
-[rule_families."Documentation & Progress"]
-icon = "\U0001F4DD"
-description = "Track work, document decisions, maintain project history"
-members = ["document-lifecycle", "document-progress", "readable-docs"]
+# ─── Rule domain bundles (migrated from [rule_domain.*]) ─────────────────────
 
-[rule_families."Workflow & Process"]
-icon = "\u2699"
-description = "Shape how agents approach and execute tasks"
-members = ["autonomous-persistence", "continuous-improvement", "improve-the-process", "revert-on-failure", "session-resilience", "stay-motivated", "task-formation"]
+[bundle.quality-rules]
+description = "Code quality, testing, verification, and review discipline"
+members = [
+  "rule:blast-radius",
+  "rule:code-hygiene",
+  "rule:pitfalls-discipline",
+  "rule:prior-art",
+  "rule:simplicity-bar",
+  "rule:verification-ladder",
+  "rule:verify-your-work",
+]
 
-[rule_families."Environment & Conventions"]
-icon = "\U0001F527"
-description = "Technical environment rules and output conventions"
-members = ["no-ai-credit", "output-discipline", "python-uv"]
+[bundle.workflow-rules]
+description = "How agents approach, decompose, and execute tasks"
+members = [
+  "rule:autonomous-persistence",
+  "rule:continuous-improvement",
+  "rule:improve-the-process",
+  "rule:revert-on-failure",
+  "rule:session-resilience",
+  "rule:stay-motivated",
+  "rule:task-formation",
+]
 
-[rule_families."Notifications"]
-icon = "\U0001F514"
-description = "Alert you when important events happen"
-members = ["telegram-on-complete"]
+[bundle.documentation-rules]
+description = "Tracking work, documenting decisions, maintaining project history"
+members = [
+  "rule:document-lifecycle",
+  "rule:document-progress",
+  "rule:readable-docs",
+]
+
+[bundle.environment-rules]
+description = "Tooling conventions and output discipline"
+members = [
+  "rule:no-ai-credit",
+  "rule:output-discipline",
+  "rule:python-uv",
+]
+
+[bundle.notifications-rules]
+description = "Alert hooks for important events"
+members = [
+  "rule:telegram-on-complete",
+]
+
+# ─── Per-construct catch-all bundles are NOT declared here ───────────────────
+#
+# Decision #23: bundle-<prefix>-all (skill-all, rule-all, ..., theme-all)
+# is generated by the code (Phase 2b of generate_manifest.py), NOT
+# declared in catalog.toml. They have no user-configurable content —
+# every catch-all is "every member of that construct" — so configuration
+# files have nothing useful to contribute. The generator owns the 10
+# reserved names and emits the bundles directly.
+#
+# Decision #25: load_bundles raises ValueError if catalog tries to define
+# a reserved name (e.g., [bundle.skill-all] here raises an error).
+
+# ─── Cross-construct examples bundle ─────────────────────────────────────────
+
+[bundle.examples]
+description = "Reference examples — install to study every construct type"
+members = [
+  "skill:example",
+  "rule:example",
+  "command:example",
+  "agent:example",
+  "hook:example",
+  "mcp:example",
+  "lsp:example",
+  "monitor:example",
+  "output-style:example",
+  "theme:example",
+]

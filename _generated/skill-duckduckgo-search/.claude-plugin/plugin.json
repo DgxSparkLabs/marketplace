@@ -1,0 +1,16 @@
+{
+  "name": "skill-duckduckgo-search",
+  "version": "1.0.0",
+  "author": {
+    "name": "DgxSparkLabs",
+    "url": "https://github.com/DgxSparkLabs"
+  },
+  "description": "Search DuckDuckGo and return results as structured text",
+  "skills": [
+    "./"
+  ],
+  "keywords": [
+    "skill",
+    "duckduckgo-search"
+  ]
+}

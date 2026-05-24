@@ -1,62 +1,58 @@
 # Agent Instructions
 
-This is a skills and rules marketplace. Not a software project — no build system, no package manager.
+This is a Claude Code plugin marketplace. Not a software project — no build system, no package manager. Identity, version, license, and tagging live in `MARKETPLACE.toml` and `catalog.toml`; everything else is either source content or auto-generated from those two files.
 
-**New here?** Read `docs/ONBOARDING.md` for a 3-minute orientation. For market intelligence, start with `research/KNOWLEDGE_BASE.md`.
-
-Skills live under `skills/` and rules under `rules/`.
-- Has `SKILL.md` → skill
-- Has `rule.md` + `install.sh` → rule
+**New here?** Read `docs/ONBOARDING.md` for a 3-minute orientation. For the migration history and architecture: `docs/PLAN_PLUGIN_COMPLIANCE.md`. For market intelligence: `research/KNOWLEDGE_BASE.md`.
 
 ## Layout
 
 ```
 marketplace/
-├── catalog.toml                # TUI installer configuration (platforms, families, MCP)
-├── docs/
-│   ├── SKILL_FORMAT.md         # Full SKILL.md spec
-│   └── RULE_FORMAT.md          # Full rule spec
-├── _template/                  # Starter for new skills
-├── rules/
-│   └── no-ai-credit/           # Reference rule
-├── skills/
-│   └── send-email/             # Reference skill
-└── ...
+├── MARKETPLACE.toml                    Single source for owner, version, license, repo URL
+├── catalog.toml                        Construct types + skill/rule domain tagging
+├── .claude-plugin/marketplace.json     Generated root manifest (71 entries)
+├── skills/                             Source content (26 skills) — edit here
+├── rules/                              Source content (21 rules) — edit here
+├── examples/                           10 reference plugins (one per construct type) — copy these as starting templates
+├── _generated/                         Auto-generated plugin wrappers + bundles — never edit
+├── .codex/  .gemini/  .cursor/  .windsurf/  .devin/   Auto-generated cross-platform mirrors
+├── scripts/generate_manifest.py        The engine. Reads source content + catalog tagging, writes _generated/ + mirrors
+├── activate-installed-rules.sh         Bulk helper to symlink installed rule plugins into .claude/rules/
+├── tests/test_marketplace.py           35+ tests: source layout, catalog cross-check, generator drift, manifest schema, secret scan
+└── docs/
+    ├── CONSTRUCT_TYPES.md              Index of all 10 construct types
+    ├── ADDING_A_SKILL.md  ADDING_A_RULE.md  ADDING_A_COMMAND.md  ...
+    ├── ADDING_A_DOMAIN_BUNDLE.md       How catalog tagging produces bundle plugins
+    ├── SKILL_FORMAT.md  RULE_FORMAT.md
+    └── PLAN_*  GOAL_*  INVESTIGATION_*  IMPLEMENTING_AGENT_PROMPT  (planning dossier)
 ```
 
-## Adding a Skill
+## Adding any plugin
 
-Use `_template/` as a starter. Full spec in `docs/SKILL_FORMAT.md`.
+The single contributor pattern: **copy `examples/example-<type>/`**, adapt, regenerate. Each construct type has its own tutorial.
 
-```
-my-skill/
-├── SKILL.md            # Required
-├── README.md           # Required
-├── scripts/            # Optional
-├── setup.sh            # Optional — prerequisite installer
-└── references/         # Optional
-```
+| Construct | Tutorial |
+|-----------|----------|
+| Skill | `docs/ADDING_A_SKILL.md` |
+| Rule | `docs/ADDING_A_RULE.md` |
+| Command | `docs/ADDING_A_COMMAND.md` |
+| Agent | `docs/ADDING_AN_AGENT.md` |
+| Hook | `docs/ADDING_A_HOOK.md` |
+| MCP server | `docs/ADDING_AN_MCP_SERVER.md` |
+| LSP server | `docs/ADDING_AN_LSP_SERVER.md` |
+| Monitor | `docs/ADDING_A_MONITOR.md` |
+| Output style | `docs/ADDING_AN_OUTPUT_STYLE.md` |
+| Theme | `docs/ADDING_A_THEME.md` |
+| Domain bundle | `docs/ADDING_A_DOMAIN_BUNDLE.md` |
 
-- Python scripts must use PEP 723 inline metadata (`uv run` with zero install)
-- Always set `allowed-tools` to minimum needed
-- Update the **Skills** table in root `README.md` (alphabetical)
+The general workflow:
 
-## Adding a Rule
-
-Use `rules/no-ai-credit/` as a reference. Full spec in `docs/RULE_FORMAT.md`.
-
-```
-my-rule/
-├── rule.md             # Required — plain Markdown, no frontmatter
-├── README.md           # Required
-├── install.sh          # Required — supports --global and --format
-└── formats/
-    ├── windsurf.md     # trigger: always_on
-    └── cursor.md       # alwaysApply: true
-```
-
-- Copy and adapt `rules/no-ai-credit/install.sh`
-- Update the **Rules** table in root `README.md` (alphabetical)
+1. Copy `examples/example-<type>/` to the appropriate source location (`skills/`, `rules/`, etc.).
+2. Edit the manifest + content for your new plugin.
+3. If skill or rule: add to a domain in `catalog.toml` under `[skill_domain.<name>]` or `[rule_domain.<name>]`.
+4. Run `uv run scripts/generate_manifest.py` to regenerate.
+5. Run `uv run tests/test_marketplace.py` to validate.
+6. Commit (no AI co-author attribution — see `rules/no-ai-credit/`).
 
 ## Conventions
 

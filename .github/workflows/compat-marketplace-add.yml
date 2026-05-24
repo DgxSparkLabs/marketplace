@@ -1,0 +1,92 @@
+name: Compat — Marketplace Add (Claude + Codex)
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main, "feat/**"]
+  workflow_dispatch:
+
+concurrency:
+  group: '${{ github.workflow }}-${{ github.ref }}'
+  cancel-in-progress: true
+
+jobs:
+  claude:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: astral-sh/setup-uv@v4
+        with:
+          version: "latest"
+
+      - name: Regenerate manifests from sources
+        run: uv run scripts/generate_manifest.py
+
+      - uses: ./.github/actions/setup-claude
+        id: claude
+
+      - name: Register marketplace
+        # Match mode: exit-code-only — catalog row: claude plugin marketplace add ./ exit 0
+        run: claude plugin marketplace add ./
+
+      - name: Assert marketplace is listed
+        # Match mode: grep substring — catalog row: claude plugin marketplace list shows dgxsparklabs-marketplace row
+        run: claude plugin marketplace list | grep -F "dgxsparklabs-marketplace"
+
+      - name: Assert plugin install succeeds
+        # CL2: per-plugin install must succeed after marketplace registration
+        run: claude plugin install skill-example@dgxsparklabs-marketplace --scope project
+
+      - name: Assert plugin appears in list
+        # CL3: installed plugin must appear in plugin list
+        run: claude plugin list | grep -F "skill-example"
+
+      - name: Cleanup
+        if: always()
+        run: |
+          claude plugin uninstall skill-example --scope project || true
+          claude plugin marketplace remove dgxsparklabs-marketplace || true
+
+  codex:
+    # Required per Wave 4 (2026-05-22): org-level block confirmed lifted via 3 consecutive
+    # clean CI runs. Codex installs and passes assertions cleanly; promoted from advisory.
+    runs-on: ubuntu-latest
+    continue-on-error: false
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: astral-sh/setup-uv@v4
+        with:
+          version: "latest"
+
+      - name: Regenerate manifests from sources
+        run: uv run scripts/generate_manifest.py
+
+      - uses: ./.github/actions/setup-codex
+        id: codex
+        with:
+          version: 'latest'
+
+      - name: Register marketplace
+        # Match mode: exit-code-only — catalog row: codex plugin marketplace add ./ exit 0
+        run: codex plugin marketplace add ./
+
+      - name: Assert marketplace registration in config
+        # Match mode: grep substring — catalog row: cat ~/.codex/config.toml | grep dgxsparklabs-marketplace
+        run: cat ~/.codex/config.toml | grep -F "dgxsparklabs-marketplace"
+
+      - name: Assert plugins enumerate
+        # C4: after registration, codex plugin list must enumerate our plugins
+        run: codex plugin list | grep -F "skill-example@dgxsparklabs-marketplace"
+
+      - name: Assert plugin install succeeds
+        # C5: per-plugin install must succeed with the new .codex-plugin/plugin.json manifest
+        run: codex plugin add skill-example@dgxsparklabs-marketplace
+
+      - name: Cleanup
+        if: always()
+        run: |
+          codex plugin remove skill-example || true
+          codex plugin marketplace remove dgxsparklabs-marketplace || true

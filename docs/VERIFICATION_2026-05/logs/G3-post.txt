@@ -1,0 +1,15 @@
+# G3 — Post-Implementation
+
+Claim: gemini extensions install https://github.com/DgxSparkLabs/marketplace --ref feat/claude-plugin-compliance --consent
+Status: STILL FAIL (exit 1) — branch not pushed to GitHub yet
+Date: 2026-05-24
+Log: post-implementation-gemini.log
+
+Evidence:
+  G3_EXIT=1
+  Configuration file not found at /tmp/gemini-extensionir0DiD/gemini-extension.json
+
+Analysis: Same as G2. The --ref feat/claude-plugin-compliance branch on GitHub
+does not yet have the root-level gemini-extension.json (branch not pushed).
+Will pass once pushed. compat-extension.yml gemini-github-url-install job
+will confirm in real GHA.

@@ -1,0 +1,16 @@
+{
+  "name": "skill-google-drive-reader",
+  "version": "1.0.0",
+  "author": {
+    "name": "DgxSparkLabs",
+    "url": "https://github.com/DgxSparkLabs"
+  },
+  "description": "Read Google Docs from personal Drive, extract URLs and conclusions",
+  "skills": [
+    "./"
+  ],
+  "keywords": [
+    "skill",
+    "google-drive-reader"
+  ]
+}

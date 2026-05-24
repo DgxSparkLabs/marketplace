@@ -1,0 +1,21 @@
+{
+  "name": "bundle-examples",
+  "version": "1.0.0",
+  "description": "Reference examples \u2014 install to study every construct type",
+  "author": {
+    "name": "DgxSparkLabs",
+    "url": "https://github.com/DgxSparkLabs"
+  },
+  "dependencies": [
+    "skill-example",
+    "rule-example",
+    "command-example",
+    "agent-example",
+    "hook-example",
+    "mcp-example",
+    "lsp-example",
+    "monitor-example",
+    "output-style-example",
+    "theme-example"
+  ]
+}
