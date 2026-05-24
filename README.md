@@ -2,6 +2,20 @@
 
 A multi-platform marketplace of agent skills, rules, and other constructs for Claude Code, with auto-generated mirrors for Codex, Gemini, Cursor, Windsurf, and Devin. Install a single plugin and get a curated tool; install a bundle and get a whole domain. Every construct lives in one source directory and the generator propagates it to all six platforms automatically.
 
+## Table of Contents
+
+- [Quick Start](#quick-start)
+  - [Claude Code](#claude-code) · [Codex](#codex) · [Gemini](#gemini) · [Cursor](#cursor) · [Windsurf](#windsurf) · [Devin](#devin)
+- [Construct Types Available](#construct-types-available)
+- [Installation Patterns](#installation-patterns)
+  - Individual plugins · Domain bundles · Catch-all bundles · Cross-construct examples bundle
+- [Per-Platform Details](#per-platform-details)
+  - [Claude Code](#claude-code-1) · [Codex](#codex-1) · [Gemini](#gemini-1) · [Cursor](#cursor-1) · [Windsurf](#windsurf-1) · [Devin](#devin-1)
+- [Repository Structure](#repository-structure)
+- [Contributing](#contributing)
+- [Deep Dives](#deep-dives)
+- [License](#license)
+
 ## Quick Start
 
 Pick your platform, copy the block, and you're running.
