@@ -131,6 +131,12 @@ class CodexPlatform:
     Codex reuses our .claude-plugin/marketplace.json directly and also
     supports skill mirrors at .codex/skills/<name>/.
 
+    ``supports`` controls both Phase 3 mirror emission AND Phase 1.5 plugin
+    manifest emission. ``emit`` only writes mirrors for SkillConstruct (skills
+    are the only content that maps to a Codex mirror directory). For
+    MCPConstruct and HookConstruct, only the ``build_plugin_json`` plugin
+    manifest is emitted (Phase 1.5); no mirror directory content is written.
+
     build_plugin_json produces a Codex-shaped manifest per
     developers.openai.com/codex/plugins/build (fetched 2026-05-24):
       Required: name, version, description
@@ -142,6 +148,10 @@ class CodexPlatform:
     supports: set[type[Construct]] = {SkillConstruct, MCPConstruct, HookConstruct}
 
     def emit(self, construct: Construct, name: str) -> None:
+        # Only skill content has a Codex mirror directory (.codex/skills/).
+        # MCP and hook manifests are handled by build_plugin_json only.
+        if not isinstance(construct, SkillConstruct):
+            return
         dst = self.mirror_directory / "skills" / name
         shutil.copytree(
             construct.source_directory / name,
