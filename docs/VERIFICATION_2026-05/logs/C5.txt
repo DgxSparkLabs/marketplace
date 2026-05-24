@@ -1,0 +1,23 @@
+CLAIM: C5 — codex plugin add skill-example@dgxsparklabs-marketplace succeeds after marketplace registered
+STATUS: VERIFIED-FAIL
+LOG: docs/VERIFICATION_2026-05/logs/verify-codex-run.log, lines 386-400
+
+KEY EVIDENCE:
+  | === C5 START ===
+  | Error: missing or invalid plugin.json
+  |
+  | Caused by:
+  |     missing or invalid plugin.json
+  | C5_EXIT=1
+  | LAST_STDERR: Error: missing or invalid plugin.json
+  |
+  | Caused by:
+  |     missing or invalid plugin.json
+  | === C5 END ===
+
+ANALYSIS: Codex can list skill-example in the marketplace but cannot install it.
+The error "missing or invalid plugin.json" reveals Codex looks for plugin.json in
+each per-plugin directory. The _generated/skill-example/ directory only contains
+.claude-plugin/plugin.json (the Claude Code manifest), NOT .codex-plugin/plugin.json.
+This confirms the C7 claim: Codex requires a different per-plugin manifest format
+than Claude Code's .claude-plugin/plugin.json.

@@ -1,0 +1,21 @@
+CLAIM: C4 — codex plugin list enumerates our plugins after marketplace registration
+STATUS: VERIFIED-PASS
+LOG: docs/VERIFICATION_2026-05/logs/verify-codex-run.log, lines 199-385
+
+KEY EVIDENCE:
+  | === C4 START ===
+  | Marketplace `dgxsparklabs-marketplace`
+  | /mnt/c/Users/devic/source/marketplace/.claude-plugin/marketplace.json
+  |
+  | PLUGIN                                                      STATUS         VERSION  PATH
+  | agent-example@dgxsparklabs-marketplace                      not installed    ...
+  | bundle-skill-all@dgxsparklabs-marketplace                   not installed    ...
+  | skill-example@dgxsparklabs-marketplace                      not installed    ...
+  | skill-telegram-notify@dgxsparklabs-marketplace              not installed    ...
+  | C4_EXIT=0
+  | C4_FOUND=YES
+
+ANALYSIS: All 81 plugins are listed under dgxsparklabs-marketplace. Codex reads
+.claude-plugin/marketplace.json as the marketplace manifest for local path installs.
+The "silent fail" claim in the brief is REFUTED: enumeration works correctly.
+All plugins show as "not installed" (correct — none installed yet), but they ARE enumerated.

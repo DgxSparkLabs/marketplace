@@ -1,0 +1,16 @@
+CLAIM: C2 — codex plugin marketplace add DgxSparkLabs/marketplace (GitHub shortform, no ref)
+STATUS: VERIFIED-FAIL
+LOG: docs/VERIFICATION_2026-05/logs/verify-codex-run.log, lines 161-178
+
+KEY EVIDENCE:
+  | === C2 START ===
+  | Error: invalid marketplace file `/root/.codex/.tmp/marketplaces/.staging/marketplace-add-RcEj0t`: marketplace root does not contain a supported manifest
+  | C2_EXIT=1
+  | LAST_STDERR: Error: invalid marketplace file `/root/.codex/.tmp/marketplaces/.staging/marketplace-add-RcEj0t`: marketplace root does not contain a supported manifest
+  | === C2 END ===
+
+ANALYSIS: Codex successfully clones the GitHub repo (network access confirmed) but then rejects
+it with "marketplace root does not contain a supported manifest". The default branch (main) does
+NOT have the .codex-plugin/marketplace.json manifest — the branch under test is feat/claude-plugin-compliance.
+Without --ref, Codex checks out the default branch and finds only .claude-plugin/marketplace.json,
+which is NOT a supported Codex manifest path.

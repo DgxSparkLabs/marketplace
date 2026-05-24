@@ -1,0 +1,16 @@
+CLAIM: G3 — gemini extensions install https://github.com/DgxSparkLabs/marketplace --ref feat/claude-plugin-compliance --consent
+STATUS: VERIFIED-FAIL
+LOG: docs/VERIFICATION_2026-05/logs/verify-gemini-run.log
+
+KEY EVIDENCE:
+  | === G3 START ===
+  | You have consented to the following:
+  | Configuration file not found at /tmp/gemini-extensioncULULP/gemini-extension.json
+  | G3_EXIT=1
+  | G3=FAIL
+
+ANALYSIS: Even with --ref pointing to the feature branch, Gemini still fails with the same
+error: it expects gemini-extension.json at the repo root, not in .gemini/. The --ref flag
+works (branch is checked out) but the manifest location is still wrong. This is a
+layout mismatch: our repo stores the Gemini manifest at .gemini/gemini-extension.json
+but Gemini's GitHub installer expects it at the repo root.

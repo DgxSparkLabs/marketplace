@@ -1,0 +1,97 @@
+name: "Verify — Cursor CLI Claims (CU1-CU3)"
+
+# Verification scaffold only — never merged, never triggered by push.
+# Run locally via:
+#   act workflow_dispatch -W docs/VERIFICATION_2026-05/workflows/verify-cursor.yml \
+#     -P ubuntu-latest=catthehacker/ubuntu:act-latest --container-architecture linux/amd64
+
+on:
+  workflow_dispatch:
+
+jobs:
+  cursor-verify:
+    runs-on: ubuntu-latest
+    env:
+      CI: "true"
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      # ── CU1: install agent binary via curl installer ──────────────────────
+      - name: "CU1 — curl https://cursor.com/install | bash (install Cursor CLI)"
+        id: cu1_install
+        continue-on-error: true
+        run: |
+          echo "=== CU1_INSTALL START ==="
+          set +e
+          OUT=$(timeout 120 bash -c 'curl -fsSL https://cursor.com/install | bash' 2>&1)
+          EXIT=$?
+          echo "$OUT"
+          echo "CU1_INSTALL_EXIT=$EXIT"
+          if [ $EXIT -eq 124 ]; then
+            echo "CU1_INSTALL=TIMEOUT"
+          elif [ $EXIT -ne 0 ]; then
+            echo "CU1_INSTALL=FAILED"
+            echo "LAST_STDERR: $OUT"
+          else
+            echo "CU1_INSTALL=OK"
+          fi
+          echo "=== CU1_INSTALL END ==="
+
+      - name: "CU1 — agent --version (primary claim)"
+        id: cu1
+        continue-on-error: true
+        run: |
+          echo "=== CU1 START ==="
+          set +e
+          export PATH="$PATH:$HOME/.local/bin:$HOME/.cursor/bin:/usr/local/bin"
+          which agent 2>&1 || echo "agent: not found in expanded PATH"
+          which cursor-agent 2>&1 || echo "cursor-agent: not found in expanded PATH"
+          agent --version 2>&1
+          CU1_EXIT=$?
+          echo "CU1_EXIT=$CU1_EXIT"
+          [ $CU1_EXIT -eq 0 ] && echo "CU1=PASS" || echo "CU1=FAIL"
+          echo "=== CU1 END ==="
+
+      # ── CU2: capture install path ─────────────────────────────────────────
+      - name: "CU2 — which agent + binary location"
+        id: cu2
+        continue-on-error: true
+        run: |
+          echo "=== CU2 START ==="
+          export PATH="$PATH:$HOME/.local/bin:$HOME/.cursor/bin:/usr/local/bin"
+          set +e
+          echo "which agent: $(which agent 2>&1)"
+          echo "which cursor-agent: $(which cursor-agent 2>&1)"
+          find / -name "agent" -type f 2>/dev/null | grep -v proc | grep -v sys | grep -v run | head -20
+          find / -name "cursor-agent" -type f 2>/dev/null | grep -v proc | grep -v sys | grep -v run | head -10
+          echo "--- ~/.local/bin/ ---"
+          ls -la "$HOME/.local/bin/" 2>/dev/null || echo "No ~/.local/bin/"
+          echo "--- ~/.cursor/ ---"
+          ls -la "$HOME/.cursor/" 2>/dev/null || echo "No ~/.cursor/"
+          echo "=== CU2 END ==="
+
+      # ── CU3: agent --help for plugin subcommands ──────────────────────────
+      - name: "CU3 — agent --help full output + plugin subcommand search"
+        id: cu3
+        continue-on-error: true
+        run: |
+          echo "=== CU3 START ==="
+          export PATH="$PATH:$HOME/.local/bin:$HOME/.cursor/bin:/usr/local/bin"
+          set +e
+          agent --help 2>&1
+          echo "---"
+          echo "Plugin-related subcommands:"
+          agent --help 2>&1 | grep -iE "plugin|extension|install|marketplace|list" || echo "NO_PLUGIN_SUBCMDS_FOUND_IN_HELP"
+          echo "=== CU3 END ==="
+
+      - name: "Diagnose environment after install attempt"
+        if: always()
+        continue-on-error: true
+        run: |
+          echo "=== ENV DIAG ==="
+          echo "PATH=$PATH"
+          export PATH="$PATH:$HOME/.local/bin:$HOME/.cursor/bin:/usr/local/bin"
+          find "$HOME" -name "*agent*" -o -name "*cursor*" 2>/dev/null | head -30 || true
+          echo "DISPLAY=$DISPLAY"
+          echo "=== END ENV DIAG ==="

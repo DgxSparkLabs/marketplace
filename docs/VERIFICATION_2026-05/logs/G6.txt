@@ -1,0 +1,12 @@
+CLAIM: G6 — gemini skills list --all 2>&1 | grep -iF telegram-notify finds the skill
+STATUS: VERIFIED-PASS
+LOG: docs/VERIFICATION_2026-05/logs/verify-gemini-run.log
+
+KEY EVIDENCE:
+  | === G6 START ===
+  | G6_EXIT=0
+  | G6_FOUND=YES
+  | === G6 END ===
+
+ANALYSIS: After local extension install, `gemini skills list --all` DOES find telegram-notify.
+The --all flag is valid and returns all skills including those from installed extensions.

@@ -1,0 +1,13 @@
+CLAIM: G1 — gemini extensions install ./.gemini/ --consent (local path baseline)
+STATUS: VERIFIED-PASS
+LOG: docs/VERIFICATION_2026-05/logs/verify-gemini-run.log
+
+KEY EVIDENCE:
+  | === G1 START ===
+  | Extension "dgxsparklabs-marketplace" installed successfully and enabled.
+  | G1_EXIT=0
+  | G1=PASS
+  (assert step)
+  | G1_ASSERT=PASS
+
+GEMINI VERSION: (verified via binary present step)

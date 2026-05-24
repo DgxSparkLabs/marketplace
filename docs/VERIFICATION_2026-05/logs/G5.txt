@@ -1,0 +1,13 @@
+CLAIM: G5 — gemini extensions list 2>&1 | grep -F dgxsparklabs shows our entry
+STATUS: VERIFIED-PASS
+LOG: docs/VERIFICATION_2026-05/logs/verify-gemini-run.log
+
+KEY EVIDENCE:
+  (precondition: local extension reinstalled successfully)
+  | === G5 START ===
+  | G5_FOUND=YES
+  | === G5 END ===
+
+ANALYSIS: After local-path install, `gemini extensions list` does show dgxsparklabs-marketplace.
+The grep pattern matches. (The extension list output also writes to stderr per prior docs;
+stdout+stderr merge with 2>&1 is required for reliable detection.)

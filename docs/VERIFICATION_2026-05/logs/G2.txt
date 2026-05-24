@@ -1,0 +1,20 @@
+CLAIM: G2 — gemini extensions install https://github.com/DgxSparkLabs/marketplace --consent
+STATUS: VERIFIED-FAIL
+LOG: docs/VERIFICATION_2026-05/logs/verify-gemini-run.log
+
+KEY EVIDENCE:
+  | === G2 START ===
+  | You have consented to the following:
+  | The extension you are about to install may have been created by a third-party developer...
+  | Configuration file not found at /tmp/gemini-extensionOunyeo/gemini-extension.json
+  | G2_EXIT=1
+  | G2=FAIL
+
+ANALYSIS: Gemini clones the repo to /tmp/gemini-extensionOunyeo/ and then looks for
+gemini-extension.json at the REPO ROOT (/tmp/gemini-extensionOunyeo/gemini-extension.json).
+The main branch does NOT have a gemini-extension.json at the repo root — it only exists
+at .gemini/gemini-extension.json. Therefore GitHub URL install without specifying the
+subdirectory path fails.
+
+The error makes the path explicit: the file must be at <cloned_repo_root>/gemini-extension.json,
+not at .gemini/gemini-extension.json.

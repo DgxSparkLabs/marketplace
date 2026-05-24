@@ -1,0 +1,18 @@
+CLAIM: CL3 — claude plugin list shows skill-example after install
+STATUS: VERIFIED-PASS
+LOG: docs/VERIFICATION_2026-05/logs/verify-claude-run.log
+
+KEY EVIDENCE:
+  | === CL3 START ===
+  | Installed plugins:
+  |   ❯ skill-example@dgxsparklabs-marketplace
+  |     Version: 1.0.0
+  |     Scope: project
+  |     Status: ✔ enabled
+  | CL3_EXIT=0
+  | CL3_FOUND=YES
+
+  Plugin cache location confirmed:
+  | /root/.claude/plugins/cache/dgxsparklabs-marketplace/skill-example/1.0.0/README.md
+  | /root/.claude/plugins/cache/dgxsparklabs-marketplace/skill-example/1.0.0/SKILL.md
+  | /root/.claude/plugins/cache/dgxsparklabs-marketplace/skill-example/1.0.0/.claude-plugin/plugin.json

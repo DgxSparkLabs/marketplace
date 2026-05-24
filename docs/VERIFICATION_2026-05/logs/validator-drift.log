@@ -1,0 +1,14 @@
+Generated 81 plugin entries in marketplace.json
+  agent: 1
+  bundle: 24
+  command: 1
+  hook: 1
+  lsp: 1
+  mcp: 1
+  monitor: 1
+  output-style: 1
+  rule: 22
+  skill: 27
+  theme: 1
+  per-platform manifests emitted for 57 individual plugins
+OK: generated content matches committed content.

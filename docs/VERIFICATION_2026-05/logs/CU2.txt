@@ -1,0 +1,17 @@
+CLAIM: CU2 — capture install path of agent binary
+STATUS: VERIFIED-PASS
+LOG: docs/VERIFICATION_2026-05/logs/verify-cursor-run.log
+
+KEY EVIDENCE:
+  | which agent: /root/.local/bin/agent
+  | which cursor-agent: /root/.local/bin/cursor-agent
+  | /root/.local/share/cursor-agent/versions/2026.05.20-2b5dd59/cursor-agent (actual binary)
+  | --- ~/.local/bin/ ---
+  | lrwxrwxrwx agent -> /root/.local/share/cursor-agent/versions/2026.05.20-2b5dd59/cursor-agent
+  | lrwxrwxrwx cursor-agent -> /root/.local/share/cursor-agent/versions/2026.05.20-2b5dd59/cursor-agent
+
+INSTALL LAYOUT:
+  - Symlinks: ~/.local/bin/agent, ~/.local/bin/cursor-agent
+  - Real binary: ~/.local/share/cursor-agent/versions/2026.05.20-2b5dd59/cursor-agent
+  - Config: ~/.cursor/cli-config.json
+  - Version string: 2026.05.20-2b5dd59

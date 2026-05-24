@@ -1,0 +1,208 @@
+name: "Verify — Gemini Claims (G1-G6)"
+
+# Verification scaffold only — never merged, never triggered by push.
+# Run locally via:
+#   act workflow_dispatch -W docs/VERIFICATION_2026-05/workflows/verify-gemini.yml \
+#     -P ubuntu-latest=catthehacker/ubuntu:act-latest --container-architecture linux/amd64
+
+on:
+  workflow_dispatch:
+
+jobs:
+  gemini-verify:
+    runs-on: ubuntu-latest
+    env:
+      GEMINI_API_KEY: "dummy-for-cli-install-verification"
+      CI: "true"
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Install uv (direct, no token needed)
+        run: |
+          curl -LsSf https://astral.sh/uv/install.sh | sh
+          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+          export PATH="$HOME/.local/bin:$PATH"
+          uv --version
+
+      - name: Regenerate manifests
+        run: |
+          export PATH="$HOME/.local/bin:$PATH"
+          uv run scripts/generate_manifest.py
+
+      - name: Install Node.js 20
+        run: |
+          curl -fsSL https://deb.nodesource.com/setup_20.x | bash -
+          apt-get install -y nodejs
+
+      - name: Install Gemini CLI
+        run: npm install -g @google/gemini-cli@latest
+
+      - name: Verify Gemini binary present
+        run: gemini --version
+
+      # ── G1: local-path install (baseline) ────────────────────────────────
+      - name: "G1 — gemini extensions install ./.gemini/ --consent (baseline)"
+        id: g1
+        continue-on-error: true
+        run: |
+          echo "=== G1 START ==="
+          set +e
+          OUT=$(echo "y" | gemini extensions install ./.gemini/ --consent 2>&1)
+          EXIT=$?
+          echo "$OUT"
+          echo "G1_EXIT=$EXIT"
+          [ $EXIT -eq 0 ] && echo "G1=PASS" || echo "G1=FAIL"
+          echo "=== G1 END ==="
+          exit $EXIT
+
+      - name: "G1 — assert extension in list"
+        id: g1_assert
+        continue-on-error: true
+        run: |
+          echo "=== G1_ASSERT START ==="
+          LIST=$(gemini extensions list 2>&1)
+          echo "$LIST"
+          echo "$LIST" | grep -F "dgxsparklabs" && echo "G1_ASSERT=PASS" || echo "G1_ASSERT=FAIL"
+          echo "=== G1_ASSERT END ==="
+
+      - name: "G1 — cleanup"
+        continue-on-error: true
+        run: gemini extensions uninstall dgxsparklabs-marketplace 2>&1 || true
+
+      # ── G2: GitHub URL, no ref ────────────────────────────────────────────
+      - name: "G2 — gemini extensions install https://github.com/DgxSparkLabs/marketplace --consent"
+        id: g2
+        continue-on-error: true
+        run: |
+          echo "=== G2 START ==="
+          set +e
+          OUT=$(gemini extensions install https://github.com/DgxSparkLabs/marketplace --consent 2>&1)
+          EXIT=$?
+          echo "$OUT"
+          echo "G2_EXIT=$EXIT"
+          [ $EXIT -eq 0 ] && echo "G2=PASS" || echo "G2=FAIL"
+          if [ $EXIT -ne 0 ]; then
+            echo "LAST_STDERR: $OUT"
+          fi
+          echo "=== G2 END ==="
+          exit $EXIT
+
+      - name: "G2 — assert extension in list"
+        id: g2_assert
+        continue-on-error: true
+        run: |
+          echo "=== G2_ASSERT START ==="
+          LIST=$(gemini extensions list 2>&1)
+          echo "$LIST"
+          echo "$LIST" | grep -F "dgxsparklabs" && echo "G2_ASSERT=PASS" || echo "G2_ASSERT=FAIL"
+          echo "=== G2_ASSERT END ==="
+
+      - name: "G2 — cleanup"
+        continue-on-error: true
+        run: gemini extensions uninstall dgxsparklabs-marketplace 2>&1 || true
+
+      # ── G3: GitHub URL with --ref ─────────────────────────────────────────
+      - name: "G3 — gemini extensions install GitHub URL --ref feat/claude-plugin-compliance --consent"
+        id: g3
+        continue-on-error: true
+        run: |
+          echo "=== G3 START ==="
+          set +e
+          OUT=$(gemini extensions install https://github.com/DgxSparkLabs/marketplace --ref feat/claude-plugin-compliance --consent 2>&1)
+          EXIT=$?
+          echo "$OUT"
+          echo "G3_EXIT=$EXIT"
+          [ $EXIT -eq 0 ] && echo "G3=PASS" || echo "G3=FAIL"
+          if [ $EXIT -ne 0 ]; then
+            echo "LAST_STDERR: $OUT"
+          fi
+          echo "=== G3 END ==="
+          exit $EXIT
+
+      - name: "G3 — assert extension in list"
+        id: g3_assert
+        continue-on-error: true
+        run: |
+          echo "=== G3_ASSERT START ==="
+          LIST=$(gemini extensions list 2>&1)
+          echo "$LIST"
+          echo "$LIST" | grep -F "dgxsparklabs" && echo "G3_ASSERT=PASS" || echo "G3_ASSERT=FAIL"
+          echo "=== G3_ASSERT END ==="
+
+      - name: "G3 — cleanup"
+        continue-on-error: true
+        run: gemini extensions uninstall dgxsparklabs-marketplace 2>&1 || true
+
+      # ── G4: --path argument ────────────────────────────────────────────────
+      - name: "G4 — gemini skills install GitHub URL --path _generated/skill-example --consent"
+        id: g4
+        continue-on-error: true
+        run: |
+          echo "=== G4 START ==="
+          set +e
+          OUT=$(gemini skills install https://github.com/DgxSparkLabs/marketplace --path _generated/skill-example --consent 2>&1)
+          EXIT=$?
+          echo "$OUT"
+          echo "G4_EXIT=$EXIT"
+          [ $EXIT -eq 0 ] && echo "G4=PASS" || echo "G4=FAIL"
+          if [ $EXIT -ne 0 ]; then
+            echo "LAST_STDERR: $OUT"
+            # Try alternate form
+            echo "--- trying gemini extensions install with --path ---"
+            OUT2=$(gemini extensions install https://github.com/DgxSparkLabs/marketplace --path _generated/skill-example --consent 2>&1)
+            echo "ALT_OUT: $OUT2"
+          fi
+          echo "=== G4 END ==="
+
+      # ── G5: extensions list shows our entry ───────────────────────────────
+      - name: "G5 — precondition: reinstall local extension"
+        continue-on-error: true
+        run: |
+          echo "=== G5_PREREQ START ==="
+          echo "y" | gemini extensions install ./.gemini/ --consent 2>&1 || true
+          echo "=== G5_PREREQ END ==="
+
+      - name: "G5 — gemini extensions list 2>&1 | grep -F dgxsparklabs"
+        id: g5
+        continue-on-error: true
+        run: |
+          echo "=== G5 START ==="
+          set +e
+          LIST=$(gemini extensions list 2>&1)
+          echo "$LIST"
+          echo "$LIST" | grep -F "dgxsparklabs" && echo "G5_FOUND=YES" || echo "G5_FOUND=NO"
+          echo "=== G5 END ==="
+
+      # ── G6: skills list shows telegram-notify ────────────────────────────
+      - name: "G6 — gemini skills list --all | grep -iF telegram-notify"
+        id: g6
+        continue-on-error: true
+        run: |
+          echo "=== G6 START ==="
+          set +e
+          SKILLS=$(gemini skills list --all 2>&1)
+          EXIT=$?
+          echo "$SKILLS"
+          echo "G6_EXIT=$EXIT"
+          echo "$SKILLS" | grep -iF "telegram-notify" && echo "G6_FOUND=YES" || echo "G6_FOUND=NO"
+          echo "--- gemini skills list (no --all) ---"
+          gemini skills list 2>&1 || true
+          echo "--- gemini --help excerpt ---"
+          gemini --help 2>&1 | head -50 || true
+          echo "=== G6 END ==="
+
+      - name: "Dump Gemini state"
+        if: always()
+        continue-on-error: true
+        run: |
+          echo "=== GEMINI STATE DUMP ==="
+          find ~/.gemini -type f 2>/dev/null | head -30 || echo "No ~/.gemini files"
+          gemini extensions list 2>&1 || true
+          echo "=== END GEMINI STATE DUMP ==="
+
+      - name: "Final cleanup"
+        if: always()
+        continue-on-error: true
+        run: |
+          gemini extensions uninstall dgxsparklabs-marketplace 2>&1 || true
