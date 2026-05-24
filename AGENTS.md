@@ -52,7 +52,7 @@ Run the CI workflow locally with [act](https://github.com/nektos/act) and Docker
 ./tests/run-ci-local.sh -n       # dry-run (no container)
 ```
 
-For full per-platform act verification (Codex/Gemini/Cursor/Claude install + enumeration in Docker), use `docs/VERIFICATION_2026-05/reproduce.ps1` — see [[CONTRIBUTING#Running act-based verification]].
+For full per-platform act verification (Codex/Gemini/Cursor/Claude install + enumeration in Docker), use `docs/archive/phase-5-cross-platform-install/VERIFICATION_2026-05/reproduce.ps1` — see [[CONTRIBUTING#Running act-based verification]].
 
 ## Research Directory
 

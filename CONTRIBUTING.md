@@ -87,10 +87,10 @@ For hermetic local-container CI re-verification before pushing:
 
 ```powershell
 # From repo root (Windows PowerShell)
-docs/VERIFICATION_2026-05/reproduce.ps1
+docs/archive/phase-5-cross-platform-install/VERIFICATION_2026-05/reproduce.ps1
 ```
 
-The script runs four verification workflows (`verify-codex.yml`, `verify-gemini.yml`, `verify-cursor.yml`, `verify-claude.yml`) via nektos/act 0.2.63+ in Docker containers. Each workflow's full stdout/stderr lands in `docs/VERIFICATION_2026-05/logs/verify-<platform>-run.log`; per-claim snippets are extracted to `logs/<ID>.txt`. Prerequisites: act + Docker Desktop + the `catthehacker/ubuntu:act-latest` image pulled. See the script for the full command sequence.
+The script runs four verification workflows (`verify-codex.yml`, `verify-gemini.yml`, `verify-cursor.yml`, `verify-claude.yml`) via nektos/act 0.2.63+ in Docker containers. Each workflow's full stdout/stderr lands in `docs/archive/phase-5-cross-platform-install/VERIFICATION_2026-05/logs/verify-<platform>-run.log`; per-claim snippets are extracted to `logs/<ID>.txt`. Prerequisites: act + Docker Desktop + the `catthehacker/ubuntu:act-latest` image pulled. See the script for the full command sequence.
 
 ## Conventions
 

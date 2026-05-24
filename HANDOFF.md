@@ -36,33 +36,33 @@ Current inventory:
 ## Completed Work Phases (5 total)
 
 ### Phase 1 — Plugin Compliance Migration (DONE)
-Migrated from curl-bash + Textual TUI installer to native Claude Code `/plugin marketplace add`. Built v1 of `scripts/generate_manifest.py`. See [`docs/INVESTIGATION_PLUGIN_DEPENDENCIES.md`](./docs/INVESTIGATION_PLUGIN_DEPENDENCIES.md).
+Migrated from curl-bash + Textual TUI installer to native Claude Code `/plugin marketplace add`. Built v1 of `scripts/generate_manifest.py`. See [`docs/archive/phase-1-compliance/INVESTIGATION_PLUGIN_DEPENDENCIES.md`](./docs/archive/phase-1-compliance/INVESTIGATION_PLUGIN_DEPENDENCIES.md).
 
 ### Phase 2 — Multi-Platform Validation Implementation (DONE)
-Built 10 `compat-*.yml` workflows + 5 composite actions. All green. Wave 4 promoted Codex/Gemini matrix entries from `continue-on-error: true` to `false`. See [`docs/VERIFICATION_REPORT.md`](./docs/VERIFICATION_REPORT.md), [`docs/FIX_REPORT.md`](./docs/FIX_REPORT.md), [`docs/FINALIZATION_REPORT.md`](./docs/FINALIZATION_REPORT.md).
+Built 10 `compat-*.yml` workflows + 5 composite actions. All green. Wave 4 promoted Codex/Gemini matrix entries from `continue-on-error: true` to `false`. See [`docs/archive/phase-2-validation/VERIFICATION_REPORT.md`](./docs/archive/phase-2-validation/VERIFICATION_REPORT.md), [`docs/archive/phase-2-validation/FIX_REPORT.md`](./docs/archive/phase-2-validation/FIX_REPORT.md), [`docs/archive/phase-2-validation/FINALIZATION_REPORT.md`](./docs/archive/phase-2-validation/FINALIZATION_REPORT.md).
 
 ### Phase 3 — Examples In Native Folders (DONE)
-Restructured `examples/example-<construct>/` → `<construct>/example/`. Eliminated catalog/code asymmetry. See [`docs/RESTRUCTURE_REPORT.md`](./docs/RESTRUCTURE_REPORT.md).
+Restructured `examples/example-<construct>/` → `<construct>/example/`. Eliminated catalog/code asymmetry. See [`docs/archive/restructure/RESTRUCTURE_REPORT.md`](./docs/archive/restructure/RESTRUCTURE_REPORT.md).
 
 ### Phase 4 — Dependency-Injection Refactor (DONE)
-Refactored generator from procedural per-construct code (~600 lines of special cases) to a strategy-pattern architecture: `scripts/utils.py`, `scripts/constructs.py` (10 Construct classes), `scripts/platforms.py` (initially 6 Platform classes), `scripts/bundles.py`, `scripts/generate_manifest.py` (thin orchestrator, 5 phases). 25 locked decisions in [`docs/PLAN_DI_REFACTOR.md`](./docs/PLAN_DI_REFACTOR.md). Implementation: [`docs/DI_REFACTOR_REPORT.md`](./docs/DI_REFACTOR_REPORT.md). Validation: [`docs/DI_REFACTOR_VALIDATION_REPORT.md`](./docs/DI_REFACTOR_VALIDATION_REPORT.md).
+Refactored generator from procedural per-construct code (~600 lines of special cases) to a strategy-pattern architecture: `scripts/utils.py`, `scripts/constructs.py` (10 Construct classes), `scripts/platforms.py` (initially 6 Platform classes), `scripts/bundles.py`, `scripts/generate_manifest.py` (thin orchestrator, 5 phases). 25 locked decisions in [`docs/archive/di-refactor/PLAN_DI_REFACTOR.md`](./docs/archive/di-refactor/PLAN_DI_REFACTOR.md). Implementation: [`docs/archive/di-refactor/DI_REFACTOR_REPORT.md`](./docs/archive/di-refactor/DI_REFACTOR_REPORT.md). Validation: [`docs/archive/di-refactor/DI_REFACTOR_VALIDATION_REPORT.md`](./docs/archive/di-refactor/DI_REFACTOR_VALIDATION_REPORT.md).
 
 ### Phase 5 — Cross-Platform Native Install Compliance (DONE — most recent session)
 
 Verification round exposed that the README documented install commands that didn't fully work: Codex per-plugin install errored with `missing or invalid plugin.json`, Gemini GitHub URL install errored with `Configuration file not found`, Windsurf couldn't see skills, Cursor team-marketplace had no manifest to import. Compat CI only tested marketplace registration, missing enumeration + install.
 
-**Plan**: [`docs/PLAN_CROSS_PLATFORM_INSTALL_FIX.md`](./docs/PLAN_CROSS_PLATFORM_INSTALL_FIX.md) (v2, 4 locked decisions A1/B2/C1/Q2).
+**Plan**: [`docs/archive/phase-5-cross-platform-install/PLAN_CROSS_PLATFORM_INSTALL_FIX.md`](./docs/archive/phase-5-cross-platform-install/PLAN_CROSS_PLATFORM_INSTALL_FIX.md) (v2, 4 locked decisions A1/B2/C1/Q2).
 
-**Verification artifacts** (`docs/VERIFICATION_2026-05/`):
-- [`SUMMARY.md`](./docs/VERIFICATION_2026-05/SUMMARY.md) — ground-truth synthesis
-- [`empirical_act_verification.md`](./docs/VERIFICATION_2026-05/empirical_act_verification.md) — per-claim table (C1-C7 Codex, G1-G6 Gemini, CU1-CU3 Cursor, CL1-CL3 Claude)
-- [`cursor.md`](./docs/VERIFICATION_2026-05/cursor.md) — Cursor IDE + CLI WebFetch research (overturned prior "no CLI" conclusion)
-- [`IMPLEMENTATION_REPORT.md`](./docs/VERIFICATION_2026-05/IMPLEMENTATION_REPORT.md) — implementer's commit-by-commit report
-- [`IMPLEMENTATION_VALIDATION.md`](./docs/VERIFICATION_2026-05/IMPLEMENTATION_VALIDATION.md) — validator's APPROVED verdict
-- [`README_REWRITE_PREVIEW.md`](./docs/VERIFICATION_2026-05/README_REWRITE_PREVIEW.md) + [`README_REWRITE_REPORT.md`](./docs/VERIFICATION_2026-05/README_REWRITE_REPORT.md) — Phase 2 README work
-- [`workflows/`](./docs/VERIFICATION_2026-05/workflows/) — act verification scaffolds
-- [`logs/`](./docs/VERIFICATION_2026-05/logs/) — full container logs + per-claim text snippets
-- [`reproduce.ps1`](./docs/VERIFICATION_2026-05/reproduce.ps1) — full reproduction script
+**Verification artifacts** (`docs/archive/phase-5-cross-platform-install/VERIFICATION_2026-05/`):
+- [`SUMMARY.md`](./docs/archive/phase-5-cross-platform-install/VERIFICATION_2026-05/SUMMARY.md) — ground-truth synthesis
+- [`empirical_act_verification.md`](./docs/archive/phase-5-cross-platform-install/VERIFICATION_2026-05/empirical_act_verification.md) — per-claim table (C1-C7 Codex, G1-G6 Gemini, CU1-CU3 Cursor, CL1-CL3 Claude)
+- [`cursor.md`](./docs/archive/phase-5-cross-platform-install/VERIFICATION_2026-05/cursor.md) — Cursor IDE + CLI WebFetch research (overturned prior "no CLI" conclusion)
+- [`IMPLEMENTATION_REPORT.md`](./docs/archive/phase-5-cross-platform-install/VERIFICATION_2026-05/IMPLEMENTATION_REPORT.md) — implementer's commit-by-commit report
+- [`IMPLEMENTATION_VALIDATION.md`](./docs/archive/phase-5-cross-platform-install/VERIFICATION_2026-05/IMPLEMENTATION_VALIDATION.md) — validator's APPROVED verdict
+- [`README_REWRITE_PREVIEW.md`](./docs/archive/phase-5-cross-platform-install/VERIFICATION_2026-05/README_REWRITE_PREVIEW.md) + [`README_REWRITE_REPORT.md`](./docs/archive/phase-5-cross-platform-install/VERIFICATION_2026-05/README_REWRITE_REPORT.md) — Phase 2 README work
+- [`workflows/`](./docs/archive/phase-5-cross-platform-install/VERIFICATION_2026-05/workflows/) — act verification scaffolds
+- [`logs/`](./docs/archive/phase-5-cross-platform-install/VERIFICATION_2026-05/logs/) — full container logs + per-claim text snippets
+- [`reproduce.ps1`](./docs/archive/phase-5-cross-platform-install/VERIFICATION_2026-05/reproduce.ps1) — full reproduction script
 
 **Generator changes** (commits 534cfac through 654bfca on the feature branch, merged as `bfb476d`):
 - Extended Platform protocol with `build_plugin_json(construct, name) -> dict`
@@ -113,7 +113,7 @@ For hermetic CI re-verification before pushing:
 
 ```powershell
 # From repo root, runs all 4 verify workflows in Docker containers via act:
-docs/VERIFICATION_2026-05/reproduce.ps1
+docs/archive/phase-5-cross-platform-install/VERIFICATION_2026-05/reproduce.ps1
 ```
 
 ---
@@ -157,22 +157,22 @@ marketplace/
 ├── tests/test_marketplace.py           52 tests (18 added in Phase 5)
 ├── docs/
 │   ├── RESUME_HERE.md                  ★ Start here on re-entry
-│   ├── PLAN_CROSS_PLATFORM_INSTALL_FIX.md  Phase 5 plan + 4 locked decisions
-│   ├── PLAN_DI_REFACTOR.md             Phase 4 plan + 25 locked decisions
-│   ├── PLAN_DI_REFACTOR_CRITIQUE.md, _V2.md   Reviewer findings (Phase 4)
-│   ├── DI_REFACTOR_REPORT.md           Phase 4 implementation
-│   ├── DI_REFACTOR_VALIDATION_REPORT.md  Phase 4 validation
-│   ├── VERIFICATION_2026-05/           Phase 5 full audit trail (plan, reports, logs, workflows, reproduce)
-│   ├── GOAL_PLUGIN_COMPLIANCE.md, PLAN_PLUGIN_COMPLIANCE.md  Phase 1 docs
-│   ├── INVESTIGATION_PLUGIN_DEPENDENCIES.md  Empirical dep-install proof
-│   ├── PLATFORM_INSPECTION_CATALOG.md  Canonical CLI commands per platform
-│   ├── PLATFORM_VALIDATION_CICD_PLAN.md  Phase 2 CI design + 20 locked decisions
-│   ├── EMPIRICAL_CLI_FINDINGS/         Phase 2 raw research notes
-│   ├── ORG_POLICY_INVESTIGATION.md     Transient install block root-cause
-│   ├── RESTRUCTURE_REPORT.md           Phase 3 outcome
+│   ├── PLATFORMS.md                    Per-platform install/support/discovery/CI reference (master doc)
+│   ├── ARCHITECTURE.md                 Generator architecture — Construct/Platform/Bundle protocols (master doc)
 │   ├── CONSTRUCT_TYPES.md, ADDING_A_CONSTRUCT.md   Reference
-│   ├── SKILL_FORMAT.md, RULE_FORMAT.md, ONBOARDING.md  Format references
-│   └── (earlier-cycle reports: VERIFICATION, FIX, FINALIZATION)
+│   ├── SKILL_FORMAT.md, RULE_FORMAT.md  Format references
+│   └── archive/                        Historical arc material (audit trail; preserved via git mv)
+│       ├── di-refactor/                Phase 4 plan + critiques + report + validation (5 files)
+│       ├── phase-1-compliance/         Phase 1 plan + goal + implementer prompt + dependency investigation (4 files)
+│       ├── phase-2-validation/         Phase 2 CI plan + 3 cycle reports + catalog + org-policy investigation (7 files)
+│       ├── phase-5-cross-platform-install/  Phase 5 plan + VERIFICATION_2026-05/ tree (logs, workflows, reports, reproduce.ps1)
+│       ├── empirical-cli-findings/     Phase 2 raw per-platform CLI research (6 files)
+│       ├── restructure/                RESTRUCTURE_REPORT (Phase 3 outcome)
+│       ├── processes/                  REENTRY_TEST_PROTOCOL (orientation-kit test process)
+│       ├── consolidation-2026-05/      DOC_INVENTORY_2026-05-24.md (this consolidation arc)
+│       ├── ONBOARDING.md, pr1-body.md  Orphans
+│       ├── CONTRIBUTING_pre-consolidation.md  Pre-rewrite copy of CONTRIBUTING.md
+│       └── pre-1.0-pitfalls.md         Pre-DI-refactor pitfalls knowledge base
 └── research/                           Market intelligence
 ```
 

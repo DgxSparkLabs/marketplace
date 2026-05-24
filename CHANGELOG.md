@@ -17,12 +17,12 @@ Verification round exposed that the README documented install commands that didn
 - Extended `Platform` protocol with `build_plugin_json(construct, name) -> dict`.
 - CI assertions in `compat-marketplace-add.yml` (Codex enumeration + install; Claude install + list) and a new `gemini-github-url-install` job in `compat-extension.yml`. End-to-end registration → enumeration → install → use verified for Claude/Codex/Gemini.
 - 18 new tests in `tests/test_marketplace.py` (52 total now, up from 34).
-- Full audit trail in `docs/VERIFICATION_2026-05/` (SUMMARY, empirical_act_verification, cursor research, implementation report, validation, README rewrite preview + report, act workflows, container logs, `reproduce.ps1`).
+- Full audit trail in `docs/archive/phase-5-cross-platform-install/VERIFICATION_2026-05/` (SUMMARY, empirical_act_verification, cursor research, implementation report, validation, README rewrite preview + report, act workflows, container logs, `reproduce.ps1`).
 
 ### Changed
 
-- Plan: `docs/PLAN_CROSS_PLATFORM_INSTALL_FIX.md` (v2) — 4 locked decisions (A1 per-plugin manifests, B2 supports-gated emission, C1 root-level entry-point manifests, Q2 `.agents/skills/` convergence dir).
-- README rewritten with per-platform install + GitHub-direct-install support matrix (every command appears as VERIFIED-PASS in `docs/VERIFICATION_2026-05/empirical_act_verification.md`).
+- Plan: `docs/archive/phase-5-cross-platform-install/PLAN_CROSS_PLATFORM_INSTALL_FIX.md` (v2) — 4 locked decisions (A1 per-plugin manifests, B2 supports-gated emission, C1 root-level entry-point manifests, Q2 `.agents/skills/` convergence dir).
+- README rewritten with per-platform install + GitHub-direct-install support matrix (every command appears as VERIFIED-PASS in `docs/archive/phase-5-cross-platform-install/VERIFICATION_2026-05/empirical_act_verification.md`).
 - Mirror dir hygiene: `shutil.copytree` ignore patterns exclude cross-platform manifest dirs.
 
 ---
@@ -48,8 +48,8 @@ Restructured `scripts/generate_manifest.py` from a procedural per-construct scri
 
 ### Documentation
 
-- 25 locked decisions captured in `docs/PLAN_DI_REFACTOR.md` (v3) with v1/v2 reviewer critiques alongside.
-- Implementation evidence in `docs/DI_REFACTOR_REPORT.md`; validation in `docs/DI_REFACTOR_VALIDATION_REPORT.md`.
+- 25 locked decisions captured in `docs/archive/di-refactor/PLAN_DI_REFACTOR.md` (v3) with v1/v2 reviewer critiques alongside.
+- Implementation evidence in `docs/archive/di-refactor/DI_REFACTOR_REPORT.md`; validation in `docs/archive/di-refactor/DI_REFACTOR_VALIDATION_REPORT.md`.
 - 11 separate `docs/ADDING_*.md` per-construct tutorials consolidated into one `docs/ADDING_A_CONSTRUCT.md` (decision #10).
 
 ---
@@ -66,7 +66,7 @@ Major migration. The marketplace is now natively installable via Claude Code's `
 - `scripts/generate_manifest.py` — the engine. Produces `_generated/skill-<name>/`, `_generated/rule-<name>/`, dependency-only bundle plugins, and cross-platform mirrors. Supports `--check` mode for CI drift detection.
 - 10 example reference plugins in `examples/` (one per Claude Code construct type). Each is both a working installable plugin and a tutorial reference.
 - 12 contributor tutorials in `docs/`: `CONSTRUCT_TYPES.md` plus eleven `ADDING_*.md` files.
-- Planning dossier: `docs/GOAL_PLUGIN_COMPLIANCE.md`, `docs/PLAN_PLUGIN_COMPLIANCE.md`, `docs/INVESTIGATION_PLUGIN_DEPENDENCIES.md`, `docs/IMPLEMENTING_AGENT_PROMPT.md`.
+- Planning dossier: `docs/archive/phase-1-compliance/GOAL_PLUGIN_COMPLIANCE.md`, `docs/archive/phase-1-compliance/PLAN_PLUGIN_COMPLIANCE.md`, `docs/archive/phase-1-compliance/INVESTIGATION_PLUGIN_DEPENDENCIES.md`, `docs/archive/phase-1-compliance/IMPLEMENTING_AGENT_PROMPT.md`.
 - Cross-platform mirrors (auto-generated, committed): `.codex/skills/`, `.gemini/skills/`, `.cursor/rules/`, `.windsurf/rules/`, `.devin/skills/`, `.devin/rules/`.
 - `activate-installed-rules.sh` at repo root — bulk-symlinks every installed rule plugin into `.claude/rules/`.
 - CI step that validates manifest sync via `generate_manifest.py --check`.
@@ -89,11 +89,11 @@ Major migration. The marketplace is now natively installable via Claude Code's `
 
 - **`curl ... | bash` users**: the old install URL now returns 404. Switch to `/plugin marketplace add DgxSparkLabs/marketplace` in a Claude Code session.
 - **Devin / Cursor / Windsurf users**: `git clone` the repo and point your tool at the matching mirror directory.
-- **Rule users**: rules now ship as plugins. After install, run the plugin's `activate.sh` (or the repo-root bulk helper) to symlink into `.claude/rules/`. See `docs/INVESTIGATION_PLUGIN_DEPENDENCIES.md`.
+- **Rule users**: rules now ship as plugins. After install, run the plugin's `activate.sh` (or the repo-root bulk helper) to symlink into `.claude/rules/`. See `docs/archive/phase-1-compliance/INVESTIGATION_PLUGIN_DEPENDENCIES.md`.
 
 ### Verified empirically
 
-The dependency-only bundle architecture requires Claude Code to auto-install plugin dependencies. Verified — `claude plugin install` reports `"(+ N dependency: <name>)"`. Full experiment and decision matrix in `docs/INVESTIGATION_PLUGIN_DEPENDENCIES.md`.
+The dependency-only bundle architecture requires Claude Code to auto-install plugin dependencies. Verified — `claude plugin install` reports `"(+ N dependency: <name>)"`. Full experiment and decision matrix in `docs/archive/phase-1-compliance/INVESTIGATION_PLUGIN_DEPENDENCIES.md`.
 
 ---
 

@@ -452,11 +452,13 @@ To add a new construct, see [`docs/ADDING_A_CONSTRUCT.md`](docs/ADDING_A_CONSTRU
 
 | Document | Purpose |
 |----------|---------|
-| [`docs/PLATFORM_INSPECTION_CATALOG.md`](docs/PLATFORM_INSPECTION_CATALOG.md) | Empirically verified CLI commands per platform, with match-mode annotations for CI |
-| [`docs/EMPIRICAL_CLI_FINDINGS/`](docs/EMPIRICAL_CLI_FINDINGS/) | Raw research notes — Devin, Gemini, Codex, Cursor, Windsurf findings |
-| [`docs/PLAN_DI_REFACTOR.md`](docs/PLAN_DI_REFACTOR.md) | Generator architecture — the DI strategy-pattern design |
-| [`docs/DI_REFACTOR_REPORT.md`](docs/DI_REFACTOR_REPORT.md) | What the refactor changed and why |
+| [`docs/PLATFORMS.md`](docs/PLATFORMS.md) | Per-platform install, support, discovery, and CI reference (Claude/Codex/Gemini/Cursor/Windsurf/Devin/Agents) |
+| [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) | Generator architecture — Construct/Platform/Bundle protocols, generation phases |
 | [`docs/RESUME_HERE.md`](docs/RESUME_HERE.md) | Project orientation for new agents and contributors |
+| [`docs/archive/phase-2-validation/PLATFORM_INSPECTION_CATALOG.md`](docs/archive/phase-2-validation/PLATFORM_INSPECTION_CATALOG.md) | Empirically verified CLI commands per platform, with match-mode annotations for CI (historical reference) |
+| [`docs/archive/empirical-cli-findings/`](docs/archive/empirical-cli-findings/) | Raw research notes — Devin, Gemini, Codex, Cursor, Windsurf findings (historical) |
+| [`docs/archive/di-refactor/PLAN_DI_REFACTOR.md`](docs/archive/di-refactor/PLAN_DI_REFACTOR.md) | DI strategy-pattern design — 25 locked decisions (Phase 4, historical) |
+| [`docs/archive/di-refactor/DI_REFACTOR_REPORT.md`](docs/archive/di-refactor/DI_REFACTOR_REPORT.md) | What the refactor changed and why (Phase 4, historical) |
 
 ---
 

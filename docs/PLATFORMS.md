@@ -30,7 +30,7 @@ The four detail-reference docs ([[ADDING_A_CONSTRUCT]], [[CONSTRUCT_TYPES]], [[R
 | Windsurf | `git clone` + open in IDE | no | n/a | `.windsurf/skills/` + `.agents/skills/` | clone-only |
 | Devin | `git clone` + `devin skills list` | yes | n/a (no marketplace) | `.devin/skills/` + `.agents/skills/` | clone-only |
 
-Sources: [[VERIFICATION_2026-05/SUMMARY#Per-platform install story (what's true today)]] (Claude/Codex/Gemini), [[VERIFICATION_2026-05/cursor#Executive summary]] (Cursor), [[EMPIRICAL_CLI_FINDINGS/windsurf]] (Windsurf), [[EMPIRICAL_CLI_FINDINGS/devin]] (Devin).
+Sources: [[archive/phase-5-cross-platform-install/VERIFICATION_2026-05/SUMMARY#Per-platform install story (what's true today)]] (Claude/Codex/Gemini), [[archive/phase-5-cross-platform-install/VERIFICATION_2026-05/cursor#Executive summary]] (Cursor), [[archive/empirical-cli-findings/windsurf]] (Windsurf), [[archive/empirical-cli-findings/devin]] (Devin).
 
 ---
 
@@ -55,7 +55,7 @@ claude plugin install skill-telegram-notify@dgxsparklabs-marketplace --scope pro
 claude plugin list
 ```
 
-The shortform `owner/repo` form, an explicit `https://github.com/...` URL, and a local path all work. Verified PASS for the local-path variant in [[VERIFICATION_2026-05/empirical_act_verification#Claude Code]] (CL1 — `Successfully added marketplace: dgxsparklabs-marketplace`).
+The shortform `owner/repo` form, an explicit `https://github.com/...` URL, and a local path all work. Verified PASS for the local-path variant in [[archive/phase-5-cross-platform-install/VERIFICATION_2026-05/empirical_act_verification#Claude Code]] (CL1 — `Successfully added marketplace: dgxsparklabs-marketplace`).
 
 #### From GitHub (specific branch)
 
@@ -70,7 +70,7 @@ claude plugin marketplace add ./
 claude plugin install skill-telegram-notify@dgxsparklabs-marketplace --scope project
 ```
 
-Verified PASS in [[VERIFICATION_2026-05/empirical_act_verification#Claude Code]] (CL1, CL2, CL3). The cache lands at `~/.claude/plugins/cache/dgxsparklabs-marketplace/<plugin>/<version>/`.
+Verified PASS in [[archive/phase-5-cross-platform-install/VERIFICATION_2026-05/empirical_act_verification#Claude Code]] (CL1, CL2, CL3). The cache lands at `~/.claude/plugins/cache/dgxsparklabs-marketplace/<plugin>/<version>/`.
 
 ### Discovery commands
 
@@ -132,8 +132,8 @@ All cleanup steps run `claude plugin uninstall <name> --scope project || true` t
 
 ### References
 
-- [[VERIFICATION_2026-05/SUMMARY#Per-platform install story (what's true today)]] — install status table
-- [[VERIFICATION_2026-05/empirical_act_verification#Claude Code]] — per-claim CL1/CL2/CL3 evidence
+- [[archive/phase-5-cross-platform-install/VERIFICATION_2026-05/SUMMARY#Per-platform install story (what's true today)]] — install status table
+- [[archive/phase-5-cross-platform-install/VERIFICATION_2026-05/empirical_act_verification#Claude Code]] — per-claim CL1/CL2/CL3 evidence
 - [[INVESTIGATION_PLUGIN_DEPENDENCIES#Result]] — proof that bundle dependencies auto-install
 - [[RULE_FORMAT]] — rule install workaround details
 
@@ -156,7 +156,7 @@ codex plugin list
 codex plugin add skill-telegram-notify@dgxsparklabs-marketplace
 ```
 
-Works post-merge on `main` (the merged branch contains `.claude-plugin/marketplace.json` and the per-plugin `.codex-plugin/plugin.json` manifests Codex requires). The post-merge verification log captures `Added marketplace 'dgxsparklabs-marketplace' from https://github.com/DgxSparkLabs/marketplace.git. C2_EXIT=0` (from `logs/post-merge-c2-verification.log`). Pre-merge against `main` the no-ref form failed with `marketplace root does not contain a supported manifest` — see C2 in [[VERIFICATION_2026-05/empirical_act_verification#Codex]].
+Works post-merge on `main` (the merged branch contains `.claude-plugin/marketplace.json` and the per-plugin `.codex-plugin/plugin.json` manifests Codex requires). The post-merge verification log captures `Added marketplace 'dgxsparklabs-marketplace' from https://github.com/DgxSparkLabs/marketplace.git. C2_EXIT=0` (from `logs/post-merge-c2-verification.log`). Pre-merge against `main` the no-ref form failed with `marketplace root does not contain a supported manifest` — see C2 in [[archive/phase-5-cross-platform-install/VERIFICATION_2026-05/empirical_act_verification#Codex]].
 
 #### From GitHub (specific branch)
 
@@ -176,7 +176,7 @@ codex plugin list
 codex plugin add skill-example@dgxsparklabs-marketplace
 ```
 
-Verified PASS in [[VERIFICATION_2026-05/empirical_act_verification#Codex]] (C1 for marketplace add; C4 for enumeration; C5 for per-plugin install after the Phase 1.5 manifest fix landed — see `logs/C5-post.txt`). After registration, `~/.codex/config.toml` contains a `[marketplaces.dgxsparklabs-marketplace]` block with `source_type = "local"` and the local path.
+Verified PASS in [[archive/phase-5-cross-platform-install/VERIFICATION_2026-05/empirical_act_verification#Codex]] (C1 for marketplace add; C4 for enumeration; C5 for per-plugin install after the Phase 1.5 manifest fix landed — see `logs/C5-post.txt`). After registration, `~/.codex/config.toml` contains a `[marketplaces.dgxsparklabs-marketplace]` block with `source_type = "local"` and the local path.
 
 ### Discovery commands
 
@@ -229,17 +229,17 @@ All Codex jobs run with `continue-on-error: false` (promoted from advisory to re
 
 ### Known gaps
 
-- **Pre-merge branch state required `--ref`.** Pre-merge, `codex plugin marketplace add DgxSparkLabs/marketplace` failed (C2) and required `--ref feat/claude-plugin-compliance` (C3). Post-merge on `main` the no-ref form works. See [[VERIFICATION_2026-05/SUMMARY#Finding 1: The `.agents/` directory is a real convergence — but only for content, not for marketplaces]].
+- **Pre-merge branch state required `--ref`.** Pre-merge, `codex plugin marketplace add DgxSparkLabs/marketplace` failed (C2) and required `--ref feat/claude-plugin-compliance` (C3). Post-merge on `main` the no-ref form works. See [[archive/phase-5-cross-platform-install/VERIFICATION_2026-05/SUMMARY#Finding 1: The `.agents/` directory is a real convergence — but only for content, not for marketplaces]].
 - **`codex plugin marketplace list` doesn't exist.** Codex has `add`, `upgrade`, `remove` but no list subcommand. Inspect `~/.codex/config.toml` directly to see registered marketplaces.
 
 ### Out-of-scope or non-applicable
 
-- The canonical `.agents/plugins/marketplace.json` path is supported by Codex but not adopted here — `.claude-plugin/marketplace.json` is accepted legacy-compatibly. See [[VERIFICATION_2026-05/SUMMARY#Finding 1: The `.agents/` directory is a real convergence — but only for content, not for marketplaces]].
+- The canonical `.agents/plugins/marketplace.json` path is supported by Codex but not adopted here — `.claude-plugin/marketplace.json` is accepted legacy-compatibly. See [[archive/phase-5-cross-platform-install/VERIFICATION_2026-05/SUMMARY#Finding 1: The `.agents/` directory is a real convergence — but only for content, not for marketplaces]].
 
 ### References
 
-- [[VERIFICATION_2026-05/empirical_act_verification#Codex]] — C1-C7 per-claim table
-- [[EMPIRICAL_CLI_FINDINGS/codex]] — npm package metadata, config locations
+- [[archive/phase-5-cross-platform-install/VERIFICATION_2026-05/empirical_act_verification#Codex]] — C1-C7 per-claim table
+- [[archive/empirical-cli-findings/codex]] — npm package metadata, config locations
 - [[ARCHITECTURE#The `supports` gate]] — how per-platform manifest emission is gated
 
 ---
@@ -261,7 +261,7 @@ gemini extensions list 2>&1
 gemini skills list --all 2>&1
 ```
 
-Works because the generator emits `gemini-extension.json` at the repo root (Phase 4.5, `scripts/generate_manifest.py:202-209`). Pre-Phase-4.5 the install failed with `Configuration file not found at /tmp/gemini-extension*/gemini-extension.json` (G2 in [[VERIFICATION_2026-05/empirical_act_verification#Gemini]]).
+Works because the generator emits `gemini-extension.json` at the repo root (Phase 4.5, `scripts/generate_manifest.py:202-209`). Pre-Phase-4.5 the install failed with `Configuration file not found at /tmp/gemini-extension*/gemini-extension.json` (G2 in [[archive/phase-5-cross-platform-install/VERIFICATION_2026-05/empirical_act_verification#Gemini]]).
 
 #### From GitHub (specific branch)
 
@@ -279,7 +279,7 @@ cd marketplace
 echo "y" | gemini extensions install ./.gemini/ --consent
 ```
 
-Verified PASS in [[VERIFICATION_2026-05/empirical_act_verification#Gemini]] (G1 — `Extension "dgxsparklabs-marketplace" installed successfully and enabled`, from `logs/G1.txt`). Local install reads `.gemini/gemini-extension.json` (byte-identical to the root copy).
+Verified PASS in [[archive/phase-5-cross-platform-install/VERIFICATION_2026-05/empirical_act_verification#Gemini]] (G1 — `Extension "dgxsparklabs-marketplace" installed successfully and enabled`, from `logs/G1.txt`). Local install reads `.gemini/gemini-extension.json` (byte-identical to the root copy).
 
 ### Discovery commands
 
@@ -336,8 +336,8 @@ Not applicable — Gemini installs the whole marketplace as a single extension. 
 
 ### References
 
-- [[VERIFICATION_2026-05/empirical_act_verification#Gemini]] — G1-G6 per-claim table
-- [[EMPIRICAL_CLI_FINDINGS/gemini]] — npm package metadata
+- [[archive/phase-5-cross-platform-install/VERIFICATION_2026-05/empirical_act_verification#Gemini]] — G1-G6 per-claim table
+- [[archive/empirical-cli-findings/gemini]] — npm package metadata
 
 ---
 
@@ -393,7 +393,7 @@ irm 'https://cursor.com/install?win32=true' | iex
 agent --version
 ```
 
-CLI binary verified at `~/.local/bin/agent` (symlink) and `~/.local/share/cursor-agent/versions/<v>/cursor-agent` (real) in [[VERIFICATION_2026-05/empirical_act_verification#Cursor CLI]] (CU1, CU2, CU3). From `logs/CU1.txt`: `2026.05.20-2b5dd59. CU1_EXIT=0. CU1=PASS`.
+CLI binary verified at `~/.local/bin/agent` (symlink) and `~/.local/share/cursor-agent/versions/<v>/cursor-agent` (real) in [[archive/phase-5-cross-platform-install/VERIFICATION_2026-05/empirical_act_verification#Cursor CLI]] (CU1, CU2, CU3). From `logs/CU1.txt`: `2026.05.20-2b5dd59. CU1_EXIT=0. CU1=PASS`.
 
 ### Discovery commands
 
@@ -444,7 +444,7 @@ There is no `compat-cursor.yml` workflow because no auth-free CLI command intros
 ### Known gaps
 
 - **No CLI plugin install.** The `agent` CLI has `mcp`, `models`, `generate-rule`, `install-shell-integration`, and others — but no `plugin install`, `plugin list`, `marketplace add`, or `add-plugin`. Plugin install is editor-only (`/add-plugin`) or admin-Dashboard-only. The `--plugin-dir <path>` flag exists for runtime injection of a local plugin dir — useful for testing, not for installation.
-- **Prior empirical doc was wrong about CLI existence.** Before 2026-05-24, the project assumed Cursor had no CLI. The actual binary is `agent` (with `cursor-agent` as alias); the prior CI test probed for `cursor --version`. Now resolved — see [[VERIFICATION_2026-05/cursor#Section 2: Cursor CLI (with evidence)]].
+- **Prior empirical doc was wrong about CLI existence.** Before 2026-05-24, the project assumed Cursor had no CLI. The actual binary is `agent` (with `cursor-agent` as alias); the prior CI test probed for `cursor --version`. Now resolved — see [[archive/phase-5-cross-platform-install/VERIFICATION_2026-05/cursor#Section 2: Cursor CLI (with evidence)]].
 - **Team marketplace branch selection happens in the Dashboard UI**, not via flag. No verified CLI/URL pattern for choosing a non-default branch.
 
 ### Out-of-scope or non-applicable
@@ -453,9 +453,9 @@ There is no `compat-cursor.yml` workflow because no auth-free CLI command intros
 
 ### References
 
-- [[VERIFICATION_2026-05/cursor]] — full WebFetch research with URL + fetch date per claim
-- [[VERIFICATION_2026-05/empirical_act_verification#Cursor CLI]] — CU1-CU3 act evidence
-- [[VERIFICATION_2026-05/SUMMARY#Finding 5: Cursor CLI binary IS `agent` — prior empirical doc was wrong]]
+- [[archive/phase-5-cross-platform-install/VERIFICATION_2026-05/cursor]] — full WebFetch research with URL + fetch date per claim
+- [[archive/phase-5-cross-platform-install/VERIFICATION_2026-05/empirical_act_verification#Cursor CLI]] — CU1-CU3 act evidence
+- [[archive/phase-5-cross-platform-install/VERIFICATION_2026-05/SUMMARY#Finding 5: Cursor CLI binary IS `agent` — prior empirical doc was wrong]]
 
 ---
 
@@ -491,7 +491,7 @@ Same as default-branch install. The IDE reads from the workspace's filesystem.
 
 ### Discovery commands
 
-Windsurf has no CLI, so there are no introspection commands. Discovery is implicit — Cascade scans the discovery paths below on IDE open. Confirmed empirically across npm, pip, snap, apt, and GitHub releases: no Windsurf CLI binary exists. See [[EMPIRICAL_CLI_FINDINGS/windsurf#Evidence from CI]].
+Windsurf has no CLI, so there are no introspection commands. Discovery is implicit — Cascade scans the discovery paths below on IDE open. Confirmed empirically across npm, pip, snap, apt, and GitHub releases: no Windsurf CLI binary exists. See [[archive/empirical-cli-findings/windsurf#Evidence from CI]].
 
 | Indirect verification | How |
 |---|---|
@@ -531,7 +531,7 @@ There is no `compat-windsurf.yml` workflow because no CLI exists to invoke.
 
 ### Known gaps
 
-- **No CLI exists, anywhere.** Verified across npm (`windsurf@0.0.1` is an unrelated terminal-cursor utility by an unaffiliated author), pip, snap, apt, and GitHub releases. See [[EMPIRICAL_CLI_FINDINGS/windsurf#Evidence from CI]].
+- **No CLI exists, anywhere.** Verified across npm (`windsurf@0.0.1` is an unrelated terminal-cursor utility by an unaffiliated author), pip, snap, apt, and GitHub releases. See [[archive/empirical-cli-findings/windsurf#Evidence from CI]].
 - **No plugin marketplace concept.** Rules and skills are loaded from filesystem only.
 
 ### Out-of-scope or non-applicable
@@ -540,8 +540,8 @@ There is no `compat-windsurf.yml` workflow because no CLI exists to invoke.
 
 ### References
 
-- [[EMPIRICAL_CLI_FINDINGS/windsurf]] — CLI verification evidence
-- [[VERIFICATION_2026-05/SUMMARY#Per-platform install story (what's true today)]] — Windsurf install row
+- [[archive/empirical-cli-findings/windsurf]] — CLI verification evidence
+- [[archive/phase-5-cross-platform-install/VERIFICATION_2026-05/SUMMARY#Per-platform install story (what's true today)]] — Windsurf install row
 - [[RULE_FORMAT#Windsurf (`formats/windsurf.md`)]] — Windsurf rule format spec
 
 ---
@@ -581,13 +581,13 @@ Plain git pattern. Devin reads the cloned workspace on session start.
 
 #### From local clone
 
-Same as default-branch. Verified PASS in [[EMPIRICAL_CLI_FINDINGS/devin#Auth-free commands verified (exit 0, useful output)]].
+Same as default-branch. Verified PASS in [[archive/empirical-cli-findings/devin#Auth-free commands verified (exit 0, useful output)]].
 
 ### Discovery commands
 
 | Command | What it lists | Example output |
 |---|---|---|
-| `devin skills list` | All discovered skills (project + user dirs) | `/github-search [user,model] (./.devin/skills/github-search)` — format: `/<slash-command> [triggers] (path) - description` (per [[EMPIRICAL_CLI_FINDINGS/devin#Skills output sample (from project context)]]) |
+| `devin skills list` | All discovered skills (project + user dirs) | `/github-search [user,model] (./.devin/skills/github-search)` — format: `/<slash-command> [triggers] (path) - description` (per [[archive/empirical-cli-findings/devin#Skills output sample (from project context)]]) |
 | `devin skills paths` | Where skills are loaded from | Lists `~/.config/devin/skills/`, `~/.agents/skills/`, `.devin/skills/`, `.agents/skills/` |
 | `devin skills show <name>` | One skill's content | Formatted SKILL.md content |
 | `devin rules list` | All discovered rules with provider tags | Rules tagged `Cursor`, `Windsurf`, `Standard` |
@@ -645,7 +645,7 @@ Devin jobs install the CLI via the composite action `./.github/actions/setup-dev
 
 ### Known gaps
 
-- **Installer exits 1 in non-TTY environments.** The binary still installs; CI must wrap with `|| true`. See [[EMPIRICAL_CLI_FINDINGS/devin#Install note]].
+- **Installer exits 1 in non-TTY environments.** The binary still installs; CI must wrap with `|| true`. See [[archive/empirical-cli-findings/devin#Install note]].
 - **No plugin marketplace concept.** Content is discovered live from the filesystem.
 - **`devin rules list` has no JSON flag.** Output is human-readable text only.
 
@@ -655,8 +655,8 @@ Devin jobs install the CLI via the composite action `./.github/actions/setup-dev
 
 ### References
 
-- [[EMPIRICAL_CLI_FINDINGS/devin]] — full subcommand tree + auth-free command list
-- [[VERIFICATION_2026-05/SUMMARY#Per-platform install story (what's true today)]] — Devin install row
+- [[archive/empirical-cli-findings/devin]] — full subcommand tree + auth-free command list
+- [[archive/phase-5-cross-platform-install/VERIFICATION_2026-05/SUMMARY#Per-platform install story (what's true today)]] — Devin install row
 
 ---
 
@@ -678,7 +678,7 @@ For **plugin marketplaces**, there is no `.agents/` convergence. Each platform u
 - Codex → `.claude-plugin/marketplace.json` (legacy-compatible) or `.agents/plugins/marketplace.json` (canonical, not adopted here)
 - Cursor → `.cursor-plugin/marketplace.json` at repo root + per-plugin `.cursor-plugin/plugin.json`
 
-See [[VERIFICATION_2026-05/SUMMARY#Finding 1: The `.agents/` directory is a real convergence — but only for content, not for marketplaces]].
+See [[archive/phase-5-cross-platform-install/VERIFICATION_2026-05/SUMMARY#Finding 1: The `.agents/` directory is a real convergence — but only for content, not for marketplaces]].
 
 ### Mirror hygiene rules (what NOT to copy across)
 
@@ -743,13 +743,13 @@ Note all `gemini` list commands need `2>&1` because Gemini writes list output to
 
 ## References
 
-- [[VERIFICATION_2026-05/SUMMARY]] — ground-truth synthesis (most current single doc)
-- [[VERIFICATION_2026-05/empirical_act_verification]] — per-claim act-based evidence (18 claims)
-- [[VERIFICATION_2026-05/cursor]] — Cursor IDE + CLI May 2026 WebFetch research
-- [[EMPIRICAL_CLI_FINDINGS/devin]] — Devin CLI subcommand tree
-- [[EMPIRICAL_CLI_FINDINGS/windsurf]] — Windsurf CLI verification (no CLI exists)
-- [[EMPIRICAL_CLI_FINDINGS/codex]] — Codex npm metadata
-- [[EMPIRICAL_CLI_FINDINGS/gemini]] — Gemini npm metadata
+- [[archive/phase-5-cross-platform-install/VERIFICATION_2026-05/SUMMARY]] — ground-truth synthesis (most current single doc)
+- [[archive/phase-5-cross-platform-install/VERIFICATION_2026-05/empirical_act_verification]] — per-claim act-based evidence (18 claims)
+- [[archive/phase-5-cross-platform-install/VERIFICATION_2026-05/cursor]] — Cursor IDE + CLI May 2026 WebFetch research
+- [[archive/empirical-cli-findings/devin]] — Devin CLI subcommand tree
+- [[archive/empirical-cli-findings/windsurf]] — Windsurf CLI verification (no CLI exists)
+- [[archive/empirical-cli-findings/codex]] — Codex npm metadata
+- [[archive/empirical-cli-findings/gemini]] — Gemini npm metadata
 - [[ARCHITECTURE]] — generator architecture (Construct + Platform protocols, six phases)
 - [[CONTRIBUTING]] — how to add things and test
 - [[CONSTRUCT_TYPES]] — 10-construct reference table
