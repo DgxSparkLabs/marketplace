@@ -1,56 +1,64 @@
-# example-hook
+# example-skill
 
-Reference plugin for the **hook** construct type. Copy this directory to scaffold your own.
+A working reference plugin demonstrating the **skill** construct type. Copy this directory and modify to scaffold your own skill plugin.
 
 ## What it does
 
-Installs a `UserPromptSubmit` hook that prepends a timestamp marker to every prompt the user sends. Claude sees it; the user does not. Demonstrates the hook output-prepend pattern.
+When invoked as `/example-skill <topic>`, it prints a short markdown block tagged as a lab notebook status update.
 
 Install:
 ```
-/plugin install example-hook@dgxsparklabs-marketplace
+/plugin install example-skill@dgxsparklabs-marketplace
 ```
 
-After install, every prompt you type gets a `[Lab Notebook context: timestamp=...]` line prepended invisibly.
+Invoke:
+```
+/example-skill onboarding
+```
 
 ## File-by-file walkthrough
 
 ```
-example-hook/
-├── .claude-plugin/plugin.json    ← minimal manifest (no "hooks" field needed)
-├── hooks/
-│   └── hooks.json                ← hook configuration (auto-discovered)
-└── README.md
+example-skill/
+├── .claude-plugin/
+│   └── plugin.json    ← plugin manifest (Claude Code reads this)
+├── SKILL.md           ← the skill itself (Claude reads this when invoked)
+└── README.md          ← human-facing tutorial (you are here)
 ```
 
-**Auto-discovery:** Claude Code automatically picks up `hooks/hooks.json` in the plugin root — you do NOT need to declare a `hooks` field in `plugin.json`. The file at `hooks/hooks.json` is discovered by convention.
+### `.claude-plugin/plugin.json`
 
-### `hooks/hooks.json` structure
+Required for the plugin to be installable via `/plugin install`. Key fields:
 
-The outer object has two keys:
+- `name` — must match the skill name in `SKILL.md` frontmatter. Must be kebab-case (`lowercase-with-hyphens`).
+- `version` — semantic version. Bump when shipping changes.
+- `skills: ["./"]` — tells Claude Code that the SKILL.md lives in the same directory as the plugin manifest. For a skill in a subdirectory, use `["./skills"]` or specific paths.
+- `author` must be an object `{ "name": "...", "url": "..." }`, not a string.
 
-- `description` — what the hook does (shown in plugin details)
-- `hooks` — object mapping lifecycle events to handler arrays
+### `SKILL.md`
 
-Lifecycle events include `UserPromptSubmit`, `PreToolUse`, `PostToolUse`, `SessionStart`, `Stop`, `SubagentStop`, etc. Each handler is one of:
+The actual skill. The YAML frontmatter declares metadata Claude Code uses to surface the skill in slash-command completions and to scope its tool access:
 
-- `type: "command"` — runs a shell command; stdout becomes the hook's contribution to context (for input-stage hooks like `UserPromptSubmit`)
-- `type: "http"` — POSTs the event to a URL; response body becomes the contribution
-- `type: "prompt"` — only valid for `Stop` and `SubagentStop` events
+- `name` and `description` — what users see when typing `/`.
+- `argument-hint` — placeholder text shown after the command name.
+- `allowed-tools` — restricts which tools the skill can call. Be minimal — only list what the skill genuinely needs. Lists `Bash` (for the timestamp) and `Read` (just because most skills end up reading files; remove if yours doesn't).
 
-The optional `matcher` field on a handler block scopes it (e.g., `"matcher": "Edit|Write|MultiEdit"` for PreToolUse hooks that only fire on those specific tools).
+The body (everything after the closing `---`) is the prompt Claude sees when the skill fires. Use imperatives: "Compose a block...", "Print it..."
 
-Multiple plugins can register hooks for the same event — they all fire and their outputs compose.
+`$ARGUMENTS` is substituted with everything the user typed after the slash command.
 
-## Hooks vs everything else
+## To make your own skill from this template
 
-Hooks are for **side-effecting at lifecycle moments** (log, enforce, inject context). If you need behavior that lives between prompts and tool calls, hooks are right. For behavioral guidance Claude follows, use rules. For domain expertise, use skills.
+1. Copy this directory: `cp -r examples/example-skill skills/my-skill`
+2. Rename `my-skill` to whatever you want (kebab-case).
+3. Edit `.claude-plugin/plugin.json` — update `name`, `description`, `homepage`, `keywords`.
+4. Edit `SKILL.md` — replace the frontmatter and body with your skill's content. See `docs/ADDING_A_SKILL.md` for full conventions.
+5. Add your skill name to a domain in `catalog.toml` under `[skill_domain.<domain>]`.
+6. Run `uv run scripts/generate_manifest.py` to refresh manifests.
+7. Commit.
 
-## To make your own hook from this template
+## Related
 
-1. `cp -r examples/example-hook hooks/my-hook`
-2. Edit `.claude-plugin/plugin.json` and `hooks/hooks.json`.
-3. Test the shell command standalone first — if it fails or hangs, the hook will too.
-4. `uv run scripts/generate_manifest.py` and commit.
-
-See `docs/ADDING_A_HOOK.md` for the full list of supported events and field semantics.
+- Full skill specification: `docs/SKILL_FORMAT.md`
+- Other example plugins demonstrating different construct types: `examples/example-*`
+- Real skills shipped by this marketplace: `skills/`
