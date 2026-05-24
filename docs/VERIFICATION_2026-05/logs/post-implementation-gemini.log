@@ -1,0 +1,807 @@
+time="2026-05-24T15:25:42+03:00" level=info msg="Using docker host 'npipe:////./pipe/docker_engine', and daemon socket 'npipe:////./pipe/docker_engine'"
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ] 🚀  Start image=catthehacker/ubuntu:act-latest
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   🐳  docker pull image=catthehacker/ubuntu:act-latest platform=linux/amd64 username= forcePull=false
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   🐳  docker create image=catthehacker/ubuntu:act-latest platform=linux/amd64 entrypoint=["tail" "-f" "/dev/null"] cmd=[] network="host"
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   🐳  docker run image=catthehacker/ubuntu:act-latest platform=linux/amd64 entrypoint=["tail" "-f" "/dev/null"] cmd=[] network="host"
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ] ⭐ Run Main Checkout repo
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   🐳  docker cp src=C:\Users\devic\source\marketplace\. dst=/mnt/c/Users/devic/source/marketplace
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   ✅  Success - Main Checkout repo
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ] ⭐ Run Main Install uv (direct, no token needed)
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   🐳  docker exec cmd=[bash --noprofile --norc -e -o pipefail /var/run/act/workflow/1] user= workdir=
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | downloading uv 0.11.16 x86_64-unknown-linux-gnu
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | installing to /root/.local/bin
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   uv
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   uvx
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | everything's installed!
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | 
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | To add $HOME/.local/bin to your PATH, either restart your shell or run:
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | 
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |     source $HOME/.local/bin/env (sh, bash, zsh)
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |     source $HOME/.local/bin/env.fish (fish)
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | uv 0.11.16 (x86_64-unknown-linux-gnu)
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   ✅  Success - Main Install uv (direct, no token needed)
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   ⚙  ::add-path:: /root/.local/bin
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   ⚙  ::add-path:: /root/.local/bin
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ] ⭐ Run Main Regenerate manifests
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   🐳  docker exec cmd=[bash --noprofile --norc -e -o pipefail /var/run/act/workflow/2] user= workdir=
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Generated 81 plugin entries in marketplace.json
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   agent: 1
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   bundle: 24
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   command: 1
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   hook: 1
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   lsp: 1
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   mcp: 1
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   monitor: 1
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   output-style: 1
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   rule: 22
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   skill: 27
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   theme: 1
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   per-platform manifests emitted for 57 individual plugins
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   ✅  Success - Main Regenerate manifests
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ] ⭐ Run Main Install Node.js 20
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   🐳  docker exec cmd=[bash --noprofile --norc -e -o pipefail /var/run/act/workflow/3] user= workdir=
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | [38;5;79m2026-05-24 12:25:51 - Installing pre-requisites[0m
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | 
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | WARNING: apt does not have a stable CLI interface. Use with caution in scripts.
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | 
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Get:1 https://packages.microsoft.com/ubuntu/24.04/prod noble InRelease [3600 B]
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Get:2 http://security.ubuntu.com/ubuntu noble-security InRelease [126 kB]
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Get:3 https://packages.microsoft.com/ubuntu/24.04/prod noble/main amd64 Packages [155 kB]
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Get:4 https://packages.microsoft.com/ubuntu/24.04/prod noble/main all Packages [643 B]
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Get:5 http://security.ubuntu.com/ubuntu noble-security/universe amd64 Packages [1505 kB]
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Get:6 https://ppa.launchpadcontent.net/git-core/ppa/ubuntu noble InRelease [24.3 kB]
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Get:7 http://archive.ubuntu.com/ubuntu noble InRelease [256 kB]
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Get:8 http://security.ubuntu.com/ubuntu noble-security/main amd64 Packages [2074 kB]
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Get:9 http://security.ubuntu.com/ubuntu noble-security/restricted amd64 Packages [3671 kB]
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Get:10 https://ppa.launchpadcontent.net/git-core/ppa/ubuntu noble/main amd64 Packages [2988 B]
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Get:12 http://security.ubuntu.com/ubuntu noble-security/multiverse amd64 Packages [48.4 kB]
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Get:13 http://archive.ubuntu.com/ubuntu noble-updates InRelease [126 kB]
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Get:11 https://packagecloud.io/github/git-lfs/ubuntu noble InRelease [29.2 kB]
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Get:14 http://archive.ubuntu.com/ubuntu noble-backports InRelease [126 kB]
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Get:15 http://archive.ubuntu.com/ubuntu noble/restricted amd64 Packages [117 kB]
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Get:16 http://archive.ubuntu.com/ubuntu noble/multiverse amd64 Packages [331 kB]
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Get:17 http://archive.ubuntu.com/ubuntu noble/main amd64 Packages [1808 kB]
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Get:18 http://archive.ubuntu.com/ubuntu noble/universe amd64 Packages [19.3 MB]
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Get:19 https://packagecloud.io/github/git-lfs/ubuntu noble/main amd64 Packages [1273 B]
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Get:20 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 Packages [2457 kB]
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Get:21 http://archive.ubuntu.com/ubuntu noble-updates/multiverse amd64 Packages [54.6 kB]
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Get:22 http://archive.ubuntu.com/ubuntu noble-updates/universe amd64 Packages [2148 kB]
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Get:23 http://archive.ubuntu.com/ubuntu noble-updates/restricted amd64 Packages [3920 kB]
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Get:24 http://archive.ubuntu.com/ubuntu noble-backports/multiverse amd64 Packages [671 B]
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Get:25 http://archive.ubuntu.com/ubuntu noble-backports/main amd64 Packages [49.0 kB]
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Get:26 http://archive.ubuntu.com/ubuntu noble-backports/universe amd64 Packages [35.9 kB]
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Fetched 38.4 MB in 5s (7291 kB/s)
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Reading package lists...
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Building dependency tree...
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Reading state information...
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | 22 packages can be upgraded. Run 'apt list --upgradable' to see them.
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | 
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | WARNING: apt does not have a stable CLI interface. Use with caution in scripts.
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | 
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Reading package lists...
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Building dependency tree...
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Reading state information...
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | apt-transport-https is already the newest version (2.8.3).
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | ca-certificates is already the newest version (20240203).
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | curl is already the newest version (8.5.0-2ubuntu10.9).
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | gnupg is already the newest version (2.4.4-2ubuntu17.4).
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | 0 upgraded, 0 newly installed, 0 to remove and 22 not upgraded.
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | 
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | WARNING: apt does not have a stable CLI interface. Use with caution in scripts.
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | 
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Hit:1 http://archive.ubuntu.com/ubuntu noble InRelease
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Hit:2 http://security.ubuntu.com/ubuntu noble-security InRelease
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Hit:3 https://packages.microsoft.com/ubuntu/24.04/prod noble InRelease
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Hit:4 http://archive.ubuntu.com/ubuntu noble-updates InRelease
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Get:5 https://deb.nodesource.com/node_20.x nodistro InRelease [12.1 kB]
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Hit:6 http://archive.ubuntu.com/ubuntu noble-backports InRelease
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Hit:7 https://ppa.launchpadcontent.net/git-core/ppa/ubuntu noble InRelease
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Get:8 https://deb.nodesource.com/node_20.x nodistro/main amd64 Packages [14.7 kB]
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Hit:9 https://packagecloud.io/github/git-lfs/ubuntu noble InRelease
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Fetched 26.8 kB in 1s (19.3 kB/s)
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Reading package lists...
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Building dependency tree...
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Reading state information...
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | 22 packages can be upgraded. Run 'apt list --upgradable' to see them.
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | [1;34m2026-05-24 12:26:04 - Repository configured successfully.[0m
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | [38;5;79m2026-05-24 12:26:04 - To install Node.js, run: apt install nodejs -y[0m
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | [38;5;79m2026-05-24 12:26:04 - You can use N|solid Runtime as a node.js alternative[0m
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | [1;32m2026-05-24 12:26:04 - To install N|solid Runtime, run: apt install nsolid -y 
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | [0m
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Reading package lists...
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Building dependency tree...
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Reading state information...
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | The following NEW packages will be installed:
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   nodejs
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | 0 upgraded, 1 newly installed, 0 to remove and 22 not upgraded.
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Need to get 32.2 MB of archives.
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | After this operation, 196 MB of additional disk space will be used.
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Get:1 https://deb.nodesource.com/node_20.x nodistro/main amd64 nodejs amd64 20.20.2-1nodesource1 [32.2 MB]
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | debconf: delaying package configuration, since apt-utils is not installed
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Fetched 32.2 MB in 2s (12.9 MB/s)
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Selecting previously unselected package nodejs.
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | (Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 26513 files and directories currently installed.)
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Preparing to unpack .../nodejs_20.20.2-1nodesource1_amd64.deb ...
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Unpacking nodejs (20.20.2-1nodesource1) ...
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Setting up nodejs (20.20.2-1nodesource1) ...
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   ✅  Success - Main Install Node.js 20
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ] ⭐ Run Main Install Gemini CLI
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   🐳  docker exec cmd=[bash --noprofile --norc -e -o pipefail /var/run/act/workflow/4] user= workdir=
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | 
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | added 7 packages in 24s
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   ✅  Success - Main Install Gemini CLI
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ] ⭐ Run Main Verify Gemini binary present
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   🐳  docker exec cmd=[bash --noprofile --norc -e -o pipefail /var/run/act/workflow/5] user= workdir=
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | 0.43.0
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   ✅  Success - Main Verify Gemini binary present
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ] ⭐ Run Main G1 — gemini extensions install ./.gemini/ --consent (baseline)
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   🐳  docker exec cmd=[bash --noprofile --norc -e -o pipefail /var/run/act/workflow/g1] user= workdir=
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | === G1 START ===
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | 
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Do you trust the files in this folder?
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | 
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | The extension source at "/mnt/c/Users/devic/source/marketplace/.gemini" is not trusted.
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | 
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Trusting a folder allows Gemini CLI to load its local configurations,
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | including custom commands, hooks, MCP servers, agent skills, and
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | settings. These configurations could execute code on your behalf or
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | change the behavior of the CLI.
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | 
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Do you want to trust this folder and continue with the installation? [y/N]: You have consented to the following:
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | The extension you are about to install may have been created by a third-party developer and sourced from a public repository. Google does not vet, endorse, or guarantee the functionality or security of extensions. Please carefully inspect any extension and its source code before installing to understand the permissions it requires and the actions it may perform.
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Extension "dgxsparklabs-marketplace" installed successfully and enabled.
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | G1_EXIT=0
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | G1=PASS
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | === G1 END ===
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   ✅  Success - Main G1 — gemini extensions install ./.gemini/ --consent (baseline)
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ] ⭐ Run Main G1 — assert extension in list
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   🐳  docker exec cmd=[bash --noprofile --norc -e -o pipefail /var/run/act/workflow/g1_assert] user= workdir=
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | === G1_ASSERT START ===
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | ✓ dgxsparklabs-marketplace (1.0.0)
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |  ID: 8abca27d601700c7667968734d6d17ba1e2b9e8b24caf9823b1073427b5d6421
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |  name: 310b75b81b916c5dabda9be9496c25931d4a6a3aede26df3cce4554ddc00586b
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |  Path: /root/.gemini/extensions/dgxsparklabs-marketplace
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |  Source: /mnt/c/Users/devic/source/marketplace/.gemini (Type: local)
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |  Enabled (User): true
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |  Enabled (Workspace): true
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |  Agent skills:
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   youtube-wisdom: Extract key knowledge from a YouTube video transcript
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   youtube-search: Search YouTube for technical videos, tutorials, and talks on a topic
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   web-scraper: Fetch a web page and extract its main content as clean readable text
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   textual-tui-guide: Build rich terminal UIs with Python Textual — layouts, widgets, modals, styling
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   telegram-notify: Send a Telegram notification with a task summary
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   sync-rules: Sync rules from global AI agent configs into the workspace
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   structured-handoff: Generate structured task files for autonomous agent sessions
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   ssh-tunnel: Set up SSH port forwarding tunnels (local, remote, SOCKS proxy)
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   skill-creator: Create, test, and iteratively improve agent skills with evals
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   skill-analytics: Analyze skill usage patterns and generate an interactive HTML dashboard
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   session-wrapup: End-of-session audit — check docs, commits, and readiness for the next agent
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   session-history: Query past Devin CLI conversations from the local session database
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   send-email: Send an email to someone using the Resend API
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   recall-rules: Re-read global rules and thinking framework to realign mid-session
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   project-bootstrap: Initialize project docs — AGENTS.md, HANDOFF.md, CHANGELOG.md, PITFALLS.md
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   pitfall-check: Search PITFALLS.md and git log for known issues before starting work
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   motivation: Completeness checker — report what's actually unfinished before stopping
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   google-drive-reader: Read Google Docs from personal Drive, extract URLs and conclusions
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   github-search: Search GitHub for repositories, prior art, and implementation inspiration
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   github-repo-setup: Create a GitHub repo with CI, branch protection, and naming rules
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   gemini-chat: Interactive multi-turn chat with Google Gemini
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   expose-port: Expose a local port via HTTPS (localhost.run) or TCP (bore)
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   example-skill: Reference example. Echoes back a formatted lab-notebook-style status message. Shows how to write a SKILL.md with frontmatter, allowed-tools, and argument handling.
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   duckduckgo-search: Search DuckDuckGo and return results as structured text
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   code-health-audit: Audit codebase for DRY violations, oversized files, and scattered definitions
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   check: Mid-session course correction — stop, review rules, and realign
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   act-runner: Run GitHub Actions workflows locally with act and podman
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | ✓ dgxsparklabs-marketplace (1.0.0)
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |  Path: /root/.gemini/extensions/dgxsparklabs-marketplace
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | G1_ASSERT=PASS
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | === G1_ASSERT END ===
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   ✅  Success - Main G1 — assert extension in list
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ] ⭐ Run Main G1 — cleanup
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   🐳  docker exec cmd=[bash --noprofile --norc -e -o pipefail /var/run/act/workflow/8] user= workdir=
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Extension "dgxsparklabs-marketplace" successfully uninstalled.
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   ✅  Success - Main G1 — cleanup
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ] ⭐ Run Main G2 — gemini extensions install https://github.com/DgxSparkLabs/marketplace --consent
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   🐳  docker exec cmd=[bash --noprofile --norc -e -o pipefail /var/run/act/workflow/g2] user= workdir=
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | === G2 START ===
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | You have consented to the following:
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | The extension you are about to install may have been created by a third-party developer and sourced from a public repository. Google does not vet, endorse, or guarantee the functionality or security of extensions. Please carefully inspect any extension and its source code before installing to understand the permissions it requires and the actions it may perform.
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Configuration file not found at /tmp/gemini-extensionP2IeYM/gemini-extension.json
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | G2_EXIT=1
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | G2=FAIL
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | LAST_STDERR: You have consented to the following:
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | The extension you are about to install may have been created by a third-party developer and sourced from a public repository. Google does not vet, endorse, or guarantee the functionality or security of extensions. Please carefully inspect any extension and its source code before installing to understand the permissions it requires and the actions it may perform.
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Configuration file not found at /tmp/gemini-extensionP2IeYM/gemini-extension.json
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | === G2 END ===
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ] Failed but continue next step
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   ❌  Failure - Main G2 — gemini extensions install https://github.com/DgxSparkLabs/marketplace --consent
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ] ⭐ Run Main G2 — assert extension in list
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   🐳  docker exec cmd=[bash --noprofile --norc -e -o pipefail /var/run/act/workflow/g2_assert] user= workdir=
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | === G2_ASSERT START ===
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | No extensions installed.
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | G2_ASSERT=FAIL
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | === G2_ASSERT END ===
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   ✅  Success - Main G2 — assert extension in list
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ] ⭐ Run Main G2 — cleanup
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   🐳  docker exec cmd=[bash --noprofile --norc -e -o pipefail /var/run/act/workflow/11] user= workdir=
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Failed to uninstall "dgxsparklabs-marketplace": Extension not found.
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   ✅  Success - Main G2 — cleanup
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ] ⭐ Run Main G3 — gemini extensions install GitHub URL --ref feat/claude-plugin-compliance --consent
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   🐳  docker exec cmd=[bash --noprofile --norc -e -o pipefail /var/run/act/workflow/g3] user= workdir=
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | === G3 START ===
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | You have consented to the following:
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | The extension you are about to install may have been created by a third-party developer and sourced from a public repository. Google does not vet, endorse, or guarantee the functionality or security of extensions. Please carefully inspect any extension and its source code before installing to understand the permissions it requires and the actions it may perform.
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Configuration file not found at /tmp/gemini-extensionir0DiD/gemini-extension.json
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | G3_EXIT=1
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | G3=FAIL
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | LAST_STDERR: You have consented to the following:
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | The extension you are about to install may have been created by a third-party developer and sourced from a public repository. Google does not vet, endorse, or guarantee the functionality or security of extensions. Please carefully inspect any extension and its source code before installing to understand the permissions it requires and the actions it may perform.
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Configuration file not found at /tmp/gemini-extensionir0DiD/gemini-extension.json
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | === G3 END ===
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ] Failed but continue next step
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   ❌  Failure - Main G3 — gemini extensions install GitHub URL --ref feat/claude-plugin-compliance --consent
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ] ⭐ Run Main G3 — assert extension in list
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   🐳  docker exec cmd=[bash --noprofile --norc -e -o pipefail /var/run/act/workflow/g3_assert] user= workdir=
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | === G3_ASSERT START ===
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | No extensions installed.
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | G3_ASSERT=FAIL
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | === G3_ASSERT END ===
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   ✅  Success - Main G3 — assert extension in list
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ] ⭐ Run Main G3 — cleanup
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   🐳  docker exec cmd=[bash --noprofile --norc -e -o pipefail /var/run/act/workflow/14] user= workdir=
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Failed to uninstall "dgxsparklabs-marketplace": Extension not found.
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   ✅  Success - Main G3 — cleanup
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ] ⭐ Run Main G4 — gemini skills install GitHub URL --path _generated/skill-example --consent
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   🐳  docker exec cmd=[bash --noprofile --norc -e -o pipefail /var/run/act/workflow/g4] user= workdir=
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | === G4 START ===
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Cloning skill from https://github.com/DgxSparkLabs/marketplace...
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Searching for skills in /tmp/gemini-skill-doLD6z/_generated/skill-example...
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | No valid skills found in https://github.com/DgxSparkLabs/marketplace at path "_generated/skill-example". Ensure a SKILL.md file exists with valid frontmatter.
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | G4_EXIT=1
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | G4=FAIL
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | LAST_STDERR: Cloning skill from https://github.com/DgxSparkLabs/marketplace...
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Searching for skills in /tmp/gemini-skill-doLD6z/_generated/skill-example...
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | No valid skills found in https://github.com/DgxSparkLabs/marketplace at path "_generated/skill-example". Ensure a SKILL.md file exists with valid frontmatter.
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | --- trying gemini extensions install with --path ---
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | ALT_OUT: Unknown argument: path
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | gemini extensions install <source> [--auto-update] [--pre-release]
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | 
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Installs an extension from a git repository URL or a local path.
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | 
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Positionals:
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   source  The github URL or local path of the extension to install.  [string] [required]
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | 
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Options:
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   -d, --debug          Run in debug mode (open debug console with F12)  [boolean] [default: false]
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |       --ref            The git ref to install from.  [string]
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |       --auto-update    Enable auto-update for this extension.  [boolean]
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |       --pre-release    Enable pre-release versions for this extension.  [boolean]
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |       --consent        Acknowledge the security risks of installing an extension and skip the confirmation prompt.  [boolean] [default: false]
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |       --skip-settings  Skip the configuration on install process.  [boolean] [default: false]
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   -h, --help           Show help  [boolean]
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | === G4 END ===
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   ✅  Success - Main G4 — gemini skills install GitHub URL --path _generated/skill-example --consent
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ] ⭐ Run Main G5 — precondition: reinstall local extension
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   🐳  docker exec cmd=[bash --noprofile --norc -e -o pipefail /var/run/act/workflow/16] user= workdir=
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | === G5_PREREQ START ===
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | You have consented to the following:
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | The extension you are about to install may have been created by a third-party developer and sourced from a public repository. Google does not vet, endorse, or guarantee the functionality or security of extensions. Please carefully inspect any extension and its source code before installing to understand the permissions it requires and the actions it may perform.
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Extension "dgxsparklabs-marketplace" installed successfully and enabled.
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | === G5_PREREQ END ===
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   ✅  Success - Main G5 — precondition: reinstall local extension
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ] ⭐ Run Main G5 — gemini extensions list 2>&1 | grep -F dgxsparklabs
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   🐳  docker exec cmd=[bash --noprofile --norc -e -o pipefail /var/run/act/workflow/g5] user= workdir=
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | === G5 START ===
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | ✓ dgxsparklabs-marketplace (1.0.0)
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |  ID: 8abca27d601700c7667968734d6d17ba1e2b9e8b24caf9823b1073427b5d6421
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |  name: 310b75b81b916c5dabda9be9496c25931d4a6a3aede26df3cce4554ddc00586b
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |  Path: /root/.gemini/extensions/dgxsparklabs-marketplace
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |  Source: /mnt/c/Users/devic/source/marketplace/.gemini (Type: local)
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |  Enabled (User): true
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |  Enabled (Workspace): true
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |  Agent skills:
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   youtube-wisdom: Extract key knowledge from a YouTube video transcript
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   youtube-search: Search YouTube for technical videos, tutorials, and talks on a topic
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   web-scraper: Fetch a web page and extract its main content as clean readable text
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   textual-tui-guide: Build rich terminal UIs with Python Textual — layouts, widgets, modals, styling
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   telegram-notify: Send a Telegram notification with a task summary
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   sync-rules: Sync rules from global AI agent configs into the workspace
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   structured-handoff: Generate structured task files for autonomous agent sessions
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   ssh-tunnel: Set up SSH port forwarding tunnels (local, remote, SOCKS proxy)
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   skill-creator: Create, test, and iteratively improve agent skills with evals
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   skill-analytics: Analyze skill usage patterns and generate an interactive HTML dashboard
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   session-wrapup: End-of-session audit — check docs, commits, and readiness for the next agent
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   session-history: Query past Devin CLI conversations from the local session database
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   send-email: Send an email to someone using the Resend API
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   recall-rules: Re-read global rules and thinking framework to realign mid-session
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   project-bootstrap: Initialize project docs — AGENTS.md, HANDOFF.md, CHANGELOG.md, PITFALLS.md
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   pitfall-check: Search PITFALLS.md and git log for known issues before starting work
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   motivation: Completeness checker — report what's actually unfinished before stopping
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   google-drive-reader: Read Google Docs from personal Drive, extract URLs and conclusions
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   github-search: Search GitHub for repositories, prior art, and implementation inspiration
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   github-repo-setup: Create a GitHub repo with CI, branch protection, and naming rules
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   gemini-chat: Interactive multi-turn chat with Google Gemini
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   expose-port: Expose a local port via HTTPS (localhost.run) or TCP (bore)
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   example-skill: Reference example. Echoes back a formatted lab-notebook-style status message. Shows how to write a SKILL.md with frontmatter, allowed-tools, and argument handling.
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   duckduckgo-search: Search DuckDuckGo and return results as structured text
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   code-health-audit: Audit codebase for DRY violations, oversized files, and scattered definitions
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   check: Mid-session course correction — stop, review rules, and realign
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   act-runner: Run GitHub Actions workflows locally with act and podman
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | ✓ dgxsparklabs-marketplace (1.0.0)
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |  Path: /root/.gemini/extensions/dgxsparklabs-marketplace
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | G5_FOUND=YES
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | === G5 END ===
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   ✅  Success - Main G5 — gemini extensions list 2>&1 | grep -F dgxsparklabs
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ] ⭐ Run Main G6 — gemini skills list --all | grep -iF telegram-notify
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   🐳  docker exec cmd=[bash --noprofile --norc -e -o pipefail /var/run/act/workflow/g6] user= workdir=
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | === G6 START ===
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Ripgrep is not available. Falling back to GrepTool.
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Loading extension: dgxsparklabs-marketplace
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Scheduling MCP context refresh...
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Executing MCP context refresh...
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | MCP context refresh complete.
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Skill "skill-creator" from "/root/.gemini/extensions/dgxsparklabs-marketplace/skills/skill-creator/SKILL.md" is overriding the built-in skill.
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Skill conflict detected: "youtube-wisdom" from "/mnt/c/Users/devic/source/marketplace/.gemini/skills/youtube-wisdom/SKILL.md" is overriding the same skill from "/root/.gemini/extensions/dgxsparklabs-marketplace/skills/youtube-wisdom/SKILL.md".
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Skill conflict detected: "youtube-search" from "/mnt/c/Users/devic/source/marketplace/.gemini/skills/youtube-search/SKILL.md" is overriding the same skill from "/root/.gemini/extensions/dgxsparklabs-marketplace/skills/youtube-search/SKILL.md".
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Skill conflict detected: "web-scraper" from "/mnt/c/Users/devic/source/marketplace/.gemini/skills/web-scraper/SKILL.md" is overriding the same skill from "/root/.gemini/extensions/dgxsparklabs-marketplace/skills/web-scraper/SKILL.md".
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Skill conflict detected: "textual-tui-guide" from "/mnt/c/Users/devic/source/marketplace/.gemini/skills/textual-tui-guide/SKILL.md" is overriding the same skill from "/root/.gemini/extensions/dgxsparklabs-marketplace/skills/textual-tui-guide/SKILL.md".
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Skill conflict detected: "telegram-notify" from "/mnt/c/Users/devic/source/marketplace/.gemini/skills/telegram-notify/SKILL.md" is overriding the same skill from "/root/.gemini/extensions/dgxsparklabs-marketplace/skills/telegram-notify/SKILL.md".
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Skill conflict detected: "sync-rules" from "/mnt/c/Users/devic/source/marketplace/.gemini/skills/sync-rules/SKILL.md" is overriding the same skill from "/root/.gemini/extensions/dgxsparklabs-marketplace/skills/sync-rules/SKILL.md".
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Skill conflict detected: "structured-handoff" from "/mnt/c/Users/devic/source/marketplace/.gemini/skills/structured-handoff/SKILL.md" is overriding the same skill from "/root/.gemini/extensions/dgxsparklabs-marketplace/skills/structured-handoff/SKILL.md".
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Skill conflict detected: "ssh-tunnel" from "/mnt/c/Users/devic/source/marketplace/.gemini/skills/ssh-tunnel/SKILL.md" is overriding the same skill from "/root/.gemini/extensions/dgxsparklabs-marketplace/skills/ssh-tunnel/SKILL.md".
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Skill conflict detected: "skill-creator" from "/mnt/c/Users/devic/source/marketplace/.gemini/skills/skill-creator/SKILL.md" is overriding the same skill from "/root/.gemini/extensions/dgxsparklabs-marketplace/skills/skill-creator/SKILL.md".
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Skill conflict detected: "skill-analytics" from "/mnt/c/Users/devic/source/marketplace/.gemini/skills/skill-analytics/SKILL.md" is overriding the same skill from "/root/.gemini/extensions/dgxsparklabs-marketplace/skills/skill-analytics/SKILL.md".
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Skill conflict detected: "session-wrapup" from "/mnt/c/Users/devic/source/marketplace/.gemini/skills/session-wrapup/SKILL.md" is overriding the same skill from "/root/.gemini/extensions/dgxsparklabs-marketplace/skills/session-wrapup/SKILL.md".
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Skill conflict detected: "session-history" from "/mnt/c/Users/devic/source/marketplace/.gemini/skills/session-history/SKILL.md" is overriding the same skill from "/root/.gemini/extensions/dgxsparklabs-marketplace/skills/session-history/SKILL.md".
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Skill conflict detected: "send-email" from "/mnt/c/Users/devic/source/marketplace/.gemini/skills/send-email/SKILL.md" is overriding the same skill from "/root/.gemini/extensions/dgxsparklabs-marketplace/skills/send-email/SKILL.md".
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Skill conflict detected: "recall-rules" from "/mnt/c/Users/devic/source/marketplace/.gemini/skills/recall-rules/SKILL.md" is overriding the same skill from "/root/.gemini/extensions/dgxsparklabs-marketplace/skills/recall-rules/SKILL.md".
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Skill conflict detected: "project-bootstrap" from "/mnt/c/Users/devic/source/marketplace/.gemini/skills/project-bootstrap/SKILL.md" is overriding the same skill from "/root/.gemini/extensions/dgxsparklabs-marketplace/skills/project-bootstrap/SKILL.md".
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Skill conflict detected: "pitfall-check" from "/mnt/c/Users/devic/source/marketplace/.gemini/skills/pitfall-check/SKILL.md" is overriding the same skill from "/root/.gemini/extensions/dgxsparklabs-marketplace/skills/pitfall-check/SKILL.md".
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Skill conflict detected: "motivation" from "/mnt/c/Users/devic/source/marketplace/.gemini/skills/motivation/SKILL.md" is overriding the same skill from "/root/.gemini/extensions/dgxsparklabs-marketplace/skills/motivation/SKILL.md".
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Skill conflict detected: "google-drive-reader" from "/mnt/c/Users/devic/source/marketplace/.gemini/skills/google-drive-reader/SKILL.md" is overriding the same skill from "/root/.gemini/extensions/dgxsparklabs-marketplace/skills/google-drive-reader/SKILL.md".
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Skill conflict detected: "github-search" from "/mnt/c/Users/devic/source/marketplace/.gemini/skills/github-search/SKILL.md" is overriding the same skill from "/root/.gemini/extensions/dgxsparklabs-marketplace/skills/github-search/SKILL.md".
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Skill conflict detected: "github-repo-setup" from "/mnt/c/Users/devic/source/marketplace/.gemini/skills/github-repo-setup/SKILL.md" is overriding the same skill from "/root/.gemini/extensions/dgxsparklabs-marketplace/skills/github-repo-setup/SKILL.md".
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Skill conflict detected: "gemini-chat" from "/mnt/c/Users/devic/source/marketplace/.gemini/skills/gemini-chat/SKILL.md" is overriding the same skill from "/root/.gemini/extensions/dgxsparklabs-marketplace/skills/gemini-chat/SKILL.md".
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Skill conflict detected: "expose-port" from "/mnt/c/Users/devic/source/marketplace/.gemini/skills/expose-port/SKILL.md" is overriding the same skill from "/root/.gemini/extensions/dgxsparklabs-marketplace/skills/expose-port/SKILL.md".
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Skill conflict detected: "example-skill" from "/mnt/c/Users/devic/source/marketplace/.gemini/skills/example/SKILL.md" is overriding the same skill from "/root/.gemini/extensions/dgxsparklabs-marketplace/skills/example/SKILL.md".
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Skill conflict detected: "duckduckgo-search" from "/mnt/c/Users/devic/source/marketplace/.gemini/skills/duckduckgo-search/SKILL.md" is overriding the same skill from "/root/.gemini/extensions/dgxsparklabs-marketplace/skills/duckduckgo-search/SKILL.md".
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Skill conflict detected: "code-health-audit" from "/mnt/c/Users/devic/source/marketplace/.gemini/skills/code-health-audit/SKILL.md" is overriding the same skill from "/root/.gemini/extensions/dgxsparklabs-marketplace/skills/code-health-audit/SKILL.md".
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Skill conflict detected: "check" from "/mnt/c/Users/devic/source/marketplace/.gemini/skills/check/SKILL.md" is overriding the same skill from "/root/.gemini/extensions/dgxsparklabs-marketplace/skills/check/SKILL.md".
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Skill conflict detected: "act-runner" from "/mnt/c/Users/devic/source/marketplace/.gemini/skills/act-runner/SKILL.md" is overriding the same skill from "/root/.gemini/extensions/dgxsparklabs-marketplace/skills/act-runner/SKILL.md".
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Skill conflict detected: "youtube-wisdom" from "/mnt/c/Users/devic/source/marketplace/.agents/skills/youtube-wisdom/SKILL.md" is overriding the same skill from "/mnt/c/Users/devic/source/marketplace/.gemini/skills/youtube-wisdom/SKILL.md".
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Skill conflict detected: "youtube-search" from "/mnt/c/Users/devic/source/marketplace/.agents/skills/youtube-search/SKILL.md" is overriding the same skill from "/mnt/c/Users/devic/source/marketplace/.gemini/skills/youtube-search/SKILL.md".
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Skill conflict detected: "web-scraper" from "/mnt/c/Users/devic/source/marketplace/.agents/skills/web-scraper/SKILL.md" is overriding the same skill from "/mnt/c/Users/devic/source/marketplace/.gemini/skills/web-scraper/SKILL.md".
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Skill conflict detected: "textual-tui-guide" from "/mnt/c/Users/devic/source/marketplace/.agents/skills/textual-tui-guide/SKILL.md" is overriding the same skill from "/mnt/c/Users/devic/source/marketplace/.gemini/skills/textual-tui-guide/SKILL.md".
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Skill conflict detected: "telegram-notify" from "/mnt/c/Users/devic/source/marketplace/.agents/skills/telegram-notify/SKILL.md" is overriding the same skill from "/mnt/c/Users/devic/source/marketplace/.gemini/skills/telegram-notify/SKILL.md".
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Skill conflict detected: "sync-rules" from "/mnt/c/Users/devic/source/marketplace/.agents/skills/sync-rules/SKILL.md" is overriding the same skill from "/mnt/c/Users/devic/source/marketplace/.gemini/skills/sync-rules/SKILL.md".
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Skill conflict detected: "structured-handoff" from "/mnt/c/Users/devic/source/marketplace/.agents/skills/structured-handoff/SKILL.md" is overriding the same skill from "/mnt/c/Users/devic/source/marketplace/.gemini/skills/structured-handoff/SKILL.md".
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Skill conflict detected: "ssh-tunnel" from "/mnt/c/Users/devic/source/marketplace/.agents/skills/ssh-tunnel/SKILL.md" is overriding the same skill from "/mnt/c/Users/devic/source/marketplace/.gemini/skills/ssh-tunnel/SKILL.md".
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Skill conflict detected: "skill-creator" from "/mnt/c/Users/devic/source/marketplace/.agents/skills/skill-creator/SKILL.md" is overriding the same skill from "/mnt/c/Users/devic/source/marketplace/.gemini/skills/skill-creator/SKILL.md".
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Skill conflict detected: "skill-analytics" from "/mnt/c/Users/devic/source/marketplace/.agents/skills/skill-analytics/SKILL.md" is overriding the same skill from "/mnt/c/Users/devic/source/marketplace/.gemini/skills/skill-analytics/SKILL.md".
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Skill conflict detected: "session-wrapup" from "/mnt/c/Users/devic/source/marketplace/.agents/skills/session-wrapup/SKILL.md" is overriding the same skill from "/mnt/c/Users/devic/source/marketplace/.gemini/skills/session-wrapup/SKILL.md".
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Skill conflict detected: "session-history" from "/mnt/c/Users/devic/source/marketplace/.agents/skills/session-history/SKILL.md" is overriding the same skill from "/mnt/c/Users/devic/source/marketplace/.gemini/skills/session-history/SKILL.md".
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Skill conflict detected: "send-email" from "/mnt/c/Users/devic/source/marketplace/.agents/skills/send-email/SKILL.md" is overriding the same skill from "/mnt/c/Users/devic/source/marketplace/.gemini/skills/send-email/SKILL.md".
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Skill conflict detected: "recall-rules" from "/mnt/c/Users/devic/source/marketplace/.agents/skills/recall-rules/SKILL.md" is overriding the same skill from "/mnt/c/Users/devic/source/marketplace/.gemini/skills/recall-rules/SKILL.md".
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Skill conflict detected: "project-bootstrap" from "/mnt/c/Users/devic/source/marketplace/.agents/skills/project-bootstrap/SKILL.md" is overriding the same skill from "/mnt/c/Users/devic/source/marketplace/.gemini/skills/project-bootstrap/SKILL.md".
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Skill conflict detected: "pitfall-check" from "/mnt/c/Users/devic/source/marketplace/.agents/skills/pitfall-check/SKILL.md" is overriding the same skill from "/mnt/c/Users/devic/source/marketplace/.gemini/skills/pitfall-check/SKILL.md".
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Skill conflict detected: "motivation" from "/mnt/c/Users/devic/source/marketplace/.agents/skills/motivation/SKILL.md" is overriding the same skill from "/mnt/c/Users/devic/source/marketplace/.gemini/skills/motivation/SKILL.md".
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Skill conflict detected: "google-drive-reader" from "/mnt/c/Users/devic/source/marketplace/.agents/skills/google-drive-reader/SKILL.md" is overriding the same skill from "/mnt/c/Users/devic/source/marketplace/.gemini/skills/google-drive-reader/SKILL.md".
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Skill conflict detected: "github-search" from "/mnt/c/Users/devic/source/marketplace/.agents/skills/github-search/SKILL.md" is overriding the same skill from "/mnt/c/Users/devic/source/marketplace/.gemini/skills/github-search/SKILL.md".
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Skill conflict detected: "github-repo-setup" from "/mnt/c/Users/devic/source/marketplace/.agents/skills/github-repo-setup/SKILL.md" is overriding the same skill from "/mnt/c/Users/devic/source/marketplace/.gemini/skills/github-repo-setup/SKILL.md".
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Skill conflict detected: "gemini-chat" from "/mnt/c/Users/devic/source/marketplace/.agents/skills/gemini-chat/SKILL.md" is overriding the same skill from "/mnt/c/Users/devic/source/marketplace/.gemini/skills/gemini-chat/SKILL.md".
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Skill conflict detected: "expose-port" from "/mnt/c/Users/devic/source/marketplace/.agents/skills/expose-port/SKILL.md" is overriding the same skill from "/mnt/c/Users/devic/source/marketplace/.gemini/skills/expose-port/SKILL.md".
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Skill conflict detected: "example-skill" from "/mnt/c/Users/devic/source/marketplace/.agents/skills/example/SKILL.md" is overriding the same skill from "/mnt/c/Users/devic/source/marketplace/.gemini/skills/example/SKILL.md".
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Skill conflict detected: "duckduckgo-search" from "/mnt/c/Users/devic/source/marketplace/.agents/skills/duckduckgo-search/SKILL.md" is overriding the same skill from "/mnt/c/Users/devic/source/marketplace/.gemini/skills/duckduckgo-search/SKILL.md".
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Skill conflict detected: "code-health-audit" from "/mnt/c/Users/devic/source/marketplace/.agents/skills/code-health-audit/SKILL.md" is overriding the same skill from "/mnt/c/Users/devic/source/marketplace/.gemini/skills/code-health-audit/SKILL.md".
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Skill conflict detected: "check" from "/mnt/c/Users/devic/source/marketplace/.agents/skills/check/SKILL.md" is overriding the same skill from "/mnt/c/Users/devic/source/marketplace/.gemini/skills/check/SKILL.md".
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Skill conflict detected: "act-runner" from "/mnt/c/Users/devic/source/marketplace/.agents/skills/act-runner/SKILL.md" is overriding the same skill from "/mnt/c/Users/devic/source/marketplace/.gemini/skills/act-runner/SKILL.md".
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Discovered Agent Skills:
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | 
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | act-runner [Enabled]
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   Description: Run GitHub Actions workflows locally with act and podman
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   Location:    /mnt/c/Users/devic/source/marketplace/.agents/skills/act-runner/SKILL.md
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | 
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | check [Enabled]
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   Description: Mid-session course correction — stop, review rules, and realign
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   Location:    /mnt/c/Users/devic/source/marketplace/.agents/skills/check/SKILL.md
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | 
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | code-health-audit [Enabled]
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   Description: Audit codebase for DRY violations, oversized files, and scattered definitions
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   Location:    /mnt/c/Users/devic/source/marketplace/.agents/skills/code-health-audit/SKILL.md
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | 
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | duckduckgo-search [Enabled]
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   Description: Search DuckDuckGo and return results as structured text
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   Location:    /mnt/c/Users/devic/source/marketplace/.agents/skills/duckduckgo-search/SKILL.md
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | 
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | example-skill [Enabled]
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   Description: Reference example. Echoes back a formatted lab-notebook-style status message. Shows how to write a SKILL.md with frontmatter, allowed-tools, and argument handling.
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   Location:    /mnt/c/Users/devic/source/marketplace/.agents/skills/example/SKILL.md
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | 
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | expose-port [Enabled]
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   Description: Expose a local port via HTTPS (localhost.run) or TCP (bore)
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   Location:    /mnt/c/Users/devic/source/marketplace/.agents/skills/expose-port/SKILL.md
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | 
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | gemini-chat [Enabled]
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   Description: Interactive multi-turn chat with Google Gemini
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   Location:    /mnt/c/Users/devic/source/marketplace/.agents/skills/gemini-chat/SKILL.md
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | 
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | github-repo-setup [Enabled]
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   Description: Create a GitHub repo with CI, branch protection, and naming rules
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   Location:    /mnt/c/Users/devic/source/marketplace/.agents/skills/github-repo-setup/SKILL.md
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | 
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | github-search [Enabled]
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   Description: Search GitHub for repositories, prior art, and implementation inspiration
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   Location:    /mnt/c/Users/devic/source/marketplace/.agents/skills/github-search/SKILL.md
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | 
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | google-drive-reader [Enabled]
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   Description: Read Google Docs from personal Drive, extract URLs and conclusions
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   Location:    /mnt/c/Users/devic/source/marketplace/.agents/skills/google-drive-reader/SKILL.md
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | 
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | motivation [Enabled]
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   Description: Completeness checker — report what's actually unfinished before stopping
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   Location:    /mnt/c/Users/devic/source/marketplace/.agents/skills/motivation/SKILL.md
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | 
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | pitfall-check [Enabled]
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   Description: Search PITFALLS.md and git log for known issues before starting work
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   Location:    /mnt/c/Users/devic/source/marketplace/.agents/skills/pitfall-check/SKILL.md
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | 
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | project-bootstrap [Enabled]
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   Description: Initialize project docs — AGENTS.md, HANDOFF.md, CHANGELOG.md, PITFALLS.md
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   Location:    /mnt/c/Users/devic/source/marketplace/.agents/skills/project-bootstrap/SKILL.md
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | 
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | recall-rules [Enabled]
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   Description: Re-read global rules and thinking framework to realign mid-session
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   Location:    /mnt/c/Users/devic/source/marketplace/.agents/skills/recall-rules/SKILL.md
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | 
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | send-email [Enabled]
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   Description: Send an email to someone using the Resend API
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   Location:    /mnt/c/Users/devic/source/marketplace/.agents/skills/send-email/SKILL.md
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | 
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | session-history [Enabled]
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   Description: Query past Devin CLI conversations from the local session database
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   Location:    /mnt/c/Users/devic/source/marketplace/.agents/skills/session-history/SKILL.md
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | 
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | session-wrapup [Enabled]
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   Description: End-of-session audit — check docs, commits, and readiness for the next agent
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   Location:    /mnt/c/Users/devic/source/marketplace/.agents/skills/session-wrapup/SKILL.md
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | 
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | skill-analytics [Enabled]
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   Description: Analyze skill usage patterns and generate an interactive HTML dashboard
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   Location:    /mnt/c/Users/devic/source/marketplace/.agents/skills/skill-analytics/SKILL.md
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | 
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | skill-creator [Enabled]
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   Description: Create, test, and iteratively improve agent skills with evals
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   Location:    /mnt/c/Users/devic/source/marketplace/.agents/skills/skill-creator/SKILL.md
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | 
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | ssh-tunnel [Enabled]
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   Description: Set up SSH port forwarding tunnels (local, remote, SOCKS proxy)
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   Location:    /mnt/c/Users/devic/source/marketplace/.agents/skills/ssh-tunnel/SKILL.md
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | 
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | structured-handoff [Enabled]
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   Description: Generate structured task files for autonomous agent sessions
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   Location:    /mnt/c/Users/devic/source/marketplace/.agents/skills/structured-handoff/SKILL.md
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | 
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | sync-rules [Enabled]
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   Description: Sync rules from global AI agent configs into the workspace
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   Location:    /mnt/c/Users/devic/source/marketplace/.agents/skills/sync-rules/SKILL.md
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | 
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | telegram-notify [Enabled]
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   Description: Send a Telegram notification with a task summary
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   Location:    /mnt/c/Users/devic/source/marketplace/.agents/skills/telegram-notify/SKILL.md
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | 
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | textual-tui-guide [Enabled]
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   Description: Build rich terminal UIs with Python Textual — layouts, widgets, modals, styling
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   Location:    /mnt/c/Users/devic/source/marketplace/.agents/skills/textual-tui-guide/SKILL.md
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | 
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | web-scraper [Enabled]
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   Description: Fetch a web page and extract its main content as clean readable text
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   Location:    /mnt/c/Users/devic/source/marketplace/.agents/skills/web-scraper/SKILL.md
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | 
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | youtube-search [Enabled]
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   Description: Search YouTube for technical videos, tutorials, and talks on a topic
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   Location:    /mnt/c/Users/devic/source/marketplace/.agents/skills/youtube-search/SKILL.md
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | 
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | youtube-wisdom [Enabled]
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   Description: Extract key knowledge from a YouTube video transcript
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   Location:    /mnt/c/Users/devic/source/marketplace/.agents/skills/youtube-wisdom/SKILL.md
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | G6_EXIT=0
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Skill conflict detected: "telegram-notify" from "/mnt/c/Users/devic/source/marketplace/.gemini/skills/telegram-notify/SKILL.md" is overriding the same skill from "/root/.gemini/extensions/dgxsparklabs-marketplace/skills/telegram-notify/SKILL.md".
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Skill conflict detected: "telegram-notify" from "/mnt/c/Users/devic/source/marketplace/.agents/skills/telegram-notify/SKILL.md" is overriding the same skill from "/mnt/c/Users/devic/source/marketplace/.gemini/skills/telegram-notify/SKILL.md".
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | telegram-notify [Enabled]
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   Location:    /mnt/c/Users/devic/source/marketplace/.agents/skills/telegram-notify/SKILL.md
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | G6_FOUND=YES
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | --- gemini skills list (no --all) ---
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Ripgrep is not available. Falling back to GrepTool.
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Loading extension: dgxsparklabs-marketplace
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Scheduling MCP context refresh...
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Executing MCP context refresh...
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | MCP context refresh complete.
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Skill "skill-creator" from "/root/.gemini/extensions/dgxsparklabs-marketplace/skills/skill-creator/SKILL.md" is overriding the built-in skill.
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Skill conflict detected: "youtube-wisdom" from "/mnt/c/Users/devic/source/marketplace/.gemini/skills/youtube-wisdom/SKILL.md" is overriding the same skill from "/root/.gemini/extensions/dgxsparklabs-marketplace/skills/youtube-wisdom/SKILL.md".
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Skill conflict detected: "youtube-search" from "/mnt/c/Users/devic/source/marketplace/.gemini/skills/youtube-search/SKILL.md" is overriding the same skill from "/root/.gemini/extensions/dgxsparklabs-marketplace/skills/youtube-search/SKILL.md".
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Skill conflict detected: "web-scraper" from "/mnt/c/Users/devic/source/marketplace/.gemini/skills/web-scraper/SKILL.md" is overriding the same skill from "/root/.gemini/extensions/dgxsparklabs-marketplace/skills/web-scraper/SKILL.md".
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Skill conflict detected: "textual-tui-guide" from "/mnt/c/Users/devic/source/marketplace/.gemini/skills/textual-tui-guide/SKILL.md" is overriding the same skill from "/root/.gemini/extensions/dgxsparklabs-marketplace/skills/textual-tui-guide/SKILL.md".
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Skill conflict detected: "telegram-notify" from "/mnt/c/Users/devic/source/marketplace/.gemini/skills/telegram-notify/SKILL.md" is overriding the same skill from "/root/.gemini/extensions/dgxsparklabs-marketplace/skills/telegram-notify/SKILL.md".
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Skill conflict detected: "sync-rules" from "/mnt/c/Users/devic/source/marketplace/.gemini/skills/sync-rules/SKILL.md" is overriding the same skill from "/root/.gemini/extensions/dgxsparklabs-marketplace/skills/sync-rules/SKILL.md".
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Skill conflict detected: "structured-handoff" from "/mnt/c/Users/devic/source/marketplace/.gemini/skills/structured-handoff/SKILL.md" is overriding the same skill from "/root/.gemini/extensions/dgxsparklabs-marketplace/skills/structured-handoff/SKILL.md".
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Skill conflict detected: "ssh-tunnel" from "/mnt/c/Users/devic/source/marketplace/.gemini/skills/ssh-tunnel/SKILL.md" is overriding the same skill from "/root/.gemini/extensions/dgxsparklabs-marketplace/skills/ssh-tunnel/SKILL.md".
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Skill conflict detected: "skill-creator" from "/mnt/c/Users/devic/source/marketplace/.gemini/skills/skill-creator/SKILL.md" is overriding the same skill from "/root/.gemini/extensions/dgxsparklabs-marketplace/skills/skill-creator/SKILL.md".
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Skill conflict detected: "skill-analytics" from "/mnt/c/Users/devic/source/marketplace/.gemini/skills/skill-analytics/SKILL.md" is overriding the same skill from "/root/.gemini/extensions/dgxsparklabs-marketplace/skills/skill-analytics/SKILL.md".
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Skill conflict detected: "session-wrapup" from "/mnt/c/Users/devic/source/marketplace/.gemini/skills/session-wrapup/SKILL.md" is overriding the same skill from "/root/.gemini/extensions/dgxsparklabs-marketplace/skills/session-wrapup/SKILL.md".
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Skill conflict detected: "session-history" from "/mnt/c/Users/devic/source/marketplace/.gemini/skills/session-history/SKILL.md" is overriding the same skill from "/root/.gemini/extensions/dgxsparklabs-marketplace/skills/session-history/SKILL.md".
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Skill conflict detected: "send-email" from "/mnt/c/Users/devic/source/marketplace/.gemini/skills/send-email/SKILL.md" is overriding the same skill from "/root/.gemini/extensions/dgxsparklabs-marketplace/skills/send-email/SKILL.md".
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Skill conflict detected: "recall-rules" from "/mnt/c/Users/devic/source/marketplace/.gemini/skills/recall-rules/SKILL.md" is overriding the same skill from "/root/.gemini/extensions/dgxsparklabs-marketplace/skills/recall-rules/SKILL.md".
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Skill conflict detected: "project-bootstrap" from "/mnt/c/Users/devic/source/marketplace/.gemini/skills/project-bootstrap/SKILL.md" is overriding the same skill from "/root/.gemini/extensions/dgxsparklabs-marketplace/skills/project-bootstrap/SKILL.md".
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Skill conflict detected: "pitfall-check" from "/mnt/c/Users/devic/source/marketplace/.gemini/skills/pitfall-check/SKILL.md" is overriding the same skill from "/root/.gemini/extensions/dgxsparklabs-marketplace/skills/pitfall-check/SKILL.md".
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Skill conflict detected: "motivation" from "/mnt/c/Users/devic/source/marketplace/.gemini/skills/motivation/SKILL.md" is overriding the same skill from "/root/.gemini/extensions/dgxsparklabs-marketplace/skills/motivation/SKILL.md".
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Skill conflict detected: "google-drive-reader" from "/mnt/c/Users/devic/source/marketplace/.gemini/skills/google-drive-reader/SKILL.md" is overriding the same skill from "/root/.gemini/extensions/dgxsparklabs-marketplace/skills/google-drive-reader/SKILL.md".
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Skill conflict detected: "github-search" from "/mnt/c/Users/devic/source/marketplace/.gemini/skills/github-search/SKILL.md" is overriding the same skill from "/root/.gemini/extensions/dgxsparklabs-marketplace/skills/github-search/SKILL.md".
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Skill conflict detected: "github-repo-setup" from "/mnt/c/Users/devic/source/marketplace/.gemini/skills/github-repo-setup/SKILL.md" is overriding the same skill from "/root/.gemini/extensions/dgxsparklabs-marketplace/skills/github-repo-setup/SKILL.md".
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Skill conflict detected: "gemini-chat" from "/mnt/c/Users/devic/source/marketplace/.gemini/skills/gemini-chat/SKILL.md" is overriding the same skill from "/root/.gemini/extensions/dgxsparklabs-marketplace/skills/gemini-chat/SKILL.md".
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Skill conflict detected: "expose-port" from "/mnt/c/Users/devic/source/marketplace/.gemini/skills/expose-port/SKILL.md" is overriding the same skill from "/root/.gemini/extensions/dgxsparklabs-marketplace/skills/expose-port/SKILL.md".
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Skill conflict detected: "example-skill" from "/mnt/c/Users/devic/source/marketplace/.gemini/skills/example/SKILL.md" is overriding the same skill from "/root/.gemini/extensions/dgxsparklabs-marketplace/skills/example/SKILL.md".
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Skill conflict detected: "duckduckgo-search" from "/mnt/c/Users/devic/source/marketplace/.gemini/skills/duckduckgo-search/SKILL.md" is overriding the same skill from "/root/.gemini/extensions/dgxsparklabs-marketplace/skills/duckduckgo-search/SKILL.md".
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Skill conflict detected: "code-health-audit" from "/mnt/c/Users/devic/source/marketplace/.gemini/skills/code-health-audit/SKILL.md" is overriding the same skill from "/root/.gemini/extensions/dgxsparklabs-marketplace/skills/code-health-audit/SKILL.md".
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Skill conflict detected: "check" from "/mnt/c/Users/devic/source/marketplace/.gemini/skills/check/SKILL.md" is overriding the same skill from "/root/.gemini/extensions/dgxsparklabs-marketplace/skills/check/SKILL.md".
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Skill conflict detected: "act-runner" from "/mnt/c/Users/devic/source/marketplace/.gemini/skills/act-runner/SKILL.md" is overriding the same skill from "/root/.gemini/extensions/dgxsparklabs-marketplace/skills/act-runner/SKILL.md".
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Skill conflict detected: "youtube-wisdom" from "/mnt/c/Users/devic/source/marketplace/.agents/skills/youtube-wisdom/SKILL.md" is overriding the same skill from "/mnt/c/Users/devic/source/marketplace/.gemini/skills/youtube-wisdom/SKILL.md".
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Skill conflict detected: "youtube-search" from "/mnt/c/Users/devic/source/marketplace/.agents/skills/youtube-search/SKILL.md" is overriding the same skill from "/mnt/c/Users/devic/source/marketplace/.gemini/skills/youtube-search/SKILL.md".
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Skill conflict detected: "web-scraper" from "/mnt/c/Users/devic/source/marketplace/.agents/skills/web-scraper/SKILL.md" is overriding the same skill from "/mnt/c/Users/devic/source/marketplace/.gemini/skills/web-scraper/SKILL.md".
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Skill conflict detected: "textual-tui-guide" from "/mnt/c/Users/devic/source/marketplace/.agents/skills/textual-tui-guide/SKILL.md" is overriding the same skill from "/mnt/c/Users/devic/source/marketplace/.gemini/skills/textual-tui-guide/SKILL.md".
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Skill conflict detected: "telegram-notify" from "/mnt/c/Users/devic/source/marketplace/.agents/skills/telegram-notify/SKILL.md" is overriding the same skill from "/mnt/c/Users/devic/source/marketplace/.gemini/skills/telegram-notify/SKILL.md".
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Skill conflict detected: "sync-rules" from "/mnt/c/Users/devic/source/marketplace/.agents/skills/sync-rules/SKILL.md" is overriding the same skill from "/mnt/c/Users/devic/source/marketplace/.gemini/skills/sync-rules/SKILL.md".
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Skill conflict detected: "structured-handoff" from "/mnt/c/Users/devic/source/marketplace/.agents/skills/structured-handoff/SKILL.md" is overriding the same skill from "/mnt/c/Users/devic/source/marketplace/.gemini/skills/structured-handoff/SKILL.md".
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Skill conflict detected: "ssh-tunnel" from "/mnt/c/Users/devic/source/marketplace/.agents/skills/ssh-tunnel/SKILL.md" is overriding the same skill from "/mnt/c/Users/devic/source/marketplace/.gemini/skills/ssh-tunnel/SKILL.md".
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Skill conflict detected: "skill-creator" from "/mnt/c/Users/devic/source/marketplace/.agents/skills/skill-creator/SKILL.md" is overriding the same skill from "/mnt/c/Users/devic/source/marketplace/.gemini/skills/skill-creator/SKILL.md".
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Skill conflict detected: "skill-analytics" from "/mnt/c/Users/devic/source/marketplace/.agents/skills/skill-analytics/SKILL.md" is overriding the same skill from "/mnt/c/Users/devic/source/marketplace/.gemini/skills/skill-analytics/SKILL.md".
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Skill conflict detected: "session-wrapup" from "/mnt/c/Users/devic/source/marketplace/.agents/skills/session-wrapup/SKILL.md" is overriding the same skill from "/mnt/c/Users/devic/source/marketplace/.gemini/skills/session-wrapup/SKILL.md".
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Skill conflict detected: "session-history" from "/mnt/c/Users/devic/source/marketplace/.agents/skills/session-history/SKILL.md" is overriding the same skill from "/mnt/c/Users/devic/source/marketplace/.gemini/skills/session-history/SKILL.md".
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Skill conflict detected: "send-email" from "/mnt/c/Users/devic/source/marketplace/.agents/skills/send-email/SKILL.md" is overriding the same skill from "/mnt/c/Users/devic/source/marketplace/.gemini/skills/send-email/SKILL.md".
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Skill conflict detected: "recall-rules" from "/mnt/c/Users/devic/source/marketplace/.agents/skills/recall-rules/SKILL.md" is overriding the same skill from "/mnt/c/Users/devic/source/marketplace/.gemini/skills/recall-rules/SKILL.md".
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Skill conflict detected: "project-bootstrap" from "/mnt/c/Users/devic/source/marketplace/.agents/skills/project-bootstrap/SKILL.md" is overriding the same skill from "/mnt/c/Users/devic/source/marketplace/.gemini/skills/project-bootstrap/SKILL.md".
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Skill conflict detected: "pitfall-check" from "/mnt/c/Users/devic/source/marketplace/.agents/skills/pitfall-check/SKILL.md" is overriding the same skill from "/mnt/c/Users/devic/source/marketplace/.gemini/skills/pitfall-check/SKILL.md".
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Skill conflict detected: "motivation" from "/mnt/c/Users/devic/source/marketplace/.agents/skills/motivation/SKILL.md" is overriding the same skill from "/mnt/c/Users/devic/source/marketplace/.gemini/skills/motivation/SKILL.md".
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Skill conflict detected: "google-drive-reader" from "/mnt/c/Users/devic/source/marketplace/.agents/skills/google-drive-reader/SKILL.md" is overriding the same skill from "/mnt/c/Users/devic/source/marketplace/.gemini/skills/google-drive-reader/SKILL.md".
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Skill conflict detected: "github-search" from "/mnt/c/Users/devic/source/marketplace/.agents/skills/github-search/SKILL.md" is overriding the same skill from "/mnt/c/Users/devic/source/marketplace/.gemini/skills/github-search/SKILL.md".
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Skill conflict detected: "github-repo-setup" from "/mnt/c/Users/devic/source/marketplace/.agents/skills/github-repo-setup/SKILL.md" is overriding the same skill from "/mnt/c/Users/devic/source/marketplace/.gemini/skills/github-repo-setup/SKILL.md".
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Skill conflict detected: "gemini-chat" from "/mnt/c/Users/devic/source/marketplace/.agents/skills/gemini-chat/SKILL.md" is overriding the same skill from "/mnt/c/Users/devic/source/marketplace/.gemini/skills/gemini-chat/SKILL.md".
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Skill conflict detected: "expose-port" from "/mnt/c/Users/devic/source/marketplace/.agents/skills/expose-port/SKILL.md" is overriding the same skill from "/mnt/c/Users/devic/source/marketplace/.gemini/skills/expose-port/SKILL.md".
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Skill conflict detected: "example-skill" from "/mnt/c/Users/devic/source/marketplace/.agents/skills/example/SKILL.md" is overriding the same skill from "/mnt/c/Users/devic/source/marketplace/.gemini/skills/example/SKILL.md".
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Skill conflict detected: "duckduckgo-search" from "/mnt/c/Users/devic/source/marketplace/.agents/skills/duckduckgo-search/SKILL.md" is overriding the same skill from "/mnt/c/Users/devic/source/marketplace/.gemini/skills/duckduckgo-search/SKILL.md".
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Skill conflict detected: "code-health-audit" from "/mnt/c/Users/devic/source/marketplace/.agents/skills/code-health-audit/SKILL.md" is overriding the same skill from "/mnt/c/Users/devic/source/marketplace/.gemini/skills/code-health-audit/SKILL.md".
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Skill conflict detected: "check" from "/mnt/c/Users/devic/source/marketplace/.agents/skills/check/SKILL.md" is overriding the same skill from "/mnt/c/Users/devic/source/marketplace/.gemini/skills/check/SKILL.md".
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Skill conflict detected: "act-runner" from "/mnt/c/Users/devic/source/marketplace/.agents/skills/act-runner/SKILL.md" is overriding the same skill from "/mnt/c/Users/devic/source/marketplace/.gemini/skills/act-runner/SKILL.md".
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Discovered Agent Skills:
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | 
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | act-runner [Enabled]
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   Description: Run GitHub Actions workflows locally with act and podman
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   Location:    /mnt/c/Users/devic/source/marketplace/.agents/skills/act-runner/SKILL.md
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | 
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | check [Enabled]
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   Description: Mid-session course correction — stop, review rules, and realign
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   Location:    /mnt/c/Users/devic/source/marketplace/.agents/skills/check/SKILL.md
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | 
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | code-health-audit [Enabled]
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   Description: Audit codebase for DRY violations, oversized files, and scattered definitions
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   Location:    /mnt/c/Users/devic/source/marketplace/.agents/skills/code-health-audit/SKILL.md
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | 
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | duckduckgo-search [Enabled]
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   Description: Search DuckDuckGo and return results as structured text
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   Location:    /mnt/c/Users/devic/source/marketplace/.agents/skills/duckduckgo-search/SKILL.md
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | 
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | example-skill [Enabled]
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   Description: Reference example. Echoes back a formatted lab-notebook-style status message. Shows how to write a SKILL.md with frontmatter, allowed-tools, and argument handling.
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   Location:    /mnt/c/Users/devic/source/marketplace/.agents/skills/example/SKILL.md
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | 
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | expose-port [Enabled]
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   Description: Expose a local port via HTTPS (localhost.run) or TCP (bore)
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   Location:    /mnt/c/Users/devic/source/marketplace/.agents/skills/expose-port/SKILL.md
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | 
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | gemini-chat [Enabled]
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   Description: Interactive multi-turn chat with Google Gemini
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   Location:    /mnt/c/Users/devic/source/marketplace/.agents/skills/gemini-chat/SKILL.md
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | 
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | github-repo-setup [Enabled]
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   Description: Create a GitHub repo with CI, branch protection, and naming rules
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   Location:    /mnt/c/Users/devic/source/marketplace/.agents/skills/github-repo-setup/SKILL.md
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | 
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | github-search [Enabled]
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   Description: Search GitHub for repositories, prior art, and implementation inspiration
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   Location:    /mnt/c/Users/devic/source/marketplace/.agents/skills/github-search/SKILL.md
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | 
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | google-drive-reader [Enabled]
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   Description: Read Google Docs from personal Drive, extract URLs and conclusions
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   Location:    /mnt/c/Users/devic/source/marketplace/.agents/skills/google-drive-reader/SKILL.md
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | 
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | motivation [Enabled]
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   Description: Completeness checker — report what's actually unfinished before stopping
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   Location:    /mnt/c/Users/devic/source/marketplace/.agents/skills/motivation/SKILL.md
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | 
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | pitfall-check [Enabled]
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   Description: Search PITFALLS.md and git log for known issues before starting work
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   Location:    /mnt/c/Users/devic/source/marketplace/.agents/skills/pitfall-check/SKILL.md
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | 
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | project-bootstrap [Enabled]
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   Description: Initialize project docs — AGENTS.md, HANDOFF.md, CHANGELOG.md, PITFALLS.md
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   Location:    /mnt/c/Users/devic/source/marketplace/.agents/skills/project-bootstrap/SKILL.md
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | 
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | recall-rules [Enabled]
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   Description: Re-read global rules and thinking framework to realign mid-session
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   Location:    /mnt/c/Users/devic/source/marketplace/.agents/skills/recall-rules/SKILL.md
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | 
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | send-email [Enabled]
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   Description: Send an email to someone using the Resend API
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   Location:    /mnt/c/Users/devic/source/marketplace/.agents/skills/send-email/SKILL.md
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | 
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | session-history [Enabled]
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   Description: Query past Devin CLI conversations from the local session database
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   Location:    /mnt/c/Users/devic/source/marketplace/.agents/skills/session-history/SKILL.md
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | 
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | session-wrapup [Enabled]
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   Description: End-of-session audit — check docs, commits, and readiness for the next agent
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   Location:    /mnt/c/Users/devic/source/marketplace/.agents/skills/session-wrapup/SKILL.md
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | 
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | skill-analytics [Enabled]
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   Description: Analyze skill usage patterns and generate an interactive HTML dashboard
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   Location:    /mnt/c/Users/devic/source/marketplace/.agents/skills/skill-analytics/SKILL.md
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | 
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | skill-creator [Enabled]
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   Description: Create, test, and iteratively improve agent skills with evals
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   Location:    /mnt/c/Users/devic/source/marketplace/.agents/skills/skill-creator/SKILL.md
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | 
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | ssh-tunnel [Enabled]
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   Description: Set up SSH port forwarding tunnels (local, remote, SOCKS proxy)
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   Location:    /mnt/c/Users/devic/source/marketplace/.agents/skills/ssh-tunnel/SKILL.md
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | 
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | structured-handoff [Enabled]
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   Description: Generate structured task files for autonomous agent sessions
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   Location:    /mnt/c/Users/devic/source/marketplace/.agents/skills/structured-handoff/SKILL.md
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | 
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | sync-rules [Enabled]
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   Description: Sync rules from global AI agent configs into the workspace
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   Location:    /mnt/c/Users/devic/source/marketplace/.agents/skills/sync-rules/SKILL.md
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | 
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | telegram-notify [Enabled]
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   Description: Send a Telegram notification with a task summary
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   Location:    /mnt/c/Users/devic/source/marketplace/.agents/skills/telegram-notify/SKILL.md
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | 
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | textual-tui-guide [Enabled]
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   Description: Build rich terminal UIs with Python Textual — layouts, widgets, modals, styling
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   Location:    /mnt/c/Users/devic/source/marketplace/.agents/skills/textual-tui-guide/SKILL.md
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | 
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | web-scraper [Enabled]
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   Description: Fetch a web page and extract its main content as clean readable text
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   Location:    /mnt/c/Users/devic/source/marketplace/.agents/skills/web-scraper/SKILL.md
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | 
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | youtube-search [Enabled]
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   Description: Search YouTube for technical videos, tutorials, and talks on a topic
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   Location:    /mnt/c/Users/devic/source/marketplace/.agents/skills/youtube-search/SKILL.md
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | 
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | youtube-wisdom [Enabled]
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   Description: Extract key knowledge from a YouTube video transcript
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   Location:    /mnt/c/Users/devic/source/marketplace/.agents/skills/youtube-wisdom/SKILL.md
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | 
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | --- gemini --help excerpt ---
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Usage: gemini [options] [command]
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | 
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Gemini CLI - Defaults to interactive mode. Use -p/--prompt for non-interactive (headless) mode.
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | 
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Commands:
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   gemini mcp                   Manage MCP servers
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   gemini extensions <command>  Manage Gemini CLI extensions.  [aliases: extension]
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   gemini skills <command>      Manage agent skills.  [aliases: skill]
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   gemini hooks <command>       Manage Gemini CLI hooks.  [aliases: hook]
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   gemini gemma                 Manage local Gemma model routing
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   gemini [query..]             Launch Gemini CLI  [default]
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | 
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Positionals:
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   query  Initial prompt. Runs in interactive mode by default; use -p/--prompt for non-interactive.
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | 
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Options:
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   -d, --debug                     Run in debug mode (open debug console with F12)  [boolean] [default: false]
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   -m, --model                     Model  [string]
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   -p, --prompt                    Run in non-interactive (headless) mode with the given prompt. Appended to input on stdin (if any).  [string]
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   -i, --prompt-interactive        Execute the provided prompt and continue in interactive mode  [string]
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |       --skip-trust                Trust the current workspace for this session.  [boolean] [default: false]
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   -w, --worktree                  Start Gemini in a new git worktree. If no name is provided, one is generated automatically.  [string]
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   -s, --sandbox                   Run in sandbox?  [boolean]
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   -y, --yolo                      Automatically accept all actions (aka YOLO mode, see https://www.youtube.com/watch?v=xvFZjo5PgG0 for more details)?  [boolean] [default: false]
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |       --approval-mode             Set the approval mode: default (prompt for approval), auto_edit (auto-approve edit tools), yolo (auto-approve all tools), plan (read-only mode)  [string] [choices: "default", "auto_edit", "yolo", "plan"]
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |       --policy                    Additional policy files or directories to load (comma-separated or multiple --policy)  [array]
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |       --admin-policy              Additional admin policy files or directories to load (comma-separated or multiple --admin-policy)  [array]
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |       --acp                       Starts the agent in ACP mode  [boolean]
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |       --experimental-acp          Starts the agent in ACP mode (deprecated, use --acp instead)  [boolean]
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |       --allowed-mcp-server-names  Allowed MCP server names  [array]
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |       --allowed-tools             [DEPRECATED: Use Policy Engine instead See https://geminicli.com/docs/core/policy-engine] Tools that are allowed to run without confirmation  [array]
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   -e, --extensions                A list of extensions to use. If not provided, all extensions are used.  [array]
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   -l, --list-extensions           List all available extensions and exit.  [boolean]
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   -r, --resume                    Resume a previous session. Use "latest" for most recent or index number (e.g. --resume 5)  [string]
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |       --session-file              Load a session from a JSON file  [string]
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |       --session-id                Start a new session with a manually provided UUID.  [string]
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |       --list-sessions             List available sessions for the current project and exit.  [boolean]
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |       --delete-session            Delete a session by index number (use --list-sessions to see available sessions).  [string]
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |       --include-directories       Additional directories to include in the workspace (comma-separated or multiple --include-directories)  [array]
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |       --screen-reader             Enable screen reader mode for accessibility.  [boolean]
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   -o, --output-format             The format of the CLI output.  [string] [choices: "text", "json", "stream-json"]
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |       --raw-output                Disable sanitization of model output (e.g. allow ANSI escape sequences). WARNING: This can be a security risk if the model output is untrusted.  [boolean]
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |       --accept-raw-output-risk    Suppress the security warning when using --raw-output.  [boolean]
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   -v, --version                   Show version number  [boolean]
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   -h, --help                      Show help  [boolean]
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | === G6 END ===
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   ✅  Success - Main G6 — gemini skills list --all | grep -iF telegram-notify
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ] ⭐ Run Main Dump Gemini state
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   🐳  docker exec cmd=[bash --noprofile --norc -e -o pipefail /var/run/act/workflow/19] user= workdir=
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | === GEMINI STATE DUMP ===
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | /root/.gemini/gemini-credentials.json
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | /root/.gemini/extensions/extension-enablement.json
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | /root/.gemini/extensions/dgxsparklabs-marketplace/gemini-extension.json
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | /root/.gemini/extensions/dgxsparklabs-marketplace/.gemini-extension-install.json
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | /root/.gemini/extensions/dgxsparklabs-marketplace/skills/sync-rules/scripts/sync_rules.py
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | /root/.gemini/extensions/dgxsparklabs-marketplace/skills/sync-rules/README.md
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | /root/.gemini/extensions/dgxsparklabs-marketplace/skills/sync-rules/SKILL.md
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | /root/.gemini/extensions/dgxsparklabs-marketplace/skills/ssh-tunnel/scripts/ssh-tunnel.sh
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | /root/.gemini/extensions/dgxsparklabs-marketplace/skills/ssh-tunnel/README.md
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | /root/.gemini/extensions/dgxsparklabs-marketplace/skills/ssh-tunnel/SKILL.md
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | /root/.gemini/extensions/dgxsparklabs-marketplace/skills/code-health-audit/scripts/scan_codebase.py
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | /root/.gemini/extensions/dgxsparklabs-marketplace/skills/code-health-audit/README.md
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | /root/.gemini/extensions/dgxsparklabs-marketplace/skills/code-health-audit/SKILL.md
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | /root/.gemini/extensions/dgxsparklabs-marketplace/skills/duckduckgo-search/scripts/search.py
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | /root/.gemini/extensions/dgxsparklabs-marketplace/skills/duckduckgo-search/README.md
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | /root/.gemini/extensions/dgxsparklabs-marketplace/skills/duckduckgo-search/SKILL.md
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | /root/.gemini/extensions/dgxsparklabs-marketplace/skills/textual-tui-guide/scripts/scaffold_tui.py
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | /root/.gemini/extensions/dgxsparklabs-marketplace/skills/textual-tui-guide/README.md
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | /root/.gemini/extensions/dgxsparklabs-marketplace/skills/textual-tui-guide/SKILL.md
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | /root/.gemini/extensions/dgxsparklabs-marketplace/skills/textual-tui-guide/references/patterns.md
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | /root/.gemini/extensions/dgxsparklabs-marketplace/skills/github-search/scripts/search.py
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | /root/.gemini/extensions/dgxsparklabs-marketplace/skills/github-search/README.md
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | /root/.gemini/extensions/dgxsparklabs-marketplace/skills/github-search/SKILL.md
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | /root/.gemini/extensions/dgxsparklabs-marketplace/skills/project-bootstrap/scripts/bootstrap.py
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | /root/.gemini/extensions/dgxsparklabs-marketplace/skills/project-bootstrap/README.md
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | /root/.gemini/extensions/dgxsparklabs-marketplace/skills/project-bootstrap/SKILL.md
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | /root/.gemini/extensions/dgxsparklabs-marketplace/skills/telegram-notify/README.md
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | /root/.gemini/extensions/dgxsparklabs-marketplace/skills/telegram-notify/SKILL.md
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | /root/.gemini/extensions/dgxsparklabs-marketplace/skills/web-scraper/scripts/scrape.py
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | /root/.gemini/extensions/dgxsparklabs-marketplace/skills/web-scraper/README.md
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | ✓ dgxsparklabs-marketplace (1.0.0)
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |  ID: 8abca27d601700c7667968734d6d17ba1e2b9e8b24caf9823b1073427b5d6421
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |  name: 310b75b81b916c5dabda9be9496c25931d4a6a3aede26df3cce4554ddc00586b
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |  Path: /root/.gemini/extensions/dgxsparklabs-marketplace
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |  Source: /mnt/c/Users/devic/source/marketplace/.gemini (Type: local)
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |  Enabled (User): true
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |  Enabled (Workspace): true
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |  Agent skills:
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   youtube-wisdom: Extract key knowledge from a YouTube video transcript
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   youtube-search: Search YouTube for technical videos, tutorials, and talks on a topic
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   web-scraper: Fetch a web page and extract its main content as clean readable text
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   textual-tui-guide: Build rich terminal UIs with Python Textual — layouts, widgets, modals, styling
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   telegram-notify: Send a Telegram notification with a task summary
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   sync-rules: Sync rules from global AI agent configs into the workspace
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   structured-handoff: Generate structured task files for autonomous agent sessions
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   ssh-tunnel: Set up SSH port forwarding tunnels (local, remote, SOCKS proxy)
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   skill-creator: Create, test, and iteratively improve agent skills with evals
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   skill-analytics: Analyze skill usage patterns and generate an interactive HTML dashboard
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   session-wrapup: End-of-session audit — check docs, commits, and readiness for the next agent
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   session-history: Query past Devin CLI conversations from the local session database
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   send-email: Send an email to someone using the Resend API
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   recall-rules: Re-read global rules and thinking framework to realign mid-session
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   project-bootstrap: Initialize project docs — AGENTS.md, HANDOFF.md, CHANGELOG.md, PITFALLS.md
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   pitfall-check: Search PITFALLS.md and git log for known issues before starting work
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   motivation: Completeness checker — report what's actually unfinished before stopping
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   google-drive-reader: Read Google Docs from personal Drive, extract URLs and conclusions
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   github-search: Search GitHub for repositories, prior art, and implementation inspiration
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   github-repo-setup: Create a GitHub repo with CI, branch protection, and naming rules
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   gemini-chat: Interactive multi-turn chat with Google Gemini
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   expose-port: Expose a local port via HTTPS (localhost.run) or TCP (bore)
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   example-skill: Reference example. Echoes back a formatted lab-notebook-style status message. Shows how to write a SKILL.md with frontmatter, allowed-tools, and argument handling.
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   duckduckgo-search: Search DuckDuckGo and return results as structured text
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   code-health-audit: Audit codebase for DRY violations, oversized files, and scattered definitions
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   check: Mid-session course correction — stop, review rules, and realign
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   |   act-runner: Run GitHub Actions workflows locally with act and podman
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | === END GEMINI STATE DUMP ===
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   ✅  Success - Main Dump Gemini state
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ] ⭐ Run Main Final cleanup
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   🐳  docker exec cmd=[bash --noprofile --norc -e -o pipefail /var/run/act/workflow/20] user= workdir=
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   | Extension "dgxsparklabs-marketplace" successfully uninstalled.
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ]   ✅  Success - Main Final cleanup
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ] Cleaning up container for job gemini-verify
+[Verify — Gemini Claims (G1-G6)/gemini-verify  ] 🏁  Job succeeded

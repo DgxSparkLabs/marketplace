@@ -1,0 +1,475 @@
+time="2026-05-24T15:24:05+03:00" level=info msg="Using docker host 'npipe:////./pipe/docker_engine', and daemon socket 'npipe:////./pipe/docker_engine'"
+[Verify — Codex Claims (C1-C7)/codex-verify  ] 🚀  Start image=catthehacker/ubuntu:act-latest
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   🐳  docker pull image=catthehacker/ubuntu:act-latest platform=linux/amd64 username= forcePull=false
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   🐳  docker create image=catthehacker/ubuntu:act-latest platform=linux/amd64 entrypoint=["tail" "-f" "/dev/null"] cmd=[] network="host"
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   🐳  docker run image=catthehacker/ubuntu:act-latest platform=linux/amd64 entrypoint=["tail" "-f" "/dev/null"] cmd=[] network="host"
+[Verify — Codex Claims (C1-C7)/codex-verify  ] ⭐ Run Main Checkout repo
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   🐳  docker cp src=C:\Users\devic\source\marketplace\. dst=/mnt/c/Users/devic/source/marketplace
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   ✅  Success - Main Checkout repo
+[Verify — Codex Claims (C1-C7)/codex-verify  ] ⭐ Run Main Install uv (direct, no token needed)
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   🐳  docker exec cmd=[bash --noprofile --norc -e -o pipefail /var/run/act/workflow/1] user= workdir=
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | downloading uv 0.11.16 x86_64-unknown-linux-gnu
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | installing to /root/.local/bin
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   |   uv
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   |   uvx
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | everything's installed!
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | 
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | To add $HOME/.local/bin to your PATH, either restart your shell or run:
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | 
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   |     source $HOME/.local/bin/env (sh, bash, zsh)
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   |     source $HOME/.local/bin/env.fish (fish)
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | uv 0.11.16 (x86_64-unknown-linux-gnu)
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   ✅  Success - Main Install uv (direct, no token needed)
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   ⚙  ::add-path:: /root/.local/bin
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   ⚙  ::add-path:: /root/.local/bin
+[Verify — Codex Claims (C1-C7)/codex-verify  ] ⭐ Run Main Regenerate manifests
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   🐳  docker exec cmd=[bash --noprofile --norc -e -o pipefail /var/run/act/workflow/2] user= workdir=
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | Generated 81 plugin entries in marketplace.json
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   |   agent: 1
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   |   bundle: 24
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   |   command: 1
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   |   hook: 1
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   |   lsp: 1
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   |   mcp: 1
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   |   monitor: 1
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   |   output-style: 1
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   |   rule: 22
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   |   skill: 27
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   |   theme: 1
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   |   per-platform manifests emitted for 57 individual plugins
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   ✅  Success - Main Regenerate manifests
+[Verify — Codex Claims (C1-C7)/codex-verify  ] ⭐ Run Main Install Node.js 20
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   🐳  docker exec cmd=[bash --noprofile --norc -e -o pipefail /var/run/act/workflow/3] user= workdir=
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | [38;5;79m2026-05-24 12:24:36 - Installing pre-requisites[0m
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | 
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | WARNING: apt does not have a stable CLI interface. Use with caution in scripts.
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | 
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | Get:1 https://packages.microsoft.com/ubuntu/24.04/prod noble InRelease [3600 B]
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | Get:2 http://archive.ubuntu.com/ubuntu noble InRelease [256 kB]
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | Get:3 http://security.ubuntu.com/ubuntu noble-security InRelease [126 kB]
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | Get:4 https://packages.microsoft.com/ubuntu/24.04/prod noble/main amd64 Packages [155 kB]
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | Get:5 https://packages.microsoft.com/ubuntu/24.04/prod noble/main all Packages [643 B]
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | Get:6 https://ppa.launchpadcontent.net/git-core/ppa/ubuntu noble InRelease [24.3 kB]
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | Get:7 https://ppa.launchpadcontent.net/git-core/ppa/ubuntu noble/main amd64 Packages [2988 B]
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | Get:9 http://security.ubuntu.com/ubuntu noble-security/universe amd64 Packages [1505 kB]
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | Get:8 https://packagecloud.io/github/git-lfs/ubuntu noble InRelease [29.2 kB]
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | Get:10 http://security.ubuntu.com/ubuntu noble-security/main amd64 Packages [2074 kB]
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | Get:11 http://archive.ubuntu.com/ubuntu noble-updates InRelease [126 kB]
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | Get:12 http://security.ubuntu.com/ubuntu noble-security/restricted amd64 Packages [3671 kB]
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | Get:13 http://archive.ubuntu.com/ubuntu noble-backports InRelease [126 kB]
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | Get:14 http://archive.ubuntu.com/ubuntu noble/multiverse amd64 Packages [331 kB]
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | Get:15 http://archive.ubuntu.com/ubuntu noble/main amd64 Packages [1808 kB]
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | Get:16 http://security.ubuntu.com/ubuntu noble-security/multiverse amd64 Packages [48.4 kB]
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | Get:18 http://archive.ubuntu.com/ubuntu noble/universe amd64 Packages [19.3 MB]
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | Get:17 https://packagecloud.io/github/git-lfs/ubuntu noble/main amd64 Packages [1273 B]
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | Get:19 http://archive.ubuntu.com/ubuntu noble/restricted amd64 Packages [117 kB]
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | Get:20 http://archive.ubuntu.com/ubuntu noble-updates/multiverse amd64 Packages [54.6 kB]
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | Get:21 http://archive.ubuntu.com/ubuntu noble-updates/universe amd64 Packages [2148 kB]
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | Get:22 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 Packages [2457 kB]
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | Get:23 http://archive.ubuntu.com/ubuntu noble-updates/restricted amd64 Packages [3920 kB]
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | Get:24 http://archive.ubuntu.com/ubuntu noble-backports/multiverse amd64 Packages [671 B]
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | Get:25 http://archive.ubuntu.com/ubuntu noble-backports/universe amd64 Packages [35.9 kB]
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | Get:26 http://archive.ubuntu.com/ubuntu noble-backports/main amd64 Packages [49.0 kB]
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | Fetched 38.4 MB in 5s (8109 kB/s)
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | Reading package lists...
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | Building dependency tree...
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | Reading state information...
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | 22 packages can be upgraded. Run 'apt list --upgradable' to see them.
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | 
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | WARNING: apt does not have a stable CLI interface. Use with caution in scripts.
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | 
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | Reading package lists...
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | Building dependency tree...
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | Reading state information...
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | apt-transport-https is already the newest version (2.8.3).
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | ca-certificates is already the newest version (20240203).
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | curl is already the newest version (8.5.0-2ubuntu10.9).
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | gnupg is already the newest version (2.4.4-2ubuntu17.4).
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | 0 upgraded, 0 newly installed, 0 to remove and 22 not upgraded.
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | 
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | WARNING: apt does not have a stable CLI interface. Use with caution in scripts.
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | 
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | Hit:1 https://packages.microsoft.com/ubuntu/24.04/prod noble InRelease
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | Hit:2 http://archive.ubuntu.com/ubuntu noble InRelease
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | Hit:3 http://security.ubuntu.com/ubuntu noble-security InRelease
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | Hit:4 https://ppa.launchpadcontent.net/git-core/ppa/ubuntu noble InRelease
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | Hit:5 http://archive.ubuntu.com/ubuntu noble-updates InRelease
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | Hit:6 http://archive.ubuntu.com/ubuntu noble-backports InRelease
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | Get:7 https://deb.nodesource.com/node_20.x nodistro InRelease [12.1 kB]
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | Get:8 https://deb.nodesource.com/node_20.x nodistro/main amd64 Packages [14.7 kB]
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | Hit:9 https://packagecloud.io/github/git-lfs/ubuntu noble InRelease
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | Fetched 26.8 kB in 1s (18.3 kB/s)
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | Reading package lists...
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | Building dependency tree...
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | Reading state information...
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | 22 packages can be upgraded. Run 'apt list --upgradable' to see them.
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | [1;34m2026-05-24 12:24:49 - Repository configured successfully.[0m
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | [38;5;79m2026-05-24 12:24:49 - To install Node.js, run: apt install nodejs -y[0m
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | [38;5;79m2026-05-24 12:24:49 - You can use N|solid Runtime as a node.js alternative[0m
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | [1;32m2026-05-24 12:24:49 - To install N|solid Runtime, run: apt install nsolid -y 
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | [0m
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | Reading package lists...
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | Building dependency tree...
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | Reading state information...
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | The following NEW packages will be installed:
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   |   nodejs
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | 0 upgraded, 1 newly installed, 0 to remove and 22 not upgraded.
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | Need to get 32.2 MB of archives.
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | After this operation, 196 MB of additional disk space will be used.
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | Get:1 https://deb.nodesource.com/node_20.x nodistro/main amd64 nodejs amd64 20.20.2-1nodesource1 [32.2 MB]
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | debconf: delaying package configuration, since apt-utils is not installed
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | Fetched 32.2 MB in 2s (17.5 MB/s)
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | Selecting previously unselected package nodejs.
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | (Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 26513 files and directories currently installed.)
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | Preparing to unpack .../nodejs_20.20.2-1nodesource1_amd64.deb ...
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | Unpacking nodejs (20.20.2-1nodesource1) ...
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | Setting up nodejs (20.20.2-1nodesource1) ...
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   ✅  Success - Main Install Node.js 20
+[Verify — Codex Claims (C1-C7)/codex-verify  ] ⭐ Run Main Install Codex CLI
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   🐳  docker exec cmd=[bash --noprofile --norc -e -o pipefail /var/run/act/workflow/4] user= workdir=
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | 
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | added 2 packages in 11s
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   ✅  Success - Main Install Codex CLI
+[Verify — Codex Claims (C1-C7)/codex-verify  ] ⭐ Run Main Verify Codex binary present
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   🐳  docker exec cmd=[bash --noprofile --norc -e -o pipefail /var/run/act/workflow/5] user= workdir=
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | codex-cli 0.133.0
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   ✅  Success - Main Verify Codex binary present
+[Verify — Codex Claims (C1-C7)/codex-verify  ] ⭐ Run Main C1 — codex plugin marketplace add ./ (local path baseline)
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   🐳  docker exec cmd=[bash --noprofile --norc -e -o pipefail /var/run/act/workflow/c1] user= workdir=
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | === C1 START ===
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | Added marketplace `dgxsparklabs-marketplace` from /mnt/c/Users/devic/source/marketplace.
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | Installed marketplace root: /mnt/c/Users/devic/source/marketplace
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | C1_EXIT=0
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | === C1 END ===
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   ✅  Success - Main C1 — codex plugin marketplace add ./ (local path baseline)
+[Verify — Codex Claims (C1-C7)/codex-verify  ] ⭐ Run Main C1 — assert marketplace in config
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   🐳  docker exec cmd=[bash --noprofile --norc -e -o pipefail /var/run/act/workflow/c1_assert] user= workdir=
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | === C1_ASSERT START ===
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | [marketplaces.dgxsparklabs-marketplace]
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | last_updated = "2026-05-24T12:25:11Z"
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | source_type = "local"
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | source = "/mnt/c/Users/devic/source/marketplace"
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | [marketplaces.dgxsparklabs-marketplace]
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | C1_ASSERT=PASS
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | === C1_ASSERT END ===
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   ✅  Success - Main C1 — assert marketplace in config
+[Verify — Codex Claims (C1-C7)/codex-verify  ] ⭐ Run Main C1 — cleanup
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   🐳  docker exec cmd=[bash --noprofile --norc -e -o pipefail /var/run/act/workflow/8] user= workdir=
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | Removed marketplace `dgxsparklabs-marketplace`.
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   ✅  Success - Main C1 — cleanup
+[Verify — Codex Claims (C1-C7)/codex-verify  ] ⭐ Run Main C2 — codex plugin marketplace add DgxSparkLabs/marketplace
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   🐳  docker exec cmd=[bash --noprofile --norc -e -o pipefail /var/run/act/workflow/c2] user= workdir=
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | === C2 START ===
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | Error: invalid marketplace file `/root/.codex/.tmp/marketplaces/.staging/marketplace-add-IeWz8F`: marketplace root does not contain a supported manifest
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | C2_EXIT=1
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | LAST_STDERR: Error: invalid marketplace file `/root/.codex/.tmp/marketplaces/.staging/marketplace-add-IeWz8F`: marketplace root does not contain a supported manifest
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | === C2 END ===
+[Verify — Codex Claims (C1-C7)/codex-verify  ] Failed but continue next step
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   ❌  Failure - Main C2 — codex plugin marketplace add DgxSparkLabs/marketplace
+[Verify — Codex Claims (C1-C7)/codex-verify  ] ⭐ Run Main C2 — assert registration
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   🐳  docker exec cmd=[bash --noprofile --norc -e -o pipefail /var/run/act/workflow/c2_assert] user= workdir=
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | === C2_ASSERT START ===
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | C2_ASSERT=FAIL
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | === C2_ASSERT END ===
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   ✅  Success - Main C2 — assert registration
+[Verify — Codex Claims (C1-C7)/codex-verify  ] ⭐ Run Main C2 — cleanup
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   🐳  docker exec cmd=[bash --noprofile --norc -e -o pipefail /var/run/act/workflow/11] user= workdir=
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | Error: marketplace `dgxsparklabs-marketplace` is not configured or installed
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   ✅  Success - Main C2 — cleanup
+[Verify — Codex Claims (C1-C7)/codex-verify  ] ⭐ Run Main C3 — codex plugin marketplace add DgxSparkLabs/marketplace --ref feat/claude-plugin-compliance
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   🐳  docker exec cmd=[bash --noprofile --norc -e -o pipefail /var/run/act/workflow/c3] user= workdir=
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | === C3 START ===
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | Added marketplace `dgxsparklabs-marketplace` from https://github.com/DgxSparkLabs/marketplace.git#feat/claude-plugin-compliance.
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | Installed marketplace root: /root/.codex/.tmp/marketplaces/dgxsparklabs-marketplace
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | C3_EXIT=0
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | === C3 END ===
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   ✅  Success - Main C3 — codex plugin marketplace add DgxSparkLabs/marketplace --ref feat/claude-plugin-compliance
+[Verify — Codex Claims (C1-C7)/codex-verify  ] ⭐ Run Main C3 — assert registration
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   🐳  docker exec cmd=[bash --noprofile --norc -e -o pipefail /var/run/act/workflow/c3_assert] user= workdir=
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | === C3_ASSERT START ===
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | [marketplaces.dgxsparklabs-marketplace]
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | C3_ASSERT=PASS
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | === C3_ASSERT END ===
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   ✅  Success - Main C3 — assert registration
+[Verify — Codex Claims (C1-C7)/codex-verify  ] ⭐ Run Main C3 — cleanup
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   🐳  docker exec cmd=[bash --noprofile --norc -e -o pipefail /var/run/act/workflow/14] user= workdir=
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | Removed marketplace `dgxsparklabs-marketplace`.
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | Removed installed marketplace root: /root/.codex/.tmp/marketplaces/dgxsparklabs-marketplace
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   ✅  Success - Main C3 — cleanup
+[Verify — Codex Claims (C1-C7)/codex-verify  ] ⭐ Run Main C4 — register via local path (C4 precondition)
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   🐳  docker exec cmd=[bash --noprofile --norc -e -o pipefail /var/run/act/workflow/15] user= workdir=
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | === C4_PREREQ START ===
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | Added marketplace `dgxsparklabs-marketplace` from /mnt/c/Users/devic/source/marketplace.
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | Installed marketplace root: /mnt/c/Users/devic/source/marketplace
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | === C4_PREREQ END ===
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   ✅  Success - Main C4 — register via local path (C4 precondition)
+[Verify — Codex Claims (C1-C7)/codex-verify  ] ⭐ Run Main C4 — codex plugin list (enumeration test)
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   🐳  docker exec cmd=[bash --noprofile --norc -e -o pipefail /var/run/act/workflow/c4] user= workdir=
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | === C4 START ===
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | Marketplace `dgxsparklabs-marketplace`
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | /mnt/c/Users/devic/source/marketplace/.claude-plugin/marketplace.json
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | 
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | PLUGIN                                                      STATUS         VERSION  PATH                                                                              
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | agent-example@dgxsparklabs-marketplace                      not installed           /mnt/c/Users/devic/source/marketplace/_generated/agent-example                    
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | bundle-agent-all@dgxsparklabs-marketplace                   not installed           /mnt/c/Users/devic/source/marketplace/_generated/bundle-agent-all                 
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | bundle-ai-services-skills@dgxsparklabs-marketplace          not installed           /mnt/c/Users/devic/source/marketplace/_generated/bundle-ai-services-skills        
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | bundle-code-analysis-skills@dgxsparklabs-marketplace        not installed           /mnt/c/Users/devic/source/marketplace/_generated/bundle-code-analysis-skills      
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | bundle-command-all@dgxsparklabs-marketplace                 not installed           /mnt/c/Users/devic/source/marketplace/_generated/bundle-command-all               
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | bundle-communication-skills@dgxsparklabs-marketplace        not installed           /mnt/c/Users/devic/source/marketplace/_generated/bundle-communication-skills      
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | bundle-devops-skills@dgxsparklabs-marketplace               not installed           /mnt/c/Users/devic/source/marketplace/_generated/bundle-devops-skills             
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | bundle-documentation-rules@dgxsparklabs-marketplace         not installed           /mnt/c/Users/devic/source/marketplace/_generated/bundle-documentation-rules       
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | bundle-environment-rules@dgxsparklabs-marketplace           not installed           /mnt/c/Users/devic/source/marketplace/_generated/bundle-environment-rules         
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | bundle-examples@dgxsparklabs-marketplace                    not installed           /mnt/c/Users/devic/source/marketplace/_generated/bundle-examples                  
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | bundle-hook-all@dgxsparklabs-marketplace                    not installed           /mnt/c/Users/devic/source/marketplace/_generated/bundle-hook-all                  
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | bundle-lsp-all@dgxsparklabs-marketplace                     not installed           /mnt/c/Users/devic/source/marketplace/_generated/bundle-lsp-all                   
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | bundle-mcp-all@dgxsparklabs-marketplace                     not installed           /mnt/c/Users/devic/source/marketplace/_generated/bundle-mcp-all                   
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | bundle-meta-tooling-skills@dgxsparklabs-marketplace         not installed           /mnt/c/Users/devic/source/marketplace/_generated/bundle-meta-tooling-skills       
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | bundle-monitor-all@dgxsparklabs-marketplace                 not installed           /mnt/c/Users/devic/source/marketplace/_generated/bundle-monitor-all               
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | bundle-notifications-rules@dgxsparklabs-marketplace         not installed           /mnt/c/Users/devic/source/marketplace/_generated/bundle-notifications-rules       
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | bundle-output-style-all@dgxsparklabs-marketplace            not installed           /mnt/c/Users/devic/source/marketplace/_generated/bundle-output-style-all          
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | bundle-project-scaffolding-skills@dgxsparklabs-marketplace  not installed           /mnt/c/Users/devic/source/marketplace/_generated/bundle-project-scaffolding-skills
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | bundle-quality-rules@dgxsparklabs-marketplace               not installed           /mnt/c/Users/devic/source/marketplace/_generated/bundle-quality-rules             
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | bundle-rule-all@dgxsparklabs-marketplace                    not installed           /mnt/c/Users/devic/source/marketplace/_generated/bundle-rule-all                  
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | bundle-search-research-skills@dgxsparklabs-marketplace      not installed           /mnt/c/Users/devic/source/marketplace/_generated/bundle-search-research-skills    
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | bundle-session-management-skills@dgxsparklabs-marketplace   not installed           /mnt/c/Users/devic/source/marketplace/_generated/bundle-session-management-skills 
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | bundle-skill-all@dgxsparklabs-marketplace                   not installed           /mnt/c/Users/devic/source/marketplace/_generated/bundle-skill-all                 
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | bundle-theme-all@dgxsparklabs-marketplace                   not installed           /mnt/c/Users/devic/source/marketplace/_generated/bundle-theme-all                 
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | bundle-workflow-rules@dgxsparklabs-marketplace              not installed           /mnt/c/Users/devic/source/marketplace/_generated/bundle-workflow-rules            
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | command-example@dgxsparklabs-marketplace                    not installed           /mnt/c/Users/devic/source/marketplace/_generated/command-example                  
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | hook-example@dgxsparklabs-marketplace                       not installed           /mnt/c/Users/devic/source/marketplace/_generated/hook-example                     
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | lsp-example@dgxsparklabs-marketplace                        not installed           /mnt/c/Users/devic/source/marketplace/_generated/lsp-example                      
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | mcp-example@dgxsparklabs-marketplace                        not installed           /mnt/c/Users/devic/source/marketplace/_generated/mcp-example                      
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | monitor-example@dgxsparklabs-marketplace                    not installed           /mnt/c/Users/devic/source/marketplace/_generated/monitor-example                  
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | output-style-example@dgxsparklabs-marketplace               not installed           /mnt/c/Users/devic/source/marketplace/_generated/output-style-example             
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | rule-autonomous-persistence@dgxsparklabs-marketplace        not installed           /mnt/c/Users/devic/source/marketplace/_generated/rule-autonomous-persistence      
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | rule-blast-radius@dgxsparklabs-marketplace                  not installed           /mnt/c/Users/devic/source/marketplace/_generated/rule-blast-radius                
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | rule-code-hygiene@dgxsparklabs-marketplace                  not installed           /mnt/c/Users/devic/source/marketplace/_generated/rule-code-hygiene                
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | rule-continuous-improvement@dgxsparklabs-marketplace        not installed           /mnt/c/Users/devic/source/marketplace/_generated/rule-continuous-improvement      
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | rule-document-lifecycle@dgxsparklabs-marketplace            not installed           /mnt/c/Users/devic/source/marketplace/_generated/rule-document-lifecycle          
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | rule-document-progress@dgxsparklabs-marketplace             not installed           /mnt/c/Users/devic/source/marketplace/_generated/rule-document-progress           
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | rule-example@dgxsparklabs-marketplace                       not installed           /mnt/c/Users/devic/source/marketplace/_generated/rule-example                     
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | rule-improve-the-process@dgxsparklabs-marketplace           not installed           /mnt/c/Users/devic/source/marketplace/_generated/rule-improve-the-process         
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | rule-no-ai-credit@dgxsparklabs-marketplace                  not installed           /mnt/c/Users/devic/source/marketplace/_generated/rule-no-ai-credit                
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | rule-output-discipline@dgxsparklabs-marketplace             not installed           /mnt/c/Users/devic/source/marketplace/_generated/rule-output-discipline           
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | rule-pitfalls-discipline@dgxsparklabs-marketplace           not installed           /mnt/c/Users/devic/source/marketplace/_generated/rule-pitfalls-discipline         
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | rule-prior-art@dgxsparklabs-marketplace                     not installed           /mnt/c/Users/devic/source/marketplace/_generated/rule-prior-art                   
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | rule-python-uv@dgxsparklabs-marketplace                     not installed           /mnt/c/Users/devic/source/marketplace/_generated/rule-python-uv                   
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | rule-readable-docs@dgxsparklabs-marketplace                 not installed           /mnt/c/Users/devic/source/marketplace/_generated/rule-readable-docs               
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | rule-revert-on-failure@dgxsparklabs-marketplace             not installed           /mnt/c/Users/devic/source/marketplace/_generated/rule-revert-on-failure           
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | rule-session-resilience@dgxsparklabs-marketplace            not installed           /mnt/c/Users/devic/source/marketplace/_generated/rule-session-resilience          
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | rule-simplicity-bar@dgxsparklabs-marketplace                not installed           /mnt/c/Users/devic/source/marketplace/_generated/rule-simplicity-bar              
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | rule-stay-motivated@dgxsparklabs-marketplace                not installed           /mnt/c/Users/devic/source/marketplace/_generated/rule-stay-motivated              
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | rule-task-formation@dgxsparklabs-marketplace                not installed           /mnt/c/Users/devic/source/marketplace/_generated/rule-task-formation              
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | rule-telegram-on-complete@dgxsparklabs-marketplace          not installed           /mnt/c/Users/devic/source/marketplace/_generated/rule-telegram-on-complete        
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | rule-verification-ladder@dgxsparklabs-marketplace           not installed           /mnt/c/Users/devic/source/marketplace/_generated/rule-verification-ladder         
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | rule-verify-your-work@dgxsparklabs-marketplace              not installed           /mnt/c/Users/devic/source/marketplace/_generated/rule-verify-your-work            
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | skill-act-runner@dgxsparklabs-marketplace                   not installed           /mnt/c/Users/devic/source/marketplace/_generated/skill-act-runner                 
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | skill-check@dgxsparklabs-marketplace                        not installed           /mnt/c/Users/devic/source/marketplace/_generated/skill-check                      
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | skill-code-health-audit@dgxsparklabs-marketplace            not installed           /mnt/c/Users/devic/source/marketplace/_generated/skill-code-health-audit          
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | skill-duckduckgo-search@dgxsparklabs-marketplace            not installed           /mnt/c/Users/devic/source/marketplace/_generated/skill-duckduckgo-search          
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | skill-example@dgxsparklabs-marketplace                      not installed           /mnt/c/Users/devic/source/marketplace/_generated/skill-example                    
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | skill-expose-port@dgxsparklabs-marketplace                  not installed           /mnt/c/Users/devic/source/marketplace/_generated/skill-expose-port                
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | skill-gemini-chat@dgxsparklabs-marketplace                  not installed           /mnt/c/Users/devic/source/marketplace/_generated/skill-gemini-chat                
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | skill-github-repo-setup@dgxsparklabs-marketplace            not installed           /mnt/c/Users/devic/source/marketplace/_generated/skill-github-repo-setup          
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | skill-github-search@dgxsparklabs-marketplace                not installed           /mnt/c/Users/devic/source/marketplace/_generated/skill-github-search              
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | skill-google-drive-reader@dgxsparklabs-marketplace          not installed           /mnt/c/Users/devic/source/marketplace/_generated/skill-google-drive-reader        
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | skill-motivation@dgxsparklabs-marketplace                   not installed           /mnt/c/Users/devic/source/marketplace/_generated/skill-motivation                 
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | skill-pitfall-check@dgxsparklabs-marketplace                not installed           /mnt/c/Users/devic/source/marketplace/_generated/skill-pitfall-check              
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | skill-project-bootstrap@dgxsparklabs-marketplace            not installed           /mnt/c/Users/devic/source/marketplace/_generated/skill-project-bootstrap          
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | skill-recall-rules@dgxsparklabs-marketplace                 not installed           /mnt/c/Users/devic/source/marketplace/_generated/skill-recall-rules               
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | skill-send-email@dgxsparklabs-marketplace                   not installed           /mnt/c/Users/devic/source/marketplace/_generated/skill-send-email                 
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | skill-session-history@dgxsparklabs-marketplace              not installed           /mnt/c/Users/devic/source/marketplace/_generated/skill-session-history            
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | skill-session-wrapup@dgxsparklabs-marketplace               not installed           /mnt/c/Users/devic/source/marketplace/_generated/skill-session-wrapup             
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | skill-skill-analytics@dgxsparklabs-marketplace              not installed           /mnt/c/Users/devic/source/marketplace/_generated/skill-skill-analytics            
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | skill-skill-creator@dgxsparklabs-marketplace                not installed           /mnt/c/Users/devic/source/marketplace/_generated/skill-skill-creator              
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | skill-ssh-tunnel@dgxsparklabs-marketplace                   not installed           /mnt/c/Users/devic/source/marketplace/_generated/skill-ssh-tunnel                 
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | skill-structured-handoff@dgxsparklabs-marketplace           not installed           /mnt/c/Users/devic/source/marketplace/_generated/skill-structured-handoff         
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | skill-sync-rules@dgxsparklabs-marketplace                   not installed           /mnt/c/Users/devic/source/marketplace/_generated/skill-sync-rules                 
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | skill-telegram-notify@dgxsparklabs-marketplace              not installed           /mnt/c/Users/devic/source/marketplace/_generated/skill-telegram-notify            
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | skill-textual-tui-guide@dgxsparklabs-marketplace            not installed           /mnt/c/Users/devic/source/marketplace/_generated/skill-textual-tui-guide          
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | skill-web-scraper@dgxsparklabs-marketplace                  not installed           /mnt/c/Users/devic/source/marketplace/_generated/skill-web-scraper                
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | skill-youtube-search@dgxsparklabs-marketplace               not installed           /mnt/c/Users/devic/source/marketplace/_generated/skill-youtube-search             
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | skill-youtube-wisdom@dgxsparklabs-marketplace               not installed           /mnt/c/Users/devic/source/marketplace/_generated/skill-youtube-wisdom             
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | theme-example@dgxsparklabs-marketplace                      not installed           /mnt/c/Users/devic/source/marketplace/_generated/theme-example                    
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | C4_EXIT=0
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | bundle-skill-all@dgxsparklabs-marketplace                   not installed           /mnt/c/Users/devic/source/marketplace/_generated/bundle-skill-all                 
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | skill-example@dgxsparklabs-marketplace                      not installed           /mnt/c/Users/devic/source/marketplace/_generated/skill-example                    
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | skill-telegram-notify@dgxsparklabs-marketplace              not installed           /mnt/c/Users/devic/source/marketplace/_generated/skill-telegram-notify            
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | C4_FOUND=YES
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | LAST_STDERR: Marketplace `dgxsparklabs-marketplace`
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | /mnt/c/Users/devic/source/marketplace/.claude-plugin/marketplace.json
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | 
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | PLUGIN                                                      STATUS         VERSION  PATH                                                                              
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | agent-example@dgxsparklabs-marketplace                      not installed           /mnt/c/Users/devic/source/marketplace/_generated/agent-example                    
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | bundle-agent-all@dgxsparklabs-marketplace                   not installed           /mnt/c/Users/devic/source/marketplace/_generated/bundle-agent-all                 
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | bundle-ai-services-skills@dgxsparklabs-marketplace          not installed           /mnt/c/Users/devic/source/marketplace/_generated/bundle-ai-services-skills        
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | bundle-code-analysis-skills@dgxsparklabs-marketplace        not installed           /mnt/c/Users/devic/source/marketplace/_generated/bundle-code-analysis-skills      
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | bundle-command-all@dgxsparklabs-marketplace                 not installed           /mnt/c/Users/devic/source/marketplace/_generated/bundle-command-all               
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | bundle-communication-skills@dgxsparklabs-marketplace        not installed           /mnt/c/Users/devic/source/marketplace/_generated/bundle-communication-skills      
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | bundle-devops-skills@dgxsparklabs-marketplace               not installed           /mnt/c/Users/devic/source/marketplace/_generated/bundle-devops-skills             
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | bundle-documentation-rules@dgxsparklabs-marketplace         not installed           /mnt/c/Users/devic/source/marketplace/_generated/bundle-documentation-rules       
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | bundle-environment-rules@dgxsparklabs-marketplace           not installed           /mnt/c/Users/devic/source/marketplace/_generated/bundle-environment-rules         
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | bundle-examples@dgxsparklabs-marketplace                    not installed           /mnt/c/Users/devic/source/marketplace/_generated/bundle-examples                  
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | bundle-hook-all@dgxsparklabs-marketplace                    not installed           /mnt/c/Users/devic/source/marketplace/_generated/bundle-hook-all                  
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | bundle-lsp-all@dgxsparklabs-marketplace                     not installed           /mnt/c/Users/devic/source/marketplace/_generated/bundle-lsp-all                   
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | bundle-mcp-all@dgxsparklabs-marketplace                     not installed           /mnt/c/Users/devic/source/marketplace/_generated/bundle-mcp-all                   
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | bundle-meta-tooling-skills@dgxsparklabs-marketplace         not installed           /mnt/c/Users/devic/source/marketplace/_generated/bundle-meta-tooling-skills       
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | bundle-monitor-all@dgxsparklabs-marketplace                 not installed           /mnt/c/Users/devic/source/marketplace/_generated/bundle-monitor-all               
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | bundle-notifications-rules@dgxsparklabs-marketplace         not installed           /mnt/c/Users/devic/source/marketplace/_generated/bundle-notifications-rules       
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | bundle-output-style-all@dgxsparklabs-marketplace            not installed           /mnt/c/Users/devic/source/marketplace/_generated/bundle-output-style-all          
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | bundle-project-scaffolding-skills@dgxsparklabs-marketplace  not installed           /mnt/c/Users/devic/source/marketplace/_generated/bundle-project-scaffolding-skills
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | bundle-quality-rules@dgxsparklabs-marketplace               not installed           /mnt/c/Users/devic/source/marketplace/_generated/bundle-quality-rules             
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | bundle-rule-all@dgxsparklabs-marketplace                    not installed           /mnt/c/Users/devic/source/marketplace/_generated/bundle-rule-all                  
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | bundle-search-research-skills@dgxsparklabs-marketplace      not installed           /mnt/c/Users/devic/source/marketplace/_generated/bundle-search-research-skills    
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | bundle-session-management-skills@dgxsparklabs-marketplace   not installed           /mnt/c/Users/devic/source/marketplace/_generated/bundle-session-management-skills 
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | bundle-skill-all@dgxsparklabs-marketplace                   not installed           /mnt/c/Users/devic/source/marketplace/_generated/bundle-skill-all                 
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | bundle-theme-all@dgxsparklabs-marketplace                   not installed           /mnt/c/Users/devic/source/marketplace/_generated/bundle-theme-all                 
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | bundle-workflow-rules@dgxsparklabs-marketplace              not installed           /mnt/c/Users/devic/source/marketplace/_generated/bundle-workflow-rules            
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | command-example@dgxsparklabs-marketplace                    not installed           /mnt/c/Users/devic/source/marketplace/_generated/command-example                  
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | hook-example@dgxsparklabs-marketplace                       not installed           /mnt/c/Users/devic/source/marketplace/_generated/hook-example                     
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | lsp-example@dgxsparklabs-marketplace                        not installed           /mnt/c/Users/devic/source/marketplace/_generated/lsp-example                      
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | mcp-example@dgxsparklabs-marketplace                        not installed           /mnt/c/Users/devic/source/marketplace/_generated/mcp-example                      
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | monitor-example@dgxsparklabs-marketplace                    not installed           /mnt/c/Users/devic/source/marketplace/_generated/monitor-example                  
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | output-style-example@dgxsparklabs-marketplace               not installed           /mnt/c/Users/devic/source/marketplace/_generated/output-style-example             
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | rule-autonomous-persistence@dgxsparklabs-marketplace        not installed           /mnt/c/Users/devic/source/marketplace/_generated/rule-autonomous-persistence      
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | rule-blast-radius@dgxsparklabs-marketplace                  not installed           /mnt/c/Users/devic/source/marketplace/_generated/rule-blast-radius                
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | rule-code-hygiene@dgxsparklabs-marketplace                  not installed           /mnt/c/Users/devic/source/marketplace/_generated/rule-code-hygiene                
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | rule-continuous-improvement@dgxsparklabs-marketplace        not installed           /mnt/c/Users/devic/source/marketplace/_generated/rule-continuous-improvement      
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | rule-document-lifecycle@dgxsparklabs-marketplace            not installed           /mnt/c/Users/devic/source/marketplace/_generated/rule-document-lifecycle          
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | rule-document-progress@dgxsparklabs-marketplace             not installed           /mnt/c/Users/devic/source/marketplace/_generated/rule-document-progress           
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | rule-example@dgxsparklabs-marketplace                       not installed           /mnt/c/Users/devic/source/marketplace/_generated/rule-example                     
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | rule-improve-the-process@dgxsparklabs-marketplace           not installed           /mnt/c/Users/devic/source/marketplace/_generated/rule-improve-the-process         
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | rule-no-ai-credit@dgxsparklabs-marketplace                  not installed           /mnt/c/Users/devic/source/marketplace/_generated/rule-no-ai-credit                
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | rule-output-discipline@dgxsparklabs-marketplace             not installed           /mnt/c/Users/devic/source/marketplace/_generated/rule-output-discipline           
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | rule-pitfalls-discipline@dgxsparklabs-marketplace           not installed           /mnt/c/Users/devic/source/marketplace/_generated/rule-pitfalls-discipline         
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | rule-prior-art@dgxsparklabs-marketplace                     not installed           /mnt/c/Users/devic/source/marketplace/_generated/rule-prior-art                   
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | rule-python-uv@dgxsparklabs-marketplace                     not installed           /mnt/c/Users/devic/source/marketplace/_generated/rule-python-uv                   
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | rule-readable-docs@dgxsparklabs-marketplace                 not installed           /mnt/c/Users/devic/source/marketplace/_generated/rule-readable-docs               
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | rule-revert-on-failure@dgxsparklabs-marketplace             not installed           /mnt/c/Users/devic/source/marketplace/_generated/rule-revert-on-failure           
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | rule-session-resilience@dgxsparklabs-marketplace            not installed           /mnt/c/Users/devic/source/marketplace/_generated/rule-session-resilience          
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | rule-simplicity-bar@dgxsparklabs-marketplace                not installed           /mnt/c/Users/devic/source/marketplace/_generated/rule-simplicity-bar              
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | rule-stay-motivated@dgxsparklabs-marketplace                not installed           /mnt/c/Users/devic/source/marketplace/_generated/rule-stay-motivated              
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | rule-task-formation@dgxsparklabs-marketplace                not installed           /mnt/c/Users/devic/source/marketplace/_generated/rule-task-formation              
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | rule-telegram-on-complete@dgxsparklabs-marketplace          not installed           /mnt/c/Users/devic/source/marketplace/_generated/rule-telegram-on-complete        
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | rule-verification-ladder@dgxsparklabs-marketplace           not installed           /mnt/c/Users/devic/source/marketplace/_generated/rule-verification-ladder         
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | rule-verify-your-work@dgxsparklabs-marketplace              not installed           /mnt/c/Users/devic/source/marketplace/_generated/rule-verify-your-work            
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | skill-act-runner@dgxsparklabs-marketplace                   not installed           /mnt/c/Users/devic/source/marketplace/_generated/skill-act-runner                 
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | skill-check@dgxsparklabs-marketplace                        not installed           /mnt/c/Users/devic/source/marketplace/_generated/skill-check                      
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | skill-code-health-audit@dgxsparklabs-marketplace            not installed           /mnt/c/Users/devic/source/marketplace/_generated/skill-code-health-audit          
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | skill-duckduckgo-search@dgxsparklabs-marketplace            not installed           /mnt/c/Users/devic/source/marketplace/_generated/skill-duckduckgo-search          
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | skill-example@dgxsparklabs-marketplace                      not installed           /mnt/c/Users/devic/source/marketplace/_generated/skill-example                    
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | skill-expose-port@dgxsparklabs-marketplace                  not installed           /mnt/c/Users/devic/source/marketplace/_generated/skill-expose-port                
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | skill-gemini-chat@dgxsparklabs-marketplace                  not installed           /mnt/c/Users/devic/source/marketplace/_generated/skill-gemini-chat                
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | skill-github-repo-setup@dgxsparklabs-marketplace            not installed           /mnt/c/Users/devic/source/marketplace/_generated/skill-github-repo-setup          
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | skill-github-search@dgxsparklabs-marketplace                not installed           /mnt/c/Users/devic/source/marketplace/_generated/skill-github-search              
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | skill-google-drive-reader@dgxsparklabs-marketplace          not installed           /mnt/c/Users/devic/source/marketplace/_generated/skill-google-drive-reader        
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | skill-motivation@dgxsparklabs-marketplace                   not installed           /mnt/c/Users/devic/source/marketplace/_generated/skill-motivation                 
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | skill-pitfall-check@dgxsparklabs-marketplace                not installed           /mnt/c/Users/devic/source/marketplace/_generated/skill-pitfall-check              
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | skill-project-bootstrap@dgxsparklabs-marketplace            not installed           /mnt/c/Users/devic/source/marketplace/_generated/skill-project-bootstrap          
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | skill-recall-rules@dgxsparklabs-marketplace                 not installed           /mnt/c/Users/devic/source/marketplace/_generated/skill-recall-rules               
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | skill-send-email@dgxsparklabs-marketplace                   not installed           /mnt/c/Users/devic/source/marketplace/_generated/skill-send-email                 
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | skill-session-history@dgxsparklabs-marketplace              not installed           /mnt/c/Users/devic/source/marketplace/_generated/skill-session-history            
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | skill-session-wrapup@dgxsparklabs-marketplace               not installed           /mnt/c/Users/devic/source/marketplace/_generated/skill-session-wrapup             
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | skill-skill-analytics@dgxsparklabs-marketplace              not installed           /mnt/c/Users/devic/source/marketplace/_generated/skill-skill-analytics            
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | skill-skill-creator@dgxsparklabs-marketplace                not installed           /mnt/c/Users/devic/source/marketplace/_generated/skill-skill-creator              
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | skill-ssh-tunnel@dgxsparklabs-marketplace                   not installed           /mnt/c/Users/devic/source/marketplace/_generated/skill-ssh-tunnel                 
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | skill-structured-handoff@dgxsparklabs-marketplace           not installed           /mnt/c/Users/devic/source/marketplace/_generated/skill-structured-handoff         
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | skill-sync-rules@dgxsparklabs-marketplace                   not installed           /mnt/c/Users/devic/source/marketplace/_generated/skill-sync-rules                 
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | skill-telegram-notify@dgxsparklabs-marketplace              not installed           /mnt/c/Users/devic/source/marketplace/_generated/skill-telegram-notify            
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | skill-textual-tui-guide@dgxsparklabs-marketplace            not installed           /mnt/c/Users/devic/source/marketplace/_generated/skill-textual-tui-guide          
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | skill-web-scraper@dgxsparklabs-marketplace                  not installed           /mnt/c/Users/devic/source/marketplace/_generated/skill-web-scraper                
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | skill-youtube-search@dgxsparklabs-marketplace               not installed           /mnt/c/Users/devic/source/marketplace/_generated/skill-youtube-search             
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | skill-youtube-wisdom@dgxsparklabs-marketplace               not installed           /mnt/c/Users/devic/source/marketplace/_generated/skill-youtube-wisdom             
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | theme-example@dgxsparklabs-marketplace                      not installed           /mnt/c/Users/devic/source/marketplace/_generated/theme-example                    
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | === C4 END ===
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   ✅  Success - Main C4 — codex plugin list (enumeration test)
+[Verify — Codex Claims (C1-C7)/codex-verify  ] ⭐ Run Main C5 — codex plugin add skill-example@dgxsparklabs-marketplace
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   🐳  docker exec cmd=[bash --noprofile --norc -e -o pipefail /var/run/act/workflow/c5] user= workdir=
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | === C5 START ===
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | Added plugin `skill-example` from marketplace `dgxsparklabs-marketplace`.
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | Installed plugin root: /root/.codex/plugins/cache/dgxsparklabs-marketplace/skill-example/1.0.0
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | C5_EXIT=0
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | === C5 END ===
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   ✅  Success - Main C5 — codex plugin add skill-example@dgxsparklabs-marketplace
+[Verify — Codex Claims (C1-C7)/codex-verify  ] ⭐ Run Main C6+C7 — inspect Codex manifest expectations from failure output
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   🐳  docker exec cmd=[bash --noprofile --norc -e -o pipefail /var/run/act/workflow/c6c7] user= workdir=
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | === C6C7 START ===
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | Removed marketplace `dgxsparklabs-marketplace`.
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | RAW_OUTPUT_SHORTFORM:
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | Error: invalid marketplace file `/root/.codex/.tmp/marketplaces/.staging/marketplace-add-h6lgxk`: marketplace root does not contain a supported manifest
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | C6_EXIT=1
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | Added marketplace `dgxsparklabs-marketplace` from /mnt/c/Users/devic/source/marketplace.
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | Installed marketplace root: /mnt/c/Users/devic/source/marketplace
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | PLUGIN_ADD_OUTPUT:
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | Added plugin `skill-example` from marketplace `dgxsparklabs-marketplace`.
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | Installed plugin root: /root/.codex/plugins/cache/dgxsparklabs-marketplace/skill-example/1.0.0
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | LAST_STDERR: Added plugin `skill-example` from marketplace `dgxsparklabs-marketplace`.
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | Installed plugin root: /root/.codex/plugins/cache/dgxsparklabs-marketplace/skill-example/1.0.0
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | --- .codex-plugin/ ---
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | ls: cannot access '.codex-plugin/': No such file or directory
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | NO .codex-plugin/ at repo root
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | --- .claude-plugin/ ---
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | total 40
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | drwxr-xr-x  2 root root  4096 May 24 12:24 .
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | drwxr-xr-x 28 root root  4096 May 24 12:24 ..
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | -rw-rw-rw-  1 root root 29456 May 24 12:24 marketplace.json
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | --- _generated/skill-example/ ---
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | total 28
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | drwxr-xr-x  5 root root 4096 May 24 12:24 .
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | drwxr-xr-x 83 root root 4096 May 24 12:24 ..
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | drwxr-xr-x  2 root root 4096 May 24 12:24 .claude-plugin
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | drwxr-xr-x  2 root root 4096 May 24 12:24 .codex-plugin
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | drwxr-xr-x  2 root root 4096 May 24 12:24 .cursor-plugin
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | -rw-rw-rw-  1 root root 2803 May 22 00:21 README.md
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | -rw-rw-rw-  1 root root  999 May 22 00:21 SKILL.md
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | --- ~/.codex/ ---
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | /root/.codex/.tmp/marketplaces/.staging/marketplace-add-IeWz8F/scripts/install-rule.sh
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | /root/.codex/.tmp/marketplaces/.staging/marketplace-add-IeWz8F/scripts/install.sh
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | /root/.codex/.tmp/marketplaces/.staging/marketplace-add-IeWz8F/CHANGELOG.md
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | /root/.codex/.tmp/marketplaces/.staging/marketplace-add-IeWz8F/README.md
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | /root/.codex/.tmp/marketplaces/.staging/marketplace-add-IeWz8F/uv.lock
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | /root/.codex/.tmp/marketplaces/.staging/marketplace-add-IeWz8F/CONTRIBUTING.md
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | /root/.codex/.tmp/marketplaces/.staging/marketplace-add-IeWz8F/AGENTS.md
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | /root/.codex/.tmp/marketplaces/.staging/marketplace-add-IeWz8F/install.py
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | /root/.codex/.tmp/marketplaces/.staging/marketplace-add-IeWz8F/catalog.toml
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | /root/.codex/.tmp/marketplaces/.staging/marketplace-add-IeWz8F/pyproject.toml
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | /root/.codex/.tmp/marketplaces/.staging/marketplace-add-IeWz8F/.github/workflows/ci.yml
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | /root/.codex/.tmp/marketplaces/.staging/marketplace-add-IeWz8F/tests/run-ci-local.sh
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | /root/.codex/.tmp/marketplaces/.staging/marketplace-add-IeWz8F/tests/test_marketplace.py
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | /root/.codex/.tmp/marketplaces/.staging/marketplace-add-IeWz8F/rules/verification-ladder/README.md
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | /root/.codex/.tmp/marketplaces/.staging/marketplace-add-IeWz8F/rules/verification-ladder/rule.md
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | /root/.codex/.tmp/marketplaces/.staging/marketplace-add-IeWz8F/rules/verification-ladder/formats/cursor.md
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | /root/.codex/.tmp/marketplaces/.staging/marketplace-add-IeWz8F/rules/verification-ladder/formats/windsurf.md
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | /root/.codex/.tmp/marketplaces/.staging/marketplace-add-IeWz8F/rules/verification-ladder/install.sh
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | /root/.codex/.tmp/marketplaces/.staging/marketplace-add-IeWz8F/rules/output-discipline/README.md
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | /root/.codex/.tmp/marketplaces/.staging/marketplace-add-IeWz8F/rules/output-discipline/rule.md
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | /root/.codex/.tmp/marketplaces/.staging/marketplace-add-IeWz8F/rules/output-discipline/formats/cursor.md
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | /root/.codex/.tmp/marketplaces/.staging/marketplace-add-IeWz8F/rules/output-discipline/formats/windsurf.md
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | /root/.codex/.tmp/marketplaces/.staging/marketplace-add-IeWz8F/rules/output-discipline/install.sh
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | /root/.codex/.tmp/marketplaces/.staging/marketplace-add-IeWz8F/rules/prior-art/README.md
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | /root/.codex/.tmp/marketplaces/.staging/marketplace-add-IeWz8F/rules/prior-art/rule.md
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | /root/.codex/.tmp/marketplaces/.staging/marketplace-add-IeWz8F/rules/prior-art/formats/cursor.md
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | /root/.codex/.tmp/marketplaces/.staging/marketplace-add-IeWz8F/rules/prior-art/formats/windsurf.md
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | /root/.codex/.tmp/marketplaces/.staging/marketplace-add-IeWz8F/rules/prior-art/install.sh
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | /root/.codex/.tmp/marketplaces/.staging/marketplace-add-IeWz8F/rules/session-resilience/README.md
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | /root/.codex/.tmp/marketplaces/.staging/marketplace-add-IeWz8F/rules/session-resilience/rule.md
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | NO ~/.codex files
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | 
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | [plugins."skill-example@dgxsparklabs-marketplace"]
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | enabled = true
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | 
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | [marketplaces.dgxsparklabs-marketplace]
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | last_updated = "2026-05-24T12:25:26Z"
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | source_type = "local"
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | source = "/mnt/c/Users/devic/source/marketplace"
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | === C6C7 END ===
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   ✅  Success - Main C6+C7 — inspect Codex manifest expectations from failure output
+[Verify — Codex Claims (C1-C7)/codex-verify  ] ⭐ Run Main Final cleanup
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   🐳  docker exec cmd=[bash --noprofile --norc -e -o pipefail /var/run/act/workflow/19] user= workdir=
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   | Removed marketplace `dgxsparklabs-marketplace`.
+[Verify — Codex Claims (C1-C7)/codex-verify  ]   ✅  Success - Main Final cleanup
+[Verify — Codex Claims (C1-C7)/codex-verify  ] Cleaning up container for job codex-verify
+[Verify — Codex Claims (C1-C7)/codex-verify  ] 🏁  Job succeeded
+
+level=info msg=️📣 A newer version of 'act' is available - consider ugrading to 0.2.88.
+level=error msg=🚨 This version of 'act' is vulnerable to CVE-2026-34041 and CVE-2026-34042 - please upgrade to 0.2.86 or later.

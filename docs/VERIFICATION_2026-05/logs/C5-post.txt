@@ -1,0 +1,14 @@
+# C5 — Post-Implementation
+
+Claim: codex plugin add skill-example@dgxsparklabs-marketplace (per-plugin install)
+Status: PASS (exit 0)
+Date: 2026-05-24
+Log: post-implementation-codex.log
+
+Evidence:
+  C5_EXIT=0
+
+Root cause of prior FAIL: .claude-plugin/plugin.json not accepted by Codex.
+Fix: generator Phase 1.5 now emits .codex-plugin/plugin.json per plugin,
+gated on CodexPlatform.supports. codex plugin add reads that manifest and
+finds name/version/description + skills pointer — install succeeds.

@@ -1,0 +1,20 @@
+# G2 — Post-Implementation
+
+Claim: gemini extensions install https://github.com/DgxSparkLabs/marketplace --consent (GitHub URL, no ref)
+Status: STILL FAIL (exit 1) — as expected until branch is pushed to GitHub
+Date: 2026-05-24
+Log: post-implementation-gemini.log
+
+Evidence:
+  G2_EXIT=1
+  Configuration file not found at /tmp/gemini-extensionP2IeYM/gemini-extension.json
+
+Analysis: The generator now emits gemini-extension.json at repo root (Phase 4.5).
+The test workflow (verify-gemini.yml) runs against the LOCAL checkout; however
+gemini extensions install <github-url> clones FROM GitHub. Since the branch has
+not been pushed, GitHub still serves the old main branch without the root-level
+gemini-extension.json. This test will pass once the branch is pushed and --ref
+points to a branch with the root-level file.
+
+The compat-extension.yml gemini-github-url-install CI job will verify this in
+real GHA runs (where the branch IS the current ref).
