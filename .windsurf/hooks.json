@@ -1,0 +1,15 @@
+{
+  "description": "Reference example hook. Prepends a timestamp marker to every user prompt so Claude sees session context.",
+  "hooks": {
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "printf '[Lab Notebook context: timestamp=%s]\\n' \"$(date -u +%FT%TZ)\""
+          }
+        ]
+      }
+    ]
+  }
+}

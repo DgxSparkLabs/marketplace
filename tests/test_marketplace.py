@@ -860,6 +860,27 @@ class TestAgentsMirror(unittest.TestCase):
         )
 
 
+# ─── TestWindsurfHooksMirror ──────────────────────────────────────────────────
+
+class TestWindsurfHooksMirror(unittest.TestCase):
+    """Windsurf hooks at .windsurf/hooks.json (Unit 5 / A10).
+
+    Per docs.windsurf.com/windsurf/cascade/hooks (2026-05-25): Windsurf reads
+    .windsurf/hooks.json at the workspace root (no hooks/ subdir, unlike
+    Gemini). Single hook plugin today; multi-plugin merge deferred.
+    """
+
+    def test_windsurf_hooks_json_exists(self):
+        windsurf = next(p for p in PLATFORMS.values() if isinstance(p, WindsurfPlatform))
+        hooks_json = windsurf.mirror_directory / "hooks.json"
+        self.assertTrue(hooks_json.exists(), ".windsurf/hooks.json missing")
+        data = json.loads(hooks_json.read_text(encoding="utf-8"))
+        self.assertIn(
+            "hooks", data,
+            ".windsurf/hooks.json must contain top-level 'hooks' key",
+        )
+
+
 # ─── TestCodexAgentsMirror / TestMdToTomlConverter ───────────────────────────
 
 class TestCodexAgentsMirror(unittest.TestCase):

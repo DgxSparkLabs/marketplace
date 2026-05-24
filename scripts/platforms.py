@@ -333,24 +333,37 @@ class CursorPlatform:
 class WindsurfPlatform:
     """Windsurf IDE platform.
 
-    Windsurf detects .windsurf/rules/<name>.md files on workspace open.
-    No headless install command — file detection only.
+    Windsurf detects .windsurf/rules/<name>.md files on workspace open and
+    (Unit 5) reads .windsurf/hooks.json natively per
+    docs.windsurf.com/windsurf/cascade/hooks (2026-05-25). No headless
+    install command — file detection only.
     """
 
     name = "windsurf"
     mirror_directory: Path = REPO_ROOT / ".windsurf"
-    supports: set[type[Construct]] = {RuleConstruct}
+    supports: set[type[Construct]] = {RuleConstruct, HookConstruct}
 
     def emit(self, construct: Construct, name: str) -> None:
-        rules_dir = self.mirror_directory / "rules"
-        rules_dir.mkdir(parents=True, exist_ok=True)
-        src_rule = construct.source_directory / name
-        # Prefer platform-specific format file if present; fall back to rule.md
-        fmt_file = src_rule / "formats" / "windsurf.md"
-        if fmt_file.exists():
-            shutil.copy(fmt_file, rules_dir / f"{name}.md")
-        else:
-            shutil.copy(src_rule / "rule.md", rules_dir / f"{name}.md")
+        if isinstance(construct, RuleConstruct):
+            rules_dir = self.mirror_directory / "rules"
+            rules_dir.mkdir(parents=True, exist_ok=True)
+            src_rule = construct.source_directory / name
+            # Prefer platform-specific format file if present; fall back to rule.md
+            fmt_file = src_rule / "formats" / "windsurf.md"
+            if fmt_file.exists():
+                shutil.copy(fmt_file, rules_dir / f"{name}.md")
+            else:
+                shutil.copy(src_rule / "rule.md", rules_dir / f"{name}.md")
+        elif isinstance(construct, HookConstruct):
+            # TODO: with multiple hook plugins, this last-writer-wins overwrite.
+            # Add merge semantics (concatenate hooks arrays) when a second hook
+            # plugin lands. Windsurf reads hooks.json directly at .windsurf/
+            # root (no hooks/ subdir, unlike Gemini).
+            self.mirror_directory.mkdir(parents=True, exist_ok=True)
+            shutil.copy(
+                construct.source_directory / name / "hooks" / "hooks.json",
+                self.mirror_directory / "hooks.json",
+            )
 
     def build_plugin_json(self, construct: Construct, name: str) -> dict:
         # Windsurf has no plugin manifest format; return {} to skip emission.
