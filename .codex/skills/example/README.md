@@ -1,52 +1,56 @@
-# example-mcp
+# example-hook
 
-Reference plugin for the **MCP server** (Model Context Protocol) construct type. Copy this directory to scaffold your own.
+Reference plugin for the **hook** construct type. Copy this directory to scaffold your own.
 
 ## What it does
 
-Registers an MCP server named `example-fetch` that wraps `mcp-server-fetch` (the official fetch MCP, installed on demand via `uvx`). Once the plugin is enabled, the fetch tools become available in every session.
+Installs a `UserPromptSubmit` hook that prepends a timestamp marker to every prompt the user sends. Claude sees it; the user does not. Demonstrates the hook output-prepend pattern.
 
 Install:
 ```
-/plugin install example-mcp@dgxsparklabs-marketplace
+/plugin install example-hook@dgxsparklabs-marketplace
 ```
 
-After install, MCP tools like `mcp__example-fetch__fetch` become available.
+After install, every prompt you type gets a `[Lab Notebook context: timestamp=...]` line prepended invisibly.
 
 ## File-by-file walkthrough
 
 ```
-example-mcp/
-├── .claude-plugin/plugin.json     ← manifest with "mcpServers": "./mcp-config.json"
-├── mcp-config.json                ← server definitions
+example-hook/
+├── .claude-plugin/plugin.json    ← minimal manifest (no "hooks" field needed)
+├── hooks/
+│   └── hooks.json                ← hook configuration (auto-discovered)
 └── README.md
 ```
 
-### `mcp-config.json`
+**Auto-discovery:** Claude Code automatically picks up `hooks/hooks.json` in the plugin root — you do NOT need to declare a `hooks` field in `plugin.json`. The file at `hooks/hooks.json` is discovered by convention.
 
-A JSON file with an `mcpServers` object. Each key is a server name (becomes the prefix on tool names). Each value is the launch config:
+### `hooks/hooks.json` structure
 
-- `command` — the executable
-- `args` — array of arguments
-- Optional: `env` — environment variables for the server process
+The outer object has two keys:
 
-The example uses `uvx mcp-server-fetch` — `uvx` runs Python packages without installing them globally. You can also use `npx`, a path to a local script, or any executable that speaks the MCP protocol over stdio.
+- `description` — what the hook does (shown in plugin details)
+- `hooks` — object mapping lifecycle events to handler arrays
 
-## When to use MCP
+Lifecycle events include `UserPromptSubmit`, `PreToolUse`, `PostToolUse`, `SessionStart`, `Stop`, `SubagentStop`, etc. Each handler is one of:
 
-MCP servers expose tools, resources, and prompts to Claude. Use MCP when:
-- You need a stateful service (database, API session, headless browser).
-- The capability is reusable across many skills/commands.
-- There's an existing MCP server you can wrap (don't reinvent fetch, GitHub, etc.).
+- `type: "command"` — runs a shell command; stdout becomes the hook's contribution to context (for input-stage hooks like `UserPromptSubmit`)
+- `type: "http"` — POSTs the event to a URL; response body becomes the contribution
+- `type: "prompt"` — only valid for `Stop` and `SubagentStop` events
 
-For simple one-off tools, a skill calling a script is lighter weight.
+The optional `matcher` field on a handler block scopes it (e.g., `"matcher": "Edit|Write|MultiEdit"` for PreToolUse hooks that only fire on those specific tools).
 
-## To make your own MCP plugin from this template
+Multiple plugins can register hooks for the same event — they all fire and their outputs compose.
 
-1. `cp -r examples/example-mcp mcp-servers/my-mcp`
-2. Edit `.claude-plugin/plugin.json` and `mcp-config.json`.
-3. If wrapping an existing MCP server, just change `command` and `args`. If writing one, point `command` to your server script.
-4. Test the server standalone first (`uvx your-server`) to confirm it speaks MCP correctly.
-5. `uv run scripts/generate_manifest.py` and commit.
+## Hooks vs everything else
 
-See `docs/ADDING_AN_MCP_SERVER.md` for the full launch-config schema.
+Hooks are for **side-effecting at lifecycle moments** (log, enforce, inject context). If you need behavior that lives between prompts and tool calls, hooks are right. For behavioral guidance Claude follows, use rules. For domain expertise, use skills.
+
+## To make your own hook from this template
+
+1. `cp -r examples/example-hook hooks/my-hook`
+2. Edit `.claude-plugin/plugin.json` and `hooks/hooks.json`.
+3. Test the shell command standalone first — if it fails or hangs, the hook will too.
+4. `uv run scripts/generate_manifest.py` and commit.
+
+See `docs/ADDING_A_HOOK.md` for the full list of supported events and field semantics.

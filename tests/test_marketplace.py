@@ -43,8 +43,9 @@ from constructs import (
     CONSTRUCTS,
     RuleConstruct,
     SkillConstruct,
+    ThemeConstruct,
 )
-from platforms import PLATFORMS
+from platforms import PLATFORMS, AgentsPlatform, CodexPlatform, CursorPlatform
 from utils import CATALOG, MARKETPLACE_JSON, scan_source_dir
 
 MARKETPLACE_TOML = REPO_ROOT / "MARKETPLACE.toml"
@@ -589,6 +590,323 @@ class TestActivateScripts(unittest.TestCase):
                 self.assertIn(
                     "set -euo pipefail", text,
                     f"rule-{name}/activate.sh missing 'set -euo pipefail'",
+                )
+
+
+# ─── TestPerPlatformManifests ─────────────────────────────────────────────────
+
+class TestPerPlatformManifests(unittest.TestCase):
+    """Per-platform per-plugin manifests — contract + integration tests (Step 11).
+
+    Verifies:
+    - .codex-plugin/plugin.json exists for plugins whose construct is in CodexPlatform.supports
+    - .codex-plugin/plugin.json does NOT exist for plugins NOT in CodexPlatform.supports
+    - .cursor-plugin/plugin.json exists for plugins in CursorPlatform.supports
+    - .cursor-plugin/plugin.json does NOT exist for constructs outside CursorPlatform.supports
+    - All emitted per-platform manifests parse as valid JSON with required fields
+    """
+
+    def test_codex_plugin_json_emitted_for_supported_constructs(self):
+        """_generated/<plugin>/.codex-plugin/plugin.json must exist iff CodexPlatform supports the construct."""
+        codex = next(p for p in PLATFORMS.values() if isinstance(p, CodexPlatform))
+        for construct in CONSTRUCTS.values():
+            names = scan_source_dir(construct.source_directory)
+            if not names:
+                continue
+            expected_present = type(construct) in codex.supports
+            for name in names:
+                plugin_name = f"{construct.prefix}-{name}"
+                manifest_path = REPO_ROOT / "_generated" / plugin_name / ".codex-plugin" / "plugin.json"
+                with self.subTest(plugin=plugin_name):
+                    if expected_present:
+                        self.assertTrue(
+                            manifest_path.exists(),
+                            f"{plugin_name}: .codex-plugin/plugin.json missing "
+                            f"(construct {construct.prefix} is in CodexPlatform.supports)",
+                        )
+                    else:
+                        self.assertFalse(
+                            manifest_path.exists(),
+                            f"{plugin_name}: .codex-plugin/plugin.json should NOT exist "
+                            f"(construct {construct.prefix} is NOT in CodexPlatform.supports)",
+                        )
+
+    def test_codex_plugin_json_theme_not_emitted(self):
+        """ThemeConstruct is not in CodexPlatform.supports; no .codex-plugin/ for themes."""
+        codex = next(p for p in PLATFORMS.values() if isinstance(p, CodexPlatform))
+        self.assertNotIn(
+            ThemeConstruct, codex.supports,
+            "ThemeConstruct should not be in CodexPlatform.supports",
+        )
+        theme = next(c for c in CONSTRUCTS.values() if isinstance(c, ThemeConstruct))
+        for name in scan_source_dir(theme.source_directory):
+            manifest_path = REPO_ROOT / "_generated" / f"theme-{name}" / ".codex-plugin" / "plugin.json"
+            with self.subTest(theme=name):
+                self.assertFalse(
+                    manifest_path.exists(),
+                    f"theme-{name}/.codex-plugin/plugin.json must not exist (Codex doesn't support themes)",
+                )
+
+    def test_cursor_plugin_json_emitted_for_supported_constructs(self):
+        """_generated/<plugin>/.cursor-plugin/plugin.json must exist iff CursorPlatform supports the construct."""
+        cursor = next(p for p in PLATFORMS.values() if isinstance(p, CursorPlatform))
+        for construct in CONSTRUCTS.values():
+            names = scan_source_dir(construct.source_directory)
+            if not names:
+                continue
+            expected_present = type(construct) in cursor.supports
+            for name in names:
+                plugin_name = f"{construct.prefix}-{name}"
+                manifest_path = REPO_ROOT / "_generated" / plugin_name / ".cursor-plugin" / "plugin.json"
+                with self.subTest(plugin=plugin_name):
+                    if expected_present:
+                        self.assertTrue(
+                            manifest_path.exists(),
+                            f"{plugin_name}: .cursor-plugin/plugin.json missing "
+                            f"(construct {construct.prefix} is in CursorPlatform.supports)",
+                        )
+                    else:
+                        self.assertFalse(
+                            manifest_path.exists(),
+                            f"{plugin_name}: .cursor-plugin/plugin.json should NOT exist "
+                            f"(construct {construct.prefix} is NOT in CursorPlatform.supports)",
+                        )
+
+    def test_codex_plugin_json_valid_schema(self):
+        """Every emitted .codex-plugin/plugin.json must parse and have required Codex fields."""
+        codex = next(p for p in PLATFORMS.values() if isinstance(p, CodexPlatform))
+        for construct in CONSTRUCTS.values():
+            if type(construct) not in codex.supports:
+                continue
+            for name in scan_source_dir(construct.source_directory):
+                plugin_name = f"{construct.prefix}-{name}"
+                manifest_path = REPO_ROOT / "_generated" / plugin_name / ".codex-plugin" / "plugin.json"
+                with self.subTest(plugin=plugin_name):
+                    data = json.loads(manifest_path.read_text(encoding="utf-8"))
+                    for required in ("name", "version", "description"):
+                        self.assertIn(
+                            required, data,
+                            f"{plugin_name}/.codex-plugin/plugin.json missing '{required}' field",
+                        )
+                    self.assertEqual(
+                        data["name"], plugin_name,
+                        f"{plugin_name}/.codex-plugin/plugin.json name mismatch",
+                    )
+
+    def test_cursor_plugin_json_valid_schema(self):
+        """Every emitted .cursor-plugin/plugin.json must parse and have required Cursor fields."""
+        cursor = next(p for p in PLATFORMS.values() if isinstance(p, CursorPlatform))
+        for construct in CONSTRUCTS.values():
+            if type(construct) not in cursor.supports:
+                continue
+            for name in scan_source_dir(construct.source_directory):
+                plugin_name = f"{construct.prefix}-{name}"
+                manifest_path = REPO_ROOT / "_generated" / plugin_name / ".cursor-plugin" / "plugin.json"
+                with self.subTest(plugin=plugin_name):
+                    data = json.loads(manifest_path.read_text(encoding="utf-8"))
+                    self.assertIn(
+                        "name", data,
+                        f"{plugin_name}/.cursor-plugin/plugin.json missing 'name' field",
+                    )
+                    self.assertEqual(
+                        data["name"], plugin_name,
+                        f"{plugin_name}/.cursor-plugin/plugin.json name mismatch",
+                    )
+
+
+# ─── TestRootLevelManifests ───────────────────────────────────────────────────
+
+class TestRootLevelManifests(unittest.TestCase):
+    """Root-level generated manifests — integration tests (Step 11).
+
+    Verifies:
+    - gemini-extension.json exists at repo root and has valid JSON with required fields
+    - .cursor-plugin/marketplace.json exists at repo root and has valid JSON with plugins array
+    """
+
+    def test_root_gemini_extension_json_exists(self):
+        """gemini-extension.json must exist at repo root (enables GitHub URL install)."""
+        self.assertTrue(
+            (REPO_ROOT / "gemini-extension.json").exists(),
+            "gemini-extension.json missing at repo root — required for "
+            "gemini extensions install https://github.com/... --consent",
+        )
+
+    def test_root_gemini_extension_json_valid(self):
+        """Root gemini-extension.json must parse and carry required fields."""
+        path = REPO_ROOT / "gemini-extension.json"
+        data = json.loads(path.read_text(encoding="utf-8"))
+        for required in ("name", "version", "description"):
+            with self.subTest(field=required):
+                self.assertIn(
+                    required, data,
+                    f"gemini-extension.json missing '{required}' field",
+                )
+
+    def test_root_gemini_extension_json_matches_gemini_dir_copy(self):
+        """Root gemini-extension.json must be byte-identical to .gemini/gemini-extension.json."""
+        root_copy = (REPO_ROOT / "gemini-extension.json").read_bytes()
+        mirror_copy = (REPO_ROOT / ".gemini" / "gemini-extension.json").read_bytes()
+        self.assertEqual(
+            root_copy, mirror_copy,
+            "Root gemini-extension.json differs from .gemini/gemini-extension.json — "
+            "they must be byte-identical (generator should shutil.copy2 the mirror)",
+        )
+
+    def test_cursor_marketplace_json_exists(self):
+        """.cursor-plugin/marketplace.json must exist at repo root (enables Cursor team-import)."""
+        self.assertTrue(
+            (REPO_ROOT / ".cursor-plugin" / "marketplace.json").exists(),
+            ".cursor-plugin/marketplace.json missing at repo root — required for "
+            "Cursor team-marketplace import (Dashboard → Settings → Plugins → Import)",
+        )
+
+    def test_cursor_marketplace_json_valid(self):
+        """.cursor-plugin/marketplace.json must parse and have name + plugins array."""
+        path = REPO_ROOT / ".cursor-plugin" / "marketplace.json"
+        data = json.loads(path.read_text(encoding="utf-8"))
+        self.assertIn("name", data, ".cursor-plugin/marketplace.json missing 'name' field")
+        self.assertIn("plugins", data, ".cursor-plugin/marketplace.json missing 'plugins' array")
+        self.assertIsInstance(data["plugins"], list)
+        self.assertGreater(len(data["plugins"]), 0, ".cursor-plugin/marketplace.json has empty plugins list")
+
+    def test_cursor_marketplace_json_entries_have_required_fields(self):
+        """Every entry in .cursor-plugin/marketplace.json must have name and source."""
+        path = REPO_ROOT / ".cursor-plugin" / "marketplace.json"
+        data = json.loads(path.read_text(encoding="utf-8"))
+        for entry in data["plugins"]:
+            with self.subTest(plugin=entry.get("name", "<missing>")):
+                self.assertIn("name", entry)
+                self.assertIn("source", entry)
+                self.assertTrue(entry["source"].startswith("./"))
+
+    def test_cursor_marketplace_lists_cursor_supported_plugins(self):
+        """Every construct in CursorPlatform.supports must have entries in .cursor-plugin/marketplace.json."""
+        cursor = next(p for p in PLATFORMS.values() if isinstance(p, CursorPlatform))
+        path = REPO_ROOT / ".cursor-plugin" / "marketplace.json"
+        data = json.loads(path.read_text(encoding="utf-8"))
+        listed_names = {e["name"] for e in data["plugins"]}
+        for construct in CONSTRUCTS.values():
+            if type(construct) not in cursor.supports:
+                continue
+            for name in scan_source_dir(construct.source_directory):
+                plugin_name = f"{construct.prefix}-{name}"
+                with self.subTest(plugin=plugin_name):
+                    self.assertIn(
+                        plugin_name, listed_names,
+                        f"{plugin_name} missing from .cursor-plugin/marketplace.json "
+                        f"(construct {construct.prefix} is in CursorPlatform.supports)",
+                    )
+
+
+# ─── TestAgentsMirror ─────────────────────────────────────────────────────────
+
+class TestAgentsMirror(unittest.TestCase):
+    """AgentsPlatform .agents/ mirror — integration tests (Step 11).
+
+    Verifies:
+    - .agents/skills/<name>/SKILL.md exists for every source skill
+    - No .claude-plugin/ leaked into .agents/ mirror
+    - No .codex-plugin/ leaked into .agents/ mirror
+    """
+
+    def test_agents_skills_mirror_exists(self):
+        """.agents/skills/<name>/SKILL.md must exist for every source skill."""
+        agents = next(p for p in PLATFORMS.values() if isinstance(p, AgentsPlatform))
+        skill = next(c for c in CONSTRUCTS.values() if isinstance(c, SkillConstruct))
+        for name in scan_source_dir(skill.source_directory):
+            with self.subTest(skill=name):
+                skill_md = agents.mirror_directory / "skills" / name / "SKILL.md"
+                self.assertTrue(
+                    skill_md.exists(),
+                    f".agents/skills/{name}/SKILL.md missing — "
+                    "Windsurf/Cursor/Devin can't discover this skill",
+                )
+
+    def test_agents_skills_no_claude_plugin_leak(self):
+        """No .claude-plugin/ directory must appear under .agents/skills/."""
+        agents = next(p for p in PLATFORMS.values() if isinstance(p, AgentsPlatform))
+        skills_root = agents.mirror_directory / "skills"
+        if not skills_root.exists():
+            self.skipTest(".agents/skills/ does not exist")
+        leaked = [
+            str(p.relative_to(agents.mirror_directory))
+            for p in skills_root.rglob(".claude-plugin")
+            if p.is_dir()
+        ]
+        self.assertEqual(
+            leaked, [],
+            f".claude-plugin/ leaked into .agents/ mirror: {leaked}",
+        )
+
+    def test_agents_skills_no_codex_plugin_leak(self):
+        """No .codex-plugin/ directory must appear under .agents/skills/."""
+        agents = next(p for p in PLATFORMS.values() if isinstance(p, AgentsPlatform))
+        skills_root = agents.mirror_directory / "skills"
+        if not skills_root.exists():
+            self.skipTest(".agents/skills/ does not exist")
+        leaked = [
+            str(p.relative_to(agents.mirror_directory))
+            for p in skills_root.rglob(".codex-plugin")
+            if p.is_dir()
+        ]
+        self.assertEqual(
+            leaked, [],
+            f".codex-plugin/ leaked into .agents/ mirror: {leaked}",
+        )
+
+
+# ─── TestMirrorHygiene ────────────────────────────────────────────────────────
+
+class TestMirrorHygiene(unittest.TestCase):
+    """Mirror directory hygiene — negative tests (Step 11, Issue 8).
+
+    Verifies no cross-platform manifest directories leaked into mirror dirs.
+    """
+
+    MIRROR_DIRS_TO_CHECK = [".codex", ".gemini", ".devin", ".agents"]
+
+    def _find_leaked_dirs(self, mirror_root: Path, leak_pattern: str) -> list[str]:
+        """Walk mirror_root and return paths of any leak_pattern subdirs."""
+        if not mirror_root.exists():
+            return []
+        return [
+            str(p.relative_to(REPO_ROOT))
+            for p in mirror_root.rglob(leak_pattern)
+            if p.is_dir()
+        ]
+
+    def test_no_claude_plugin_in_mirror_dirs(self):
+        """No .claude-plugin/ must appear inside .codex/, .gemini/, .devin/, .agents/ mirrors."""
+        for mirror_name in self.MIRROR_DIRS_TO_CHECK:
+            mirror_root = REPO_ROOT / mirror_name
+            with self.subTest(mirror=mirror_name):
+                leaked = self._find_leaked_dirs(mirror_root, ".claude-plugin")
+                self.assertEqual(
+                    leaked, [],
+                    f".claude-plugin/ leaked into {mirror_name}/: {leaked}",
+                )
+
+    def test_no_codex_plugin_in_mirror_dirs(self):
+        """No .codex-plugin/ must appear inside .gemini/, .devin/, .agents/ mirrors."""
+        for mirror_name in [".gemini", ".devin", ".agents"]:
+            mirror_root = REPO_ROOT / mirror_name
+            with self.subTest(mirror=mirror_name):
+                leaked = self._find_leaked_dirs(mirror_root, ".codex-plugin")
+                self.assertEqual(
+                    leaked, [],
+                    f".codex-plugin/ leaked into {mirror_name}/: {leaked}",
+                )
+
+    def test_no_cursor_plugin_in_mirror_dirs(self):
+        """No .cursor-plugin/ must appear inside .codex/, .gemini/, .devin/, .agents/ mirrors."""
+        for mirror_name in self.MIRROR_DIRS_TO_CHECK:
+            mirror_root = REPO_ROOT / mirror_name
+            with self.subTest(mirror=mirror_name):
+                leaked = self._find_leaked_dirs(mirror_root, ".cursor-plugin")
+                self.assertEqual(
+                    leaked, [],
+                    f".cursor-plugin/ leaked into {mirror_name}/: {leaked}",
                 )
 
 
