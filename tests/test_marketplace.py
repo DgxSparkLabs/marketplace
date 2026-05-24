@@ -41,6 +41,8 @@ sys.path.insert(0, str(REPO_ROOT / "scripts"))
 from bundles import BundleMember, load_bundles
 from constructs import (
     CONSTRUCTS,
+    AgentConstruct,
+    HookConstruct,
     RuleConstruct,
     SkillConstruct,
     ThemeConstruct,
@@ -856,6 +858,34 @@ class TestAgentsMirror(unittest.TestCase):
             leaked, [],
             f".codex-plugin/ leaked into .agents/ mirror: {leaked}",
         )
+
+
+# ─── TestCursorAgentsMirror ──────────────────────────────────────────────────
+
+class TestCursorAgentsMirror(unittest.TestCase):
+    """Cursor workspace-level sub-agents at .cursor/agents/<n>.md (Unit 2 / A2).
+
+    Cursor reads .cursor/agents/<n>.md natively per cursor.com/docs/agent/subagents
+    (2026-05-25). One AgentConstruct plugin can contain multiple sub-agent .md
+    files; each lands in .cursor/agents/.
+    """
+
+    def test_cursor_agents_mirror_exists(self):
+        """.cursor/agents/<n>.md must exist for every source sub-agent .md."""
+        cursor = next(p for p in PLATFORMS.values() if isinstance(p, CursorPlatform))
+        agent = next(c for c in CONSTRUCTS.values() if isinstance(c, AgentConstruct))
+        for name in scan_source_dir(agent.source_directory):
+            src_agents = agent.source_directory / name / "agents"
+            if not src_agents.exists():
+                continue
+            for agent_md in sorted(src_agents.glob("*.md")):
+                with self.subTest(agent_plugin=name, agent_file=agent_md.name):
+                    mirrored = cursor.mirror_directory / "agents" / agent_md.name
+                    self.assertTrue(
+                        mirrored.exists(),
+                        f".cursor/agents/{agent_md.name} missing for source "
+                        f"agents/{name}/agents/{agent_md.name}",
+                    )
 
 
 # ─── TestAgentsRulesMirror ────────────────────────────────────────────────────

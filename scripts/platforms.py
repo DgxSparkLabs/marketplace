@@ -47,6 +47,7 @@ from constructs import (
 from utils import (
     REPO_ROOT,
     _frontmatter,
+    _load_plugin_json,
     _marketplace_description,
     _marketplace_name,
     _marketplace_version,
@@ -217,18 +218,28 @@ class GeminiPlatform:
 class CursorPlatform:
     """Cursor IDE platform.
 
-    Cursor detects .cursor/rules/<name>.md files on workspace open and reads
-    .agents/skills/ for skills. Team-marketplace import requires a root-level
-    .cursor-plugin/marketplace.json (emitted by generator Phase 6).
+    Cursor detects .cursor/rules/<name>.md files on workspace open, reads
+    .agents/skills/ for skills, and (Unit 2) reads .cursor/agents/<n>.md
+    for workspace-level sub-agents. Team-marketplace import requires a
+    root-level .cursor-plugin/marketplace.json (emitted by generator Phase 6).
 
-    build_plugin_json returns a minimal manifest — Cursor's plugin.json schema
-    only requires ``name``; everything else is auto-discovered from default
-    subdirs (skills/, rules/, agents/, ...).
+    Per Unit 2 (D-10/D-11), ``supports`` now covers six construct types:
+    Rule, Skill, Agent, Command, Hook, MCP. Cursor's plugin manifest schema
+    (cursor.com/docs/reference/plugins, 2026-05-25) supports the pointer
+    fields ``agents``, ``commands``, ``hooks``, ``mcpServers`` and auto-
+    discovers from the matching subdirs inside an installed plugin. So
+    Command/Hook/MCP need no Phase 3 mirror branch — they are surfaced
+    purely through the per-plugin .cursor-plugin/plugin.json (Phase 1.5).
+    AgentConstruct is the exception: .cursor/agents/<n>.md is a workspace-
+    level file (read before any plugin install) so emit copies it directly.
     """
 
     name = "cursor"
     mirror_directory: Path = REPO_ROOT / ".cursor"
-    supports: set[type[Construct]] = {RuleConstruct, SkillConstruct}
+    supports: set[type[Construct]] = {
+        RuleConstruct, SkillConstruct, AgentConstruct,
+        CommandConstruct, HookConstruct, MCPConstruct,
+    }
 
     def emit(self, construct: Construct, name: str) -> None:
         if isinstance(construct, RuleConstruct):
@@ -241,11 +252,41 @@ class CursorPlatform:
                 shutil.copy(fmt_file, rules_dir / f"{name}.md")
             else:
                 shutil.copy(src_rule / "rule.md", rules_dir / f"{name}.md")
+        elif isinstance(construct, AgentConstruct):
+            # Workspace-level sub-agents at .cursor/agents/<n>.md per
+            # cursor.com/docs/agent/subagents (2026-05-25). One plugin can
+            # contain multiple sub-agent .md files — copy them all.
+            agents_dir = self.mirror_directory / "agents"
+            agents_dir.mkdir(parents=True, exist_ok=True)
+            src_agents = construct.source_directory / name / "agents"
+            if src_agents.exists():
+                for agent_md in sorted(src_agents.glob("*.md")):
+                    shutil.copy(agent_md, agents_dir / agent_md.name)
+        # Command/Hook/MCP: no mirror branch — surfaced through Phase 1.5
+        # .cursor-plugin/plugin.json auto-discovery only.
         # Skills are served from .agents/ (AgentsPlatform); no .cursor/skills/ needed.
 
     def build_plugin_json(self, construct: Construct, name: str) -> dict:
-        # Cursor only requires `name`; everything else auto-discovers from subdirs.
-        return {"name": f"{construct.prefix}-{name}"}
+        # Per cursor.com/docs/reference/plugins (2026-05-25): name is required;
+        # optional pointer fields ``agents``, ``commands``, ``hooks``,
+        # ``mcpServers`` make installer intent explicit even though Cursor
+        # auto-discovers from default subdirs inside an installed plugin.
+        manifest: dict = {"name": f"{construct.prefix}-{name}"}
+        if isinstance(construct, AgentConstruct):
+            manifest["agents"] = "./agents/"
+        elif isinstance(construct, CommandConstruct):
+            manifest["commands"] = "./commands/"
+        elif isinstance(construct, HookConstruct):
+            manifest["hooks"] = "./hooks/hooks.json"
+        elif isinstance(construct, MCPConstruct):
+            # Reuse the source plugin.json's mcpServers value (path or inline dict),
+            # mirroring the Codex pattern above.
+            source_pj = _load_plugin_json(
+                construct.source_directory / name / ".claude-plugin" / "plugin.json"
+            )
+            manifest["mcpServers"] = source_pj["mcpServers"]
+        # RuleConstruct + SkillConstruct: name-only minimal manifest (existing behavior).
+        return manifest
 
 
 class WindsurfPlatform:
