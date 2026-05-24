@@ -1,0 +1,24 @@
+CLAIM: CU3 — agent --help output, plugin-related subcommands
+STATUS: VERIFIED-PASS (help captured); CONFIRMED-NO plugin install/list subcommands exist
+LOG: docs/VERIFICATION_2026-05/logs/verify-cursor-run.log
+
+KEY EVIDENCE — plugin-related items found in --help:
+  | --plugin-dir <path>    Load a local plugin directory (can be specified multiple times)
+
+KEY EVIDENCE — no plugin install/list command:
+  The grep for "plugin|extension|install|marketplace|list" returned:
+  | --list-models           List available models and exit
+  | --plugin-dir <path>     Load a local plugin directory (can be specified multiple times)
+  | install-shell-integration  Install shell integration to ~/.zshrc
+  | uninstall-shell-integration Remove shell integration from ~/.zshrc
+  | models                  List available models for this account
+
+  NO "plugin install", "plugin list", "marketplace", or "add-plugin" subcommand exists.
+
+FULL SUBCOMMAND LIST FROM --help:
+  Commands: install-shell-integration, uninstall-shell-integration, login, logout, mcp,
+  worker, status|whoami, models, about, update, create-chat, generate-rule|rule, agent, ls, resume, help
+
+FINDING: --plugin-dir flag loads a local plugin directory at runtime (not a persistent install).
+There is no persistent plugin install/list mechanism in the CLI. The research agent's claim
+that "no plugin CLI subcommands exist" is CONFIRMED by live binary output.

@@ -24,13 +24,11 @@ At-a-glance: which platforms install this marketplace directly from a GitHub URL
 | Platform | One-command GitHub install | Command / action |
 |----------|---------------------------|------------------|
 | Claude Code | ✅ Yes (CLI shortform) | `/plugin marketplace add DgxSparkLabs/marketplace` |
-| Codex | ✅ Yes (CLI shortform) | `codex plugin marketplace add DgxSparkLabs/marketplace --ref <branch>` |
+| Codex | ✅ Yes (CLI shortform) | `codex plugin marketplace add DgxSparkLabs/marketplace` |
 | Gemini | ✅ Yes (CLI HTTPS URL) | `gemini extensions install https://github.com/DgxSparkLabs/marketplace --consent` |
 | Cursor | ⚙️ IDE-only (paste GitHub URL) | Dashboard → Settings → Plugins → Import → paste repo URL (Cursor 2.6+) |
 | Windsurf | ❌ Clone required (no CLI exists) | `git clone https://github.com/DgxSparkLabs/marketplace` then open in IDE |
 | Devin | ❌ Clone required (no marketplace concept) | `git clone https://github.com/DgxSparkLabs/marketplace` then `devin skills list` |
-
-**Pre-merge note**: while PR #1 is open and not yet merged to main, the Codex and Gemini one-command installs above require `--ref feat/claude-plugin-compliance`. After merge to main, the `--ref` argument becomes optional. Cursor's team-marketplace import always reads the default branch by default.
 
 ## Quick Start
 
@@ -53,9 +51,7 @@ Pick your platform, copy the block, and you're running.
 
 ```bash
 # Register the marketplace via GitHub shortform
-codex plugin marketplace add DgxSparkLabs/marketplace --ref feat/claude-plugin-compliance
-# Note: until PR #1 lands on main, --ref feat/claude-plugin-compliance is required.
-# After merge, the shorter form works: codex plugin marketplace add DgxSparkLabs/marketplace
+codex plugin marketplace add DgxSparkLabs/marketplace
 
 # Browse what's available
 codex plugin list
@@ -68,9 +64,7 @@ codex plugin add skill-telegram-notify@dgxsparklabs-marketplace
 
 ```bash
 # Install the whole marketplace as a Gemini extension directly from GitHub (no clone required)
-gemini extensions install https://github.com/DgxSparkLabs/marketplace --ref feat/claude-plugin-compliance --consent
-# Note: until PR #1 lands on main, --ref feat/claude-plugin-compliance is required.
-# After merge: gemini extensions install https://github.com/DgxSparkLabs/marketplace --consent
+gemini extensions install https://github.com/DgxSparkLabs/marketplace --consent
 
 # Verify the extension is registered (note: list output goes to stderr — pipe with 2>&1)
 gemini extensions list 2>&1
@@ -244,9 +238,7 @@ claude plugin marketplace remove dgxsparklabs-marketplace
 
 ```bash
 # 1. Register the marketplace via GitHub shortform
-codex plugin marketplace add DgxSparkLabs/marketplace --ref feat/claude-plugin-compliance
-# Note: until PR #1 lands on main, --ref feat/claude-plugin-compliance is required.
-# After merge: codex plugin marketplace add DgxSparkLabs/marketplace
+codex plugin marketplace add DgxSparkLabs/marketplace
 
 # Or from a local clone:
 codex plugin marketplace add ./
@@ -281,10 +273,8 @@ codex plugin marketplace remove dgxsparklabs-marketplace
 **Install + use:**
 
 ```bash
-# Install directly from GitHub (no clone required) — primary path post-Phase-1
-gemini extensions install https://github.com/DgxSparkLabs/marketplace --ref feat/claude-plugin-compliance --consent
-# Note: until PR #1 lands on main, --ref feat/claude-plugin-compliance is required.
-# After merge: gemini extensions install https://github.com/DgxSparkLabs/marketplace --consent
+# Install directly from GitHub (no clone required)
+gemini extensions install https://github.com/DgxSparkLabs/marketplace --consent
 
 # Verify the extension is registered (NOTE: output goes to stderr — pipe with 2>&1)
 gemini extensions list 2>&1

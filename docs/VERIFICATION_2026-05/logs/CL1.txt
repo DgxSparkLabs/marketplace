@@ -1,0 +1,16 @@
+CLAIM: CL1 — claude plugin marketplace add ./ registers successfully
+STATUS: VERIFIED-PASS
+LOG: docs/VERIFICATION_2026-05/logs/verify-claude-run.log
+
+KEY EVIDENCE:
+  | === CL1 START ===
+  | Adding marketplace…✔ Successfully added marketplace: dgxsparklabs-marketplace (declared in user settings)
+  | CL1_EXIT=0
+  | CL1=PASS
+  (assert step)
+  | Configured marketplaces:
+  |   ❯ dgxsparklabs-marketplace
+  |     Source: Directory (/mnt/c/Users/devic/source/marketplace)
+  | CL1_ASSERT=PASS
+
+CLAUDE VERSION: 2.1.150 (Claude Code)

@@ -1,0 +1,18 @@
+CLAIM: C1 — codex plugin marketplace add ./ (local path baseline)
+STATUS: VERIFIED-PASS
+LOG: docs/VERIFICATION_2026-05/logs/verify-codex-run.log, lines 139-159
+
+KEY EVIDENCE:
+  | === C1 START ===
+  | Added marketplace `dgxsparklabs-marketplace` from /mnt/c/Users/devic/source/marketplace.
+  | Installed marketplace root: /mnt/c/Users/devic/source/marketplace
+  | C1_EXIT=0
+  | === C1 END ===
+  (assert step)
+  | [marketplaces.dgxsparklabs-marketplace]
+  | last_updated = "2026-05-24T02:39:01Z"
+  | source_type = "local"
+  | source = "/mnt/c/Users/devic/source/marketplace"
+  | C1_ASSERT=PASS
+
+CODEX VERSION: codex-cli 0.133.0

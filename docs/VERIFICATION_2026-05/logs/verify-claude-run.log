@@ -1,0 +1,206 @@
+time="2026-05-24T05:46:29+03:00" level=info msg="Using docker host 'npipe:////./pipe/docker_engine', and daemon socket 'npipe:////./pipe/docker_engine'"
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ] 🚀  Start image=catthehacker/ubuntu:act-latest
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   🐳  docker pull image=catthehacker/ubuntu:act-latest platform=linux/amd64 username= forcePull=false
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   🐳  docker create image=catthehacker/ubuntu:act-latest platform=linux/amd64 entrypoint=["tail" "-f" "/dev/null"] cmd=[] network="host"
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   🐳  docker run image=catthehacker/ubuntu:act-latest platform=linux/amd64 entrypoint=["tail" "-f" "/dev/null"] cmd=[] network="host"
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ] ⭐ Run Main Checkout repo
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   🐳  docker cp src=C:\Users\devic\source\marketplace\. dst=/mnt/c/Users/devic/source/marketplace
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   ✅  Success - Main Checkout repo
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ] ⭐ Run Main Install uv (direct, no token needed)
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   🐳  docker exec cmd=[bash --noprofile --norc -e -o pipefail /var/run/act/workflow/1] user= workdir=
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   | downloading uv 0.11.16 x86_64-unknown-linux-gnu
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   | installing to /root/.local/bin
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   |   uv
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   |   uvx
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   | everything's installed!
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   | 
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   | To add $HOME/.local/bin to your PATH, either restart your shell or run:
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   | 
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   |     source $HOME/.local/bin/env (sh, bash, zsh)
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   |     source $HOME/.local/bin/env.fish (fish)
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   | uv 0.11.16 (x86_64-unknown-linux-gnu)
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   ✅  Success - Main Install uv (direct, no token needed)
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   ⚙  ::add-path:: /root/.local/bin
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   ⚙  ::add-path:: /root/.local/bin
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ] ⭐ Run Main Regenerate manifests
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   🐳  docker exec cmd=[bash --noprofile --norc -e -o pipefail /var/run/act/workflow/2] user= workdir=
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   | Generated 81 plugin entries in marketplace.json
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   |   agent: 1
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   |   bundle: 24
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   |   command: 1
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   |   hook: 1
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   |   lsp: 1
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   |   mcp: 1
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   |   monitor: 1
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   |   output-style: 1
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   |   rule: 22
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   |   skill: 27
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   |   theme: 1
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   ✅  Success - Main Regenerate manifests
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ] ⭐ Run Main Install Node.js 20
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   🐳  docker exec cmd=[bash --noprofile --norc -e -o pipefail /var/run/act/workflow/3] user= workdir=
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   | [38;5;79m2026-05-24 02:46:45 - Installing pre-requisites[0m
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   | 
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   | WARNING: apt does not have a stable CLI interface. Use with caution in scripts.
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   | 
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   | Get:1 https://packages.microsoft.com/ubuntu/24.04/prod noble InRelease [3600 B]
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   | Get:2 https://ppa.launchpadcontent.net/git-core/ppa/ubuntu noble InRelease [24.3 kB]
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   | Get:3 http://archive.ubuntu.com/ubuntu noble InRelease [256 kB]
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   | Get:4 http://security.ubuntu.com/ubuntu noble-security InRelease [126 kB]
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   | Get:5 https://packages.microsoft.com/ubuntu/24.04/prod noble/main all Packages [643 B]
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   | Get:6 https://ppa.launchpadcontent.net/git-core/ppa/ubuntu noble/main amd64 Packages [2988 B]
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   | Get:7 https://packages.microsoft.com/ubuntu/24.04/prod noble/main amd64 Packages [155 kB]
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   | Get:9 http://archive.ubuntu.com/ubuntu noble-updates InRelease [126 kB]
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   | Get:10 http://security.ubuntu.com/ubuntu noble-security/restricted amd64 Packages [3671 kB]
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   | Get:11 http://archive.ubuntu.com/ubuntu noble-backports InRelease [126 kB]
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   | Get:12 http://archive.ubuntu.com/ubuntu noble/multiverse amd64 Packages [331 kB]
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   | Get:13 http://archive.ubuntu.com/ubuntu noble/universe amd64 Packages [19.3 MB]
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   | Get:14 http://security.ubuntu.com/ubuntu noble-security/universe amd64 Packages [1505 kB]
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   | Get:15 http://security.ubuntu.com/ubuntu noble-security/main amd64 Packages [2074 kB]
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   | Get:8 https://packagecloud.io/github/git-lfs/ubuntu noble InRelease [29.2 kB]
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   | Get:16 http://security.ubuntu.com/ubuntu noble-security/multiverse amd64 Packages [48.4 kB]
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   | Get:17 https://packagecloud.io/github/git-lfs/ubuntu noble/main amd64 Packages [1273 B]
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   | Get:18 http://archive.ubuntu.com/ubuntu noble/restricted amd64 Packages [117 kB]
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   | Get:19 http://archive.ubuntu.com/ubuntu noble/main amd64 Packages [1808 kB]
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   | Get:20 http://archive.ubuntu.com/ubuntu noble-updates/restricted amd64 Packages [3920 kB]
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   | Get:21 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 Packages [2457 kB]
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   | Get:22 http://archive.ubuntu.com/ubuntu noble-updates/multiverse amd64 Packages [54.6 kB]
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   | Get:23 http://archive.ubuntu.com/ubuntu noble-updates/universe amd64 Packages [2148 kB]
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   | Get:24 http://archive.ubuntu.com/ubuntu noble-backports/multiverse amd64 Packages [671 B]
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   | Get:25 http://archive.ubuntu.com/ubuntu noble-backports/universe amd64 Packages [35.9 kB]
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   | Get:26 http://archive.ubuntu.com/ubuntu noble-backports/main amd64 Packages [49.0 kB]
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   | Fetched 38.4 MB in 8s (4788 kB/s)
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   | Reading package lists...
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   | Building dependency tree...
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   | Reading state information...
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   | 22 packages can be upgraded. Run 'apt list --upgradable' to see them.
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   | 
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   | WARNING: apt does not have a stable CLI interface. Use with caution in scripts.
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   | 
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   | Reading package lists...
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   | Building dependency tree...
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   | Reading state information...
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   | apt-transport-https is already the newest version (2.8.3).
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   | ca-certificates is already the newest version (20240203).
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   | curl is already the newest version (8.5.0-2ubuntu10.9).
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   | gnupg is already the newest version (2.4.4-2ubuntu17.4).
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   | 0 upgraded, 0 newly installed, 0 to remove and 22 not upgraded.
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   | 
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   | WARNING: apt does not have a stable CLI interface. Use with caution in scripts.
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   | 
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   | Hit:1 http://security.ubuntu.com/ubuntu noble-security InRelease
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   | Hit:2 http://archive.ubuntu.com/ubuntu noble InRelease
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   | Get:3 https://deb.nodesource.com/node_20.x nodistro InRelease [12.1 kB]
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   | Hit:4 https://packages.microsoft.com/ubuntu/24.04/prod noble InRelease
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   | Hit:5 http://archive.ubuntu.com/ubuntu noble-updates InRelease
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   | Hit:6 https://ppa.launchpadcontent.net/git-core/ppa/ubuntu noble InRelease
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   | Hit:7 http://archive.ubuntu.com/ubuntu noble-backports InRelease
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   | Get:9 https://deb.nodesource.com/node_20.x nodistro/main amd64 Packages [14.7 kB]
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   | Hit:8 https://packagecloud.io/github/git-lfs/ubuntu noble InRelease
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   | Fetched 26.8 kB in 2s (13.6 kB/s)
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   | Reading package lists...
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   | Building dependency tree...
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   | Reading state information...
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   | 22 packages can be upgraded. Run 'apt list --upgradable' to see them.
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   | [1;34m2026-05-24 02:47:08 - Repository configured successfully.[0m
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   | [38;5;79m2026-05-24 02:47:08 - To install Node.js, run: apt install nodejs -y[0m
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   | [38;5;79m2026-05-24 02:47:08 - You can use N|solid Runtime as a node.js alternative[0m
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   | [1;32m2026-05-24 02:47:08 - To install N|solid Runtime, run: apt install nsolid -y 
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   | [0m
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   | Reading package lists...
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   | Building dependency tree...
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   | Reading state information...
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   | The following NEW packages will be installed:
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   |   nodejs
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   | 0 upgraded, 1 newly installed, 0 to remove and 22 not upgraded.
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   | Need to get 32.2 MB of archives.
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   | After this operation, 196 MB of additional disk space will be used.
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   | Get:1 https://deb.nodesource.com/node_20.x nodistro/main amd64 nodejs amd64 20.20.2-1nodesource1 [32.2 MB]
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   | debconf: delaying package configuration, since apt-utils is not installed
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   | Fetched 32.2 MB in 3s (11.4 MB/s)
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   | Selecting previously unselected package nodejs.
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   | (Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 26513 files and directories currently installed.)
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   | Preparing to unpack .../nodejs_20.20.2-1nodesource1_amd64.deb ...
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   | Unpacking nodejs (20.20.2-1nodesource1) ...
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   | Setting up nodejs (20.20.2-1nodesource1) ...
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   ✅  Success - Main Install Node.js 20
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ] ⭐ Run Main Install Claude Code CLI
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   🐳  docker exec cmd=[bash --noprofile --norc -e -o pipefail /var/run/act/workflow/4] user= workdir=
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   | 
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   | added 2 packages in 15s
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   ✅  Success - Main Install Claude Code CLI
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ] ⭐ Run Main Verify Claude binary present
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   🐳  docker exec cmd=[bash --noprofile --norc -e -o pipefail /var/run/act/workflow/5] user= workdir=
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   | 2.1.150 (Claude Code)
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   ✅  Success - Main Verify Claude binary present
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ] ⭐ Run Main CL1 — claude plugin marketplace add ./ (baseline)
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   🐳  docker exec cmd=[bash --noprofile --norc -e -o pipefail /var/run/act/workflow/cl1] user= workdir=
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   | === CL1 START ===
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   | Adding marketplace…✔ Successfully added marketplace: dgxsparklabs-marketplace (declared in user settings)
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   | CL1_EXIT=0
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   | CL1=PASS
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   | === CL1 END ===
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   ✅  Success - Main CL1 — claude plugin marketplace add ./ (baseline)
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ] ⭐ Run Main CL1 — assert marketplace listed
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   🐳  docker exec cmd=[bash --noprofile --norc -e -o pipefail /var/run/act/workflow/cl1_assert] user= workdir=
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   | === CL1_ASSERT START ===
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   | Configured marketplaces:
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   | 
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   |   ❯ dgxsparklabs-marketplace
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   |     Source: Directory (/mnt/c/Users/devic/source/marketplace)
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   |   ❯ dgxsparklabs-marketplace
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   | CL1_ASSERT=PASS
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   | === CL1_ASSERT END ===
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   ✅  Success - Main CL1 — assert marketplace listed
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ] ⭐ Run Main CL2 — claude plugin install skill-example@dgxsparklabs-marketplace --scope project
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   🐳  docker exec cmd=[bash --noprofile --norc -e -o pipefail /var/run/act/workflow/cl2] user= workdir=
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   | === CL2 START ===
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   | Installing plugin "skill-example@dgxsparklabs-marketplace"...✔ Successfully installed plugin: skill-example@dgxsparklabs-marketplace (scope: project)
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   | CL2_EXIT=0
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   | CL2=PASS
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   | === CL2 END ===
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   ✅  Success - Main CL2 — claude plugin install skill-example@dgxsparklabs-marketplace --scope project
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ] ⭐ Run Main CL3 — claude plugin list shows skill-example
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   🐳  docker exec cmd=[bash --noprofile --norc -e -o pipefail /var/run/act/workflow/cl3] user= workdir=
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   | === CL3 START ===
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   | Installed plugins:
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   | 
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   |   ❯ skill-example@dgxsparklabs-marketplace
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   |     Version: 1.0.0
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   |     Scope: project
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   |     Status: ✔ enabled
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   | CL3_EXIT=0
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   |   ❯ skill-example@dgxsparklabs-marketplace
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   | CL3_FOUND=YES
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   | === CL3 END ===
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   ✅  Success - Main CL3 — claude plugin list shows skill-example
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ] ⭐ Run Main Dump Claude plugin state
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   🐳  docker exec cmd=[bash --noprofile --norc -e -o pipefail /var/run/act/workflow/10] user= workdir=
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   | === CLAUDE STATE DUMP ===
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   | Configured marketplaces:
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   | 
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   |   ❯ dgxsparklabs-marketplace
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   |     Source: Directory (/mnt/c/Users/devic/source/marketplace)
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   | 
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   | Installed plugins:
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   | 
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   |   ❯ skill-example@dgxsparklabs-marketplace
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   |     Version: 1.0.0
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   |     Scope: project
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   |     Status: ✔ enabled
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   | 
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   | /root/.claude/settings.json
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   | /root/.claude/backups/.claude.json.backup.1779590863607
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   | /root/.claude/plugins/cache/dgxsparklabs-marketplace/skill-example/1.0.0/README.md
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   | /root/.claude/plugins/cache/dgxsparklabs-marketplace/skill-example/1.0.0/SKILL.md
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   | /root/.claude/plugins/cache/dgxsparklabs-marketplace/skill-example/1.0.0/.claude-plugin/plugin.json
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   | /root/.claude/plugins/known_marketplaces.json
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   | /root/.claude/plugins/installed_plugins.json
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   | === END CLAUDE STATE DUMP ===
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   ✅  Success - Main Dump Claude plugin state
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ] ⭐ Run Main Final cleanup
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   🐳  docker exec cmd=[bash --noprofile --norc -e -o pipefail /var/run/act/workflow/11] user= workdir=
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   | ✔ Successfully removed marketplace: dgxsparklabs-marketplace
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ]   ✅  Success - Main Final cleanup
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ] Cleaning up container for job claude-verify
+[Verify — Claude Code Claims (CL1-CL3)/claude-verify  ] 🏁  Job succeeded

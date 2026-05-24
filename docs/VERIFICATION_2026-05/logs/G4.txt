@@ -1,0 +1,28 @@
+CLAIM: G4 — gemini skills install https://github.com/DgxSparkLabs/marketplace --path _generated/skill-example --consent
+STATUS: VERIFIED-FAIL
+LOG: docs/VERIFICATION_2026-05/logs/verify-gemini-run.log
+
+KEY EVIDENCE:
+  | === G4 START ===
+  | Cloning skill from https://github.com/DgxSparkLabs/marketplace...
+  | Searching for skills in /tmp/gemini-skill-SVtviM/_generated/skill-example...
+  | No valid skills found in https://github.com/DgxSparkLabs/marketplace at path "_generated/skill-example".
+  |   Ensure a SKILL.md file exists with valid frontmatter.
+  | G4_EXIT=1
+  | G4=FAIL
+  |
+  | --- trying gemini extensions install with --path ---
+  | ALT_OUT: Unknown argument: path
+  | gemini extensions install <source> [--auto-update] [--pre-release]
+
+ANALYSIS:
+1. `gemini skills install` with --path IS a real command (--path is recognized and used to
+   select the subdirectory). The repo IS cloned and the path IS navigated correctly.
+2. BUT: gemini looks for a SKILL.md with valid frontmatter inside _generated/skill-example/.
+   Our _generated/skill-example/ directory contains a SKILL.md, but either the frontmatter
+   is not valid in Gemini's expected format, or Gemini requires a different directory structure.
+3. `gemini extensions install --path` does NOT exist (error: "Unknown argument: path").
+   Only `gemini skills install` accepts --path.
+
+The --path claim is PARTIALLY correct: the subcommand exists and navigates correctly,
+but our SKILL.md frontmatter is not recognized as valid by Gemini's skill installer.

@@ -1,0 +1,28 @@
+CLAIM: CU1 — agent --version succeeds after curl https://cursor.com/install | bash
+STATUS: VERIFIED-PASS
+LOG: docs/VERIFICATION_2026-05/logs/verify-cursor-run.log
+
+KEY EVIDENCE (install):
+  | Cursor Agent Installer
+  | Detecting system architecture...
+  | Detected linux/x64
+  | Downloading Cursor Agent package...
+  |   Download URL: https://downloads.cursor.com/lab/2026.05.20-2b5dd59/linux/x64/agent-cli-package.tar.gz
+  | Package installed successfully
+  | Creating symlinks to agent executable...
+  | Symlink created
+  | Installation Complete!
+  | CU1_INSTALL_EXIT=0
+  | CU1_INSTALL=OK
+
+KEY EVIDENCE (version):
+  | === CU1 START ===
+  | /root/.local/bin/agent
+  | /root/.local/bin/cursor-agent
+  | 2026.05.20-2b5dd59
+  | CU1_EXIT=0
+  | CU1=PASS
+
+ANALYSIS: The open discrepancy from cursor.md is RESOLVED. The prior CI failure occurred
+because `$PATH` did not include `$HOME/.local/bin` when testing. The binary IS installed
+at ~/.local/bin/agent and ~/.local/bin/cursor-agent (symlinks). Version: 2026.05.20-2b5dd59.

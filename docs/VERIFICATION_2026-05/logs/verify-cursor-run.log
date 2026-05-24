@@ -1,0 +1,187 @@
+time="2026-05-24T05:45:44+03:00" level=info msg="Using docker host 'npipe:////./pipe/docker_engine', and daemon socket 'npipe:////./pipe/docker_engine'"
+[Verify — Cursor CLI Claims (CU1-CU3)/cursor-verify  ] 🚀  Start image=catthehacker/ubuntu:act-latest
+[Verify — Cursor CLI Claims (CU1-CU3)/cursor-verify  ]   🐳  docker pull image=catthehacker/ubuntu:act-latest platform=linux/amd64 username= forcePull=false
+[Verify — Cursor CLI Claims (CU1-CU3)/cursor-verify  ]   🐳  docker create image=catthehacker/ubuntu:act-latest platform=linux/amd64 entrypoint=["tail" "-f" "/dev/null"] cmd=[] network="host"
+[Verify — Cursor CLI Claims (CU1-CU3)/cursor-verify  ]   🐳  docker run image=catthehacker/ubuntu:act-latest platform=linux/amd64 entrypoint=["tail" "-f" "/dev/null"] cmd=[] network="host"
+[Verify — Cursor CLI Claims (CU1-CU3)/cursor-verify  ] ⭐ Run Main Checkout repo
+[Verify — Cursor CLI Claims (CU1-CU3)/cursor-verify  ]   🐳  docker cp src=C:\Users\devic\source\marketplace\. dst=/mnt/c/Users/devic/source/marketplace
+[Verify — Cursor CLI Claims (CU1-CU3)/cursor-verify  ]   ✅  Success - Main Checkout repo
+[Verify — Cursor CLI Claims (CU1-CU3)/cursor-verify  ] ⭐ Run Main CU1 — curl https://cursor.com/install | bash (install Cursor CLI)
+[Verify — Cursor CLI Claims (CU1-CU3)/cursor-verify  ]   🐳  docker exec cmd=[bash --noprofile --norc -e -o pipefail /var/run/act/workflow/cu1_install] user= workdir=
+[Verify — Cursor CLI Claims (CU1-CU3)/cursor-verify  ]   | === CU1_INSTALL START ===
+[Verify — Cursor CLI Claims (CU1-CU3)/cursor-verify  ]   | 
+[Verify — Cursor CLI Claims (CU1-CU3)/cursor-verify  ]   | Cursor Agent Installer
+[Verify — Cursor CLI Claims (CU1-CU3)/cursor-verify  ]   | 
+[Verify — Cursor CLI Claims (CU1-CU3)/cursor-verify  ]   | ▸ Detecting system architecture...
+[Verify — Cursor CLI Claims (CU1-CU3)/cursor-verify  ]   | [1A[2K✓ Detected linux/x64
+[Verify — Cursor CLI Claims (CU1-CU3)/cursor-verify  ]   | ▸ Creating installation directory...
+[Verify — Cursor CLI Claims (CU1-CU3)/cursor-verify  ]   | [1A[2K✓ Directory created
+[Verify — Cursor CLI Claims (CU1-CU3)/cursor-verify  ]   | ▸ Downloading Cursor Agent package...
+[Verify — Cursor CLI Claims (CU1-CU3)/cursor-verify  ]   |   Download URL: https://downloads.cursor.com/lab/2026.05.20-2b5dd59/linux/x64/agent-cli-package.tar.gz
+[Verify — Cursor CLI Claims (CU1-CU3)/cursor-verify  ]   | #=#=#                                                                                                                                                     0.3%#                                                                          2.0%##                                                                         3.5%###                                                                        5.3%####                                                                       6.6%#####                                                                      8.2%#######                                                                   10.0%########                                                                  11.6%#########                                                                 13.0%##########                                                                14.5%###########                                                               16.4%#############                                                             18.3%#############                                                             19.2%##############                                                            20.3%###############                                                           21.6%#################                                                         24.6%###################                                                       26.4%####################                                                      28.5%#####################                                                     29.7%######################                                                    31.6%#######################                                                   32.7%########################                                                  34.1%#########################                                                 35.7%##########################                                                37.4%############################                                              39.0%#############################                                             40.3%#############################                                             41.6%###############################                                           43.4%################################                                          44.7%#################################                                         46.4%##################################                                        48.2%####################################                                      50.0%#####################################                                     51.6%######################################                                    53.2%#######################################                                   54.5%########################################                                  56.2%#########################################                                 57.2%##########################################                                58.4%###########################################                               60.4%############################################                              62.4%#############################################                             63.8%###############################################                           65.6%################################################                          67.3%#################################################                         68.9%##################################################                        69.8%###################################################                       70.9%####################################################                      72.3%#####################################################                     73.6%######################################################                    75.2%#######################################################                   77.0%########################################################                  78.3%#########################################################                 79.8%##########################################################                81.4%###########################################################               82.8%############################################################              83.7%#############################################################             85.0%##############################################################            86.5%###############################################################           88.1%###############################################################           88.5%###############################################################           88.6%################################################################          89.4%#################################################################         90.8%##################################################################        92.5%###################################################################       94.1%####################################################################      95.7%#####################################################################     96.6%######################################################################    98.4%######################################################################## 100.0%
+[Verify — Cursor CLI Claims (CU1-CU3)/cursor-verify  ]   | [1A[2K[1A[2K[1A[2K[1A[2K✓ Package downloaded and extracted
+[Verify — Cursor CLI Claims (CU1-CU3)/cursor-verify  ]   | ▸ Finalizing installation...
+[Verify — Cursor CLI Claims (CU1-CU3)/cursor-verify  ]   | [1A[2K✓ Package installed successfully
+[Verify — Cursor CLI Claims (CU1-CU3)/cursor-verify  ]   | ▸ Creating bin directory...
+[Verify — Cursor CLI Claims (CU1-CU3)/cursor-verify  ]   | [1A[2K✓ Bin directory ready
+[Verify — Cursor CLI Claims (CU1-CU3)/cursor-verify  ]   | ▸ Creating symlinks to agent executable...
+[Verify — Cursor CLI Claims (CU1-CU3)/cursor-verify  ]   | [1A[2K✓ Symlink created
+[Verify — Cursor CLI Claims (CU1-CU3)/cursor-verify  ]   | 
+[Verify — Cursor CLI Claims (CU1-CU3)/cursor-verify  ]   | ✨ Installation Complete! 
+[Verify — Cursor CLI Claims (CU1-CU3)/cursor-verify  ]   | 
+[Verify — Cursor CLI Claims (CU1-CU3)/cursor-verify  ]   | 
+[Verify — Cursor CLI Claims (CU1-CU3)/cursor-verify  ]   | Next Steps
+[Verify — Cursor CLI Claims (CU1-CU3)/cursor-verify  ]   | 
+[Verify — Cursor CLI Claims (CU1-CU3)/cursor-verify  ]   | 1. Add ~/.local/bin to your PATH:
+[Verify — Cursor CLI Claims (CU1-CU3)/cursor-verify  ]   |    For bash:
+[Verify — Cursor CLI Claims (CU1-CU3)/cursor-verify  ]   |    echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.bashrc
+[Verify — Cursor CLI Claims (CU1-CU3)/cursor-verify  ]   |    source ~/.bashrc
+[Verify — Cursor CLI Claims (CU1-CU3)/cursor-verify  ]   | 
+[Verify — Cursor CLI Claims (CU1-CU3)/cursor-verify  ]   | 2. Start using Cursor Agent:
+[Verify — Cursor CLI Claims (CU1-CU3)/cursor-verify  ]   |    agent
+[Verify — Cursor CLI Claims (CU1-CU3)/cursor-verify  ]   | 
+[Verify — Cursor CLI Claims (CU1-CU3)/cursor-verify  ]   | 
+[Verify — Cursor CLI Claims (CU1-CU3)/cursor-verify  ]   | Happy coding! 🚀
+[Verify — Cursor CLI Claims (CU1-CU3)/cursor-verify  ]   | CU1_INSTALL_EXIT=0
+[Verify — Cursor CLI Claims (CU1-CU3)/cursor-verify  ]   | CU1_INSTALL=OK
+[Verify — Cursor CLI Claims (CU1-CU3)/cursor-verify  ]   | === CU1_INSTALL END ===
+[Verify — Cursor CLI Claims (CU1-CU3)/cursor-verify  ]   ✅  Success - Main CU1 — curl https://cursor.com/install | bash (install Cursor CLI)
+[Verify — Cursor CLI Claims (CU1-CU3)/cursor-verify  ] ⭐ Run Main CU1 — agent --version (primary claim)
+[Verify — Cursor CLI Claims (CU1-CU3)/cursor-verify  ]   🐳  docker exec cmd=[bash --noprofile --norc -e -o pipefail /var/run/act/workflow/cu1] user= workdir=
+[Verify — Cursor CLI Claims (CU1-CU3)/cursor-verify  ]   | === CU1 START ===
+[Verify — Cursor CLI Claims (CU1-CU3)/cursor-verify  ]   | /root/.local/bin/agent
+[Verify — Cursor CLI Claims (CU1-CU3)/cursor-verify  ]   | /root/.local/bin/cursor-agent
+[Verify — Cursor CLI Claims (CU1-CU3)/cursor-verify  ]   | 2026.05.20-2b5dd59
+[Verify — Cursor CLI Claims (CU1-CU3)/cursor-verify  ]   | CU1_EXIT=0
+[Verify — Cursor CLI Claims (CU1-CU3)/cursor-verify  ]   | CU1=PASS
+[Verify — Cursor CLI Claims (CU1-CU3)/cursor-verify  ]   | === CU1 END ===
+[Verify — Cursor CLI Claims (CU1-CU3)/cursor-verify  ]   ✅  Success - Main CU1 — agent --version (primary claim)
+[Verify — Cursor CLI Claims (CU1-CU3)/cursor-verify  ] ⭐ Run Main CU2 — which agent + binary location
+[Verify — Cursor CLI Claims (CU1-CU3)/cursor-verify  ]   🐳  docker exec cmd=[bash --noprofile --norc -e -o pipefail /var/run/act/workflow/cu2] user= workdir=
+[Verify — Cursor CLI Claims (CU1-CU3)/cursor-verify  ]   | === CU2 START ===
+[Verify — Cursor CLI Claims (CU1-CU3)/cursor-verify  ]   | which agent: /root/.local/bin/agent
+[Verify — Cursor CLI Claims (CU1-CU3)/cursor-verify  ]   | which cursor-agent: /root/.local/bin/cursor-agent
+[Verify — Cursor CLI Claims (CU1-CU3)/cursor-verify  ]   | /root/.local/share/cursor-agent/versions/2026.05.20-2b5dd59/cursor-agent
+[Verify — Cursor CLI Claims (CU1-CU3)/cursor-verify  ]   | --- ~/.local/bin/ ---
+[Verify — Cursor CLI Claims (CU1-CU3)/cursor-verify  ]   | total 16
+[Verify — Cursor CLI Claims (CU1-CU3)/cursor-verify  ]   | drwxr-xr-x 2 root root 4096 May 24 02:45 .
+[Verify — Cursor CLI Claims (CU1-CU3)/cursor-verify  ]   | drwxr-xr-x 4 root root 4096 May 24 02:45 ..
+[Verify — Cursor CLI Claims (CU1-CU3)/cursor-verify  ]   | lrwxrwxrwx 1 root root   72 May 24 02:45 agent -> /root/.local/share/cursor-agent/versions/2026.05.20-2b5dd59/cursor-agent
+[Verify — Cursor CLI Claims (CU1-CU3)/cursor-verify  ]   | lrwxrwxrwx 1 root root   72 May 24 02:45 cursor-agent -> /root/.local/share/cursor-agent/versions/2026.05.20-2b5dd59/cursor-agent
+[Verify — Cursor CLI Claims (CU1-CU3)/cursor-verify  ]   | --- ~/.cursor/ ---
+[Verify — Cursor CLI Claims (CU1-CU3)/cursor-verify  ]   | total 12
+[Verify — Cursor CLI Claims (CU1-CU3)/cursor-verify  ]   | drwxr-xr-x 2 root root 4096 May 24 02:46 .
+[Verify — Cursor CLI Claims (CU1-CU3)/cursor-verify  ]   | drwx------ 1 root root 4096 May 24 02:46 ..
+[Verify — Cursor CLI Claims (CU1-CU3)/cursor-verify  ]   | -rw-r--r-- 1 root root  573 May 24 02:46 cli-config.json
+[Verify — Cursor CLI Claims (CU1-CU3)/cursor-verify  ]   | === CU2 END ===
+[Verify — Cursor CLI Claims (CU1-CU3)/cursor-verify  ]   ✅  Success - Main CU2 — which agent + binary location
+[Verify — Cursor CLI Claims (CU1-CU3)/cursor-verify  ] ⭐ Run Main CU3 — agent --help full output + plugin subcommand search
+[Verify — Cursor CLI Claims (CU1-CU3)/cursor-verify  ]   🐳  docker exec cmd=[bash --noprofile --norc -e -o pipefail /var/run/act/workflow/cu3] user= workdir=
+[Verify — Cursor CLI Claims (CU1-CU3)/cursor-verify  ]   | === CU3 START ===
+[Verify — Cursor CLI Claims (CU1-CU3)/cursor-verify  ]   | Usage: agent [options] [command] [prompt...]
+[Verify — Cursor CLI Claims (CU1-CU3)/cursor-verify  ]   | 
+[Verify — Cursor CLI Claims (CU1-CU3)/cursor-verify  ]   | Start the Cursor Agent
+[Verify — Cursor CLI Claims (CU1-CU3)/cursor-verify  ]   | 
+[Verify — Cursor CLI Claims (CU1-CU3)/cursor-verify  ]   | Arguments:
+[Verify — Cursor CLI Claims (CU1-CU3)/cursor-verify  ]   |   prompt                       Initial prompt for the agent
+[Verify — Cursor CLI Claims (CU1-CU3)/cursor-verify  ]   | 
+[Verify — Cursor CLI Claims (CU1-CU3)/cursor-verify  ]   | Options:
+[Verify — Cursor CLI Claims (CU1-CU3)/cursor-verify  ]   |   -v, --version                Output the version number
+[Verify — Cursor CLI Claims (CU1-CU3)/cursor-verify  ]   |   --api-key <key>              API key for authentication (can also use
+[Verify — Cursor CLI Claims (CU1-CU3)/cursor-verify  ]   |                                CURSOR_API_KEY env var)
+[Verify — Cursor CLI Claims (CU1-CU3)/cursor-verify  ]   |   -H, --header <header>        Add custom header to agent requests (format:
+[Verify — Cursor CLI Claims (CU1-CU3)/cursor-verify  ]   |                                'Name: Value', can be used multiple times)
+[Verify — Cursor CLI Claims (CU1-CU3)/cursor-verify  ]   |   -p, --print                  Print responses to console (for scripts or
+[Verify — Cursor CLI Claims (CU1-CU3)/cursor-verify  ]   |                                non-interactive use). Has access to all tools,
+[Verify — Cursor CLI Claims (CU1-CU3)/cursor-verify  ]   |                                including write and shell. (default: false)
+[Verify — Cursor CLI Claims (CU1-CU3)/cursor-verify  ]   |   --output-format <format>     Output format (only works with --print): text |
+[Verify — Cursor CLI Claims (CU1-CU3)/cursor-verify  ]   |                                json | stream-json (default: "text")
+[Verify — Cursor CLI Claims (CU1-CU3)/cursor-verify  ]   |   --stream-partial-output      Stream partial output as individual text deltas
+[Verify — Cursor CLI Claims (CU1-CU3)/cursor-verify  ]   |                                (only works with --print and stream-json format)
+[Verify — Cursor CLI Claims (CU1-CU3)/cursor-verify  ]   |                                (default: false)
+[Verify — Cursor CLI Claims (CU1-CU3)/cursor-verify  ]   |   --mode <mode>                Start in the given execution mode. plan:
+[Verify — Cursor CLI Claims (CU1-CU3)/cursor-verify  ]   |                                read-only/planning (analyze, propose plans, no
+[Verify — Cursor CLI Claims (CU1-CU3)/cursor-verify  ]   |                                edits). ask: Q&A style for explanations and
+[Verify — Cursor CLI Claims (CU1-CU3)/cursor-verify  ]   |                                questions (read-only). (choices: "plan", "ask")
+[Verify — Cursor CLI Claims (CU1-CU3)/cursor-verify  ]   |   --plan                       Start in plan mode (shorthand for --mode=plan).
+[Verify — Cursor CLI Claims (CU1-CU3)/cursor-verify  ]   |                                (default: false)
+[Verify — Cursor CLI Claims (CU1-CU3)/cursor-verify  ]   |   --resume [chatId]            Select a session to resume (default: false)
+[Verify — Cursor CLI Claims (CU1-CU3)/cursor-verify  ]   |   --continue                   Continue previous session (default: false)
+[Verify — Cursor CLI Claims (CU1-CU3)/cursor-verify  ]   |   --model <model>              Model to use (e.g., gpt-5, sonnet-4,
+[Verify — Cursor CLI Claims (CU1-CU3)/cursor-verify  ]   |                                sonnet-4-thinking)
+[Verify — Cursor CLI Claims (CU1-CU3)/cursor-verify  ]   |   --list-models                List available models and exit (default: false)
+[Verify — Cursor CLI Claims (CU1-CU3)/cursor-verify  ]   |   -f, --force                  Force allow commands unless explicitly denied
+[Verify — Cursor CLI Claims (CU1-CU3)/cursor-verify  ]   |                                (default: false)
+[Verify — Cursor CLI Claims (CU1-CU3)/cursor-verify  ]   |   --yolo                       Alias for --force (Run Everything) (default:
+[Verify — Cursor CLI Claims (CU1-CU3)/cursor-verify  ]   |                                false)
+[Verify — Cursor CLI Claims (CU1-CU3)/cursor-verify  ]   |   --sandbox <mode>             Explicitly enable or disable sandbox mode
+[Verify — Cursor CLI Claims (CU1-CU3)/cursor-verify  ]   |                                (overrides config) (choices: "enabled",
+[Verify — Cursor CLI Claims (CU1-CU3)/cursor-verify  ]   |                                "disabled")
+[Verify — Cursor CLI Claims (CU1-CU3)/cursor-verify  ]   |   --approve-mcps               Automatically approve all MCP servers (default:
+[Verify — Cursor CLI Claims (CU1-CU3)/cursor-verify  ]   |                                false)
+[Verify — Cursor CLI Claims (CU1-CU3)/cursor-verify  ]   |   --trust                      Trust the current workspace without prompting
+[Verify — Cursor CLI Claims (CU1-CU3)/cursor-verify  ]   |                                (only works with --print/headless mode) (default:
+[Verify — Cursor CLI Claims (CU1-CU3)/cursor-verify  ]   |                                false)
+[Verify — Cursor CLI Claims (CU1-CU3)/cursor-verify  ]   |   --workspace <path>           Workspace directory to use (defaults to current
+[Verify — Cursor CLI Claims (CU1-CU3)/cursor-verify  ]   |                                working directory)
+[Verify — Cursor CLI Claims (CU1-CU3)/cursor-verify  ]   |   --plugin-dir <path>          Load a local plugin directory (can be specified
+[Verify — Cursor CLI Claims (CU1-CU3)/cursor-verify  ]   |                                multiple times)
+[Verify — Cursor CLI Claims (CU1-CU3)/cursor-verify  ]   |   -w, --worktree [name]        Start in an isolated git worktree at
+[Verify — Cursor CLI Claims (CU1-CU3)/cursor-verify  ]   |                                ~/.cursor/worktrees/<reponame>/<name>. If
+[Verify — Cursor CLI Claims (CU1-CU3)/cursor-verify  ]   |                                omitted, a name is generated.
+[Verify — Cursor CLI Claims (CU1-CU3)/cursor-verify  ]   |   --worktree-base <branch>     Branch or ref to base the new worktree on
+[Verify — Cursor CLI Claims (CU1-CU3)/cursor-verify  ]   |                                (default: current HEAD)
+[Verify — Cursor CLI Claims (CU1-CU3)/cursor-verify  ]   |   --skip-worktree-setup        Skip running worktree setup scripts from
+[Verify — Cursor CLI Claims (CU1-CU3)/cursor-verify  ]   |                                .cursor/worktrees.json (default: false)
+[Verify — Cursor CLI Claims (CU1-CU3)/cursor-verify  ]   |   -h, --help                   Display help for command
+[Verify — Cursor CLI Claims (CU1-CU3)/cursor-verify  ]   | 
+[Verify — Cursor CLI Claims (CU1-CU3)/cursor-verify  ]   | Commands:
+[Verify — Cursor CLI Claims (CU1-CU3)/cursor-verify  ]   |   install-shell-integration    Install shell integration to ~/.zshrc
+[Verify — Cursor CLI Claims (CU1-CU3)/cursor-verify  ]   |   uninstall-shell-integration  Remove shell integration from ~/.zshrc
+[Verify — Cursor CLI Claims (CU1-CU3)/cursor-verify  ]   |   login                        Authenticate with Cursor. Set NO_OPEN_BROWSER to
+[Verify — Cursor CLI Claims (CU1-CU3)/cursor-verify  ]   |                                disable browser opening.
+[Verify — Cursor CLI Claims (CU1-CU3)/cursor-verify  ]   |   logout                       Sign out and clear stored authentication
+[Verify — Cursor CLI Claims (CU1-CU3)/cursor-verify  ]   |   mcp                          Manage MCP servers
+[Verify — Cursor CLI Claims (CU1-CU3)/cursor-verify  ]   |   worker [options]             Start a private cloud worker that connects to
+[Verify — Cursor CLI Claims (CU1-CU3)/cursor-verify  ]   |                                Cursor to run agents in your environment
+[Verify — Cursor CLI Claims (CU1-CU3)/cursor-verify  ]   |   status|whoami [options]      View authentication status
+[Verify — Cursor CLI Claims (CU1-CU3)/cursor-verify  ]   |   models                       List available models for this account
+[Verify — Cursor CLI Claims (CU1-CU3)/cursor-verify  ]   |   about [options]              Display version, system, and account information
+[Verify — Cursor CLI Claims (CU1-CU3)/cursor-verify  ]   |   update                       Update Cursor Agent to the latest version
+[Verify — Cursor CLI Claims (CU1-CU3)/cursor-verify  ]   |   create-chat                  Create a new empty chat and return its ID
+[Verify — Cursor CLI Claims (CU1-CU3)/cursor-verify  ]   |   generate-rule|rule           Generate a new Cursor rule with interactive
+[Verify — Cursor CLI Claims (CU1-CU3)/cursor-verify  ]   |                                prompts
+[Verify — Cursor CLI Claims (CU1-CU3)/cursor-verify  ]   |   agent [prompt...]            Start the Cursor Agent
+[Verify — Cursor CLI Claims (CU1-CU3)/cursor-verify  ]   |   ls                           Resume a chat session
+[Verify — Cursor CLI Claims (CU1-CU3)/cursor-verify  ]   |   resume                       Resume the latest chat session
+[Verify — Cursor CLI Claims (CU1-CU3)/cursor-verify  ]   |   help [command]               Display help for command
+[Verify — Cursor CLI Claims (CU1-CU3)/cursor-verify  ]   | ---
+[Verify — Cursor CLI Claims (CU1-CU3)/cursor-verify  ]   | Plugin-related subcommands:
+[Verify — Cursor CLI Claims (CU1-CU3)/cursor-verify  ]   |   --list-models                List available models and exit (default: false)
+[Verify — Cursor CLI Claims (CU1-CU3)/cursor-verify  ]   |   --plugin-dir <path>          Load a local plugin directory (can be specified
+[Verify — Cursor CLI Claims (CU1-CU3)/cursor-verify  ]   |   install-shell-integration    Install shell integration to ~/.zshrc
+[Verify — Cursor CLI Claims (CU1-CU3)/cursor-verify  ]   |   uninstall-shell-integration  Remove shell integration from ~/.zshrc
+[Verify — Cursor CLI Claims (CU1-CU3)/cursor-verify  ]   |   models                       List available models for this account
+[Verify — Cursor CLI Claims (CU1-CU3)/cursor-verify  ]   | === CU3 END ===
+[Verify — Cursor CLI Claims (CU1-CU3)/cursor-verify  ]   ✅  Success - Main CU3 — agent --help full output + plugin subcommand search
+[Verify — Cursor CLI Claims (CU1-CU3)/cursor-verify  ] ⭐ Run Main Diagnose environment after install attempt
+[Verify — Cursor CLI Claims (CU1-CU3)/cursor-verify  ]   🐳  docker exec cmd=[bash --noprofile --norc -e -o pipefail /var/run/act/workflow/5] user= workdir=
+[Verify — Cursor CLI Claims (CU1-CU3)/cursor-verify  ]   | === ENV DIAG ===
+[Verify — Cursor CLI Claims (CU1-CU3)/cursor-verify  ]   | PATH=/opt/acttoolcache/node/24.15.0/x64/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
+[Verify — Cursor CLI Claims (CU1-CU3)/cursor-verify  ]   | /root/.local/bin/agent
+[Verify — Cursor CLI Claims (CU1-CU3)/cursor-verify  ]   | /root/.local/bin/cursor-agent
+[Verify — Cursor CLI Claims (CU1-CU3)/cursor-verify  ]   | /root/.local/share/cursor-agent
+[Verify — Cursor CLI Claims (CU1-CU3)/cursor-verify  ]   | /root/.local/share/cursor-agent/versions/2026.05.20-2b5dd59/cursor-agent-svc.js.LICENSE.txt
+[Verify — Cursor CLI Claims (CU1-CU3)/cursor-verify  ]   | /root/.local/share/cursor-agent/versions/2026.05.20-2b5dd59/cursor-agent-svc.js
+[Verify — Cursor CLI Claims (CU1-CU3)/cursor-verify  ]   | /root/.local/share/cursor-agent/versions/2026.05.20-2b5dd59/cursor-askpass
+[Verify — Cursor CLI Claims (CU1-CU3)/cursor-verify  ]   | /root/.local/share/cursor-agent/versions/2026.05.20-2b5dd59/cursorsandbox
+[Verify — Cursor CLI Claims (CU1-CU3)/cursor-verify  ]   | /root/.local/share/cursor-agent/versions/2026.05.20-2b5dd59/cursor-askpass.js
+[Verify — Cursor CLI Claims (CU1-CU3)/cursor-verify  ]   | /root/.local/share/cursor-agent/versions/2026.05.20-2b5dd59/cursor-agent-svc
+[Verify — Cursor CLI Claims (CU1-CU3)/cursor-verify  ]   | /root/.local/share/cursor-agent/versions/2026.05.20-2b5dd59/cursor-agent
+[Verify — Cursor CLI Claims (CU1-CU3)/cursor-verify  ]   | /root/.cache/cursor-compile-cache
+[Verify — Cursor CLI Claims (CU1-CU3)/cursor-verify  ]   | /root/.cursor
+[Verify — Cursor CLI Claims (CU1-CU3)/cursor-verify  ]   | DISPLAY=
+[Verify — Cursor CLI Claims (CU1-CU3)/cursor-verify  ]   | === END ENV DIAG ===
+[Verify — Cursor CLI Claims (CU1-CU3)/cursor-verify  ]   ✅  Success - Main Diagnose environment after install attempt
+[Verify — Cursor CLI Claims (CU1-CU3)/cursor-verify  ] Cleaning up container for job cursor-verify
+[Verify — Cursor CLI Claims (CU1-CU3)/cursor-verify  ] 🏁  Job succeeded

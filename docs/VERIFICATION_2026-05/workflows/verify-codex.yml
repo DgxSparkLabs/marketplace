@@ -1,0 +1,211 @@
+name: "Verify — Codex Claims (C1-C7)"
+
+# Verification scaffold only — never merged, never triggered by push.
+# Run locally via:
+#   act workflow_dispatch -W docs/VERIFICATION_2026-05/workflows/verify-codex.yml \
+#     -P ubuntu-latest=catthehacker/ubuntu:act-latest --container-architecture linux/amd64
+
+on:
+  workflow_dispatch:
+
+jobs:
+  codex-verify:
+    runs-on: ubuntu-latest
+    env:
+      CODEX_DISABLE_TELEMETRY: "1"
+      CI: "true"
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Install uv (direct, no token needed)
+        run: |
+          curl -LsSf https://astral.sh/uv/install.sh | sh
+          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+          export PATH="$HOME/.local/bin:$PATH"
+          uv --version
+
+      - name: Regenerate manifests
+        run: |
+          export PATH="$HOME/.local/bin:$PATH"
+          uv run scripts/generate_manifest.py
+
+      - name: Install Node.js 20
+        run: |
+          curl -fsSL https://deb.nodesource.com/setup_20.x | bash -
+          apt-get install -y nodejs
+
+      - name: Install Codex CLI
+        run: npm install -g @openai/codex@latest
+
+      - name: Verify Codex binary present
+        run: codex --version
+
+      # ── C1: local-path marketplace add (baseline) ─────────────────────────
+      - name: "C1 — codex plugin marketplace add ./ (local path baseline)"
+        id: c1
+        continue-on-error: true
+        run: |
+          echo "=== C1 START ==="
+          set +e
+          OUT=$(codex plugin marketplace add ./ 2>&1)
+          EXIT=$?
+          echo "$OUT"
+          echo "C1_EXIT=$EXIT"
+          echo "=== C1 END ==="
+          exit $EXIT
+
+      - name: "C1 — assert marketplace in config"
+        id: c1_assert
+        continue-on-error: true
+        run: |
+          echo "=== C1_ASSERT START ==="
+          cat ~/.codex/config.toml 2>&1 || echo "NO_CONFIG_TOML"
+          cat ~/.codex/config.toml 2>&1 | grep -F "dgxsparklabs-marketplace" && echo "C1_ASSERT=PASS" || echo "C1_ASSERT=FAIL"
+          echo "=== C1_ASSERT END ==="
+
+      - name: "C1 — cleanup"
+        continue-on-error: true
+        run: codex plugin marketplace remove dgxsparklabs-marketplace 2>&1 || true
+
+      # ── C2: GitHub shortform, no ref ─────────────────────────────────────
+      - name: "C2 — codex plugin marketplace add DgxSparkLabs/marketplace"
+        id: c2
+        continue-on-error: true
+        run: |
+          echo "=== C2 START ==="
+          set +e
+          OUT=$(codex plugin marketplace add DgxSparkLabs/marketplace 2>&1)
+          EXIT=$?
+          echo "$OUT"
+          echo "C2_EXIT=$EXIT"
+          if [ $EXIT -ne 0 ]; then
+            echo "LAST_STDERR: $OUT"
+          fi
+          echo "=== C2 END ==="
+          exit $EXIT
+
+      - name: "C2 — assert registration"
+        id: c2_assert
+        continue-on-error: true
+        run: |
+          echo "=== C2_ASSERT START ==="
+          cat ~/.codex/config.toml 2>&1 | grep -F "dgxsparklabs-marketplace" && echo "C2_ASSERT=PASS" || echo "C2_ASSERT=FAIL"
+          echo "=== C2_ASSERT END ==="
+
+      - name: "C2 — cleanup"
+        continue-on-error: true
+        run: codex plugin marketplace remove dgxsparklabs-marketplace 2>&1 || true
+
+      # ── C3: GitHub shortform with --ref ──────────────────────────────────
+      - name: "C3 — codex plugin marketplace add DgxSparkLabs/marketplace --ref feat/claude-plugin-compliance"
+        id: c3
+        continue-on-error: true
+        run: |
+          echo "=== C3 START ==="
+          set +e
+          OUT=$(codex plugin marketplace add DgxSparkLabs/marketplace --ref feat/claude-plugin-compliance 2>&1)
+          EXIT=$?
+          echo "$OUT"
+          echo "C3_EXIT=$EXIT"
+          if [ $EXIT -ne 0 ]; then
+            echo "LAST_STDERR: $OUT"
+          fi
+          echo "=== C3 END ==="
+          exit $EXIT
+
+      - name: "C3 — assert registration"
+        id: c3_assert
+        continue-on-error: true
+        run: |
+          echo "=== C3_ASSERT START ==="
+          cat ~/.codex/config.toml 2>&1 | grep -F "dgxsparklabs-marketplace" && echo "C3_ASSERT=PASS" || echo "C3_ASSERT=FAIL"
+          echo "=== C3_ASSERT END ==="
+
+      - name: "C3 — cleanup"
+        continue-on-error: true
+        run: codex plugin marketplace remove dgxsparklabs-marketplace 2>&1 || true
+
+      # ── C4: plugin list enumeration after registration ────────────────────
+      - name: "C4 — register via local path (C4 precondition)"
+        continue-on-error: true
+        run: |
+          echo "=== C4_PREREQ START ==="
+          codex plugin marketplace add ./ 2>&1 || true
+          echo "=== C4_PREREQ END ==="
+
+      - name: "C4 — codex plugin list (enumeration test)"
+        id: c4
+        continue-on-error: true
+        run: |
+          echo "=== C4 START ==="
+          set +e
+          LIST=$(codex plugin list 2>&1)
+          EXIT=$?
+          echo "$LIST"
+          echo "C4_EXIT=$EXIT"
+          echo "$LIST" | grep -E "skill-example|bundle-skill-all|skill-telegram-notify" && echo "C4_FOUND=YES" || echo "C4_FOUND=NO"
+          echo "LAST_STDERR: $LIST"
+          echo "=== C4 END ==="
+
+      # ── C5: install a specific plugin from registered marketplace ─────────
+      - name: "C5 — codex plugin add skill-example@dgxsparklabs-marketplace"
+        id: c5
+        continue-on-error: true
+        run: |
+          echo "=== C5 START ==="
+          set +e
+          OUT=$(codex plugin add skill-example@dgxsparklabs-marketplace 2>&1)
+          EXIT=$?
+          echo "$OUT"
+          echo "C5_EXIT=$EXIT"
+          if [ $EXIT -ne 0 ]; then
+            echo "LAST_STDERR: $OUT"
+          fi
+          echo "=== C5 END ==="
+          exit $EXIT
+
+      # ── C6/C7: manifest inspection — what does Codex expect? ─────────────
+      - name: "C6+C7 — inspect Codex manifest expectations from failure output"
+        id: c6c7
+        continue-on-error: true
+        run: |
+          echo "=== C6C7 START ==="
+          codex plugin marketplace remove dgxsparklabs-marketplace 2>&1 || true
+
+          # Try GitHub shortform and capture full error
+          set +e
+          OUT=$(codex plugin marketplace add DgxSparkLabs/marketplace 2>&1)
+          EXIT=$?
+          echo "RAW_OUTPUT_SHORTFORM:"
+          echo "$OUT"
+          echo "C6_EXIT=$EXIT"
+
+          # Attempt fresh local add and plugin add to provoke manifest error
+          codex plugin marketplace add ./ 2>&1 || true
+          OUT2=$(codex plugin add skill-example@dgxsparklabs-marketplace 2>&1)
+          echo "PLUGIN_ADD_OUTPUT:"
+          echo "$OUT2"
+          echo "LAST_STDERR: $OUT2"
+
+          # Inspect what manifest dirs exist in the repo
+          echo "--- .codex-plugin/ ---"
+          ls -la .codex-plugin/ 2>&1 || echo "NO .codex-plugin/ at repo root"
+          echo "--- .claude-plugin/ ---"
+          ls -la .claude-plugin/ 2>&1 || echo "NO .claude-plugin/ at repo root"
+
+          # Check _generated/skill-example for Codex-specific manifest
+          echo "--- _generated/skill-example/ ---"
+          ls -la _generated/skill-example/ 2>&1 || echo "NO _generated/skill-example/"
+
+          # Dump full codex config
+          echo "--- ~/.codex/ ---"
+          find ~/.codex -type f 2>/dev/null | head -30 || echo "NO ~/.codex files"
+          cat ~/.codex/config.toml 2>&1 || echo "No config.toml"
+          echo "=== C6C7 END ==="
+
+      - name: "Final cleanup"
+        if: always()
+        continue-on-error: true
+        run: |
+          codex plugin marketplace remove dgxsparklabs-marketplace 2>&1 || true

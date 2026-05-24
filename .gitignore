@@ -4,6 +4,9 @@ __pycache__/
 .DS_Store
 .env
 
+# Obsidian vault personal config (workspace state, plugin layout, etc.)
+.obsidian/
+
 # Research raw artifacts (intermediate data, not canonical)
 research/raw_scrape_*.txt
 research/raw_kaggle_full_output.txt

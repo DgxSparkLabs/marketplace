@@ -1,0 +1,102 @@
+test_activate_scripts_have_shebang (__main__.TestActivateScripts.test_activate_scripts_have_shebang) ... ok
+test_activate_scripts_use_strict_bash (__main__.TestActivateScripts.test_activate_scripts_use_strict_bash) ... ok
+test_agents_skills_mirror_exists (__main__.TestAgentsMirror.test_agents_skills_mirror_exists)
+.agents/skills/<name>/SKILL.md must exist for every source skill. ... ok
+test_agents_skills_no_claude_plugin_leak (__main__.TestAgentsMirror.test_agents_skills_no_claude_plugin_leak)
+No .claude-plugin/ directory must appear under .agents/skills/. ... ok
+test_agents_skills_no_codex_plugin_leak (__main__.TestAgentsMirror.test_agents_skills_no_codex_plugin_leak)
+No .codex-plugin/ directory must appear under .agents/skills/. ... ok
+test_bundle_cannot_use_reserved_catchall_name (__main__.TestBundleValidation.test_bundle_cannot_use_reserved_catchall_name)
+load_bundles raises ValueError if catalog defines a reserved <prefix>-all name. ... ok
+test_bundle_member_syntax_validated (__main__.TestBundleValidation.test_bundle_member_syntax_validated)
+BundleMember.from_str raises ValueError on malformed member strings. ... ok
+test_bundle_requires_members (__main__.TestBundleValidation.test_bundle_requires_members)
+load_bundles raises ValueError if a bundle has no 'members' field. ... ok
+test_catchall_deps_match_all_sources (__main__.TestCatchAllBundles.test_catchall_deps_match_all_sources)
+Each catch-all bundle's deps must equal exactly every instance of that construct. ... ok
+test_catchall_present_for_each_construct_with_sources (__main__.TestCatchAllBundles.test_catchall_present_for_each_construct_with_sources)
+bundle-<prefix>-all must exist iff the construct has at least one source. ... ok
+test_all_prefixes_kebab_case (__main__.TestConstructRegistry.test_all_prefixes_kebab_case)
+Every construct prefix must be kebab-case. ... ok
+test_all_prefixes_unique (__main__.TestConstructRegistry.test_all_prefixes_unique)
+No two construct classes may share the same prefix. ... ok
+test_all_plugins_at_correct_path (__main__.TestGeneratedPlugins.test_all_plugins_at_correct_path)
+Every plugin in marketplace.json must resolve to a real .claude-plugin/plugin.json. ... ok
+test_all_plugins_parse_and_have_required_fields (__main__.TestGeneratedPlugins.test_all_plugins_parse_and_have_required_fields)
+Every plugin.json must parse and carry the required common fields. ... ok
+test_bundle_dependencies_resolve_to_real_plugins (__main__.TestGeneratedPlugins.test_bundle_dependencies_resolve_to_real_plugins)
+Every catalog bundle's dependencies must resolve to real plugin files. ... ok
+test_individual_plugin_name_matches_prefix_and_source (__main__.TestGeneratedPlugins.test_individual_plugin_name_matches_prefix_and_source)
+Each individual plugin's name field must equal <prefix>-<source_name>. ... ok
+test_check_succeeds (__main__.TestGeneratorDrift.test_check_succeeds) ... ok
+test_marketplace_entries_have_required_fields (__main__.TestMarketplaceJson.test_marketplace_entries_have_required_fields)
+Every marketplace.json entry must have all required fields. ... ok
+test_marketplace_entries_sorted_by_category_then_name (__main__.TestMarketplaceJson.test_marketplace_entries_sorted_by_category_then_name)
+Entries must be sorted by (category, name) for deterministic diffs. ... ok
+test_marketplace_json_exists_and_parses (__main__.TestMarketplaceJson.test_marketplace_json_exists_and_parses)
+Top-level .claude-plugin/marketplace.json must exist and parse. ... ok
+test_marketplace_lists_all_expected_plugins (__main__.TestMarketplaceJson.test_marketplace_lists_all_expected_plugins)
+Marketplace must list exactly: all individuals + catalog bundles + catch-alls. ... ok
+test_catalog_toml_contains_only_bundles (__main__.TestMarketplaceToml.test_catalog_toml_contains_only_bundles)
+After the DI refactor, catalog.toml must contain only [bundle.*] blocks. ... ok
+test_marketplace_has_required_fields (__main__.TestMarketplaceToml.test_marketplace_has_required_fields) ... ok
+test_marketplace_toml_parses (__main__.TestMarketplaceToml.test_marketplace_toml_parses) ... ok
+test_marketplace_version_semver (__main__.TestMarketplaceToml.test_marketplace_version_semver) ... ok
+test_no_claude_plugin_in_mirror_dirs (__main__.TestMirrorHygiene.test_no_claude_plugin_in_mirror_dirs)
+No .claude-plugin/ must appear inside .codex/, .gemini/, .devin/, .agents/ mirrors. ... ok
+test_no_codex_plugin_in_mirror_dirs (__main__.TestMirrorHygiene.test_no_codex_plugin_in_mirror_dirs)
+No .codex-plugin/ must appear inside .gemini/, .devin/, .agents/ mirrors. ... ok
+test_no_cursor_plugin_in_mirror_dirs (__main__.TestMirrorHygiene.test_no_cursor_plugin_in_mirror_dirs)
+No .cursor-plugin/ must appear inside .codex/, .gemini/, .devin/, .agents/ mirrors. ... ok
+test_every_construct_in_at_least_one_bundle (__main__.TestNoOrphanedConstructs.test_every_construct_in_at_least_one_bundle)
+Every individual plugin must be reachable via some bundle. ... ok
+test_no_secrets_in_tracked_files (__main__.TestNoSecrets.test_no_secrets_in_tracked_files) ... ok
+test_codex_plugin_json_emitted_for_supported_constructs (__main__.TestPerPlatformManifests.test_codex_plugin_json_emitted_for_supported_constructs)
+_generated/<plugin>/.codex-plugin/plugin.json must exist iff CodexPlatform supports the construct. ... ok
+test_codex_plugin_json_theme_not_emitted (__main__.TestPerPlatformManifests.test_codex_plugin_json_theme_not_emitted)
+ThemeConstruct is not in CodexPlatform.supports; no .codex-plugin/ for themes. ... ok
+test_codex_plugin_json_valid_schema (__main__.TestPerPlatformManifests.test_codex_plugin_json_valid_schema)
+Every emitted .codex-plugin/plugin.json must parse and have required Codex fields. ... ok
+test_cursor_plugin_json_emitted_for_supported_constructs (__main__.TestPerPlatformManifests.test_cursor_plugin_json_emitted_for_supported_constructs)
+_generated/<plugin>/.cursor-plugin/plugin.json must exist iff CursorPlatform supports the construct. ... ok
+test_cursor_plugin_json_valid_schema (__main__.TestPerPlatformManifests.test_cursor_plugin_json_valid_schema)
+Every emitted .cursor-plugin/plugin.json must parse and have required Cursor fields. ... ok
+test_codex_skills_mirror (__main__.TestPlatformMirrors.test_codex_skills_mirror)
+Codex mirror must contain a directory for every skill. ... ok
+test_cursor_rules_mirror (__main__.TestPlatformMirrors.test_cursor_rules_mirror)
+Cursor mirror must contain a .md file for every rule. ... ok
+test_devin_skills_mirror (__main__.TestPlatformMirrors.test_devin_skills_mirror)
+Devin mirror must contain a directory for every skill. ... ok
+test_gemini_skills_mirror_and_extension_manifest (__main__.TestPlatformMirrors.test_gemini_skills_mirror_and_extension_manifest)
+Gemini mirror must contain skills and a valid gemini-extension.json. ... ok
+test_windsurf_rules_mirror (__main__.TestPlatformMirrors.test_windsurf_rules_mirror)
+Windsurf mirror must contain a .md file for every rule. ... ok
+test_marketplace_count_matches_expected_formula (__main__.TestPluginCount.test_marketplace_count_matches_expected_formula)
+Count = individuals + catalog_bundles + catch-alls (one per construct with sources). ... ok
+test_cursor_marketplace_json_entries_have_required_fields (__main__.TestRootLevelManifests.test_cursor_marketplace_json_entries_have_required_fields)
+Every entry in .cursor-plugin/marketplace.json must have name and source. ... ok
+test_cursor_marketplace_json_exists (__main__.TestRootLevelManifests.test_cursor_marketplace_json_exists)
+.cursor-plugin/marketplace.json must exist at repo root (enables Cursor team-import). ... ok
+test_cursor_marketplace_json_valid (__main__.TestRootLevelManifests.test_cursor_marketplace_json_valid)
+.cursor-plugin/marketplace.json must parse and have name + plugins array. ... ok
+test_cursor_marketplace_lists_cursor_supported_plugins (__main__.TestRootLevelManifests.test_cursor_marketplace_lists_cursor_supported_plugins)
+Every construct in CursorPlatform.supports must have entries in .cursor-plugin/marketplace.json. ... ok
+test_root_gemini_extension_json_exists (__main__.TestRootLevelManifests.test_root_gemini_extension_json_exists)
+gemini-extension.json must exist at repo root (enables GitHub URL install). ... ok
+test_root_gemini_extension_json_matches_gemini_dir_copy (__main__.TestRootLevelManifests.test_root_gemini_extension_json_matches_gemini_dir_copy)
+Root gemini-extension.json must be byte-identical to .gemini/gemini-extension.json. ... ok
+test_root_gemini_extension_json_valid (__main__.TestRootLevelManifests.test_root_gemini_extension_json_valid)
+Root gemini-extension.json must parse and carry required fields. ... ok
+test_construct_source_dirs_exist (__main__.TestSourceLayout.test_construct_source_dirs_exist)
+Each of the 10 construct source directories must exist. ... ok
+test_examples_not_in_separate_dir (__main__.TestSourceLayout.test_examples_not_in_separate_dir)
+A top-level examples/ folder must not exist � examples live in native construct dirs. ... ok
+test_examples_present_per_construct (__main__.TestSourceLayout.test_examples_present_per_construct)
+Each construct source dir must contain an 'example' subdir. ... ok
+test_instance_names_kebab_case (__main__.TestSourceLayout.test_instance_names_kebab_case)
+Every instance name across all constructs must be kebab-case. ... ok
+
+----------------------------------------------------------------------
+Ran 52 tests in 6.518s
+
+OK

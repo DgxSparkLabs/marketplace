@@ -1,0 +1,115 @@
+name: "Verify — Claude Code Claims (CL1-CL3)"
+
+# Verification scaffold only — never merged, never triggered by push.
+# Run locally via:
+#   act workflow_dispatch -W docs/VERIFICATION_2026-05/workflows/verify-claude.yml \
+#     -P ubuntu-latest=catthehacker/ubuntu:act-latest --container-architecture linux/amd64
+
+on:
+  workflow_dispatch:
+
+jobs:
+  claude-verify:
+    runs-on: ubuntu-latest
+    env:
+      CI: "true"
+      ANTHROPIC_API_KEY: "dummy-for-cli-verification"
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Install uv (direct, no token needed)
+        run: |
+          curl -LsSf https://astral.sh/uv/install.sh | sh
+          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+          export PATH="$HOME/.local/bin:$PATH"
+          uv --version
+
+      - name: Regenerate manifests
+        run: |
+          export PATH="$HOME/.local/bin:$PATH"
+          uv run scripts/generate_manifest.py
+
+      - name: Install Node.js 20
+        run: |
+          curl -fsSL https://deb.nodesource.com/setup_20.x | bash -
+          apt-get install -y nodejs
+
+      - name: Install Claude Code CLI
+        run: npm install -g @anthropic-ai/claude-code@latest
+
+      - name: Verify Claude binary present
+        run: claude --version
+
+      # ── CL1: local-path marketplace add (baseline) ───────────────────────
+      - name: "CL1 — claude plugin marketplace add ./ (baseline)"
+        id: cl1
+        continue-on-error: true
+        run: |
+          echo "=== CL1 START ==="
+          set +e
+          OUT=$(claude plugin marketplace add ./ 2>&1)
+          EXIT=$?
+          echo "$OUT"
+          echo "CL1_EXIT=$EXIT"
+          [ $EXIT -eq 0 ] && echo "CL1=PASS" || echo "CL1=FAIL"
+          echo "=== CL1 END ==="
+          exit $EXIT
+
+      - name: "CL1 — assert marketplace listed"
+        id: cl1_assert
+        continue-on-error: true
+        run: |
+          echo "=== CL1_ASSERT START ==="
+          LIST=$(claude plugin marketplace list 2>&1)
+          echo "$LIST"
+          echo "$LIST" | grep -F "dgxsparklabs-marketplace" && echo "CL1_ASSERT=PASS" || echo "CL1_ASSERT=FAIL"
+          echo "=== CL1_ASSERT END ==="
+
+      # ── CL2: install specific plugin from registered marketplace ─────────
+      - name: "CL2 — claude plugin install skill-example@dgxsparklabs-marketplace --scope project"
+        id: cl2
+        continue-on-error: true
+        run: |
+          echo "=== CL2 START ==="
+          set +e
+          OUT=$(claude plugin install skill-example@dgxsparklabs-marketplace --scope project 2>&1)
+          EXIT=$?
+          echo "$OUT"
+          echo "CL2_EXIT=$EXIT"
+          [ $EXIT -eq 0 ] && echo "CL2=PASS" || echo "CL2=FAIL"
+          if [ $EXIT -ne 0 ]; then
+            echo "LAST_STDERR: $OUT"
+          fi
+          echo "=== CL2 END ==="
+          exit $EXIT
+
+      # ── CL3: plugin list shows skill-example ─────────────────────────────
+      - name: "CL3 — claude plugin list shows skill-example"
+        id: cl3
+        continue-on-error: true
+        run: |
+          echo "=== CL3 START ==="
+          set +e
+          LIST=$(claude plugin list 2>&1)
+          EXIT=$?
+          echo "$LIST"
+          echo "CL3_EXIT=$EXIT"
+          echo "$LIST" | grep -F "skill-example" && echo "CL3_FOUND=YES" || echo "CL3_FOUND=NO"
+          echo "=== CL3 END ==="
+
+      - name: "Dump Claude plugin state"
+        if: always()
+        continue-on-error: true
+        run: |
+          echo "=== CLAUDE STATE DUMP ==="
+          claude plugin marketplace list 2>&1 || true
+          claude plugin list 2>&1 || true
+          find ~/.claude -type f 2>/dev/null | head -30 || echo "No ~/.claude files"
+          echo "=== END CLAUDE STATE DUMP ==="
+
+      - name: "Final cleanup"
+        if: always()
+        continue-on-error: true
+        run: |
+          claude plugin marketplace remove dgxsparklabs-marketplace 2>&1 || true

@@ -1,0 +1,9 @@
+CLAIM: CL2 — claude plugin install skill-example@dgxsparklabs-marketplace --scope project succeeds
+STATUS: VERIFIED-PASS
+LOG: docs/VERIFICATION_2026-05/logs/verify-claude-run.log
+
+KEY EVIDENCE:
+  | === CL2 START ===
+  | Installing plugin "skill-example@dgxsparklabs-marketplace"...✔ Successfully installed plugin: skill-example@dgxsparklabs-marketplace (scope: project)
+  | CL2_EXIT=0
+  | CL2=PASS

@@ -1,0 +1,17 @@
+CLAIM: C3 — codex plugin marketplace add DgxSparkLabs/marketplace --ref feat/claude-plugin-compliance
+STATUS: VERIFIED-PASS
+LOG: docs/VERIFICATION_2026-05/logs/verify-codex-run.log, lines 179-198
+
+KEY EVIDENCE:
+  | === C3 START ===
+  | Added marketplace `dgxsparklabs-marketplace` from https://github.com/DgxSparkLabs/marketplace.git#feat/claude-plugin-compliance.
+  | Installed marketplace root: /root/.codex/.tmp/marketplaces/dgxsparklabs-marketplace
+  | C3_EXIT=0
+  | === C3 END ===
+  (assert step)
+  | [marketplaces.dgxsparklabs-marketplace]
+  | C3_ASSERT=PASS
+
+ANALYSIS: With --ref pointing to feat/claude-plugin-compliance, Codex accepts the marketplace.
+This branch contains .claude-plugin/marketplace.json which Codex reads as a supported manifest.
+The marketplace installs to /root/.codex/.tmp/marketplaces/dgxsparklabs-marketplace (remote cache).

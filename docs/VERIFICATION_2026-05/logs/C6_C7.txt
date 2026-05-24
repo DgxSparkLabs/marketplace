@@ -1,0 +1,47 @@
+CLAIMS: C6 (where Codex looks for manifest) + C7 (what manifest Codex expects per plugin)
+STATUS: VERIFIED-FAIL (C6 explains C2 failure) + VERIFIED (C7 confirmed by C5 error)
+LOG: docs/VERIFICATION_2026-05/logs/verify-codex-run.log, lines 401-470
+
+KEY EVIDENCE FOR C6 (marketplace-level manifest):
+  | RAW_OUTPUT_SHORTFORM:
+  | Error: invalid marketplace file `/root/.codex/.tmp/marketplaces/.staging/marketplace-add-ohLkKF`:
+  |   marketplace root does not contain a supported manifest
+
+  The staging directory contains the full cloned repo:
+  | /root/.codex/.tmp/marketplaces/.staging/marketplace-add-ohLkKF/catalog.toml
+  | /root/.codex/.tmp/marketplaces/.staging/marketplace-add-ohLkKF/AGENTS.md
+  (no .codex-plugin/ directory found in listing — only .claude-plugin/ exists)
+
+  Repo root manifest dirs found:
+  | --- .codex-plugin/ ---
+  | NO .codex-plugin/ at repo root
+  | --- .claude-plugin/ ---
+  | drwxr-xr-x  2 root root  4096 May 24 02:37 .
+  | -rw-rw-rw-  1 root root 29456 May 24 02:37 marketplace.json
+
+KEY EVIDENCE FOR C7 (per-plugin manifest):
+  | PLUGIN_ADD_OUTPUT:
+  | Error: missing or invalid plugin.json
+  |
+  | Caused by:
+  |     missing or invalid plugin.json
+
+  Per-plugin dir contents:
+  | --- _generated/skill-example/ ---
+  | drwxr-xr-x  2 root root 4096 May 24 02:37 .claude-plugin
+  | -rw-rw-rw-  1 root root 2803 May 22 00:21 README.md
+  | -rw-rw-rw-  1 root root  999 May 22 00:21 SKILL.md
+
+CONCLUSIONS:
+- C6: When `codex plugin marketplace add owner/repo` clones the repo, it expects to find
+  a supported manifest at the repo root. The default branch (main) has .claude-plugin/marketplace.json
+  but NOT .codex-plugin/marketplace.json, hence "marketplace root does not contain a supported manifest".
+  With --ref feat/claude-plugin-compliance the manifest IS found (C3=PASS), confirming Codex
+  reads .claude-plugin/marketplace.json as its marketplace manifest.
+
+- C7: For per-plugin install, Codex expects a `plugin.json` (not inside .claude-plugin/) at
+  the plugin directory root or in a Codex-specific path. The error "missing or invalid plugin.json"
+  without a path prefix suggests Codex looks for plugin.json directly, not .codex-plugin/plugin.json.
+  Since _generated/skill-example/ only has .claude-plugin/plugin.json (subdirectory), the install fails.
+  The exact Codex per-plugin path (plugin.json vs .codex-plugin/plugin.json) cannot be confirmed
+  from error output alone — the error message says "plugin.json" not ".codex-plugin/plugin.json".
