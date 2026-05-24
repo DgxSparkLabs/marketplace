@@ -860,6 +860,35 @@ class TestAgentsMirror(unittest.TestCase):
         )
 
 
+# ─── TestAgentsPluginsMarketplace ─────────────────────────────────────────────
+
+class TestAgentsPluginsMarketplace(unittest.TestCase):
+    """Phase 5.5 .agents/plugins/marketplace.json (Unit 6 / D-14 / A5).
+
+    Codex documents .agents/plugins/marketplace.json as the canonical
+    marketplace path per developers.openai.com/codex/plugins/build
+    (2026-05-25). We emit it as a byte-identical copy of
+    .claude-plugin/marketplace.json (the legacy-compat path); both remain
+    valid until Codex deprecates the legacy form.
+    """
+
+    def test_agents_plugins_marketplace_exists(self):
+        self.assertTrue(
+            (REPO_ROOT / ".agents" / "plugins" / "marketplace.json").exists(),
+            ".agents/plugins/marketplace.json missing — Codex canonical path "
+            "per developers.openai.com/codex/plugins/build (2026-05-25)",
+        )
+
+    def test_agents_plugins_marketplace_byte_identical(self):
+        canonical = (REPO_ROOT / ".agents" / "plugins" / "marketplace.json").read_bytes()
+        legacy = (REPO_ROOT / ".claude-plugin" / "marketplace.json").read_bytes()
+        self.assertEqual(
+            canonical, legacy,
+            ".agents/plugins/marketplace.json must be byte-identical to "
+            ".claude-plugin/marketplace.json (Phase 5.5 is a copy, not a re-emit)",
+        )
+
+
 # ─── TestWindsurfHooksMirror ──────────────────────────────────────────────────
 
 class TestWindsurfHooksMirror(unittest.TestCase):

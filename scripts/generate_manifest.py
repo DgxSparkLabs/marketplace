@@ -16,6 +16,7 @@ Phases:
   4.  Gemini extension manifest: write .gemini/gemini-extension.json
   4.5 Root-level gemini-extension.json: copy .gemini/gemini-extension.json → repo root
   5.  Top-level marketplace.json: write from in-memory entries (decision #17)
+  5.5 Codex canonical marketplace at .agents/plugins/marketplace.json (D-14)
   6.  Root-level .cursor-plugin/marketplace.json: write Cursor multi-plugin manifest
 
 Usage:
@@ -215,6 +216,15 @@ def main() -> None:
     # ── Phase 5: Top-level marketplace.json (from in-memory entries) ──────────
     _write_marketplace_json(marketplace_entries)
 
+    # ── Phase 5.5: Codex canonical marketplace at .agents/plugins/ (D-14) ─────
+    # developers.openai.com/codex/plugins/build (2026-05-25) documents this as
+    # the canonical path. .claude-plugin/marketplace.json remains the legacy-
+    # compat path (Codex still reads it as a fallback). Both files are
+    # byte-identical; this is a copy, not a re-emit.
+    agents_plugins_dir = REPO_ROOT / ".agents" / "plugins"
+    agents_plugins_dir.mkdir(parents=True, exist_ok=True)
+    shutil.copy2(MARKETPLACE_JSON, agents_plugins_dir / "marketplace.json")
+
     # ── Phase 6: Root-level .cursor-plugin/marketplace.json (Issue 5 fix) ─────
     # Cursor team-marketplace import (Dashboard → Settings → Plugins → Import)
     # expects .cursor-plugin/marketplace.json at repo root listing all plugins.
@@ -270,6 +280,7 @@ def _check_drift() -> int:
     root_generated = [
         REPO_ROOT / "gemini-extension.json",
         REPO_ROOT / ".cursor-plugin",
+        REPO_ROOT / ".agents" / "plugins",  # Phase 5.5 (D-14)
     ]
     targets = [GENERATED, MARKETPLACE_JSON.parent] + mirror_dirs + root_generated
 

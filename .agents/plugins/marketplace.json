@@ -1,0 +1,900 @@
+{
+  "name": "dgxsparklabs-marketplace",
+  "owner": {
+    "name": "DgxSparkLabs",
+    "url": "https://github.com/DgxSparkLabs"
+  },
+  "plugins": [
+    {
+      "name": "agent-example",
+      "source": "./_generated/agent-example",
+      "description": "Reviews a lab notebook entry as a skeptical peer reviewer. Use when the user has drafted a notebook entry and wants a critical second opinion before publishing.",
+      "version": "1.0.0",
+      "author": {
+        "name": "DgxSparkLabs",
+        "url": "https://github.com/DgxSparkLabs"
+      },
+      "category": "agent"
+    },
+    {
+      "name": "bundle-agent-all",
+      "source": "./_generated/bundle-agent-all",
+      "description": "Every agent in the marketplace",
+      "version": "1.0.0",
+      "author": {
+        "name": "DgxSparkLabs",
+        "url": "https://github.com/DgxSparkLabs"
+      },
+      "category": "bundle"
+    },
+    {
+      "name": "bundle-ai-services-skills",
+      "source": "./_generated/bundle-ai-services-skills",
+      "description": "External AI APIs and cloud service integrations",
+      "version": "1.0.0",
+      "author": {
+        "name": "DgxSparkLabs",
+        "url": "https://github.com/DgxSparkLabs"
+      },
+      "category": "bundle"
+    },
+    {
+      "name": "bundle-code-analysis-skills",
+      "source": "./_generated/bundle-code-analysis-skills",
+      "description": "Codebase audits and domain-specific reference guides",
+      "version": "1.0.0",
+      "author": {
+        "name": "DgxSparkLabs",
+        "url": "https://github.com/DgxSparkLabs"
+      },
+      "category": "bundle"
+    },
+    {
+      "name": "bundle-command-all",
+      "source": "./_generated/bundle-command-all",
+      "description": "Every command in the marketplace",
+      "version": "1.0.0",
+      "author": {
+        "name": "DgxSparkLabs",
+        "url": "https://github.com/DgxSparkLabs"
+      },
+      "category": "bundle"
+    },
+    {
+      "name": "bundle-communication-skills",
+      "source": "./_generated/bundle-communication-skills",
+      "description": "Send emails, messages, and notifications",
+      "version": "1.0.0",
+      "author": {
+        "name": "DgxSparkLabs",
+        "url": "https://github.com/DgxSparkLabs"
+      },
+      "category": "bundle"
+    },
+    {
+      "name": "bundle-devops-skills",
+      "source": "./_generated/bundle-devops-skills",
+      "description": "CI/CD, repository setup, port tunneling, infrastructure tools",
+      "version": "1.0.0",
+      "author": {
+        "name": "DgxSparkLabs",
+        "url": "https://github.com/DgxSparkLabs"
+      },
+      "category": "bundle"
+    },
+    {
+      "name": "bundle-documentation-rules",
+      "source": "./_generated/bundle-documentation-rules",
+      "description": "Tracking work, documenting decisions, maintaining project history",
+      "version": "1.0.0",
+      "author": {
+        "name": "DgxSparkLabs",
+        "url": "https://github.com/DgxSparkLabs"
+      },
+      "category": "bundle"
+    },
+    {
+      "name": "bundle-environment-rules",
+      "source": "./_generated/bundle-environment-rules",
+      "description": "Tooling conventions and output discipline",
+      "version": "1.0.0",
+      "author": {
+        "name": "DgxSparkLabs",
+        "url": "https://github.com/DgxSparkLabs"
+      },
+      "category": "bundle"
+    },
+    {
+      "name": "bundle-examples",
+      "source": "./_generated/bundle-examples",
+      "description": "Reference examples \u2014 install to study every construct type",
+      "version": "1.0.0",
+      "author": {
+        "name": "DgxSparkLabs",
+        "url": "https://github.com/DgxSparkLabs"
+      },
+      "category": "bundle"
+    },
+    {
+      "name": "bundle-hook-all",
+      "source": "./_generated/bundle-hook-all",
+      "description": "Every hook in the marketplace",
+      "version": "1.0.0",
+      "author": {
+        "name": "DgxSparkLabs",
+        "url": "https://github.com/DgxSparkLabs"
+      },
+      "category": "bundle"
+    },
+    {
+      "name": "bundle-lsp-all",
+      "source": "./_generated/bundle-lsp-all",
+      "description": "Every lsp in the marketplace",
+      "version": "1.0.0",
+      "author": {
+        "name": "DgxSparkLabs",
+        "url": "https://github.com/DgxSparkLabs"
+      },
+      "category": "bundle"
+    },
+    {
+      "name": "bundle-mcp-all",
+      "source": "./_generated/bundle-mcp-all",
+      "description": "Every mcp in the marketplace",
+      "version": "1.0.0",
+      "author": {
+        "name": "DgxSparkLabs",
+        "url": "https://github.com/DgxSparkLabs"
+      },
+      "category": "bundle"
+    },
+    {
+      "name": "bundle-meta-tooling-skills",
+      "source": "./_generated/bundle-meta-tooling-skills",
+      "description": "Skill creation, analytics, and configuration synchronization",
+      "version": "1.0.0",
+      "author": {
+        "name": "DgxSparkLabs",
+        "url": "https://github.com/DgxSparkLabs"
+      },
+      "category": "bundle"
+    },
+    {
+      "name": "bundle-monitor-all",
+      "source": "./_generated/bundle-monitor-all",
+      "description": "Every monitor in the marketplace",
+      "version": "1.0.0",
+      "author": {
+        "name": "DgxSparkLabs",
+        "url": "https://github.com/DgxSparkLabs"
+      },
+      "category": "bundle"
+    },
+    {
+      "name": "bundle-notifications-rules",
+      "source": "./_generated/bundle-notifications-rules",
+      "description": "Alert hooks for important events",
+      "version": "1.0.0",
+      "author": {
+        "name": "DgxSparkLabs",
+        "url": "https://github.com/DgxSparkLabs"
+      },
+      "category": "bundle"
+    },
+    {
+      "name": "bundle-output-style-all",
+      "source": "./_generated/bundle-output-style-all",
+      "description": "Every output-style in the marketplace",
+      "version": "1.0.0",
+      "author": {
+        "name": "DgxSparkLabs",
+        "url": "https://github.com/DgxSparkLabs"
+      },
+      "category": "bundle"
+    },
+    {
+      "name": "bundle-project-scaffolding-skills",
+      "source": "./_generated/bundle-project-scaffolding-skills",
+      "description": "Initialize project documentation and structured handoffs",
+      "version": "1.0.0",
+      "author": {
+        "name": "DgxSparkLabs",
+        "url": "https://github.com/DgxSparkLabs"
+      },
+      "category": "bundle"
+    },
+    {
+      "name": "bundle-quality-rules",
+      "source": "./_generated/bundle-quality-rules",
+      "description": "Code quality, testing, verification, and review discipline",
+      "version": "1.0.0",
+      "author": {
+        "name": "DgxSparkLabs",
+        "url": "https://github.com/DgxSparkLabs"
+      },
+      "category": "bundle"
+    },
+    {
+      "name": "bundle-rule-all",
+      "source": "./_generated/bundle-rule-all",
+      "description": "Every rule in the marketplace",
+      "version": "1.0.0",
+      "author": {
+        "name": "DgxSparkLabs",
+        "url": "https://github.com/DgxSparkLabs"
+      },
+      "category": "bundle"
+    },
+    {
+      "name": "bundle-search-research-skills",
+      "source": "./_generated/bundle-search-research-skills",
+      "description": "Find information across web, code repos, and video",
+      "version": "1.0.0",
+      "author": {
+        "name": "DgxSparkLabs",
+        "url": "https://github.com/DgxSparkLabs"
+      },
+      "category": "bundle"
+    },
+    {
+      "name": "bundle-session-management-skills",
+      "source": "./_generated/bundle-session-management-skills",
+      "description": "Mid-session realignment, motivation, recall, history, audits",
+      "version": "1.0.0",
+      "author": {
+        "name": "DgxSparkLabs",
+        "url": "https://github.com/DgxSparkLabs"
+      },
+      "category": "bundle"
+    },
+    {
+      "name": "bundle-skill-all",
+      "source": "./_generated/bundle-skill-all",
+      "description": "Every skill in the marketplace",
+      "version": "1.0.0",
+      "author": {
+        "name": "DgxSparkLabs",
+        "url": "https://github.com/DgxSparkLabs"
+      },
+      "category": "bundle"
+    },
+    {
+      "name": "bundle-theme-all",
+      "source": "./_generated/bundle-theme-all",
+      "description": "Every theme in the marketplace",
+      "version": "1.0.0",
+      "author": {
+        "name": "DgxSparkLabs",
+        "url": "https://github.com/DgxSparkLabs"
+      },
+      "category": "bundle"
+    },
+    {
+      "name": "bundle-workflow-rules",
+      "source": "./_generated/bundle-workflow-rules",
+      "description": "How agents approach, decompose, and execute tasks",
+      "version": "1.0.0",
+      "author": {
+        "name": "DgxSparkLabs",
+        "url": "https://github.com/DgxSparkLabs"
+      },
+      "category": "bundle"
+    },
+    {
+      "name": "command-example",
+      "source": "./_generated/command-example",
+      "description": "Reference example slash command. Prints a formatted lab-notebook header.",
+      "version": "1.0.0",
+      "author": {
+        "name": "DgxSparkLabs",
+        "url": "https://github.com/DgxSparkLabs"
+      },
+      "category": "command"
+    },
+    {
+      "name": "hook-example",
+      "source": "./_generated/hook-example",
+      "description": "Reference example hook. Prepends a timestamp marker to every user prompt so Claude sees session context.",
+      "version": "1.0.0",
+      "author": {
+        "name": "DgxSparkLabs",
+        "url": "https://github.com/DgxSparkLabs"
+      },
+      "category": "hook"
+    },
+    {
+      "name": "lsp-example",
+      "source": "./_generated/lsp-example",
+      "description": "Reference template for an LSP server plugin \u2014 copy to scaffold your own.",
+      "version": "1.0.0",
+      "author": {
+        "name": "DgxSparkLabs",
+        "url": "https://github.com/DgxSparkLabs"
+      },
+      "category": "lsp"
+    },
+    {
+      "name": "mcp-example",
+      "source": "./_generated/mcp-example",
+      "description": "Reference template for an MCP server plugin \u2014 copy to scaffold your own.",
+      "version": "1.0.0",
+      "author": {
+        "name": "DgxSparkLabs",
+        "url": "https://github.com/DgxSparkLabs"
+      },
+      "category": "mcp"
+    },
+    {
+      "name": "monitor-example",
+      "source": "./_generated/monitor-example",
+      "description": "Reference template for a background monitor plugin \u2014 copy to scaffold your own.",
+      "version": "1.0.0",
+      "author": {
+        "name": "DgxSparkLabs",
+        "url": "https://github.com/DgxSparkLabs"
+      },
+      "category": "monitor"
+    },
+    {
+      "name": "output-style-example",
+      "source": "./_generated/output-style-example",
+      "description": "Reference template for an output style plugin \u2014 copy to scaffold your own.",
+      "version": "1.0.0",
+      "author": {
+        "name": "DgxSparkLabs",
+        "url": "https://github.com/DgxSparkLabs"
+      },
+      "category": "output-style"
+    },
+    {
+      "name": "rule-autonomous-persistence",
+      "source": "./_generated/rule-autonomous-persistence",
+      "description": "Always-on rule: autonomous-persistence. Install, then run activate.sh to symlink the rule into ~/.claude/rules/.",
+      "version": "1.0.0",
+      "author": {
+        "name": "DgxSparkLabs",
+        "url": "https://github.com/DgxSparkLabs"
+      },
+      "category": "rule"
+    },
+    {
+      "name": "rule-blast-radius",
+      "source": "./_generated/rule-blast-radius",
+      "description": "Always-on rule: blast-radius. Install, then run activate.sh to symlink the rule into ~/.claude/rules/.",
+      "version": "1.0.0",
+      "author": {
+        "name": "DgxSparkLabs",
+        "url": "https://github.com/DgxSparkLabs"
+      },
+      "category": "rule"
+    },
+    {
+      "name": "rule-code-hygiene",
+      "source": "./_generated/rule-code-hygiene",
+      "description": "Always-on rule: code-hygiene. Install, then run activate.sh to symlink the rule into ~/.claude/rules/.",
+      "version": "1.0.0",
+      "author": {
+        "name": "DgxSparkLabs",
+        "url": "https://github.com/DgxSparkLabs"
+      },
+      "category": "rule"
+    },
+    {
+      "name": "rule-continuous-improvement",
+      "source": "./_generated/rule-continuous-improvement",
+      "description": "Always-on rule: continuous-improvement. Install, then run activate.sh to symlink the rule into ~/.claude/rules/.",
+      "version": "1.0.0",
+      "author": {
+        "name": "DgxSparkLabs",
+        "url": "https://github.com/DgxSparkLabs"
+      },
+      "category": "rule"
+    },
+    {
+      "name": "rule-document-lifecycle",
+      "source": "./_generated/rule-document-lifecycle",
+      "description": "Always-on rule: document-lifecycle. Install, then run activate.sh to symlink the rule into ~/.claude/rules/.",
+      "version": "1.0.0",
+      "author": {
+        "name": "DgxSparkLabs",
+        "url": "https://github.com/DgxSparkLabs"
+      },
+      "category": "rule"
+    },
+    {
+      "name": "rule-document-progress",
+      "source": "./_generated/rule-document-progress",
+      "description": "Always-on rule: document-progress. Install, then run activate.sh to symlink the rule into ~/.claude/rules/.",
+      "version": "1.0.0",
+      "author": {
+        "name": "DgxSparkLabs",
+        "url": "https://github.com/DgxSparkLabs"
+      },
+      "category": "rule"
+    },
+    {
+      "name": "rule-example",
+      "source": "./_generated/rule-example",
+      "description": "Always-on rule: example. Install, then run activate.sh to symlink the rule into ~/.claude/rules/.",
+      "version": "1.0.0",
+      "author": {
+        "name": "DgxSparkLabs",
+        "url": "https://github.com/DgxSparkLabs"
+      },
+      "category": "rule"
+    },
+    {
+      "name": "rule-improve-the-process",
+      "source": "./_generated/rule-improve-the-process",
+      "description": "Always-on rule: improve-the-process. Install, then run activate.sh to symlink the rule into ~/.claude/rules/.",
+      "version": "1.0.0",
+      "author": {
+        "name": "DgxSparkLabs",
+        "url": "https://github.com/DgxSparkLabs"
+      },
+      "category": "rule"
+    },
+    {
+      "name": "rule-no-ai-credit",
+      "source": "./_generated/rule-no-ai-credit",
+      "description": "Always-on rule: no-ai-credit. Install, then run activate.sh to symlink the rule into ~/.claude/rules/.",
+      "version": "1.0.0",
+      "author": {
+        "name": "DgxSparkLabs",
+        "url": "https://github.com/DgxSparkLabs"
+      },
+      "category": "rule"
+    },
+    {
+      "name": "rule-output-discipline",
+      "source": "./_generated/rule-output-discipline",
+      "description": "Always-on rule: output-discipline. Install, then run activate.sh to symlink the rule into ~/.claude/rules/.",
+      "version": "1.0.0",
+      "author": {
+        "name": "DgxSparkLabs",
+        "url": "https://github.com/DgxSparkLabs"
+      },
+      "category": "rule"
+    },
+    {
+      "name": "rule-pitfalls-discipline",
+      "source": "./_generated/rule-pitfalls-discipline",
+      "description": "Always-on rule: pitfalls-discipline. Install, then run activate.sh to symlink the rule into ~/.claude/rules/.",
+      "version": "1.0.0",
+      "author": {
+        "name": "DgxSparkLabs",
+        "url": "https://github.com/DgxSparkLabs"
+      },
+      "category": "rule"
+    },
+    {
+      "name": "rule-prior-art",
+      "source": "./_generated/rule-prior-art",
+      "description": "Always-on rule: prior-art. Install, then run activate.sh to symlink the rule into ~/.claude/rules/.",
+      "version": "1.0.0",
+      "author": {
+        "name": "DgxSparkLabs",
+        "url": "https://github.com/DgxSparkLabs"
+      },
+      "category": "rule"
+    },
+    {
+      "name": "rule-python-uv",
+      "source": "./_generated/rule-python-uv",
+      "description": "Always-on rule: python-uv. Install, then run activate.sh to symlink the rule into ~/.claude/rules/.",
+      "version": "1.0.0",
+      "author": {
+        "name": "DgxSparkLabs",
+        "url": "https://github.com/DgxSparkLabs"
+      },
+      "category": "rule"
+    },
+    {
+      "name": "rule-readable-docs",
+      "source": "./_generated/rule-readable-docs",
+      "description": "Always-on rule: readable-docs. Install, then run activate.sh to symlink the rule into ~/.claude/rules/.",
+      "version": "1.0.0",
+      "author": {
+        "name": "DgxSparkLabs",
+        "url": "https://github.com/DgxSparkLabs"
+      },
+      "category": "rule"
+    },
+    {
+      "name": "rule-revert-on-failure",
+      "source": "./_generated/rule-revert-on-failure",
+      "description": "Always-on rule: revert-on-failure. Install, then run activate.sh to symlink the rule into ~/.claude/rules/.",
+      "version": "1.0.0",
+      "author": {
+        "name": "DgxSparkLabs",
+        "url": "https://github.com/DgxSparkLabs"
+      },
+      "category": "rule"
+    },
+    {
+      "name": "rule-session-resilience",
+      "source": "./_generated/rule-session-resilience",
+      "description": "Always-on rule: session-resilience. Install, then run activate.sh to symlink the rule into ~/.claude/rules/.",
+      "version": "1.0.0",
+      "author": {
+        "name": "DgxSparkLabs",
+        "url": "https://github.com/DgxSparkLabs"
+      },
+      "category": "rule"
+    },
+    {
+      "name": "rule-simplicity-bar",
+      "source": "./_generated/rule-simplicity-bar",
+      "description": "Always-on rule: simplicity-bar. Install, then run activate.sh to symlink the rule into ~/.claude/rules/.",
+      "version": "1.0.0",
+      "author": {
+        "name": "DgxSparkLabs",
+        "url": "https://github.com/DgxSparkLabs"
+      },
+      "category": "rule"
+    },
+    {
+      "name": "rule-stay-motivated",
+      "source": "./_generated/rule-stay-motivated",
+      "description": "Always-on rule: stay-motivated. Install, then run activate.sh to symlink the rule into ~/.claude/rules/.",
+      "version": "1.0.0",
+      "author": {
+        "name": "DgxSparkLabs",
+        "url": "https://github.com/DgxSparkLabs"
+      },
+      "category": "rule"
+    },
+    {
+      "name": "rule-task-formation",
+      "source": "./_generated/rule-task-formation",
+      "description": "Always-on rule: task-formation. Install, then run activate.sh to symlink the rule into ~/.claude/rules/.",
+      "version": "1.0.0",
+      "author": {
+        "name": "DgxSparkLabs",
+        "url": "https://github.com/DgxSparkLabs"
+      },
+      "category": "rule"
+    },
+    {
+      "name": "rule-telegram-on-complete",
+      "source": "./_generated/rule-telegram-on-complete",
+      "description": "Always-on rule: telegram-on-complete. Install, then run activate.sh to symlink the rule into ~/.claude/rules/.",
+      "version": "1.0.0",
+      "author": {
+        "name": "DgxSparkLabs",
+        "url": "https://github.com/DgxSparkLabs"
+      },
+      "category": "rule"
+    },
+    {
+      "name": "rule-verification-ladder",
+      "source": "./_generated/rule-verification-ladder",
+      "description": "Always-on rule: verification-ladder. Install, then run activate.sh to symlink the rule into ~/.claude/rules/.",
+      "version": "1.0.0",
+      "author": {
+        "name": "DgxSparkLabs",
+        "url": "https://github.com/DgxSparkLabs"
+      },
+      "category": "rule"
+    },
+    {
+      "name": "rule-verify-your-work",
+      "source": "./_generated/rule-verify-your-work",
+      "description": "Always-on rule: verify-your-work. Install, then run activate.sh to symlink the rule into ~/.claude/rules/.",
+      "version": "1.0.0",
+      "author": {
+        "name": "DgxSparkLabs",
+        "url": "https://github.com/DgxSparkLabs"
+      },
+      "category": "rule"
+    },
+    {
+      "name": "skill-act-runner",
+      "source": "./_generated/skill-act-runner",
+      "description": "Run GitHub Actions workflows locally with act and podman",
+      "version": "1.0.0",
+      "author": {
+        "name": "DgxSparkLabs",
+        "url": "https://github.com/DgxSparkLabs"
+      },
+      "category": "skill"
+    },
+    {
+      "name": "skill-check",
+      "source": "./_generated/skill-check",
+      "description": "Mid-session course correction \u2014 stop, review rules, and realign",
+      "version": "1.0.0",
+      "author": {
+        "name": "DgxSparkLabs",
+        "url": "https://github.com/DgxSparkLabs"
+      },
+      "category": "skill"
+    },
+    {
+      "name": "skill-code-health-audit",
+      "source": "./_generated/skill-code-health-audit",
+      "description": "Audit codebase for DRY violations, oversized files, and scattered definitions",
+      "version": "1.0.0",
+      "author": {
+        "name": "DgxSparkLabs",
+        "url": "https://github.com/DgxSparkLabs"
+      },
+      "category": "skill"
+    },
+    {
+      "name": "skill-duckduckgo-search",
+      "source": "./_generated/skill-duckduckgo-search",
+      "description": "Search DuckDuckGo and return results as structured text",
+      "version": "1.0.0",
+      "author": {
+        "name": "DgxSparkLabs",
+        "url": "https://github.com/DgxSparkLabs"
+      },
+      "category": "skill"
+    },
+    {
+      "name": "skill-example",
+      "source": "./_generated/skill-example",
+      "description": "Reference example. Echoes back a formatted lab-notebook-style status message. Shows how to write a SKILL.md with frontmatter, allowed-tools, and argument handling.",
+      "version": "1.0.0",
+      "author": {
+        "name": "DgxSparkLabs",
+        "url": "https://github.com/DgxSparkLabs"
+      },
+      "category": "skill"
+    },
+    {
+      "name": "skill-expose-port",
+      "source": "./_generated/skill-expose-port",
+      "description": "Expose a local port via HTTPS (localhost.run) or TCP (bore)",
+      "version": "1.0.0",
+      "author": {
+        "name": "DgxSparkLabs",
+        "url": "https://github.com/DgxSparkLabs"
+      },
+      "category": "skill"
+    },
+    {
+      "name": "skill-gemini-chat",
+      "source": "./_generated/skill-gemini-chat",
+      "description": "Interactive multi-turn chat with Google Gemini",
+      "version": "1.0.0",
+      "author": {
+        "name": "DgxSparkLabs",
+        "url": "https://github.com/DgxSparkLabs"
+      },
+      "category": "skill"
+    },
+    {
+      "name": "skill-github-repo-setup",
+      "source": "./_generated/skill-github-repo-setup",
+      "description": "Create a GitHub repo with CI, branch protection, and naming rules",
+      "version": "1.0.0",
+      "author": {
+        "name": "DgxSparkLabs",
+        "url": "https://github.com/DgxSparkLabs"
+      },
+      "category": "skill"
+    },
+    {
+      "name": "skill-github-search",
+      "source": "./_generated/skill-github-search",
+      "description": "Search GitHub for repositories, prior art, and implementation inspiration",
+      "version": "1.0.0",
+      "author": {
+        "name": "DgxSparkLabs",
+        "url": "https://github.com/DgxSparkLabs"
+      },
+      "category": "skill"
+    },
+    {
+      "name": "skill-google-drive-reader",
+      "source": "./_generated/skill-google-drive-reader",
+      "description": "Read Google Docs from personal Drive, extract URLs and conclusions",
+      "version": "1.0.0",
+      "author": {
+        "name": "DgxSparkLabs",
+        "url": "https://github.com/DgxSparkLabs"
+      },
+      "category": "skill"
+    },
+    {
+      "name": "skill-motivation",
+      "source": "./_generated/skill-motivation",
+      "description": "Completeness checker \u2014 report what's actually unfinished before stopping",
+      "version": "1.0.0",
+      "author": {
+        "name": "DgxSparkLabs",
+        "url": "https://github.com/DgxSparkLabs"
+      },
+      "category": "skill"
+    },
+    {
+      "name": "skill-pitfall-check",
+      "source": "./_generated/skill-pitfall-check",
+      "description": "Search PITFALLS.md and git log for known issues before starting work",
+      "version": "1.0.0",
+      "author": {
+        "name": "DgxSparkLabs",
+        "url": "https://github.com/DgxSparkLabs"
+      },
+      "category": "skill"
+    },
+    {
+      "name": "skill-project-bootstrap",
+      "source": "./_generated/skill-project-bootstrap",
+      "description": "Initialize project docs \u2014 AGENTS.md, HANDOFF.md, CHANGELOG.md, PITFALLS.md",
+      "version": "1.0.0",
+      "author": {
+        "name": "DgxSparkLabs",
+        "url": "https://github.com/DgxSparkLabs"
+      },
+      "category": "skill"
+    },
+    {
+      "name": "skill-recall-rules",
+      "source": "./_generated/skill-recall-rules",
+      "description": "Re-read global rules and thinking framework to realign mid-session",
+      "version": "1.0.0",
+      "author": {
+        "name": "DgxSparkLabs",
+        "url": "https://github.com/DgxSparkLabs"
+      },
+      "category": "skill"
+    },
+    {
+      "name": "skill-send-email",
+      "source": "./_generated/skill-send-email",
+      "description": "Send an email to someone using the Resend API",
+      "version": "1.0.0",
+      "author": {
+        "name": "DgxSparkLabs",
+        "url": "https://github.com/DgxSparkLabs"
+      },
+      "category": "skill"
+    },
+    {
+      "name": "skill-session-history",
+      "source": "./_generated/skill-session-history",
+      "description": "Query past Devin CLI conversations from the local session database",
+      "version": "1.0.0",
+      "author": {
+        "name": "DgxSparkLabs",
+        "url": "https://github.com/DgxSparkLabs"
+      },
+      "category": "skill"
+    },
+    {
+      "name": "skill-session-wrapup",
+      "source": "./_generated/skill-session-wrapup",
+      "description": "End-of-session audit \u2014 check docs, commits, and readiness for the next agent",
+      "version": "1.0.0",
+      "author": {
+        "name": "DgxSparkLabs",
+        "url": "https://github.com/DgxSparkLabs"
+      },
+      "category": "skill"
+    },
+    {
+      "name": "skill-skill-analytics",
+      "source": "./_generated/skill-skill-analytics",
+      "description": "Analyze skill usage patterns and generate an interactive HTML dashboard",
+      "version": "1.0.0",
+      "author": {
+        "name": "DgxSparkLabs",
+        "url": "https://github.com/DgxSparkLabs"
+      },
+      "category": "skill"
+    },
+    {
+      "name": "skill-skill-creator",
+      "source": "./_generated/skill-skill-creator",
+      "description": "Create, test, and iteratively improve agent skills with evals",
+      "version": "1.0.0",
+      "author": {
+        "name": "DgxSparkLabs",
+        "url": "https://github.com/DgxSparkLabs"
+      },
+      "category": "skill"
+    },
+    {
+      "name": "skill-ssh-tunnel",
+      "source": "./_generated/skill-ssh-tunnel",
+      "description": "Set up SSH port forwarding tunnels (local, remote, SOCKS proxy)",
+      "version": "1.0.0",
+      "author": {
+        "name": "DgxSparkLabs",
+        "url": "https://github.com/DgxSparkLabs"
+      },
+      "category": "skill"
+    },
+    {
+      "name": "skill-structured-handoff",
+      "source": "./_generated/skill-structured-handoff",
+      "description": "Generate structured task files for autonomous agent sessions",
+      "version": "1.0.0",
+      "author": {
+        "name": "DgxSparkLabs",
+        "url": "https://github.com/DgxSparkLabs"
+      },
+      "category": "skill"
+    },
+    {
+      "name": "skill-sync-rules",
+      "source": "./_generated/skill-sync-rules",
+      "description": "Sync rules from global AI agent configs into the workspace",
+      "version": "1.0.0",
+      "author": {
+        "name": "DgxSparkLabs",
+        "url": "https://github.com/DgxSparkLabs"
+      },
+      "category": "skill"
+    },
+    {
+      "name": "skill-telegram-notify",
+      "source": "./_generated/skill-telegram-notify",
+      "description": "Send a Telegram notification with a task summary",
+      "version": "1.0.0",
+      "author": {
+        "name": "DgxSparkLabs",
+        "url": "https://github.com/DgxSparkLabs"
+      },
+      "category": "skill"
+    },
+    {
+      "name": "skill-textual-tui-guide",
+      "source": "./_generated/skill-textual-tui-guide",
+      "description": "Build rich terminal UIs with Python Textual \u2014 layouts, widgets, modals, styling",
+      "version": "1.0.0",
+      "author": {
+        "name": "DgxSparkLabs",
+        "url": "https://github.com/DgxSparkLabs"
+      },
+      "category": "skill"
+    },
+    {
+      "name": "skill-web-scraper",
+      "source": "./_generated/skill-web-scraper",
+      "description": "Fetch a web page and extract its main content as clean readable text",
+      "version": "1.0.0",
+      "author": {
+        "name": "DgxSparkLabs",
+        "url": "https://github.com/DgxSparkLabs"
+      },
+      "category": "skill"
+    },
+    {
+      "name": "skill-youtube-search",
+      "source": "./_generated/skill-youtube-search",
+      "description": "Search YouTube for technical videos, tutorials, and talks on a topic",
+      "version": "1.0.0",
+      "author": {
+        "name": "DgxSparkLabs",
+        "url": "https://github.com/DgxSparkLabs"
+      },
+      "category": "skill"
+    },
+    {
+      "name": "skill-youtube-wisdom",
+      "source": "./_generated/skill-youtube-wisdom",
+      "description": "Extract key knowledge from a YouTube video transcript",
+      "version": "1.0.0",
+      "author": {
+        "name": "DgxSparkLabs",
+        "url": "https://github.com/DgxSparkLabs"
+      },
+      "category": "skill"
+    },
+    {
+      "name": "theme-example",
+      "source": "./_generated/theme-example",
+      "description": "Reference template for a theme plugin (experimental) \u2014 copy to scaffold your own.",
+      "version": "1.0.0",
+      "author": {
+        "name": "DgxSparkLabs",
+        "url": "https://github.com/DgxSparkLabs"
+      },
+      "category": "theme"
+    }
+  ]
+}
