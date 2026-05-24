@@ -22,7 +22,7 @@ After that, Claude Code loads the rule automatically every session.
 
 Claude Code's `/plugin install` does not natively install rules — there is no `rules` field in `plugin.json`. The workaround is to ship the rule file inside a plugin, then provide an `activate.sh` that symlinks it into `.claude/rules/`. Once symlinked, future plugin updates automatically propagate (the symlink points back into the plugin cache).
 
-See `docs/INVESTIGATION_PLUGIN_DEPENDENCIES.md` and `docs/PLAN_PLUGIN_COMPLIANCE.md` (the rules architecture section) for the full rationale.
+See `docs/archive/phase-1-compliance/INVESTIGATION_PLUGIN_DEPENDENCIES.md` and `docs/archive/phase-1-compliance/PLAN_PLUGIN_COMPLIANCE.md` (the rules architecture section) for the full rationale.
 
 ## File-by-file walkthrough
 
@@ -69,7 +69,7 @@ bash activate.sh ~/.claude/rules
 ## Related
 
 - Full rule format reference: `docs/RULE_FORMAT.md`
-- Investigation of rule installation alternatives: `docs/INVESTIGATION_PLUGIN_DEPENDENCIES.md`
+- Investigation of rule installation alternatives: `docs/archive/phase-1-compliance/INVESTIGATION_PLUGIN_DEPENDENCIES.md`
 - Other example plugins: `examples/example-*`
 - Real rules shipped by this marketplace: `rules/`
 - Repo-root bulk activator: `activate-installed-rules.sh` (symlinks every installed rule plugin's rules at once)

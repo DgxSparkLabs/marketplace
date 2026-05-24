@@ -1,6 +1,6 @@
 # catalog.toml — bundle definitions ONLY
 #
-# After the DI refactor (see docs/PLAN_DI_REFACTOR.md), this file contains
+# After the DI refactor (see docs/archive/di-refactor/PLAN_DI_REFACTOR.md), this file contains
 # ONLY [bundle.*] blocks. Construct types, platforms, and catch-all bundles
 # are defined in code (scripts/constructs.py, scripts/platforms.py,
 # scripts/generate_manifest.py Phase 2b) — not in configuration files.

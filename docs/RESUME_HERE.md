@@ -26,14 +26,14 @@ Last session ended:    2026-05-24, after cross-platform install fix verification
 
 **Cross-references for context-loading:**
 - Project state (longer): [`../HANDOFF.md`](../HANDOFF.md)
-- This round's plan + locked decisions: [`PLAN_CROSS_PLATFORM_INSTALL_FIX.md`](./PLAN_CROSS_PLATFORM_INSTALL_FIX.md)
-- Ground-truth verification synthesis: [`VERIFICATION_2026-05/SUMMARY.md`](./VERIFICATION_2026-05/SUMMARY.md)
-- Per-claim act evidence: [`VERIFICATION_2026-05/empirical_act_verification.md`](./VERIFICATION_2026-05/empirical_act_verification.md)
-- Cursor (IDE + CLI) May 2026 research: [`VERIFICATION_2026-05/cursor.md`](./VERIFICATION_2026-05/cursor.md)
-- Implementer's commit-by-commit report: [`VERIFICATION_2026-05/IMPLEMENTATION_REPORT.md`](./VERIFICATION_2026-05/IMPLEMENTATION_REPORT.md)
-- Validator's APPROVED verdict: [`VERIFICATION_2026-05/IMPLEMENTATION_VALIDATION.md`](./VERIFICATION_2026-05/IMPLEMENTATION_VALIDATION.md)
-- Phase 2 README rewrite report: [`VERIFICATION_2026-05/README_REWRITE_REPORT.md`](./VERIFICATION_2026-05/README_REWRITE_REPORT.md)
-- DI refactor (prior round): [`PLAN_DI_REFACTOR.md`](./PLAN_DI_REFACTOR.md)
+- This round's plan + locked decisions: [`archive/phase-5-cross-platform-install/PLAN_CROSS_PLATFORM_INSTALL_FIX.md`](./archive/phase-5-cross-platform-install/PLAN_CROSS_PLATFORM_INSTALL_FIX.md)
+- Ground-truth verification synthesis: [`archive/phase-5-cross-platform-install/VERIFICATION_2026-05/SUMMARY.md`](./archive/phase-5-cross-platform-install/VERIFICATION_2026-05/SUMMARY.md)
+- Per-claim act evidence: [`archive/phase-5-cross-platform-install/VERIFICATION_2026-05/empirical_act_verification.md`](./archive/phase-5-cross-platform-install/VERIFICATION_2026-05/empirical_act_verification.md)
+- Cursor (IDE + CLI) May 2026 research: [`archive/phase-5-cross-platform-install/VERIFICATION_2026-05/cursor.md`](./archive/phase-5-cross-platform-install/VERIFICATION_2026-05/cursor.md)
+- Implementer's commit-by-commit report: [`archive/phase-5-cross-platform-install/VERIFICATION_2026-05/IMPLEMENTATION_REPORT.md`](./archive/phase-5-cross-platform-install/VERIFICATION_2026-05/IMPLEMENTATION_REPORT.md)
+- Validator's APPROVED verdict: [`archive/phase-5-cross-platform-install/VERIFICATION_2026-05/IMPLEMENTATION_VALIDATION.md`](./archive/phase-5-cross-platform-install/VERIFICATION_2026-05/IMPLEMENTATION_VALIDATION.md)
+- Phase 2 README rewrite report: [`archive/phase-5-cross-platform-install/VERIFICATION_2026-05/README_REWRITE_REPORT.md`](./archive/phase-5-cross-platform-install/VERIFICATION_2026-05/README_REWRITE_REPORT.md)
+- DI refactor (prior round): [`archive/di-refactor/PLAN_DI_REFACTOR.md`](./archive/di-refactor/PLAN_DI_REFACTOR.md)
 - User-facing install/use: [`../README.md`](../README.md)
 
 ---
@@ -67,12 +67,12 @@ catalog.toml — bundle definitions ONLY
 
 | # | Decision | Where |
 |---|----------|-------|
-| A1 | `AgentsPlatform` is a proper Platform class (not a special-case step) | [`PLAN_CROSS_PLATFORM_INSTALL_FIX.md`](./PLAN_CROSS_PLATFORM_INSTALL_FIX.md) |
+| A1 | `AgentsPlatform` is a proper Platform class (not a special-case step) | [`archive/phase-5-cross-platform-install/PLAN_CROSS_PLATFORM_INSTALL_FIX.md`](./archive/phase-5-cross-platform-install/PLAN_CROSS_PLATFORM_INSTALL_FIX.md) |
 | B2 | Per-plugin native manifests gated on `platform.supports` (e.g., theme plugins get no `.codex-plugin/` because ThemeConstruct ∉ CodexPlatform.supports) | Same |
 | C1 | CI assertions + generator additions shipped in same PR (#1 expanded scope) | Same |
 | Q2 | All work on `feat/claude-plugin-compliance`; no new branch | Same |
 
-DI refactor decisions (prior round) still hold — see [`PLAN_DI_REFACTOR.md`](./PLAN_DI_REFACTOR.md) for the 25 there.
+DI refactor decisions (prior round) still hold — see [`archive/di-refactor/PLAN_DI_REFACTOR.md`](./archive/di-refactor/PLAN_DI_REFACTOR.md) for the 25 there.
 
 ---
 
@@ -148,7 +148,7 @@ Catch-all:      bundle-<prefix>-all       e.g., bundle-skill-all
 | **mirror** | An auto-generated directory under `.codex/`, `.gemini/`, `.cursor/`, `.windsurf/`, `.devin/`, or `.agents/` that copies generated content to the layout each platform expects. |
 | **`.agents/` standard** | Cross-platform skill (`.agents/skills/`) and plugin (`.agents/plugins/`) directory convention. Read by Windsurf, Cursor, Devin natively; Codex accepts `.claude-plugin/marketplace.json` as legacy-compatible. |
 | **generator** | `scripts/generate_manifest.py` — 6-phase orchestrator. |
-| **act-based verification** | Hermetic local-container CI runs via nektos/act for verification before pushing. Scaffolds at `docs/VERIFICATION_2026-05/workflows/`. |
+| **act-based verification** | Hermetic local-container CI runs via nektos/act for verification before pushing. Scaffolds at `docs/archive/phase-5-cross-platform-install/VERIFICATION_2026-05/workflows/`. |
 | **compat workflow** | A `.github/workflows/compat-<construct>.yml` file verifying our marketplace works for that construct across applicable platforms. |
 
 ---
@@ -158,10 +158,10 @@ Catch-all:      bundle-<prefix>-all       e.g., bundle-skill-all
 | Time | Read | Why |
 |------|------|-----|
 | 90s | This file | Get oriented |
-| 5min | [`VERIFICATION_2026-05/SUMMARY.md`](./VERIFICATION_2026-05/SUMMARY.md) | Single-page ground truth: what works per platform |
-| 10min | [`PLAN_CROSS_PLATFORM_INSTALL_FIX.md`](./PLAN_CROSS_PLATFORM_INSTALL_FIX.md) | This round's plan + locked decisions A1/B2/C1/Q2 |
-| 15min | [`PLAN_DI_REFACTOR.md`](./PLAN_DI_REFACTOR.md) Locked Decisions table | 25 prior-round decisions still in force |
-| 30min | Above + [`VERIFICATION_2026-05/empirical_act_verification.md`](./VERIFICATION_2026-05/empirical_act_verification.md) + [`VERIFICATION_2026-05/IMPLEMENTATION_VALIDATION.md`](./VERIFICATION_2026-05/IMPLEMENTATION_VALIDATION.md) | Full architecture + per-claim evidence + validator's verdict |
+| 5min | [`archive/phase-5-cross-platform-install/VERIFICATION_2026-05/SUMMARY.md`](./archive/phase-5-cross-platform-install/VERIFICATION_2026-05/SUMMARY.md) | Single-page ground truth: what works per platform |
+| 10min | [`archive/phase-5-cross-platform-install/PLAN_CROSS_PLATFORM_INSTALL_FIX.md`](./archive/phase-5-cross-platform-install/PLAN_CROSS_PLATFORM_INSTALL_FIX.md) | This round's plan + locked decisions A1/B2/C1/Q2 |
+| 15min | [`archive/di-refactor/PLAN_DI_REFACTOR.md`](./archive/di-refactor/PLAN_DI_REFACTOR.md) Locked Decisions table | 25 prior-round decisions still in force |
+| 30min | Above + [`archive/phase-5-cross-platform-install/VERIFICATION_2026-05/empirical_act_verification.md`](./archive/phase-5-cross-platform-install/VERIFICATION_2026-05/empirical_act_verification.md) + [`archive/phase-5-cross-platform-install/VERIFICATION_2026-05/IMPLEMENTATION_VALIDATION.md`](./archive/phase-5-cross-platform-install/VERIFICATION_2026-05/IMPLEMENTATION_VALIDATION.md) | Full architecture + per-claim evidence + validator's verdict |
 
 ---
 
@@ -185,8 +185,8 @@ Catch-all:      bundle-<prefix>-all       e.g., bundle-skill-all
 Re-read this file. Then:
 
 1. What to do next → "Next Concrete Actions" above
-2. Why a decision was made → [`PLAN_CROSS_PLATFORM_INSTALL_FIX.md`](./PLAN_CROSS_PLATFORM_INSTALL_FIX.md) or [`PLAN_DI_REFACTOR.md`](./PLAN_DI_REFACTOR.md)
+2. Why a decision was made → [`archive/phase-5-cross-platform-install/PLAN_CROSS_PLATFORM_INSTALL_FIX.md`](./archive/phase-5-cross-platform-install/PLAN_CROSS_PLATFORM_INSTALL_FIX.md) or [`archive/di-refactor/PLAN_DI_REFACTOR.md`](./archive/di-refactor/PLAN_DI_REFACTOR.md)
 3. About to repeat a mistake → "Dead Ends" above
 4. Don't recognize a term → "Project Glossary" above
-5. Need full ground-truth on what works → [`VERIFICATION_2026-05/SUMMARY.md`](./VERIFICATION_2026-05/SUMMARY.md)
+5. Need full ground-truth on what works → [`archive/phase-5-cross-platform-install/VERIFICATION_2026-05/SUMMARY.md`](./archive/phase-5-cross-platform-install/VERIFICATION_2026-05/SUMMARY.md)
 6. Implementing a new construct or bundle → [`ADDING_A_CONSTRUCT.md`](./ADDING_A_CONSTRUCT.md)

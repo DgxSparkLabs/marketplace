@@ -94,7 +94,7 @@ bash ~/.claude/plugins/cache/dgxsparklabs-marketplace/rule-my-rule/activate.sh
 ## Architecture context
 
 - `scripts/constructs.py` — the 10 Construct classes. Each knows how to build plugin.json and emit the generated plugin directory.
-- `scripts/platforms.py` — the 6 Platform classes. Each knows which constructs it mirrors and how.
+- `scripts/platforms.py` — the 7 Platform classes (Claude, Codex, Gemini, Cursor, Windsurf, Devin, Agents). Each knows which constructs it mirrors and how.
 - `scripts/bundles.py` — Bundle loader/parser for `catalog.toml`.
 - `scripts/utils.py` — shared helpers.
 - `scripts/generate_manifest.py` — thin orchestrator (~100 lines). Adding a new construct type requires only a new class in `constructs.py` and an entry in `CONSTRUCTS`.
