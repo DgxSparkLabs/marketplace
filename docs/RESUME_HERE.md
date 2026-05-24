@@ -16,10 +16,19 @@ This repo (`DgxSparkLabs/marketplace`) is a **Claude Code plugin marketplace**. 
 
 ```
 Active branch:         feat/claude-plugin-compliance
-Open PRs:              #1 at https://github.com/DgxSparkLabs/marketplace/pull/1
-Status:                DI refactor complete; ready for CI verification + merge
+Tip commit:            a872e69 (docs(readme): add table of contents)
+Open PRs:              #1 at https://github.com/DgxSparkLabs/marketplace/pull/1 — MERGEABLE
+Status:                EVERY WORK PHASE COMPLETE. Awaiting merge call.
 Working directory:     C:\Users\devic\source\marketplace
+Last session ended:    2026-05-24, after DI refactor + validation + README rewrite
 ```
+
+**Cross-references for context-loading:**
+- Project state (longer): [`../HANDOFF.md`](../HANDOFF.md)
+- Architecture (full): [`PLAN_DI_REFACTOR.md`](./PLAN_DI_REFACTOR.md)
+- Implementation report: [`DI_REFACTOR_REPORT.md`](./DI_REFACTOR_REPORT.md)
+- Validation verdict: [`DI_REFACTOR_VALIDATION_REPORT.md`](./DI_REFACTOR_VALIDATION_REPORT.md)
+- User-facing install/use: [`../README.md`](../README.md)
 
 ---
 
@@ -96,11 +105,11 @@ Notable renames from pre-refactor:
 
 ## Next Concrete Actions (in priority order)
 
-1. **Verify CI green** — push `feat/claude-plugin-compliance` and watch all 10 compat workflows + CI workflow. Any failures: diagnose, fix, re-push.
+1. **Review and merge PR #1** — `gh pr merge 1 --merge` (or `--squash`/`--rebase`). Everything is on `feat/claude-plugin-compliance`: migration + multi-platform validation + DI refactor + README. Validator already verified all 25 locked decisions implemented; CI green on the tip commit. This is the ONLY remaining action.
 
-2. **Merge PR #1** — once CI is green. Contains migration + DI refactor + platform validation design docs.
+2. **(Optional) File the GitHub whitelist request** — [`CI_WHITELIST_REQUEST.md`](./CI_WHITELIST_REQUEST.md) text is drafted, BUT [`ORG_POLICY_INVESTIGATION.md`](./ORG_POLICY_INVESTIGATION.md) found no policy ever existed (transient infrastructure event). Submit only if a similar `conclusion=failure, 0 jobs, duration <5s` recurrence is observed.
 
-3. **File the GitHub whitelist request** (if not already done) — `docs/CI_WHITELIST_REQUEST.md` has the body. When granted, flip `continue-on-error: false` for Codex/Gemini (~30 min, one-line edits per workflow).
+3. **(Optional) Maintenance** — as Claude Code's plugin spec evolves (e.g., native rule install ships), retire the `activate.sh` workaround. See [`RULE_FORMAT.md`](./RULE_FORMAT.md).
 
 ---
 

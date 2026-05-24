@@ -1,8 +1,10 @@
 # Handoff
 
-> **Start here if you've never seen this project before:** `docs/RESUME_HERE.md`. That file is the 3-minute orientation. This document (`HANDOFF.md`) is for ongoing-state tracking; it complements `RESUME_HERE.md` rather than duplicating it.
+> **First file to read on re-entry:** [`docs/RESUME_HERE.md`](./docs/RESUME_HERE.md) — 90-second orientation. This document is the longer state tracker; complements RESUME_HERE rather than duplicating it.
 
-**Branch state:** `feat/multi-platform-validation` (off `feat/claude-plugin-compliance`) — migration complete, multi-platform validation design complete, **validation implementation COMPLETE**. PR #1 open: https://github.com/DgxSparkLabs/marketplace/pull/1 (base). PR #2 (this branch) pending.
+**Last updated:** 2026-05-24, end of DI-refactor session
+**Branch state:** `feat/claude-plugin-compliance` at commit `a872e69` (TOC addition). PR #1 open: https://github.com/DgxSparkLabs/marketplace/pull/1 — **MERGEABLE, awaiting merge call**.
+**Net status:** Every work phase complete. CI green. README rewritten with per-platform install + use examples. The only decision left is "merge or not."
 
 ---
 
@@ -10,68 +12,63 @@
 
 A **Claude Code plugin marketplace** for AI coding agents. Natively installable via `/plugin marketplace add DgxSparkLabs/marketplace`, with auto-generated mirrors for Devin CLI, Cursor, Windsurf, Codex CLI, and Gemini CLI.
 
-- 26 skills (`skills/<name>/`)
-- 21 rules (`rules/<name>/`)
-- 10 example reference plugins (`examples/example-<type>/`)
-- 71 plugin entries in `.claude-plugin/marketplace.json` (26 individual skills + 8 skill-domain bundles + 21 individual rules + 5 rule-domain bundles + 1 rules-all + 10 examples)
-- 250+ research sources across 12 rounds in `research/`
+Current inventory (post-refactor):
+
+- **26 skills** (`skills/<name>/`) + `skills/example/`
+- **21 rules** (`rules/<name>/`) + `rules/example/`
+- **`commands/`, `agents/`, `hooks/`, `mcp-servers/`, `lsp-servers/`, `monitors/`, `output-styles/`, `themes/`** — each has `example/` (real content TBD as Claude Code's plugin spec stabilizes)
+- **81 plugin entries** in `.claude-plugin/marketplace.json`:
+  - 26 individual skills (`skill-<name>`) + 1 `skill-example`
+  - 21 individual rules (`rule-<name>`) + 1 `rule-example`
+  - 8 individual examples for the other constructs (`command-example`, `agent-example`, `hook-example`, `mcp-example`, `lsp-example`, `monitor-example`, `output-style-example`, `theme-example`)
+  - 8 skill domain bundles (`bundle-<domain>-skills`)
+  - 5 rule domain bundles (`bundle-<domain>-rules`)
+  - 10 catch-all bundles (`bundle-skill-all`, `bundle-rule-all`, ..., `bundle-theme-all`) — code-generated
+  - 1 cross-construct `bundle-examples` (one of every construct's example)
+- **250+ research sources** across 12 rounds in `research/`
 
 ---
 
-## Two Completed Work Phases
+## Completed Work Phases (4 total)
 
-### Phase 1 — Plugin Compliance Migration (DONE)
+### Phase 1 — Plugin Compliance Migration (DONE, merged via Option D restructure)
 
-Moved the marketplace from a custom Textual TUI installer + curl-bash bootstrap to native Claude Code `/plugin marketplace add`.
+Migrated from curl-bash + Textual TUI installer to native Claude Code `/plugin marketplace add`. Built the first version of `scripts/generate_manifest.py`. Wrote 12 contributor tutorials. Verified empirically that Claude Code auto-installs plugin dependencies (see [`docs/INVESTIGATION_PLUGIN_DEPENDENCIES.md`](./docs/INVESTIGATION_PLUGIN_DEPENDENCIES.md)).
 
-- Deleted `install.py`, `scripts/install.sh`, `scripts/install-rule.sh`, all per-rule `install.sh` files, `pyproject.toml`, `uv.lock`, `_template/`
-- Added `MARKETPLACE.toml` (single source for identity: owner, version, license, repo URL)
-- Restructured `catalog.toml` around `[construct.*]` definitions + `[skill_domain.*]` / `[rule_domain.*]` tagging
-- Wrote `scripts/generate_manifest.py` (PEP 723) — produces `_generated/skill-*/`, `_generated/rule-*/`, dependency-only bundle plugins, cross-platform mirrors (`.codex/`, `.gemini/`, `.cursor/`, `.windsurf/`, `.devin/`)
-- Built 10 example reference plugins (`examples/example-<construct>/`) — one per Claude Code construct type
-- Wrote 12 contributor tutorials (`docs/CONSTRUCT_TYPES.md` + 11 `docs/ADDING_*.md`)
-- Verified end-to-end install of skills + bundles + rules against the local marketplace
-- Renamed marketplace from `marketplace` → `dgxsparklabs-marketplace` for disambiguation
-- Empirically verified that Claude Code auto-installs plugin dependencies (documented in `docs/INVESTIGATION_PLUGIN_DEPENDENCIES.md`)
+### Phase 2 — Multi-Platform Validation Implementation (DONE)
 
-### Phase 2 — Multi-Platform Validation Design (DONE)
+Built 10 `compat-*.yml` workflows + 5 composite actions + 2 local-dev fallback scripts. All 10 compat workflows + the existing CI workflow run green on every push. Wave 4 promoted: Codex/Gemini matrix entries flipped from `continue-on-error: true` to `false` after the empirically-discovered transient install block lifted. Detailed reports: [`docs/VERIFICATION_REPORT.md`](./docs/VERIFICATION_REPORT.md), [`docs/FIX_REPORT.md`](./docs/FIX_REPORT.md), [`docs/FINALIZATION_REPORT.md`](./docs/FINALIZATION_REPORT.md).
 
-Designed (but did not implement) the CI/CD layer that will verify our marketplace works on every platform we ship a mirror for.
+### Phase 3 — Examples In Native Folders (DONE)
 
-Three sub-phases:
+Restructured examples from a centralized `examples/example-<construct>/` layout to native `<construct>/example/` directories. Eliminated the catalog/code asymmetry where skills and rules were privileged. See [`docs/RESTRUCTURE_REPORT.md`](./docs/RESTRUCTURE_REPORT.md).
 
-**Phase 2a — Empirical CLI Discovery:**
-- Sub-agent on `exp/cli-empirical-discovery` branch built five `explore-<platform>.yml` workflows; ran CI; captured logs; documented findings in `docs/EMPIRICAL_CLI_FINDINGS/<platform>.md` per platform
-- Local CLI exploration filled gaps for Codex + Gemini (blocked from GitHub Actions at org policy level)
-- Key discoveries: Codex has `plugin marketplace add` accepting our format; Gemini has `skills install <local-path>` that detects our SKILL.md directly; Devin reads `.cursor/rules/` + `.windsurf/rules/` natively; Cursor + Windsurf have no headless CLI
+### Phase 4 — Dependency-Injection Refactor (DONE — most recent session)
 
-**Phase 2b — Design Documents:**
-- `docs/PLATFORM_INSPECTION_CATALOG.md` — executable spec, six platform sections, every claim cites verified CLI output from 2026-05-22
-- `docs/PLATFORM_VALIDATION_CICD_PLAN.md` — CI/CD design, 10 compat workflows + 5 composite actions + 20 locked decisions across Section 4
-- `docs/CI_WHITELIST_REQUEST.md` — copy-pasteable GitHub support ticket for the Codex/Gemini block
+Refactored the generator from per-construct procedural code (~600 lines of special cases) to a strategy-pattern architecture:
 
-**Phase 2c — Critique-Driven Refinement:**
-- Two reviewer passes flagged 14 items (4 blockers + 6 important + 4 nice)
-- Three rounds of user-decision iteration via `AskUserQuestion`
-- 12 items resolved by explicit decision, 1 by npm research (cursor-doctor), 1 by clarification (rules aren't plugin-installable, so `compat-rule.yml` excluded)
-- Final reviewer pass: APPROVED FOR IMPLEMENTATION after one minor fix
+- `scripts/utils.py` — shared helpers
+- `scripts/constructs.py` — 10 Construct classes + `CONSTRUCTS` registry (each with `build_plugin_json` + `emit`)
+- `scripts/platforms.py` — 6 Platform classes + `PLATFORMS` registry
+- `scripts/bundles.py` — `Bundle` dataclass + parser with reserved-name validation
+- `scripts/generate_manifest.py` — thin orchestrator, 5 phases (~120 lines)
+- `catalog.toml` reduced from 258 to 161 lines — bundle definitions only
+- Examples renamed `example-<construct>` → `example` (so plugin names are `skill-example`, `mcp-example`, etc., not `example-skill`, `example-mcp`)
+- 11 `ADDING_*.md` docs consolidated to 1 `ADDING_A_CONSTRUCT.md`
+- README rewritten with per-platform install + use examples (verified empirically; no fabricated commands)
+- README TOC added (`a872e69`)
+
+Plan: [`docs/PLAN_DI_REFACTOR.md`](./docs/PLAN_DI_REFACTOR.md). Reviewer findings: [`docs/PLAN_DI_REFACTOR_CRITIQUE.md`](./docs/PLAN_DI_REFACTOR_CRITIQUE.md), [`docs/PLAN_DI_REFACTOR_CRITIQUE_V2.md`](./docs/PLAN_DI_REFACTOR_CRITIQUE_V2.md). Implementation report: [`docs/DI_REFACTOR_REPORT.md`](./docs/DI_REFACTOR_REPORT.md). Validation: [`docs/DI_REFACTOR_VALIDATION_REPORT.md`](./docs/DI_REFACTOR_VALIDATION_REPORT.md) — verdict: "validated, ready to merge."
 
 ---
 
-## One Pending Work Phase
+## What's Next
 
-### Phase 3 — Multi-Platform Validation Implementation (COMPLETE)
+In priority order:
 
-Branch `feat/multi-platform-validation` (off `feat/claude-plugin-compliance`).
-
-Delivered:
-- **10 compat workflows** in `.github/workflows/compat-*.yml` — one per construct type
-- **5 composite actions** in `.github/actions/setup-<platform>/action.yml`
-- **2 local-dev fallback scripts** in `scripts/validate-codex-local.sh` + `scripts/validate-gemini-local.sh`
-- All catalog assertions transcribed 1:1 per match modes in `PLATFORM_INSPECTION_CATALOG.md`
-- All 20 locked decisions followed (per-job isolation, concurrency block, `continue-on-error` for blocked platforms, float to `@latest`, decision #15 Devin assertions, etc.)
-
-Codex and Gemini jobs have `continue-on-error: true` at the job level. They will fail at install time (blocked by GitHub Actions org policy) until the whitelist request in `docs/CI_WHITELIST_REQUEST.md` is granted. No code changes needed when the block lifts.
+1. **Review and merge PR #1** (`feat/claude-plugin-compliance` → `main`). Everything is on this branch; this is the single remaining decision. `gh pr merge 1 --merge` (or `--squash`, your call).
+2. **(Optional) File the GitHub Support whitelist request** — [`docs/CI_WHITELIST_REQUEST.md`](./docs/CI_WHITELIST_REQUEST.md). Likely moot per [`docs/ORG_POLICY_INVESTIGATION.md`](./docs/ORG_POLICY_INVESTIGATION.md) (no policy was ever in effect; the original "block" was a transient infrastructure event). Submit only if a similar incident recurs.
+3. **(Optional) Update validation CI for new construct contributions** as Claude Code's plugin spec evolves (e.g., when native rule install ships, retire the `activate.sh` workaround per `docs/RULE_FORMAT.md`).
 
 ---
 
@@ -80,9 +77,8 @@ Codex and Gemini jobs have `continue-on-error: true` at the job level. They will
 ```bash
 uv run scripts/generate_manifest.py           # regenerate _generated/ + cross-platform mirrors
 uv run scripts/generate_manifest.py --check   # CI gate: drift-detection mode
-uv run tests/test_marketplace.py              # 35+ tests, must all pass
+uv run tests/test_marketplace.py              # 34 tests, must all pass
 uv run tests/test_marketplace.py -v           # verbose
-claude plugin validate _generated/skill-<name> # validate a single plugin manifest
 ```
 
 Always regenerate and re-run tests before committing. CI does both as separate steps so failures are clearly distinguishable.
@@ -94,53 +90,71 @@ Always regenerate and re-run tests before committing. CI does both as separate s
 ```
 marketplace/
 ├── MARKETPLACE.toml                    Single source for identity (owner, version, license)
-├── catalog.toml                        Construct-type definitions + skill/rule domain tagging
-├── .claude-plugin/marketplace.json     Generated root manifest (71 entries)
-├── skills/                             Source content (26 skills)
-├── rules/                              Source content (21 rules)
-├── examples/                           10 reference plugins (one per construct type)
+├── catalog.toml                        Bundles only (no [construct.*], no [<>_domain.*])
+├── README.md                           Per-platform install + use examples (392 lines, TOC at top)
+├── .claude-plugin/marketplace.json     Generated root manifest (81 entries)
+├── skills/<name>/                      Real skills + skills/example/
+├── rules/<name>/                       Real rules + rules/example/
+├── commands/example/                   Example only (no real commands yet)
+├── agents/example/, hooks/example/, mcp-servers/example/, lsp-servers/example/,
+│   monitors/example/, output-styles/example/, themes/example/   Examples only
 ├── _generated/                         Per-plugin wrappers + bundles
-├── .codex/ .gemini/ .cursor/ .windsurf/ .devin/   Cross-platform mirrors
+├── .codex/, .gemini/, .cursor/, .windsurf/, .devin/   Cross-platform mirrors
 ├── activate-installed-rules.sh         Bulk helper for rule activation
 ├── .github/
-│   ├── workflows/ci.yml                Existing: manifest drift check + test suite
-│   ├── workflows/compat-*.yml (10)     NEW: per-construct multi-platform validation
-│   └── actions/setup-<platform>/ (5)  NEW: composite actions per platform
-├── scripts/generate_manifest.py        The engine
-├── scripts/validate-codex-local.sh     NEW: local-dev Codex validation (blocked in CI)
-├── scripts/validate-gemini-local.sh    NEW: local-dev Gemini validation (blocked in CI)
-├── tests/test_marketplace.py           Test suite
+│   ├── workflows/ci.yml                Manifest drift check + test suite
+│   ├── workflows/compat-*.yml (10)     Per-construct multi-platform validation
+│   └── actions/setup-<platform>/ (5)   Composite actions per platform
+├── scripts/utils.py                    Shared helpers
+├── scripts/constructs.py               10 Construct classes + CONSTRUCTS registry
+├── scripts/platforms.py                6 Platform classes + PLATFORMS registry
+├── scripts/bundles.py                  Bundle dataclass + load_bundles + BundleMember
+├── scripts/generate_manifest.py        Thin orchestrator (5 phases)
+├── scripts/validate-codex-local.sh     Local-dev Codex validation
+├── scripts/validate-gemini-local.sh    Local-dev Gemini validation
+├── tests/test_marketplace.py           34 tests
 ├── docs/
-│   ├── RESUME_HERE.md                  ★ Start here on re-entry
-│   ├── GOAL_PLUGIN_COMPLIANCE.md       Migration success criteria
-│   ├── PLAN_PLUGIN_COMPLIANCE.md       Migration architecture
-│   ├── INVESTIGATION_PLUGIN_DEPENDENCIES.md  Empirical dep-resolution outcome
-│   ├── IMPLEMENTING_AGENT_PROMPT.md    Migration implementer brief
-│   ├── PLATFORM_INSPECTION_CATALOG.md  Empirical CLI commands per platform (the spec)
-│   ├── PLATFORM_VALIDATION_CICD_PLAN.md  CI/CD design + 20 locked decisions
-│   ├── CI_WHITELIST_REQUEST.md         Copy-pasteable GitHub support ticket
-│   ├── CONSTRUCT_TYPES.md              Index of construct types
-│   ├── ADDING_*.md (11 files)          Contributor tutorials
-│   ├── SKILL_FORMAT.md  RULE_FORMAT.md  ONBOARDING.md
-└── research/                           Market intelligence (read research/README.md first)
+│   ├── RESUME_HERE.md                  ★ Start here on re-entry (90-second orientation)
+│   ├── PLAN_DI_REFACTOR.md             DI refactor architecture + 25 locked decisions
+│   ├── PLAN_DI_REFACTOR_CRITIQUE.md    v1 reviewer findings
+│   ├── PLAN_DI_REFACTOR_CRITIQUE_V2.md v2 reviewer findings
+│   ├── DI_REFACTOR_REPORT.md           Implementation report (snapshot diff + CI results)
+│   ├── DI_REFACTOR_VALIDATION_REPORT.md Post-impl validator's verdict
+│   ├── GOAL_PLUGIN_COMPLIANCE.md       Migration success criteria (original)
+│   ├── PLAN_PLUGIN_COMPLIANCE.md       Migration architecture (original)
+│   ├── INVESTIGATION_PLUGIN_DEPENDENCIES.md  Empirical dep auto-install proof
+│   ├── PLATFORM_INSPECTION_CATALOG.md  Canonical CLI commands per platform
+│   ├── PLATFORM_VALIDATION_CICD_PLAN.md  Validation CI design + 20 locked decisions
+│   ├── EMPIRICAL_CLI_FINDINGS/         Raw research notes per platform
+│   ├── ORG_POLICY_INVESTIGATION.md     Root-cause analysis (transient install block)
+│   ├── RESTRUCTURE_REPORT.md           Phase 3 restructure outcome
+│   ├── CONSTRUCT_TYPES.md              Concise reference table
+│   ├── ADDING_A_CONSTRUCT.md           Single contributor tutorial (consolidates the old 11)
+│   ├── SKILL_FORMAT.md, RULE_FORMAT.md, ONBOARDING.md  Format references
+│   └── (earlier-cycle reports: VERIFICATION, FIX, FINALIZATION)
+└── research/                           Market intelligence (research/README.md first)
 ```
 
 ---
 
 ## Architecture Summary
 
-- **Sources of truth**: `MARKETPLACE.toml`, `catalog.toml`, source content under `skills/`, `rules/`, `examples/`. Humans edit these.
-- **Generated**: everything in `_generated/`, `.codex/`, `.gemini/`, `.cursor/`, `.windsurf/`, `.devin/`, and `.claude-plugin/marketplace.json`. The generator produces these from sources.
-- **Skill or rule bundles** (`skills-<domain>`, `rules-<domain>`, `rules-all`) are content-free plugins whose `plugin.json` declares only `dependencies`. Claude Code auto-installs the dependencies — verified empirically.
-- **Rules** install via `/plugin install` then activate via `activate.sh` symlink into `.claude/rules/`. Workaround for the lack of a `rules` field in Claude Code's plugin spec.
-- **Multi-platform validation (implemented)**: 10 compat workflows in `.github/workflows/compat-*.yml` organized per-construct (skill, command, agent, hook, mcp, extension, monitor, output-style, theme, marketplace-add) with platform matrix per workflow. 5 composite actions in `.github/actions/setup-<platform>/`. 2 local-dev fallback scripts in `scripts/`.
+- **Sources of truth**: `MARKETPLACE.toml`, `catalog.toml`, source content under `<construct>/<name>/`. Humans edit these.
+- **Generated**: `_generated/`, `.codex/`, `.gemini/`, `.cursor/`, `.windsurf/`, `.devin/`, `.claude-plugin/marketplace.json`. The generator produces these from sources.
+- **Construct classes** (in `scripts/constructs.py`) encapsulate each of the 10 plugin types' build + emit logic. Adding a new construct = new class + entry in `CONSTRUCTS` registry.
+- **Platform classes** (in `scripts/platforms.py`) encapsulate each of the 6 platforms' mirror logic and which constructs they `supports`. Adding a new platform = new class + entry in `PLATFORMS` registry.
+- **Bundles** are dep-only plugins. Two kinds:
+  - **Catalog bundles**: declared in `catalog.toml` `[bundle.*]` with explicit `members`. Generator's Phase 2a emits them.
+  - **Catch-all bundles**: `bundle-<prefix>-all`, one per construct. Code-generated by Phase 2b. NOT in catalog.toml; catalog parsing rejects reserved names.
+- **Rules** install via `/plugin install` then activate via `activate.sh` symlink into `.claude/rules/`. Workaround for the lack of a `rules` field in Claude Code's plugin spec. See `docs/RULE_FORMAT.md`.
+- **Multi-platform validation**: 10 compat workflows in `.github/workflows/compat-*.yml` organized per-construct with platform matrix per workflow. Verified end-to-end empirically.
 
 ---
 
 ## Conventions
 
-- Names: kebab-case for everything (skills, rules, domains, plugin names).
-- Python scripts: PEP 723 inline metadata, `uv run`.
+- Names: kebab-case for everything (skills, rules, domains, plugin names, bundle names).
+- Python scripts: PEP 723 inline metadata, `uv run`. Python 3.11+ (uses `match` statement + `Protocol[runtime_checkable]`).
 - Shell scripts: shebang + `set -euo pipefail`.
 - No project-level Python deps (no `pyproject.toml` at root).
 - `author` in plugin.json is always an object `{ "name": "...", "url": "..." }`, never a string.
@@ -151,26 +165,16 @@ marketplace/
 
 ## Adding Skills / Rules / Anything
 
-Copy `examples/example-<type>/` and adapt. Each construct type has a tutorial in `docs/ADDING_*.md`; for the index, see `docs/CONSTRUCT_TYPES.md`.
+See [`docs/ADDING_A_CONSTRUCT.md`](./docs/ADDING_A_CONSTRUCT.md) — single tutorial covering all 10 construct types.
 
 General workflow:
 
-1. Edit source content.
-2. If skill or rule: add to a domain in `catalog.toml`.
-3. `uv run scripts/generate_manifest.py`.
-4. `uv run tests/test_marketplace.py`.
-5. Commit.
-
----
-
-## What's Next
-
-In priority order:
-
-- **File the GitHub Support whitelist request** — drafted at `docs/CI_WHITELIST_REQUEST.md`. Independent of all engineering work; can happen any time. Once granted, Codex/Gemini advisory jobs will start passing on next CI run with zero code changes.
-- **Merge PR #1** (`feat/claude-plugin-compliance` → `main`) — migration + design docs.
-- **Merge PR #2** (`feat/multi-platform-validation` → `main`) — validation implementation. Depends on PR #1 merging first (or rebase if PR #1 merges before review).
-- **Wave 4** — after the GitHub whitelist is granted, flip `continue-on-error: false` for Codex/Gemini matrix jobs (one-line edits per workflow, ~30 min).
+1. Copy `<construct>/example/` to `<construct>/<your-name>/`
+2. Edit the copied content
+3. If skill or rule: add to a bundle in `catalog.toml` (existing or new `[bundle.<your-domain>-<construct>]`)
+4. `uv run scripts/generate_manifest.py`
+5. `uv run tests/test_marketplace.py`
+6. Commit (no AI co-author attribution)
 
 ---
 
@@ -179,10 +183,12 @@ In priority order:
 - Rule activation is a manual step (`activate.sh`). No native plugin-installable rules in Claude Code yet (feature request open at `anthropics/claude-code#21163`).
 - Generator regenerates `_generated/` and mirrors from scratch each run — fast (~1s) but means hand-edits there are always lost.
 - Cross-platform mirrors are best-effort. Platform-specific tooling may evolve faster than this repo tracks.
-- `@openai/codex` and `@google/gemini-cli` blocked from GitHub Actions at org policy level. CI for those two platforms relies on local-dev fallback scripts (Phase 3 scope) until the whitelist request is granted.
+- Cursor and Windsurf have no headless CLI. Clone-and-detect is the only install path.
+- Devin's installer exits 1 in non-TTY environments (binary lands at `~/.local/bin/devin` regardless; CI works around this with `|| true`).
+- Gemini's `extensions list` and `mcp list` write output to stderr — pipes must use `2>&1`.
 
 ---
 
 ## If You're Forgetting Everything
 
-Read `docs/RESUME_HERE.md` first. It has the 30-second tldr, the bookmark of "you are here," the next concrete actions in priority order, the project glossary, the top 10 decisions with rationale, and the dead-ends list. This `HANDOFF.md` is for ongoing tracking; `RESUME_HERE.md` is for re-entry.
+Read [`docs/RESUME_HERE.md`](./docs/RESUME_HERE.md) first. It has the 30-second tldr, the "you are here" bookmark, the next concrete actions in priority order, the project glossary, the top decisions with rationale, and the dead-ends list. This `HANDOFF.md` is for ongoing tracking; `RESUME_HERE.md` is for re-entry.
