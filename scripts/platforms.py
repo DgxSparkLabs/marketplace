@@ -175,23 +175,45 @@ class CodexPlatform:
 class GeminiPlatform:
     """Gemini CLI platform.
 
-    Gemini expects:
+    The .gemini/ directory is the extension root per
+    geminicli.com/docs/extensions/reference/ (2026-05-25). Skills, agents,
+    and hooks subdirs are all auto-discovered relative to that root:
       - .gemini/gemini-extension.json (repo-level extension manifest)
-      - .gemini/skills/<name>/ (per-skill mirror)
+      - .gemini/skills/<name>/   (per-skill mirror)
+      - .gemini/agents/<n>.md    (sub-agent definitions, Unit 3 / A3)
+      - .gemini/hooks/hooks.json (hooks file, Unit 3 / A9)
     """
 
     name = "gemini"
     mirror_directory: Path = REPO_ROOT / ".gemini"
-    supports: set[type[Construct]] = {SkillConstruct}
+    supports: set[type[Construct]] = {SkillConstruct, AgentConstruct, HookConstruct}
 
     def emit(self, construct: Construct, name: str) -> None:
-        dst = self.mirror_directory / "skills" / name
-        shutil.copytree(
-            construct.source_directory / name,
-            dst,
-            dirs_exist_ok=True,
-            ignore=_COPY_IGNORE,
-        )
+        if isinstance(construct, SkillConstruct):
+            dst = self.mirror_directory / "skills" / name
+            shutil.copytree(
+                construct.source_directory / name,
+                dst,
+                dirs_exist_ok=True,
+                ignore=_COPY_IGNORE,
+            )
+        elif isinstance(construct, AgentConstruct):
+            agents_dir = self.mirror_directory / "agents"
+            agents_dir.mkdir(parents=True, exist_ok=True)
+            src_agents = construct.source_directory / name / "agents"
+            if src_agents.exists():
+                for agent_md in sorted(src_agents.glob("*.md")):
+                    shutil.copy(agent_md, agents_dir / agent_md.name)
+        elif isinstance(construct, HookConstruct):
+            # TODO: with multiple hook plugins, this last-writer-wins overwrite.
+            # Add merge semantics (concatenate hooks arrays) when a second hook
+            # plugin lands. Single plugin today, so direct copy is sufficient.
+            hooks_dir = self.mirror_directory / "hooks"
+            hooks_dir.mkdir(parents=True, exist_ok=True)
+            shutil.copy(
+                construct.source_directory / name / "hooks" / "hooks.json",
+                hooks_dir / "hooks.json",
+            )
 
     def build_plugin_json(self, construct: Construct, name: str) -> dict:
         # Gemini doesn't use a per-plugin manifest format; extension install

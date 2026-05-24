@@ -47,7 +47,7 @@ from constructs import (
     SkillConstruct,
     ThemeConstruct,
 )
-from platforms import PLATFORMS, AgentsPlatform, CodexPlatform, CursorPlatform
+from platforms import PLATFORMS, AgentsPlatform, CodexPlatform, CursorPlatform, GeminiPlatform, WindsurfPlatform
 from utils import CATALOG, MARKETPLACE_JSON, scan_source_dir
 
 MARKETPLACE_TOML = REPO_ROOT / "MARKETPLACE.toml"
@@ -857,6 +857,52 @@ class TestAgentsMirror(unittest.TestCase):
         self.assertEqual(
             leaked, [],
             f".codex-plugin/ leaked into .agents/ mirror: {leaked}",
+        )
+
+
+# ─── TestGeminiAgentsMirror / TestGeminiHooksMirror ──────────────────────────
+
+class TestGeminiAgentsMirror(unittest.TestCase):
+    """Gemini sub-agents at .gemini/agents/<n>.md (Unit 3 / A3).
+
+    Per geminicli.com/docs/extensions/reference/ (2026-05-25): sub-agents are
+    .md files inside the agents/ directory of the extension root (.gemini/).
+    """
+
+    def test_gemini_agents_mirror_exists(self):
+        gemini = next(p for p in PLATFORMS.values() if isinstance(p, GeminiPlatform))
+        agent = next(c for c in CONSTRUCTS.values() if isinstance(c, AgentConstruct))
+        for name in scan_source_dir(agent.source_directory):
+            src_agents = agent.source_directory / name / "agents"
+            if not src_agents.exists():
+                continue
+            for agent_md in sorted(src_agents.glob("*.md")):
+                with self.subTest(agent_plugin=name, agent_file=agent_md.name):
+                    mirrored = gemini.mirror_directory / "agents" / agent_md.name
+                    self.assertTrue(
+                        mirrored.exists(),
+                        f".gemini/agents/{agent_md.name} missing for source "
+                        f"agents/{name}/agents/{agent_md.name}",
+                    )
+
+
+class TestGeminiHooksMirror(unittest.TestCase):
+    """Gemini hooks at .gemini/hooks/hooks.json (Unit 3 / A9).
+
+    Per geminicli.com/docs/extensions/reference/ (2026-05-25): hooks live at
+    hooks/hooks.json inside the extension root. Single hook plugin today —
+    multi-plugin merge semantics deferred until a second hook plugin lands.
+    """
+
+    def test_gemini_hooks_json_exists(self):
+        gemini = next(p for p in PLATFORMS.values() if isinstance(p, GeminiPlatform))
+        hooks_json = gemini.mirror_directory / "hooks" / "hooks.json"
+        self.assertTrue(hooks_json.exists(), ".gemini/hooks/hooks.json missing")
+        # Must parse as valid JSON
+        data = json.loads(hooks_json.read_text(encoding="utf-8"))
+        self.assertIn(
+            "hooks", data,
+            ".gemini/hooks/hooks.json must contain top-level 'hooks' key",
         )
 
 
