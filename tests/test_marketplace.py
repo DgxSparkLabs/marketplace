@@ -860,6 +860,117 @@ class TestAgentsMirror(unittest.TestCase):
         )
 
 
+# ─── TestCodexAgentsMirror / TestMdToTomlConverter ───────────────────────────
+
+class TestCodexAgentsMirror(unittest.TestCase):
+    """Codex sub-agents at .codex/agents/<n>.toml (Unit 4 / A4).
+
+    Source is Claude-style markdown (D-16); .codex/agents/<n>.toml is the
+    converted Codex shape per developers.openai.com/codex/subagents/
+    (2026-05-25). Required Codex fields: name, description,
+    developer_instructions.
+    """
+
+    def test_codex_agents_toml_exists(self):
+        codex = next(p for p in PLATFORMS.values() if isinstance(p, CodexPlatform))
+        agent = next(c for c in CONSTRUCTS.values() if isinstance(c, AgentConstruct))
+        for name in scan_source_dir(agent.source_directory):
+            src_agents = agent.source_directory / name / "agents"
+            if not src_agents.exists():
+                continue
+            for agent_md in sorted(src_agents.glob("*.md")):
+                with self.subTest(agent_plugin=name, agent_file=agent_md.name):
+                    toml_path = codex.mirror_directory / "agents" / f"{agent_md.stem}.toml"
+                    self.assertTrue(
+                        toml_path.exists(),
+                        f".codex/agents/{agent_md.stem}.toml missing for source "
+                        f"agents/{name}/agents/{agent_md.name}",
+                    )
+
+    def test_codex_agents_toml_valid(self):
+        """Every emitted .codex/agents/<n>.toml parses + has required Codex fields."""
+        codex = next(p for p in PLATFORMS.values() if isinstance(p, CodexPlatform))
+        agents_dir = codex.mirror_directory / "agents"
+        if not agents_dir.exists():
+            self.skipTest(".codex/agents/ does not exist (no agent sources)")
+        toml_files = sorted(agents_dir.glob("*.toml"))
+        self.assertGreater(len(toml_files), 0, ".codex/agents/ has no .toml files")
+        for toml_path in toml_files:
+            with self.subTest(toml=toml_path.name):
+                data = tomllib.loads(toml_path.read_text(encoding="utf-8"))
+                for required in ("name", "description", "developer_instructions"):
+                    self.assertIn(
+                        required, data,
+                        f"{toml_path.name}: required Codex field '{required}' missing",
+                    )
+
+    def test_codex_agents_toml_roundtrip(self):
+        """Known input (notebook-reviewer) round-trips through tomllib with expected fields."""
+        codex = next(p for p in PLATFORMS.values() if isinstance(p, CodexPlatform))
+        toml_path = codex.mirror_directory / "agents" / "notebook-reviewer.toml"
+        if not toml_path.exists():
+            self.skipTest("notebook-reviewer.toml not present")
+        data = tomllib.loads(toml_path.read_text(encoding="utf-8"))
+        self.assertEqual(data["name"], "notebook-reviewer")
+        self.assertTrue(
+            data["description"].startswith("Reviews"),
+            f"description starts with: {data['description'][:40]!r}",
+        )
+        self.assertIn("peer reviewer", data["developer_instructions"])
+        self.assertEqual(data.get("tools"), ["Read", "Grep", "Glob"])
+
+
+class TestMdToTomlConverter(unittest.TestCase):
+    """Unit tests for scripts/converters/md_to_toml.py (Unit 4)."""
+
+    SAMPLE = (
+        "---\n"
+        "name: notebook-reviewer\n"
+        "description: Reviews a lab notebook entry as a skeptical peer reviewer.\n"
+        "tools: Read, Grep, Glob\n"
+        "---\n"
+        "\n"
+        "You are a peer reviewer for laboratory notebook entries.\n"
+        "\n"
+        "Apply skeptical eye.\n"
+    )
+
+    def setUp(self):
+        # Imported here so any import-time errors fail loudly in this class only.
+        from converters.md_to_toml import claude_agent_md_to_codex_toml  # noqa: E402
+        self.convert = claude_agent_md_to_codex_toml
+
+    def test_required_fields_emitted(self):
+        out = self.convert(self.SAMPLE)
+        data = tomllib.loads(out)
+        self.assertEqual(data["name"], "notebook-reviewer")
+        self.assertTrue(data["description"].startswith("Reviews"))
+        self.assertIn("peer reviewer", data["developer_instructions"])
+
+    def test_tools_parsed_as_array(self):
+        out = self.convert(self.SAMPLE)
+        data = tomllib.loads(out)
+        self.assertEqual(data["tools"], ["Read", "Grep", "Glob"])
+
+    def test_missing_frontmatter_raises(self):
+        with self.assertRaises(ValueError):
+            self.convert("no frontmatter here")
+
+    def test_missing_required_name_raises(self):
+        bad = "---\ndescription: x\n---\nbody"
+        with self.assertRaises(ValueError):
+            self.convert(bad)
+
+    def test_round_trip_on_real_example(self):
+        """The committed agent source converts and re-parses cleanly."""
+        src_path = REPO_ROOT / "agents" / "example" / "agents" / "notebook-reviewer.md"
+        if not src_path.exists():
+            self.skipTest(f"{src_path} not present")
+        out = self.convert(src_path.read_text(encoding="utf-8"))
+        data = tomllib.loads(out)  # round-trips through stdlib TOML reader
+        self.assertEqual(data["name"], "notebook-reviewer")
+
+
 # ─── TestGeminiAgentsMirror / TestGeminiHooksMirror ──────────────────────────
 
 class TestGeminiAgentsMirror(unittest.TestCase):

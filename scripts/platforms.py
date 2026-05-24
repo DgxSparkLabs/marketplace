@@ -147,14 +147,33 @@ class CodexPlatform:
 
     name = "codex"
     mirror_directory: Path = REPO_ROOT / ".codex"
-    supports: set[type[Construct]] = {SkillConstruct, MCPConstruct, HookConstruct}
+    supports: set[type[Construct]] = {
+        SkillConstruct, MCPConstruct, HookConstruct, AgentConstruct,
+    }
 
     def emit(self, construct: Construct, name: str) -> None:
         # Skill mirror retired (D-1): skills are surfaced via Phase 1.5
         # _generated/<plugin>/.codex-plugin/plugin.json only.
         # MCP and hook manifests are also handled by build_plugin_json only.
-        # Unit 4 adds the AgentConstruct branch writing .codex/agents/<n>.toml.
-        return
+        # Unit 4 adds AgentConstruct: .codex/agents/<n>.toml per
+        # developers.openai.com/codex/subagents/ (2026-05-25). The source
+        # is Claude-style markdown (D-16); convert at emit time.
+        if isinstance(construct, AgentConstruct):
+            # Lazy import — only Codex needs the converter, keeps the cycle small.
+            from converters.md_to_toml import claude_agent_md_to_codex_toml
+
+            agents_dir = self.mirror_directory / "agents"
+            agents_dir.mkdir(parents=True, exist_ok=True)
+            src_agents = construct.source_directory / name / "agents"
+            if not src_agents.exists():
+                return
+            for agent_md in sorted(src_agents.glob("*.md")):
+                toml_text = claude_agent_md_to_codex_toml(
+                    agent_md.read_text(encoding="utf-8")
+                )
+                (agents_dir / f"{agent_md.stem}.toml").write_text(
+                    toml_text, encoding="utf-8"
+                )
 
     def build_plugin_json(self, construct: Construct, name: str) -> dict:
         full_name = f"{construct.prefix}-{name}"
