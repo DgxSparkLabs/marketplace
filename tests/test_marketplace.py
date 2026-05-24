@@ -858,6 +858,31 @@ class TestAgentsMirror(unittest.TestCase):
         )
 
 
+# ─── TestAgentsRulesMirror ────────────────────────────────────────────────────
+
+class TestAgentsRulesMirror(unittest.TestCase):
+    """AgentsPlatform .agents/rules/ mirror (Unit 1 / D-12).
+
+    Forward-looking convergence: no platform reads .agents/rules/ today
+    (verified Q-R1/Q-R2 2026-05-25), but Cursor 2.7+ / Windsurf 2.0 are
+    credible adopters. Emit now so we are already in place when one of
+    them flips. Raw rule.md is copied; no frontmatter conversion.
+    """
+
+    def test_rules_mirror_exists(self):
+        """.agents/rules/<name>.md must exist for every source rule."""
+        agents = next(p for p in PLATFORMS.values() if isinstance(p, AgentsPlatform))
+        rule = next(c for c in CONSTRUCTS.values() if isinstance(c, RuleConstruct))
+        for name in scan_source_dir(rule.source_directory):
+            with self.subTest(rule=name):
+                rule_md = agents.mirror_directory / "rules" / f"{name}.md"
+                self.assertTrue(
+                    rule_md.exists(),
+                    f".agents/rules/{name}.md missing — forward-looking emission "
+                    "must cover every source rule",
+                )
+
+
 # ─── TestMirrorHygiene ────────────────────────────────────────────────────────
 
 class TestMirrorHygiene(unittest.TestCase):

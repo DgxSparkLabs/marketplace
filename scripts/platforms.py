@@ -300,7 +300,7 @@ class DevinPlatform:
 
 
 class AgentsPlatform:
-    """Cross-platform .agents/ skill convergence layer (Decision A1).
+    """Cross-platform .agents/ convergence layer (Decisions A1 + D-12).
 
     Windsurf, Cursor, and Devin all read `.agents/skills/<name>/SKILL.md`
     natively (verified 2026-05-24 from official docs). This Platform emits
@@ -309,13 +309,20 @@ class AgentsPlatform:
     Per Decision A1: AgentsPlatform is a proper Platform class — same shape
     as the other six Platforms: name, mirror_directory, supports, emit.
 
-    build_plugin_json returns {} — AgentsPlatform hosts skill content only,
+    Per Decision D-12 (Unit 1): also emits .agents/rules/<name>.md as a
+    forward-looking convergence layer. No platform reads this path today
+    (verified Q-R1/Q-R2 2026-05-25), but Cursor 2.7+ and Windsurf 2.0 are
+    credible adopters — emitting now means we are already in place when
+    one of them flips. Raw rule.md is copied; no format conversion (each
+    consumer can adopt its own frontmatter conventions later).
+
+    build_plugin_json returns {} — AgentsPlatform hosts content only,
     not plugin manifests.
     """
 
     name = "agents"
     mirror_directory: Path = REPO_ROOT / ".agents"
-    supports: set[type[Construct]] = {SkillConstruct}
+    supports: set[type[Construct]] = {SkillConstruct, RuleConstruct}
 
     def emit(self, construct: Construct, name: str) -> None:
         if isinstance(construct, SkillConstruct):
@@ -326,9 +333,17 @@ class AgentsPlatform:
                 dirs_exist_ok=True,
                 ignore=_COPY_IGNORE,
             )
+        elif isinstance(construct, RuleConstruct):
+            rules_dir = self.mirror_directory / "rules"
+            rules_dir.mkdir(parents=True, exist_ok=True)
+            # Raw rule.md (no frontmatter conversion) per D-12.
+            shutil.copy(
+                construct.source_directory / name / "rule.md",
+                rules_dir / f"{name}.md",
+            )
 
     def build_plugin_json(self, construct: Construct, name: str) -> dict:
-        # AgentsPlatform hosts skill content only, not plugin manifests.
+        # AgentsPlatform hosts content only, not plugin manifests.
         return {}
 
 
