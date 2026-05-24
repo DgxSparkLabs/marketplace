@@ -1,0 +1,6 @@
+{
+  "name": "skill-structured-handoff",
+  "version": "1.0.0",
+  "description": "Generate structured task files for autonomous agent sessions",
+  "skills": "./skills/"
+}

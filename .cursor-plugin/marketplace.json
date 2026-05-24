@@ -1,0 +1,201 @@
+{
+  "name": "dgxsparklabs-marketplace",
+  "plugins": [
+    {
+      "name": "rule-autonomous-persistence",
+      "source": "./_generated/rule-autonomous-persistence"
+    },
+    {
+      "name": "rule-blast-radius",
+      "source": "./_generated/rule-blast-radius"
+    },
+    {
+      "name": "rule-code-hygiene",
+      "source": "./_generated/rule-code-hygiene"
+    },
+    {
+      "name": "rule-continuous-improvement",
+      "source": "./_generated/rule-continuous-improvement"
+    },
+    {
+      "name": "rule-document-lifecycle",
+      "source": "./_generated/rule-document-lifecycle"
+    },
+    {
+      "name": "rule-document-progress",
+      "source": "./_generated/rule-document-progress"
+    },
+    {
+      "name": "rule-example",
+      "source": "./_generated/rule-example"
+    },
+    {
+      "name": "rule-improve-the-process",
+      "source": "./_generated/rule-improve-the-process"
+    },
+    {
+      "name": "rule-no-ai-credit",
+      "source": "./_generated/rule-no-ai-credit"
+    },
+    {
+      "name": "rule-output-discipline",
+      "source": "./_generated/rule-output-discipline"
+    },
+    {
+      "name": "rule-pitfalls-discipline",
+      "source": "./_generated/rule-pitfalls-discipline"
+    },
+    {
+      "name": "rule-prior-art",
+      "source": "./_generated/rule-prior-art"
+    },
+    {
+      "name": "rule-python-uv",
+      "source": "./_generated/rule-python-uv"
+    },
+    {
+      "name": "rule-readable-docs",
+      "source": "./_generated/rule-readable-docs"
+    },
+    {
+      "name": "rule-revert-on-failure",
+      "source": "./_generated/rule-revert-on-failure"
+    },
+    {
+      "name": "rule-session-resilience",
+      "source": "./_generated/rule-session-resilience"
+    },
+    {
+      "name": "rule-simplicity-bar",
+      "source": "./_generated/rule-simplicity-bar"
+    },
+    {
+      "name": "rule-stay-motivated",
+      "source": "./_generated/rule-stay-motivated"
+    },
+    {
+      "name": "rule-task-formation",
+      "source": "./_generated/rule-task-formation"
+    },
+    {
+      "name": "rule-telegram-on-complete",
+      "source": "./_generated/rule-telegram-on-complete"
+    },
+    {
+      "name": "rule-verification-ladder",
+      "source": "./_generated/rule-verification-ladder"
+    },
+    {
+      "name": "rule-verify-your-work",
+      "source": "./_generated/rule-verify-your-work"
+    },
+    {
+      "name": "skill-act-runner",
+      "source": "./_generated/skill-act-runner"
+    },
+    {
+      "name": "skill-check",
+      "source": "./_generated/skill-check"
+    },
+    {
+      "name": "skill-code-health-audit",
+      "source": "./_generated/skill-code-health-audit"
+    },
+    {
+      "name": "skill-duckduckgo-search",
+      "source": "./_generated/skill-duckduckgo-search"
+    },
+    {
+      "name": "skill-example",
+      "source": "./_generated/skill-example"
+    },
+    {
+      "name": "skill-expose-port",
+      "source": "./_generated/skill-expose-port"
+    },
+    {
+      "name": "skill-gemini-chat",
+      "source": "./_generated/skill-gemini-chat"
+    },
+    {
+      "name": "skill-github-repo-setup",
+      "source": "./_generated/skill-github-repo-setup"
+    },
+    {
+      "name": "skill-github-search",
+      "source": "./_generated/skill-github-search"
+    },
+    {
+      "name": "skill-google-drive-reader",
+      "source": "./_generated/skill-google-drive-reader"
+    },
+    {
+      "name": "skill-motivation",
+      "source": "./_generated/skill-motivation"
+    },
+    {
+      "name": "skill-pitfall-check",
+      "source": "./_generated/skill-pitfall-check"
+    },
+    {
+      "name": "skill-project-bootstrap",
+      "source": "./_generated/skill-project-bootstrap"
+    },
+    {
+      "name": "skill-recall-rules",
+      "source": "./_generated/skill-recall-rules"
+    },
+    {
+      "name": "skill-send-email",
+      "source": "./_generated/skill-send-email"
+    },
+    {
+      "name": "skill-session-history",
+      "source": "./_generated/skill-session-history"
+    },
+    {
+      "name": "skill-session-wrapup",
+      "source": "./_generated/skill-session-wrapup"
+    },
+    {
+      "name": "skill-skill-analytics",
+      "source": "./_generated/skill-skill-analytics"
+    },
+    {
+      "name": "skill-skill-creator",
+      "source": "./_generated/skill-skill-creator"
+    },
+    {
+      "name": "skill-ssh-tunnel",
+      "source": "./_generated/skill-ssh-tunnel"
+    },
+    {
+      "name": "skill-structured-handoff",
+      "source": "./_generated/skill-structured-handoff"
+    },
+    {
+      "name": "skill-sync-rules",
+      "source": "./_generated/skill-sync-rules"
+    },
+    {
+      "name": "skill-telegram-notify",
+      "source": "./_generated/skill-telegram-notify"
+    },
+    {
+      "name": "skill-textual-tui-guide",
+      "source": "./_generated/skill-textual-tui-guide"
+    },
+    {
+      "name": "skill-web-scraper",
+      "source": "./_generated/skill-web-scraper"
+    },
+    {
+      "name": "skill-youtube-search",
+      "source": "./_generated/skill-youtube-search"
+    },
+    {
+      "name": "skill-youtube-wisdom",
+      "source": "./_generated/skill-youtube-wisdom"
+    }
+  ]
+}

@@ -1,64 +1,52 @@
-# example-skill
+# example-mcp
 
-A working reference plugin demonstrating the **skill** construct type. Copy this directory and modify to scaffold your own skill plugin.
+Reference plugin for the **MCP server** (Model Context Protocol) construct type. Copy this directory to scaffold your own.
 
 ## What it does
 
-When invoked as `/example-skill <topic>`, it prints a short markdown block tagged as a lab notebook status update.
+Registers an MCP server named `example-fetch` that wraps `mcp-server-fetch` (the official fetch MCP, installed on demand via `uvx`). Once the plugin is enabled, the fetch tools become available in every session.
 
 Install:
 ```
-/plugin install example-skill@dgxsparklabs-marketplace
+/plugin install example-mcp@dgxsparklabs-marketplace
 ```
 
-Invoke:
-```
-/example-skill onboarding
-```
+After install, MCP tools like `mcp__example-fetch__fetch` become available.
 
 ## File-by-file walkthrough
 
 ```
-example-skill/
-├── .claude-plugin/
-│   └── plugin.json    ← plugin manifest (Claude Code reads this)
-├── SKILL.md           ← the skill itself (Claude reads this when invoked)
-└── README.md          ← human-facing tutorial (you are here)
+example-mcp/
+├── .claude-plugin/plugin.json     ← manifest with "mcpServers": "./mcp-config.json"
+├── mcp-config.json                ← server definitions
+└── README.md
 ```
 
-### `.claude-plugin/plugin.json`
+### `mcp-config.json`
 
-Required for the plugin to be installable via `/plugin install`. Key fields:
+A JSON file with an `mcpServers` object. Each key is a server name (becomes the prefix on tool names). Each value is the launch config:
 
-- `name` — must match the skill name in `SKILL.md` frontmatter. Must be kebab-case (`lowercase-with-hyphens`).
-- `version` — semantic version. Bump when shipping changes.
-- `skills: ["./"]` — tells Claude Code that the SKILL.md lives in the same directory as the plugin manifest. For a skill in a subdirectory, use `["./skills"]` or specific paths.
-- `author` must be an object `{ "name": "...", "url": "..." }`, not a string.
+- `command` — the executable
+- `args` — array of arguments
+- Optional: `env` — environment variables for the server process
 
-### `SKILL.md`
+The example uses `uvx mcp-server-fetch` — `uvx` runs Python packages without installing them globally. You can also use `npx`, a path to a local script, or any executable that speaks the MCP protocol over stdio.
 
-The actual skill. The YAML frontmatter declares metadata Claude Code uses to surface the skill in slash-command completions and to scope its tool access:
+## When to use MCP
 
-- `name` and `description` — what users see when typing `/`.
-- `argument-hint` — placeholder text shown after the command name.
-- `allowed-tools` — restricts which tools the skill can call. Be minimal — only list what the skill genuinely needs. Lists `Bash` (for the timestamp) and `Read` (just because most skills end up reading files; remove if yours doesn't).
+MCP servers expose tools, resources, and prompts to Claude. Use MCP when:
+- You need a stateful service (database, API session, headless browser).
+- The capability is reusable across many skills/commands.
+- There's an existing MCP server you can wrap (don't reinvent fetch, GitHub, etc.).
 
-The body (everything after the closing `---`) is the prompt Claude sees when the skill fires. Use imperatives: "Compose a block...", "Print it..."
+For simple one-off tools, a skill calling a script is lighter weight.
 
-`$ARGUMENTS` is substituted with everything the user typed after the slash command.
+## To make your own MCP plugin from this template
 
-## To make your own skill from this template
+1. `cp -r examples/example-mcp mcp-servers/my-mcp`
+2. Edit `.claude-plugin/plugin.json` and `mcp-config.json`.
+3. If wrapping an existing MCP server, just change `command` and `args`. If writing one, point `command` to your server script.
+4. Test the server standalone first (`uvx your-server`) to confirm it speaks MCP correctly.
+5. `uv run scripts/generate_manifest.py` and commit.
 
-1. Copy this directory: `cp -r examples/example-skill skills/my-skill`
-2. Rename `my-skill` to whatever you want (kebab-case).
-3. Edit `.claude-plugin/plugin.json` — update `name`, `description`, `homepage`, `keywords`.
-4. Edit `SKILL.md` — replace the frontmatter and body with your skill's content. See `docs/ADDING_A_SKILL.md` for full conventions.
-5. Add your skill name to a domain in `catalog.toml` under `[skill_domain.<domain>]`.
-6. Run `uv run scripts/generate_manifest.py` to refresh manifests.
-7. Commit.
-
-## Related
-
-- Full skill specification: `docs/SKILL_FORMAT.md`
-- Other example plugins demonstrating different construct types: `examples/example-*`
-- Real skills shipped by this marketplace: `skills/`
+See `docs/ADDING_AN_MCP_SERVER.md` for the full launch-config schema.

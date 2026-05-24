@@ -1,0 +1,6 @@
+{
+  "name": "skill-code-health-audit",
+  "version": "1.0.0",
+  "description": "Audit codebase for DRY violations, oversized files, and scattered definitions",
+  "skills": "./skills/"
+}

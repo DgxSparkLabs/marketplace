@@ -1,0 +1,6 @@
+{
+  "name": "skill-duckduckgo-search",
+  "version": "1.0.0",
+  "description": "Search DuckDuckGo and return results as structured text",
+  "skills": "./skills/"
+}

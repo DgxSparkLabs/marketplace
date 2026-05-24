@@ -1,0 +1,6 @@
+{
+  "name": "skill-github-search",
+  "version": "1.0.0",
+  "description": "Search GitHub for repositories, prior art, and implementation inspiration",
+  "skills": "./skills/"
+}

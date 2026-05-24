@@ -1,0 +1,6 @@
+{
+  "name": "skill-youtube-search",
+  "version": "1.0.0",
+  "description": "Search YouTube for technical videos, tutorials, and talks on a topic",
+  "skills": "./skills/"
+}

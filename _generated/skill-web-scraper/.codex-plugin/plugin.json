@@ -1,0 +1,6 @@
+{
+  "name": "skill-web-scraper",
+  "version": "1.0.0",
+  "description": "Fetch a web page and extract its main content as clean readable text",
+  "skills": "./skills/"
+}

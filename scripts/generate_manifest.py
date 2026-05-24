@@ -7,12 +7,16 @@
 generate_manifest.py — thin orchestrator for the marketplace generator.
 
 Phases:
-  1. Individual construct plugins: emit one _generated/<prefix>-<name>/ per source
+  1.  Individual construct plugins: emit one _generated/<prefix>-<name>/ per source
+  1.5 Per-platform per-plugin manifests: emit .<platform>-plugin/plugin.json
+       inside each _generated/<plugin>/ dir, gated on platform.supports (Decision B2)
   2a. Catalog bundles: emit one _generated/bundle-<name>/ per [bundle.*] in catalog.toml
   2b. Code-generated catch-alls: emit bundle-<prefix>-all per construct with sources
-  3. Cross-platform mirrors: call Platform.emit for each construct instance
-  4. Gemini extension manifest: write .gemini/gemini-extension.json
-  5. Top-level marketplace.json: write from in-memory entries (decision #17)
+  3.  Cross-platform mirrors: call Platform.emit for each construct instance
+  4.  Gemini extension manifest: write .gemini/gemini-extension.json
+  4.5 Root-level gemini-extension.json: copy .gemini/gemini-extension.json → repo root
+  5.  Top-level marketplace.json: write from in-memory entries (decision #17)
+  6.  Root-level .cursor-plugin/marketplace.json: write Cursor multi-plugin manifest
 
 Usage:
   uv run scripts/generate_manifest.py          # write everything
@@ -21,6 +25,7 @@ Usage:
 
 from __future__ import annotations
 
+import json
 import shutil
 import sys
 from pathlib import Path
@@ -30,7 +35,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 from bundles import _auto_description, load_bundles
 from constructs import CONSTRUCTS
-from platforms import GeminiPlatform, PLATFORMS
+from platforms import CursorPlatform, GeminiPlatform, PLATFORMS
 from utils import (
     CATALOG,
     GENERATED,
@@ -105,6 +110,9 @@ def _emit_bundle_plugin(
 def main() -> None:
     marketplace_entries: list[dict] = []
 
+    # Track (plugin_dir, construct, name) tuples for Phase 1.5
+    individual_plugins: list[tuple[Path, object, str]] = []
+
     # Clear and recreate _generated/ (clean slate each run)
     if GENERATED.exists():
         shutil.rmtree(GENERATED)
@@ -120,6 +128,29 @@ def main() -> None:
             marketplace_entries.append(
                 _make_marketplace_entry(plugin_json, plugin_dir, construct.category)
             )
+            individual_plugins.append((plugin_dir, construct, name))
+
+    # ── Phase 1.5: Per-platform per-plugin manifests (Decision B2) ────────────
+    # For each (plugin × platform) pair where type(construct) in platform.supports,
+    # write _generated/<plugin>/.<platform>-plugin/plugin.json. Platforms that
+    # return {} from build_plugin_json (e.g. AgentsPlatform, GeminiPlatform) are
+    # skipped. ClaudeCodePlatform is also skipped here because the Claude manifest
+    # is already written by Phase 1 (via construct.emit → write_plugin_json).
+    for plugin_dir, construct, name in individual_plugins:
+        construct_type = type(construct)
+        for platform in PLATFORMS.values():
+            if platform.name == "claude-code":
+                # Already emitted by Phase 1; skip to avoid overwriting.
+                continue
+            if construct_type not in platform.supports:
+                continue
+            manifest = platform.build_plugin_json(construct, name)
+            if not manifest:
+                # Platforms that don't host plugin manifests return {}; skip.
+                continue
+            target = plugin_dir / f".{platform.name}-plugin" / "plugin.json"
+            target.parent.mkdir(parents=True, exist_ok=True)
+            target.write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8")
 
     # ── Phase 2a: User-declared catalog bundles ────────────────────────────────
     bundles = load_bundles(CATALOG, CONSTRUCTS)
@@ -168,8 +199,41 @@ def main() -> None:
     gemini = next(p for p in PLATFORMS.values() if isinstance(p, GeminiPlatform))
     gemini.emit_extension_manifest()
 
+    # ── Phase 4.5: Root-level gemini-extension.json (Issue 3 fix) ─────────────
+    # gemini extensions install <github-url> clones the repo and looks for
+    # gemini-extension.json at the repo root (not in .gemini/). Copy the
+    # already-generated manifest to root so both install paths work.
+    shutil.copy2(
+        REPO_ROOT / ".gemini" / "gemini-extension.json",
+        REPO_ROOT / "gemini-extension.json",
+    )
+
     # ── Phase 5: Top-level marketplace.json (from in-memory entries) ──────────
     _write_marketplace_json(marketplace_entries)
+
+    # ── Phase 6: Root-level .cursor-plugin/marketplace.json (Issue 5 fix) ─────
+    # Cursor team-marketplace import (Dashboard → Settings → Plugins → Import)
+    # expects .cursor-plugin/marketplace.json at repo root listing all plugins.
+    # Schema per cursor.com/docs/plugins: {name, plugins: [{name, source}]}.
+    cursor_platform = next(p for p in PLATFORMS.values() if isinstance(p, CursorPlatform))
+    cursor_plugin_entries = []
+    for plugin_dir, construct, name in individual_plugins:
+        if type(construct) in cursor_platform.supports:
+            full_name = f"{construct.prefix}-{name}"
+            cursor_plugin_entries.append({
+                "name": full_name,
+                "source": f"./{plugin_dir.relative_to(REPO_ROOT).as_posix()}",
+            })
+    cursor_plugin_entries.sort(key=lambda e: e["name"])
+    cursor_marketplace = {
+        "name": _marketplace_name(),
+        "plugins": cursor_plugin_entries,
+    }
+    cursor_plugin_dir = REPO_ROOT / ".cursor-plugin"
+    cursor_plugin_dir.mkdir(parents=True, exist_ok=True)
+    (cursor_plugin_dir / "marketplace.json").write_text(
+        _to_json(cursor_marketplace), encoding="utf-8"
+    )
 
     # Summary
     from collections import Counter
@@ -177,6 +241,7 @@ def main() -> None:
     print(f"Generated {len(marketplace_entries)} plugin entries in marketplace.json")
     for cat, count in sorted(cats.items()):
         print(f"  {cat}: {count}")
+    print(f"  per-platform manifests emitted for {len(individual_plugins)} individual plugins")
 
 
 def _check_drift() -> int:
@@ -197,7 +262,12 @@ def _check_drift() -> int:
         for p in PLATFORMS.values()
         if p.mirror_directory is not None
     ]
-    targets = [GENERATED, MARKETPLACE_JSON.parent] + mirror_dirs
+    # Also snapshot root-level generated files
+    root_generated = [
+        REPO_ROOT / "gemini-extension.json",
+        REPO_ROOT / ".cursor-plugin",
+    ]
+    targets = [GENERATED, MARKETPLACE_JSON.parent] + mirror_dirs + root_generated
 
     before = snapshot_tree(targets)
     main()
