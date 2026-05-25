@@ -57,7 +57,13 @@ from pathlib import Path
 REPO_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(REPO_ROOT / "scripts"))
 
-from constructs import CONSTRUCTS, AgentConstruct, HookConstruct, SkillConstruct
+from constructs import (
+    CONSTRUCTS,
+    AgentConstruct,
+    HookConstruct,
+    LSPConstruct,
+    SkillConstruct,
+)
 from utils import scan_source_dir
 
 
@@ -312,6 +318,44 @@ GEMINI_HOOKS_SCHEMA = {
 }
 
 
+# Claude LSP standalone config file.
+# Source: code.claude.com/docs/en/plugins-reference#lsp-servers (fetched
+# 2026-05-26). Standalone .lsp.json / lsp-config.json files take language
+# identifiers as TOP-LEVEL keys (no outer ``lspServers`` wrapper — that
+# wrapper is for the inline-in-plugin.json variant only). Each server
+# entry requires ``command`` (string) and ``extensionToLanguage`` (record
+# of ``.ext`` → language-id). The invented ``fileExtensions`` field name
+# and the doubly-wrapped shape both fail Claude's validator.
+# +     : docs/research/claude-qa-2026-05-26/RESEARCH.md (F2)
+_LSP_SERVER_ENTRY_SCHEMA = {
+    "type": "object",
+    "required": ["command", "extensionToLanguage"],
+    "properties": {
+        "command": {"type": "string"},
+        "args": {"type": "array", "items": {"type": "string"}},
+        "extensionToLanguage": {
+            "type": "object",
+            "patternProperties": {
+                r"^\.[a-zA-Z0-9]+$": {"type": "string"},
+            },
+            "additionalProperties": False,
+        },
+    },
+    "additionalProperties": True,
+}
+
+CLAUDE_LSP_CONFIG_SCHEMA = {
+    "type": "object",
+    # Language-id keys (no ``lspServers`` wrapper, no invented field names).
+    # The lowercase pattern is loose so future identifiers like "typescript"
+    # or "rust" all pass.
+    "patternProperties": {
+        r"^[a-z][a-zA-Z0-9_-]*$": _LSP_SERVER_ENTRY_SCHEMA,
+    },
+    "additionalProperties": False,
+}
+
+
 # ─── helpers for fixture lookup ──────────────────────────────────────────────
 
 def _gemini_agent_frontmatter(md_path: Path) -> dict:
@@ -562,6 +606,51 @@ class TestGeminiHooksSchema(unittest.TestCase):
             f"Claude-only event names leaked into .gemini/hooks/hooks.json: "
             f"{leaked}",
         )
+
+
+class TestClaudeLSPConfigSchema(unittest.TestCase):
+    """Claude LSP standalone config file must satisfy CLAUDE_LSP_CONFIG_SCHEMA.
+
+    The source ``lsp-servers/<n>/lsp-config.json`` is copied verbatim into
+    ``_generated/lsp-<n>/lsp-config.json``; both must match the spec.
+    """
+
+    def test_lsp_config_file_schema_fitness(self):
+        lsp = next(c for c in CONSTRUCTS.values() if isinstance(c, LSPConstruct))
+        names = scan_source_dir(lsp.source_directory)
+        self.assertGreater(len(names), 0, "no LSP sources found")
+        for name in names:
+            for fixture in (
+                lsp.source_directory / name / "lsp-config.json",
+                REPO_ROOT / "_generated" / f"lsp-{name}" / "lsp-config.json",
+            ):
+                with self.subTest(fixture=str(fixture.relative_to(REPO_ROOT))):
+                    if not fixture.exists():
+                        self.skipTest(f"{fixture} not present")
+                    data = json.loads(fixture.read_text(encoding="utf-8"))
+                    errors = validate_schema(data, CLAUDE_LSP_CONFIG_SCHEMA)
+                    self.assertEqual(
+                        errors, [],
+                        f"{fixture.relative_to(REPO_ROOT)}: schema violations:\n  "
+                        + "\n  ".join(errors),
+                    )
+
+    def test_lsp_config_no_lspservers_wrapper(self):
+        """Negative check: the standalone file must NOT wrap entries under
+        an outer ``lspServers`` key (that's the inline-in-plugin.json shape).
+        Catches the exact bug from F2 with a human-readable message."""
+        lsp = next(c for c in CONSTRUCTS.values() if isinstance(c, LSPConstruct))
+        for name in scan_source_dir(lsp.source_directory):
+            fixture = lsp.source_directory / name / "lsp-config.json"
+            with self.subTest(name=name):
+                data = json.loads(fixture.read_text(encoding="utf-8"))
+                self.assertNotIn(
+                    "lspServers", data,
+                    f"{fixture.relative_to(REPO_ROOT)} wraps entries under "
+                    "'lspServers' — Claude's standalone lsp-config.json takes "
+                    "language IDs as top-level keys (see "
+                    "docs/research/claude-qa-2026-05-26/RESEARCH.md F2)",
+                )
 
 
 class TestValidatorSelfCheck(unittest.TestCase):
