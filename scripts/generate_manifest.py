@@ -78,7 +78,7 @@ def _write_marketplace_json(entries: list[dict]) -> None:
         "plugins": entries,
     }
     MARKETPLACE_JSON.parent.mkdir(parents=True, exist_ok=True)
-    MARKETPLACE_JSON.write_text(_to_json(manifest), encoding="utf-8")
+    MARKETPLACE_JSON.write_text(_to_json(manifest), encoding="utf-8", newline="")
 
 
 def _emit_bundle_plugin(
@@ -151,7 +151,9 @@ def main() -> None:
                 continue
             target = plugin_dir / f".{platform.name}-plugin" / "plugin.json"
             target.parent.mkdir(parents=True, exist_ok=True)
-            target.write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8")
+            target.write_text(
+                json.dumps(manifest, indent=2) + "\n", encoding="utf-8", newline=""
+            )
 
     # ── Phase 2a: User-declared catalog bundles ────────────────────────────────
     bundles = load_bundles(CATALOG, CONSTRUCTS)
@@ -246,7 +248,7 @@ def main() -> None:
     cursor_plugin_dir = REPO_ROOT / ".cursor-plugin"
     cursor_plugin_dir.mkdir(parents=True, exist_ok=True)
     (cursor_plugin_dir / "marketplace.json").write_text(
-        _to_json(cursor_marketplace), encoding="utf-8"
+        _to_json(cursor_marketplace), encoding="utf-8", newline=""
     )
 
     # Summary

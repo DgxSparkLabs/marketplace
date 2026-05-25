@@ -1,7 +1,7 @@
 {
   "description": "Reference example hook. Prepends a timestamp marker to every user prompt so Claude sees session context.",
   "hooks": {
-    "UserPromptSubmit": [
+    "BeforeModel": [
       {
         "hooks": [
           {

@@ -1,0 +1,156 @@
+name: "Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)"
+
+# Round-2 verification scaffold for refactor/platform-feature-routing.
+# Hermetic via nektos/act + catthehacker/ubuntu:act-latest.
+# Run from repo root:
+#   act workflow_dispatch -W docs/research/platform-feature-routing/workflows/verify-mirror-retirement.yml \
+#     -P ubuntu-latest=catthehacker/ubuntu:act-latest --container-architecture linux/amd64 --pull=false \
+#     2>&1 | Tee-Object docs/research/platform-feature-routing/logs/verify-mirror-retirement.log
+
+on:
+  workflow_dispatch:
+
+jobs:
+  mirror-retirement:
+    runs-on: ubuntu-latest
+    env:
+      CODEX_DISABLE_TELEMETRY: "1"
+      CI: "true"
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Install uv
+        run: |
+          curl -LsSf https://astral.sh/uv/install.sh | sh
+          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+          export PATH="$HOME/.local/bin:$PATH"
+          uv --version
+
+      - name: Regenerate manifests (baseline state)
+        run: |
+          export PATH="$HOME/.local/bin:$PATH"
+          uv run scripts/generate_manifest.py
+
+      - name: "PRE-STATE — show .codex/, .devin/, .agents/ before retirement"
+        run: |
+          echo "=== PRE-STATE START ==="
+          echo "--- .codex/skills/ count ---"
+          ls -1 .codex/skills/ 2>/dev/null | wc -l || echo "no .codex/skills"
+          echo "--- .devin/skills/ count ---"
+          ls -1 .devin/skills/ 2>/dev/null | wc -l || echo "no .devin/skills"
+          echo "--- .agents/skills/ count ---"
+          ls -1 .agents/skills/ 2>/dev/null | wc -l || echo "no .agents/skills"
+          echo "=== PRE-STATE END ==="
+
+      - name: "Q-A1 / Q-B1 — Simulate retirement: rm -rf .codex/skills .devin/skills"
+        run: |
+          echo "=== SIMULATE-RETIREMENT START ==="
+          rm -rf .codex/skills .devin/skills
+          rmdir .codex 2>/dev/null || true
+          rmdir .devin 2>/dev/null || true
+          echo "After rm:"
+          ls -la .codex 2>&1 || echo "no .codex"
+          ls -la .devin 2>&1 || echo "no .devin"
+          ls -1 .agents/skills/ | wc -l
+          echo "=== SIMULATE-RETIREMENT END ==="
+
+      - name: Install Node.js 20
+        run: |
+          curl -fsSL https://deb.nodesource.com/setup_20.x | bash -
+          apt-get install -y nodejs
+
+      - name: Install Codex CLI
+        run: npm install -g @openai/codex@latest
+
+      - name: Install Devin CLI (Q-B1 setup)
+        continue-on-error: true
+        run: |
+          curl -fsSL https://cli.devin.ai/install.sh | bash || true
+          export PATH="$HOME/.local/bin:$PATH"
+          which devin || echo "devin not in PATH"
+          devin --version || echo "devin --version failed"
+
+      # ── Q-A1 + Q-A3 — Codex marketplace add + list + add  AFTER mirror removal ──
+      - name: "Q-A1.1 — codex plugin marketplace add ./ AFTER .codex/skills/ removed"
+        id: qa1_marketplace
+        continue-on-error: true
+        run: |
+          echo "=== Q-A1.1 START ==="
+          set +e
+          OUT=$(codex plugin marketplace add ./ 2>&1)
+          EXIT=$?
+          echo "$OUT"
+          echo "QA1_MARKETPLACE_EXIT=$EXIT"
+          [ $EXIT -eq 0 ] && echo "QA1_MARKETPLACE=PASS" || echo "QA1_MARKETPLACE=FAIL"
+          echo "=== Q-A1.1 END ==="
+
+      - name: "Q-A1.2 — codex plugin list (enumerate) AFTER .codex/skills/ removed"
+        id: qa1_list
+        continue-on-error: true
+        run: |
+          echo "=== Q-A1.2 START ==="
+          set +e
+          LIST=$(codex plugin list 2>&1)
+          EXIT=$?
+          echo "$LIST" | head -40
+          echo "QA1_LIST_EXIT=$EXIT"
+          echo "$LIST" | grep -E "skill-example|skill-telegram-notify" && echo "QA1_LIST_FOUND=YES" || echo "QA1_LIST_FOUND=NO"
+          echo "=== Q-A1.2 END ==="
+
+      - name: "Q-A1.3 — codex plugin add skill-example AFTER .codex/skills/ removed"
+        id: qa1_add
+        continue-on-error: true
+        run: |
+          echo "=== Q-A1.3 START ==="
+          set +e
+          OUT=$(codex plugin add skill-example@dgxsparklabs-marketplace 2>&1)
+          EXIT=$?
+          echo "$OUT"
+          echo "QA1_ADD_EXIT=$EXIT"
+          # NOTE: C5 already FAILs in pre-retirement state due to manifest-format issue.
+          # Q-A1 succeeds if the failure mode is IDENTICAL to C5 (not a NEW failure
+          # mode caused by .codex/skills/ removal).
+          echo "$OUT" | grep -i "missing or invalid plugin.json" && echo "QA1_ADD=SAME_FAILURE_AS_C5" || echo "QA1_ADD=NEW_FAILURE_MODE"
+          echo "=== Q-A1.3 END ==="
+
+      # ── Q-B1 — Devin still finds skills via .agents/skills/ AFTER .devin/skills/ removed ──
+      - name: "Q-B1.1 — devin skills paths (confirms .agents/skills/ is discovery path)"
+        id: qb1_paths
+        continue-on-error: true
+        run: |
+          echo "=== Q-B1.1 START ==="
+          export PATH="$HOME/.local/bin:$PATH"
+          set +e
+          OUT=$(devin skills paths 2>&1)
+          EXIT=$?
+          echo "$OUT"
+          echo "QB1_PATHS_EXIT=$EXIT"
+          echo "$OUT" | grep -F ".agents/skills" && echo "QB1_PATHS_AGENTS_LISTED=YES" || echo "QB1_PATHS_AGENTS_LISTED=NO"
+          echo "$OUT" | grep -F ".devin/skills" && echo "QB1_PATHS_DEVIN_LISTED=YES" || echo "QB1_PATHS_DEVIN_LISTED=NO"
+          echo "=== Q-B1.1 END ==="
+
+      - name: "Q-B1.2 — devin skills list AFTER .devin/skills/ removed; verify skills still found via .agents/"
+        id: qb1_list
+        continue-on-error: true
+        run: |
+          echo "=== Q-B1.2 START ==="
+          export PATH="$HOME/.local/bin:$PATH"
+          set +e
+          OUT=$(devin skills list 2>&1)
+          EXIT=$?
+          echo "$OUT" | head -80
+          echo "QB1_LIST_EXIT=$EXIT"
+          COUNT=$(echo "$OUT" | grep -cE "^/")
+          echo "QB1_SKILL_COUNT=$COUNT"
+          echo "$OUT" | grep -iF "telegram-notify" && echo "QB1_TELEGRAM=YES" || echo "QB1_TELEGRAM=NO"
+          echo "$OUT" | grep -iF "github-search" && echo "QB1_GITHUB_SEARCH=YES" || echo "QB1_GITHUB_SEARCH=NO"
+          # The load-bearing assertion: count is non-zero AFTER .devin/skills/ removal
+          [ "$COUNT" -gt 0 ] && echo "QB1=PASS (skills enumerated via .agents/skills/)" || echo "QB1=FAIL (no skills found post-retirement)"
+          echo "=== Q-B1.2 END ==="
+
+      - name: "Final cleanup"
+        if: always()
+        continue-on-error: true
+        run: |
+          codex plugin marketplace remove dgxsparklabs-marketplace 2>&1 || true

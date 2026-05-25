@@ -172,7 +172,7 @@ class CodexPlatform:
                     agent_md.read_text(encoding="utf-8")
                 )
                 (agents_dir / f"{agent_md.stem}.toml").write_text(
-                    toml_text, encoding="utf-8"
+                    toml_text, encoding="utf-8", newline=""
                 )
 
     def build_plugin_json(self, construct: Construct, name: str) -> dict:
@@ -217,21 +217,50 @@ class GeminiPlatform:
                 ignore=_COPY_IGNORE,
             )
         elif isinstance(construct, AgentConstruct):
+            # Convert each Claude-style agent .md to Gemini sub-agent shape:
+            # the `tools` frontmatter must be a YAML array, not the comma-
+            # separated scalar Claude uses, or Gemini's /agents discovery
+            # silently skips the file. See
+            # docs/research/qa-bug-fixes-2026-05/RESEARCH.md Bug 2
+            # (QA 2026-05-25).
+            from converters.md_to_gemini_md import claude_agent_md_to_gemini_md
+
             agents_dir = self.mirror_directory / "agents"
             agents_dir.mkdir(parents=True, exist_ok=True)
             src_agents = construct.source_directory / name / "agents"
             if src_agents.exists():
                 for agent_md in sorted(src_agents.glob("*.md")):
-                    shutil.copy(agent_md, agents_dir / agent_md.name)
+                    gemini_text = claude_agent_md_to_gemini_md(
+                        agent_md.read_text(encoding="utf-8")
+                    )
+                    (agents_dir / agent_md.name).write_text(
+                        gemini_text, encoding="utf-8", newline=""
+                    )
         elif isinstance(construct, HookConstruct):
             # TODO: with multiple hook plugins, this last-writer-wins overwrite.
             # Add merge semantics (concatenate hooks arrays) when a second hook
-            # plugin lands. Single plugin today, so direct copy is sufficient.
+            # plugin lands. Single plugin today, so direct emit is sufficient.
+            #
+            # Convert from Claude shape: event names (UserPromptSubmit etc.)
+            # are renamed via CLAUDE_TO_GEMINI_EVENTS (BeforeModel etc.) per
+            # geminicli.com/docs/hooks/reference/ (fetched 2026-05-25). The
+            # nested ``hooks.<event>[].hooks[]`` shape is structurally
+            # identical to Gemini's (verified against the working
+            # sandipchitale/hooklog extension —
+            # docs/research/qa-bug-fixes-2026-05/logs/hooklog-hooks.json)
+            # so only the event-name vocabulary is rewritten. Without
+            # this conversion Gemini's parser silently ignores the file
+            # (docs/research/qa-bug-fixes-2026-05/RESEARCH.md Q2, QA
+            # 2026-05-25).
+            from converters.hooks_to_gemini import claude_hooks_to_gemini_hooks
+
             hooks_dir = self.mirror_directory / "hooks"
             hooks_dir.mkdir(parents=True, exist_ok=True)
-            shutil.copy(
-                construct.source_directory / name / "hooks" / "hooks.json",
-                hooks_dir / "hooks.json",
+            src = construct.source_directory / name / "hooks" / "hooks.json"
+            (hooks_dir / "hooks.json").write_text(
+                claude_hooks_to_gemini_hooks(src.read_text(encoding="utf-8")),
+                encoding="utf-8",
+                newline="",
             )
 
     def build_plugin_json(self, construct: Construct, name: str) -> dict:
@@ -252,7 +281,7 @@ class GeminiPlatform:
         }
         self.mirror_directory.mkdir(parents=True, exist_ok=True)
         (self.mirror_directory / "gemini-extension.json").write_text(
-            _to_json(manifest), encoding="utf-8"
+            _to_json(manifest), encoding="utf-8", newline=""
         )
 
 
@@ -303,17 +332,49 @@ class CursorPlatform:
             if src_agents.exists():
                 for agent_md in sorted(src_agents.glob("*.md")):
                     shutil.copy(agent_md, agents_dir / agent_md.name)
-        # Command/Hook/MCP: no mirror branch — surfaced through Phase 1.5
+        elif isinstance(construct, HookConstruct):
+            # TODO: with multiple hook plugins, this last-writer-wins overwrite.
+            # Add merge semantics (concatenate hooks arrays) when a second hook
+            # plugin lands.
+            #
+            # Convert from Claude shape: event names (UserPromptSubmit etc.)
+            # are renamed via CLAUDE_TO_CURSOR_EVENTS (beforeSubmitPrompt etc.)
+            # and the doubly-nested ``hooks.<event>[].hooks[]`` shape is
+            # flattened to Cursor's ``hooks.<event>[]`` with a top-level
+            # ``version: 1`` per cursor.com/docs/agent/hooks (fetched
+            # 2026-05-25). Without this, the file loads but no hook fires
+            # (docs/research/qa-bug-fixes-2026-05/RESEARCH.md Q1, QA
+            # 2026-05-25).
+            from converters.hooks_to_cursor import claude_hooks_to_cursor_hooks
+
+            self.mirror_directory.mkdir(parents=True, exist_ok=True)
+            src = construct.source_directory / name / "hooks" / "hooks.json"
+            (self.mirror_directory / "hooks.json").write_text(
+                claude_hooks_to_cursor_hooks(src.read_text(encoding="utf-8")),
+                encoding="utf-8",
+                newline="",
+            )
+        # Command/MCP: no mirror branch — surfaced through Phase 1.5
         # .cursor-plugin/plugin.json auto-discovery only.
         # Skills are served from .agents/ (AgentsPlatform); no .cursor/skills/ needed.
 
     def build_plugin_json(self, construct: Construct, name: str) -> dict:
         # Per cursor.com/docs/reference/plugins (2026-05-25): name is required;
-        # optional pointer fields ``agents``, ``commands``, ``hooks``,
-        # ``mcpServers`` make installer intent explicit even though Cursor
-        # auto-discovers from default subdirs inside an installed plugin.
-        manifest: dict = {"name": f"{construct.prefix}-{name}"}
-        if isinstance(construct, AgentConstruct):
+        # description + version + pointer fields (``agents``, ``commands``,
+        # ``hooks``, ``mcpServers``, ``skills``) make installer intent explicit.
+        # Without ``description`` and ``version``, Cursor's slash-popup renderer
+        # falls back to install metadata (commit SHA, etc.) and produces a
+        # mangled display — see docs/research/qa-bug-fixes-2026-05/RESEARCH.md
+        # Bug 3 (2026-05-25 QA).
+        full_name = f"{construct.prefix}-{name}"
+        manifest: dict = {
+            "name": full_name,
+            "version": _marketplace_version(),
+            "description": _description_from_construct(construct, name),
+        }
+        if isinstance(construct, SkillConstruct):
+            manifest["skills"] = "./"  # SKILL.md is at plugin root
+        elif isinstance(construct, AgentConstruct):
             manifest["agents"] = "./agents/"
         elif isinstance(construct, CommandConstruct):
             manifest["commands"] = "./commands/"
@@ -326,7 +387,7 @@ class CursorPlatform:
                 construct.source_directory / name / ".claude-plugin" / "plugin.json"
             )
             manifest["mcpServers"] = source_pj["mcpServers"]
-        # RuleConstruct + SkillConstruct: name-only minimal manifest (existing behavior).
+        # RuleConstruct: name + version + description only (no pointer field needed).
         return manifest
 
 
@@ -359,10 +420,23 @@ class WindsurfPlatform:
             # Add merge semantics (concatenate hooks arrays) when a second hook
             # plugin lands. Windsurf reads hooks.json directly at .windsurf/
             # root (no hooks/ subdir, unlike Gemini).
+            #
+            # Convert from Claude shape: event names (UserPromptSubmit etc.)
+            # and the doubly-nested ``hooks.<event>[].hooks[]`` structure
+            # must be translated to Windsurf snake_case events
+            # (pre_user_prompt etc.) and the flat ``hooks.<event>[]`` shape
+            # per docs.windsurf.com/windsurf/cascade/hooks (fetched
+            # 2026-05-25). Without this, the file loads but no hook fires
+            # (docs/research/qa-bug-fixes-2026-05/RESEARCH.md sanity-check
+            # #5, QA 2026-05-25).
+            from converters.hooks_to_windsurf import claude_hooks_to_windsurf_hooks
+
             self.mirror_directory.mkdir(parents=True, exist_ok=True)
-            shutil.copy(
-                construct.source_directory / name / "hooks" / "hooks.json",
-                self.mirror_directory / "hooks.json",
+            src = construct.source_directory / name / "hooks" / "hooks.json"
+            (self.mirror_directory / "hooks.json").write_text(
+                claude_hooks_to_windsurf_hooks(src.read_text(encoding="utf-8")),
+                encoding="utf-8",
+                newline="",
             )
 
     def build_plugin_json(self, construct: Construct, name: str) -> dict:

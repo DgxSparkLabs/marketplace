@@ -1,4 +1,6 @@
 {
   "name": "hook-example",
+  "version": "1.0.0",
+  "description": "Reference example hook. Prepends a timestamp marker to every user prompt so Claude sees session context.",
   "hooks": "./hooks/hooks.json"
 }

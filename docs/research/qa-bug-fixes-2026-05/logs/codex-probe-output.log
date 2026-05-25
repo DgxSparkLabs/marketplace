@@ -1,0 +1,230 @@
++ echo ===node/npm===
++ node --version
+===node/npm===
+v20.20.2
++ npm --version
+10.8.2
++ echo '===installing codex==='
+===installing codex===
++ tail -20
++ npm install -g @openai/codex
+
+added 2 packages in 15s
+npm notice
+npm notice New major version of npm available! 10.8.2 -> 11.15.0
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v11.15.0
+npm notice To update run: npm install -g npm@11.15.0
+npm notice
+===codex version===
++ echo '===codex version==='
++ codex --version
+codex-cli 0.133.0
++ which codex
+/usr/local/bin/codex
++ echo '===marketplace register==='
++ codex plugin marketplace add DgxSparkLabs/marketplace
+===marketplace register===
+Added marketplace `dgxsparklabs-marketplace` from https://github.com/DgxSparkLabs/marketplace.git.
+Installed marketplace root: /root/.codex/.tmp/marketplaces/dgxsparklabs-marketplace
++ echo '===plugin add==='
++ codex plugin add agent-example@dgxsparklabs-marketplace
+===plugin add===
+Added plugin `agent-example` from marketplace `dgxsparklabs-marketplace`.
+Installed plugin root: /root/.codex/plugins/cache/dgxsparklabs-marketplace/agent-example/1.0.0
+===where did the TOML land===
++ echo '===where did the TOML land==='
++ find / -name '*.toml' -path '*/agents/*'
+/root/.codex/.tmp/marketplaces/dgxsparklabs-marketplace/.codex/agents/notebook-reviewer.toml
++ find / -name 'notebook-reviewer*'
+/root/.codex/.tmp/marketplaces/dgxsparklabs-marketplace/.codex/agents/notebook-reviewer.toml
+/root/.codex/.tmp/marketplaces/dgxsparklabs-marketplace/_generated/agent-example/agents/notebook-reviewer.md
+/root/.codex/.tmp/marketplaces/dgxsparklabs-marketplace/agents/example/agents/notebook-reviewer.md
+/root/.codex/.tmp/marketplaces/dgxsparklabs-marketplace/.gemini/agents/notebook-reviewer.md
+/root/.codex/.tmp/marketplaces/dgxsparklabs-marketplace/.cursor/agents/notebook-reviewer.md
+/root/.codex/plugins/cache/dgxsparklabs-marketplace/agent-example/1.0.0/agents/notebook-reviewer.md
+===~/.codex tree===
++ echo '===~/.codex tree==='
++ find /root/.codex -maxdepth 6
++ head -100
+/root/.codex
+/root/.codex/.tmp
+/root/.codex/.tmp/marketplaces
+/root/.codex/.tmp/marketplaces/dgxsparklabs-marketplace
+/root/.codex/.tmp/marketplaces/dgxsparklabs-marketplace/.codex
+/root/.codex/.tmp/marketplaces/dgxsparklabs-marketplace/.codex/agents
+/root/.codex/.tmp/marketplaces/dgxsparklabs-marketplace/.codex/agents/notebook-reviewer.toml
+/root/.codex/.tmp/marketplaces/dgxsparklabs-marketplace/scripts
+/root/.codex/.tmp/marketplaces/dgxsparklabs-marketplace/scripts/validate-gemini-local.sh
+/root/.codex/.tmp/marketplaces/dgxsparklabs-marketplace/scripts/constructs.py
+/root/.codex/.tmp/marketplaces/dgxsparklabs-marketplace/scripts/bundles.py
+/root/.codex/.tmp/marketplaces/dgxsparklabs-marketplace/scripts/generate_manifest.py
+/root/.codex/.tmp/marketplaces/dgxsparklabs-marketplace/scripts/platforms.py
+/root/.codex/.tmp/marketplaces/dgxsparklabs-marketplace/scripts/converters
+/root/.codex/.tmp/marketplaces/dgxsparklabs-marketplace/scripts/converters/__init__.py
+/root/.codex/.tmp/marketplaces/dgxsparklabs-marketplace/scripts/converters/md_to_toml.py
+/root/.codex/.tmp/marketplaces/dgxsparklabs-marketplace/scripts/agents_cli
+/root/.codex/.tmp/marketplaces/dgxsparklabs-marketplace/scripts/agents_cli/list.py
+/root/.codex/.tmp/marketplaces/dgxsparklabs-marketplace/scripts/agents_cli/install.py
+/root/.codex/.tmp/marketplaces/dgxsparklabs-marketplace/scripts/agents_cli/__init__.py
+/root/.codex/.tmp/marketplaces/dgxsparklabs-marketplace/scripts/agents_cli/main.py
+/root/.codex/.tmp/marketplaces/dgxsparklabs-marketplace/scripts/agents_cli/constructs
+/root/.codex/.tmp/marketplaces/dgxsparklabs-marketplace/scripts/agents_cli/utils
+/root/.codex/.tmp/marketplaces/dgxsparklabs-marketplace/scripts/agents_cli/marketplace.py
+/root/.codex/.tmp/marketplaces/dgxsparklabs-marketplace/scripts/validate-codex-local.sh
+/root/.codex/.tmp/marketplaces/dgxsparklabs-marketplace/scripts/utils.py
+/root/.codex/.tmp/marketplaces/dgxsparklabs-marketplace/CHANGELOG.md
+/root/.codex/.tmp/marketplaces/dgxsparklabs-marketplace/README.md
+/root/.codex/.tmp/marketplaces/dgxsparklabs-marketplace/CONTRIBUTING.md
+/root/.codex/.tmp/marketplaces/dgxsparklabs-marketplace/AGENTS.md
+/root/.codex/.tmp/marketplaces/dgxsparklabs-marketplace/install.ps1
+/root/.codex/.tmp/marketplaces/dgxsparklabs-marketplace/_generated
+/root/.codex/.tmp/marketplaces/dgxsparklabs-marketplace/_generated/rule-blast-radius
+/root/.codex/.tmp/marketplaces/dgxsparklabs-marketplace/_generated/rule-blast-radius/activate.sh
+/root/.codex/.tmp/marketplaces/dgxsparklabs-marketplace/_generated/rule-blast-radius/README.md
+/root/.codex/.tmp/marketplaces/dgxsparklabs-marketplace/_generated/rule-blast-radius/rules
+/root/.codex/.tmp/marketplaces/dgxsparklabs-marketplace/_generated/rule-blast-radius/.cursor-plugin
+/root/.codex/.tmp/marketplaces/dgxsparklabs-marketplace/_generated/rule-blast-radius/.claude-plugin
+/root/.codex/.tmp/marketplaces/dgxsparklabs-marketplace/_generated/skill-pitfall-check
+/root/.codex/.tmp/marketplaces/dgxsparklabs-marketplace/_generated/skill-pitfall-check/scripts
+/root/.codex/.tmp/marketplaces/dgxsparklabs-marketplace/_generated/skill-pitfall-check/README.md
+/root/.codex/.tmp/marketplaces/dgxsparklabs-marketplace/_generated/skill-pitfall-check/SKILL.md
+/root/.codex/.tmp/marketplaces/dgxsparklabs-marketplace/_generated/skill-pitfall-check/.codex-plugin
+/root/.codex/.tmp/marketplaces/dgxsparklabs-marketplace/_generated/skill-pitfall-check/.cursor-plugin
+/root/.codex/.tmp/marketplaces/dgxsparklabs-marketplace/_generated/skill-pitfall-check/.claude-plugin
+/root/.codex/.tmp/marketplaces/dgxsparklabs-marketplace/_generated/bundle-agent-all
+/root/.codex/.tmp/marketplaces/dgxsparklabs-marketplace/_generated/bundle-agent-all/.claude-plugin
+/root/.codex/.tmp/marketplaces/dgxsparklabs-marketplace/_generated/bundle-command-all
+/root/.codex/.tmp/marketplaces/dgxsparklabs-marketplace/_generated/bundle-command-all/.claude-plugin
+/root/.codex/.tmp/marketplaces/dgxsparklabs-marketplace/_generated/skill-web-scraper
+/root/.codex/.tmp/marketplaces/dgxsparklabs-marketplace/_generated/skill-web-scraper/scripts
+/root/.codex/.tmp/marketplaces/dgxsparklabs-marketplace/_generated/skill-web-scraper/README.md
+/root/.codex/.tmp/marketplaces/dgxsparklabs-marketplace/_generated/skill-web-scraper/SKILL.md
+/root/.codex/.tmp/marketplaces/dgxsparklabs-marketplace/_generated/skill-web-scraper/.codex-plugin
+/root/.codex/.tmp/marketplaces/dgxsparklabs-marketplace/_generated/skill-web-scraper/.cursor-plugin
+/root/.codex/.tmp/marketplaces/dgxsparklabs-marketplace/_generated/skill-web-scraper/.claude-plugin
+/root/.codex/.tmp/marketplaces/dgxsparklabs-marketplace/_generated/rule-prior-art
+/root/.codex/.tmp/marketplaces/dgxsparklabs-marketplace/_generated/rule-prior-art/activate.sh
+/root/.codex/.tmp/marketplaces/dgxsparklabs-marketplace/_generated/rule-prior-art/README.md
+/root/.codex/.tmp/marketplaces/dgxsparklabs-marketplace/_generated/rule-prior-art/rules
+/root/.codex/.tmp/marketplaces/dgxsparklabs-marketplace/_generated/rule-prior-art/.cursor-plugin
+/root/.codex/.tmp/marketplaces/dgxsparklabs-marketplace/_generated/rule-prior-art/.claude-plugin
+/root/.codex/.tmp/marketplaces/dgxsparklabs-marketplace/_generated/bundle-notifications-rules
+/root/.codex/.tmp/marketplaces/dgxsparklabs-marketplace/_generated/bundle-notifications-rules/.claude-plugin
+/root/.codex/.tmp/marketplaces/dgxsparklabs-marketplace/_generated/skill-ssh-tunnel
+/root/.codex/.tmp/marketplaces/dgxsparklabs-marketplace/_generated/skill-ssh-tunnel/scripts
+/root/.codex/.tmp/marketplaces/dgxsparklabs-marketplace/_generated/skill-ssh-tunnel/README.md
+/root/.codex/.tmp/marketplaces/dgxsparklabs-marketplace/_generated/skill-ssh-tunnel/SKILL.md
+/root/.codex/.tmp/marketplaces/dgxsparklabs-marketplace/_generated/skill-ssh-tunnel/.codex-plugin
+/root/.codex/.tmp/marketplaces/dgxsparklabs-marketplace/_generated/skill-ssh-tunnel/.cursor-plugin
+/root/.codex/.tmp/marketplaces/dgxsparklabs-marketplace/_generated/skill-ssh-tunnel/.claude-plugin
+/root/.codex/.tmp/marketplaces/dgxsparklabs-marketplace/_generated/theme-example
+/root/.codex/.tmp/marketplaces/dgxsparklabs-marketplace/_generated/theme-example/README.md
+/root/.codex/.tmp/marketplaces/dgxsparklabs-marketplace/_generated/theme-example/themes
+/root/.codex/.tmp/marketplaces/dgxsparklabs-marketplace/_generated/theme-example/.claude-plugin
+/root/.codex/.tmp/marketplaces/dgxsparklabs-marketplace/_generated/skill-google-drive-reader
+/root/.codex/.tmp/marketplaces/dgxsparklabs-marketplace/_generated/skill-google-drive-reader/scripts
+/root/.codex/.tmp/marketplaces/dgxsparklabs-marketplace/_generated/skill-google-drive-reader/README.md
+/root/.codex/.tmp/marketplaces/dgxsparklabs-marketplace/_generated/skill-google-drive-reader/SKILL.md
+/root/.codex/.tmp/marketplaces/dgxsparklabs-marketplace/_generated/skill-google-drive-reader/.codex-plugin
+/root/.codex/.tmp/marketplaces/dgxsparklabs-marketplace/_generated/skill-google-drive-reader/.cursor-plugin
+/root/.codex/.tmp/marketplaces/dgxsparklabs-marketplace/_generated/skill-google-drive-reader/.claude-plugin
+/root/.codex/.tmp/marketplaces/dgxsparklabs-marketplace/_generated/skill-google-drive-reader/setup.sh
+/root/.codex/.tmp/marketplaces/dgxsparklabs-marketplace/_generated/skill-gemini-chat
+/root/.codex/.tmp/marketplaces/dgxsparklabs-marketplace/_generated/skill-gemini-chat/scripts
+/root/.codex/.tmp/marketplaces/dgxsparklabs-marketplace/_generated/skill-gemini-chat/README.md
+/root/.codex/.tmp/marketplaces/dgxsparklabs-marketplace/_generated/skill-gemini-chat/SKILL.md
+/root/.codex/.tmp/marketplaces/dgxsparklabs-marketplace/_generated/skill-gemini-chat/.codex-plugin
+/root/.codex/.tmp/marketplaces/dgxsparklabs-marketplace/_generated/skill-gemini-chat/.cursor-plugin
+/root/.codex/.tmp/marketplaces/dgxsparklabs-marketplace/_generated/skill-gemini-chat/.claude-plugin
+/root/.codex/.tmp/marketplaces/dgxsparklabs-marketplace/_generated/skill-gemini-chat/setup.sh
+/root/.codex/.tmp/marketplaces/dgxsparklabs-marketplace/_generated/bundle-rule-all
+/root/.codex/.tmp/marketplaces/dgxsparklabs-marketplace/_generated/bundle-rule-all/.claude-plugin
+/root/.codex/.tmp/marketplaces/dgxsparklabs-marketplace/_generated/skill-act-runner
+/root/.codex/.tmp/marketplaces/dgxsparklabs-marketplace/_generated/skill-act-runner/scripts
+/root/.codex/.tmp/marketplaces/dgxsparklabs-marketplace/_generated/skill-act-runner/README.md
+/root/.codex/.tmp/marketplaces/dgxsparklabs-marketplace/_generated/skill-act-runner/SKILL.md
+/root/.codex/.tmp/marketplaces/dgxsparklabs-marketplace/_generated/skill-act-runner/.codex-plugin
+/root/.codex/.tmp/marketplaces/dgxsparklabs-marketplace/_generated/skill-act-runner/.cursor-plugin
+/root/.codex/.tmp/marketplaces/dgxsparklabs-marketplace/_generated/skill-act-runner/.claude-plugin
+===config.toml===
++ echo ===config.toml===
++ cat /root/.codex/config.toml
+[marketplaces.dgxsparklabs-marketplace]
+last_updated = "2026-05-25T14:12:01Z"
+source_type = "git"
+source = "https://github.com/DgxSparkLabs/marketplace.git"
+
+[plugins."agent-example@dgxsparklabs-marketplace"]
+enabled = true
+===after manual copy===
++ echo '===after manual copy==='
++ mkdir -p /root/.codex/agents
++ ls /root/.codex/.tmp/marketplaces/
+dgxsparklabs-marketplace
+++ find /root/.codex -name notebook-reviewer.toml
+++ head -1
++ TOML=/root/.codex/.tmp/marketplaces/dgxsparklabs-marketplace/.codex/agents/notebook-reviewer.toml
+Found TOML at: /root/.codex/.tmp/marketplaces/dgxsparklabs-marketplace/.codex/agents/notebook-reviewer.toml
++ echo 'Found TOML at: /root/.codex/.tmp/marketplaces/dgxsparklabs-marketplace/.codex/agents/notebook-reviewer.toml'
++ '[' -n /root/.codex/.tmp/marketplaces/dgxsparklabs-marketplace/.codex/agents/notebook-reviewer.toml ']'
++ cp /root/.codex/.tmp/marketplaces/dgxsparklabs-marketplace/.codex/agents/notebook-reviewer.toml /root/.codex/agents/notebook-reviewer.toml
++ ls -la /root/.codex/agents/
+total 12
+drwxr-xr-x 2 root root 4096 May 25 14:12 .
+drwxr-xr-x 7 root root 4096 May 25 14:12 ..
+-rw-r--r-- 1 root root 1143 May 25 14:12 notebook-reviewer.toml
+===listing agents via codex===
++ echo '===listing agents via codex==='
++ codex agents list
+error: unexpected argument 'list' found
+
+Usage: codex [OPTIONS] [PROMPT]
+       codex [OPTIONS] <COMMAND> [ARGS]
+
+For more information, try '--help'.
++ codex agents
+Error: stdin is not a terminal
+no agents subcommand
++ echo 'no agents subcommand'
++ codex --help
++ head -40
+Codex CLI
+
+If no subcommand is specified, options will be forwarded to the interactive CLI.
+
+Usage: codex [OPTIONS] [PROMPT]
+       codex [OPTIONS] <COMMAND> [ARGS]
+
+Commands:
+  exec            Run Codex non-interactively [aliases: e]
+  review          Run a code review non-interactively
+  login           Manage login
+  logout          Remove stored authentication credentials
+  mcp             Manage external MCP servers for Codex
+  plugin          Manage Codex plugins
+  mcp-server      Start Codex as an MCP server (stdio)
+  app-server      [experimental] Run the app server or related tooling
+  remote-control  [experimental] Manage the app-server daemon with remote control enabled
+  completion      Generate shell completion scripts
+  update          Update Codex to the latest version
+  doctor          Diagnose local Codex installation, config, auth, and runtime health
+  sandbox         Run commands within a Codex-provided sandbox
+  debug           Debugging tools
+  apply           Apply the latest diff produced by Codex agent as a `git apply` to your local
+                  working tree [aliases: a]
+  resume          Resume a previous interactive session (picker by default; use --last to continue
+                  the most recent)
+  fork            Fork a previous interactive session (picker by default; use --last to fork the
+                  most recent)
+  cloud           [EXPERIMENTAL] Browse tasks from Codex Cloud and apply changes locally
+  exec-server     [EXPERIMENTAL] Run the standalone exec-server service
+  features        Inspect feature flags
+  help            Print this message or the help of the given subcommand(s)
+
+Arguments:
+  [PROMPT]
+          Optional user prompt to start the session
+
+Options:
+  -c, --config <key=value>
+          Override a configuration value that would otherwise be loaded from `~/.codex/config.toml`.

@@ -1,0 +1,3158 @@
+{
+  "sha": "11ecc12a3ffc037b4ef3b64de2be449668e8afc7",
+  "url": "https://api.github.com/repos/cursor/plugins/git/trees/11ecc12a3ffc037b4ef3b64de2be449668e8afc7",
+  "tree": [
+    {
+      "path": ".cursor-plugin",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "165565b6f6a17d8b281e8c42a2c26a1720830dd9",
+      "url": "https://api.github.com/repos/cursor/plugins/git/trees/165565b6f6a17d8b281e8c42a2c26a1720830dd9"
+    },
+    {
+      "path": ".cursor-plugin/marketplace.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "dae823085d3e1d0f9290b9f1362f73af68d32ad5",
+      "size": 2961,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/dae823085d3e1d0f9290b9f1362f73af68d32ad5"
+    },
+    {
+      "path": ".github",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "74e9bc874d075162905894a62434c2d8d678c1b7",
+      "url": "https://api.github.com/repos/cursor/plugins/git/trees/74e9bc874d075162905894a62434c2d8d678c1b7"
+    },
+    {
+      "path": ".github/workflows",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "5e641e272d70f5dabfddcb3afc2065b177be8f6a",
+      "url": "https://api.github.com/repos/cursor/plugins/git/trees/5e641e272d70f5dabfddcb3afc2065b177be8f6a"
+    },
+    {
+      "path": ".github/workflows/validate-plugins.yml",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "03e8e1928d18958e68973022a042cc8b6b0ca765",
+      "size": 489,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/03e8e1928d18958e68973022a042cc8b6b0ca765"
+    },
+    {
+      "path": ".gitignore",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "43cc77f46c96938348cf42cb0ea884a78bb45795",
+      "size": 348,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/43cc77f46c96938348cf42cb0ea884a78bb45795"
+    },
+    {
+      "path": "README.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "0955de3e0eb0ff6ec71b683068aa4f48e4a1226e",
+      "size": 3232,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/0955de3e0eb0ff6ec71b683068aa4f48e4a1226e"
+    },
+    {
+      "path": "agent-compatibility",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "932fc8929b51594c6cab23b0fb8347326fb4642d",
+      "url": "https://api.github.com/repos/cursor/plugins/git/trees/932fc8929b51594c6cab23b0fb8347326fb4642d"
+    },
+    {
+      "path": "agent-compatibility/.cursor-plugin",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "939a198670db39fc1647d6f5e7ef1cac1de0f59b",
+      "url": "https://api.github.com/repos/cursor/plugins/git/trees/939a198670db39fc1647d6f5e7ef1cac1de0f59b"
+    },
+    {
+      "path": "agent-compatibility/.cursor-plugin/plugin.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "3b6be7a2c9fae330a8a038f833c949eb8c34fac4",
+      "size": 810,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/3b6be7a2c9fae330a8a038f833c949eb8c34fac4"
+    },
+    {
+      "path": "agent-compatibility/CHANGELOG.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f726ed9a648666de20fe72e91e53fe644b41b0e7",
+      "size": 511,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/f726ed9a648666de20fe72e91e53fe644b41b0e7"
+    },
+    {
+      "path": "agent-compatibility/LICENSE",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ca2bba771cd39dbef6acf96b52481133983451f3",
+      "size": 1063,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/ca2bba771cd39dbef6acf96b52481133983451f3"
+    },
+    {
+      "path": "agent-compatibility/README.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "5dcd861dab4ece21f4b61b5fdbf880425a7538ed",
+      "size": 2615,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/5dcd861dab4ece21f4b61b5fdbf880425a7538ed"
+    },
+    {
+      "path": "agent-compatibility/agents",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "03091cc3d78baa18c95d9d2b56aa5d8d3decfa57",
+      "url": "https://api.github.com/repos/cursor/plugins/git/trees/03091cc3d78baa18c95d9d2b56aa5d8d3decfa57"
+    },
+    {
+      "path": "agent-compatibility/agents/compatibility-scan-review.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "97d2419f1cdecfc213a77b9e9dfcea78b7bc11d1",
+      "size": 1896,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/97d2419f1cdecfc213a77b9e9dfcea78b7bc11d1"
+    },
+    {
+      "path": "agent-compatibility/agents/docs-reliability-review.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f199aaafed88f749ad1fb444540877cdad13cc6c",
+      "size": 2323,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/f199aaafed88f749ad1fb444540877cdad13cc6c"
+    },
+    {
+      "path": "agent-compatibility/agents/startup-review.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "a6880ae658d962b20501b9fcde3b99f7b5de8938",
+      "size": 3180,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/a6880ae658d962b20501b9fcde3b99f7b5de8938"
+    },
+    {
+      "path": "agent-compatibility/agents/validation-review.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "1630597e1a7c3e7fefeab110c1955dc3550098f3",
+      "size": 2487,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/1630597e1a7c3e7fefeab110c1955dc3550098f3"
+    },
+    {
+      "path": "agent-compatibility/assets",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "4aecec14d3762b0fe686e26a9386396652ff5819",
+      "url": "https://api.github.com/repos/cursor/plugins/git/trees/4aecec14d3762b0fe686e26a9386396652ff5819"
+    },
+    {
+      "path": "agent-compatibility/assets/avatar.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "052d4cf87e6045e9c442a32890d341167546b9e8",
+      "size": 24255,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/052d4cf87e6045e9c442a32890d341167546b9e8"
+    },
+    {
+      "path": "agent-compatibility/skills",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "f94cc41e313744d4cfa92138ef0e13fbf2e1dc13",
+      "url": "https://api.github.com/repos/cursor/plugins/git/trees/f94cc41e313744d4cfa92138ef0e13fbf2e1dc13"
+    },
+    {
+      "path": "agent-compatibility/skills/check-agent-compatibility",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "3b8b0ccd5858d5e96e6337123313eee3ef95572f",
+      "url": "https://api.github.com/repos/cursor/plugins/git/trees/3b8b0ccd5858d5e96e6337123313eee3ef95572f"
+    },
+    {
+      "path": "agent-compatibility/skills/check-agent-compatibility/SKILL.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "6d88d4a5f9e5a053f45c0321916e08460b3ce089",
+      "size": 2401,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/6d88d4a5f9e5a053f45c0321916e08460b3ce089"
+    },
+    {
+      "path": "cli-for-agent",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "f84de16a2b0d1a318751076c55686ba290f7dec4",
+      "url": "https://api.github.com/repos/cursor/plugins/git/trees/f84de16a2b0d1a318751076c55686ba290f7dec4"
+    },
+    {
+      "path": "cli-for-agent/.cursor-plugin",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "c65be2ea9982d25247e13e75a0b76ea202aaf240",
+      "url": "https://api.github.com/repos/cursor/plugins/git/trees/c65be2ea9982d25247e13e75a0b76ea202aaf240"
+    },
+    {
+      "path": "cli-for-agent/.cursor-plugin/plugin.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c0d3a06ac15f093364869fba6579b6044ba56eef",
+      "size": 766,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/c0d3a06ac15f093364869fba6579b6044ba56eef"
+    },
+    {
+      "path": "cli-for-agent/LICENSE",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ca2bba771cd39dbef6acf96b52481133983451f3",
+      "size": 1063,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/ca2bba771cd39dbef6acf96b52481133983451f3"
+    },
+    {
+      "path": "cli-for-agent/README.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "6aaedae1a436e21e2695d6f105016d33cdd34f06",
+      "size": 606,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/6aaedae1a436e21e2695d6f105016d33cdd34f06"
+    },
+    {
+      "path": "cli-for-agent/skills",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "207c4717c7092b8b801293790208346a76fa23ce",
+      "url": "https://api.github.com/repos/cursor/plugins/git/trees/207c4717c7092b8b801293790208346a76fa23ce"
+    },
+    {
+      "path": "cli-for-agent/skills/cli-for-agents",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "732b15173f44c2dc3129cd010e2b2f6113d066e0",
+      "url": "https://api.github.com/repos/cursor/plugins/git/trees/732b15173f44c2dc3129cd010e2b2f6113d066e0"
+    },
+    {
+      "path": "cli-for-agent/skills/cli-for-agents/SKILL.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "3c560387748ffb1d9960787ff2cfe93b8b086f20",
+      "size": 3314,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/3c560387748ffb1d9960787ff2cfe93b8b086f20"
+    },
+    {
+      "path": "continual-learning",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "366523ba15c03125d01456d03db5e49a150ed527",
+      "url": "https://api.github.com/repos/cursor/plugins/git/trees/366523ba15c03125d01456d03db5e49a150ed527"
+    },
+    {
+      "path": "continual-learning/.cursor-plugin",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "9a1bc5d7c7e8ea170ab03b6bb26493851a01f449",
+      "url": "https://api.github.com/repos/cursor/plugins/git/trees/9a1bc5d7c7e8ea170ab03b6bb26493851a01f449"
+    },
+    {
+      "path": "continual-learning/.cursor-plugin/plugin.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "8382ba9afb1498c438cf4a5464938c605e9f82ec",
+      "size": 793,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/8382ba9afb1498c438cf4a5464938c605e9f82ec"
+    },
+    {
+      "path": "continual-learning/LICENSE",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ca2bba771cd39dbef6acf96b52481133983451f3",
+      "size": 1063,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/ca2bba771cd39dbef6acf96b52481133983451f3"
+    },
+    {
+      "path": "continual-learning/README.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "410fe9252e0525d8b0f6a01e42c34ef9a93a171a",
+      "size": 2301,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/410fe9252e0525d8b0f6a01e42c34ef9a93a171a"
+    },
+    {
+      "path": "continual-learning/agents",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "d45fb447d74474e0f34459c7a83903042febf413",
+      "url": "https://api.github.com/repos/cursor/plugins/git/trees/d45fb447d74474e0f34459c7a83903042febf413"
+    },
+    {
+      "path": "continual-learning/agents/agents-memory-updater.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "631429f85cb014efe8fb9393ab944688ddb9b14d",
+      "size": 1811,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/631429f85cb014efe8fb9393ab944688ddb9b14d"
+    },
+    {
+      "path": "continual-learning/assets",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "f4e7b1c5560ec950bc313385f0d55af0f0f99c75",
+      "url": "https://api.github.com/repos/cursor/plugins/git/trees/f4e7b1c5560ec950bc313385f0d55af0f0f99c75"
+    },
+    {
+      "path": "continual-learning/assets/avatar.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e3ca3a137f2cc8ef692820cfe2a07f50ed3f155f",
+      "size": 64347,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/e3ca3a137f2cc8ef692820cfe2a07f50ed3f155f"
+    },
+    {
+      "path": "continual-learning/hooks",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "a7cf902643712c1a27483a26effd334f0e505d0b",
+      "url": "https://api.github.com/repos/cursor/plugins/git/trees/a7cf902643712c1a27483a26effd334f0e505d0b"
+    },
+    {
+      "path": "continual-learning/hooks/continual-learning-stop.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "fa6f5d95bf39159a69da88204750a234d371d863",
+      "size": 7813,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/fa6f5d95bf39159a69da88204750a234d371d863"
+    },
+    {
+      "path": "continual-learning/hooks/hooks.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "11a0f739f9d02327f2dd88bd8e36eb64be3df4c4",
+      "size": 157,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/11a0f739f9d02327f2dd88bd8e36eb64be3df4c4"
+    },
+    {
+      "path": "continual-learning/skills",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "97cdb7fd43ec881b27ca02501a957d0439424891",
+      "url": "https://api.github.com/repos/cursor/plugins/git/trees/97cdb7fd43ec881b27ca02501a957d0439424891"
+    },
+    {
+      "path": "continual-learning/skills/continual-learning",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "ca8838b5cb190bcf29560f34f0a33d235fefe2b8",
+      "url": "https://api.github.com/repos/cursor/plugins/git/trees/ca8838b5cb190bcf29560f34f0a33d235fefe2b8"
+    },
+    {
+      "path": "continual-learning/skills/continual-learning/SKILL.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f1beb5c7e4665c5c281a9245cbd5dcceccdd2fa7",
+      "size": 634,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/f1beb5c7e4665c5c281a9245cbd5dcceccdd2fa7"
+    },
+    {
+      "path": "create-plugin",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "e9510be9c066fe2fb3427a0a32c719f2eaef3a81",
+      "url": "https://api.github.com/repos/cursor/plugins/git/trees/e9510be9c066fe2fb3427a0a32c719f2eaef3a81"
+    },
+    {
+      "path": "create-plugin/.cursor-plugin",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "3e59b90afb246bac6ac3f94065b6935b5d12c99c",
+      "url": "https://api.github.com/repos/cursor/plugins/git/trees/3e59b90afb246bac6ac3f94065b6935b5d12c99c"
+    },
+    {
+      "path": "create-plugin/.cursor-plugin/plugin.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "7a0f9471c9f6f2d973b61faad96a5f9e4044d171",
+      "size": 752,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/7a0f9471c9f6f2d973b61faad96a5f9e4044d171"
+    },
+    {
+      "path": "create-plugin/CHANGELOG.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "0ac01e47ba1f04e4b6787278eb8a398ad5d18e64",
+      "size": 240,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/0ac01e47ba1f04e4b6787278eb8a398ad5d18e64"
+    },
+    {
+      "path": "create-plugin/LICENSE",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ca2bba771cd39dbef6acf96b52481133983451f3",
+      "size": 1063,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/ca2bba771cd39dbef6acf96b52481133983451f3"
+    },
+    {
+      "path": "create-plugin/README.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "51470c88a0ce17d73c577c98b0e2db3782439f4d",
+      "size": 1183,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/51470c88a0ce17d73c577c98b0e2db3782439f4d"
+    },
+    {
+      "path": "create-plugin/agents",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "d5baea7302713954d1b867a786e6400bd61466bb",
+      "url": "https://api.github.com/repos/cursor/plugins/git/trees/d5baea7302713954d1b867a786e6400bd61466bb"
+    },
+    {
+      "path": "create-plugin/agents/plugin-architect.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "de787f87fc81c953d2b853132402c1ac3b44be3c",
+      "size": 944,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/de787f87fc81c953d2b853132402c1ac3b44be3c"
+    },
+    {
+      "path": "create-plugin/assets",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "42673ce4945a3ee720e64ac1bd7ab7d3cd1a0ab2",
+      "url": "https://api.github.com/repos/cursor/plugins/git/trees/42673ce4945a3ee720e64ac1bd7ab7d3cd1a0ab2"
+    },
+    {
+      "path": "create-plugin/assets/avatar.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "2353ea08d187d9d18f9b44f85af33b0dcfd4bbee",
+      "size": 55083,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/2353ea08d187d9d18f9b44f85af33b0dcfd4bbee"
+    },
+    {
+      "path": "create-plugin/rules",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "c5a3d51ae72d767109b8387f8782a8c4f01e1778",
+      "url": "https://api.github.com/repos/cursor/plugins/git/trees/c5a3d51ae72d767109b8387f8782a8c4f01e1778"
+    },
+    {
+      "path": "create-plugin/rules/plugin-quality-gates.mdc",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "fb50150fc7146eff967ce80350cd9abf47a65adc",
+      "size": 789,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/fb50150fc7146eff967ce80350cd9abf47a65adc"
+    },
+    {
+      "path": "create-plugin/skills",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "9c3a5fc2a1134266a0103dc9f6bce42c72aeea72",
+      "url": "https://api.github.com/repos/cursor/plugins/git/trees/9c3a5fc2a1134266a0103dc9f6bce42c72aeea72"
+    },
+    {
+      "path": "create-plugin/skills/create-plugin-scaffold",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "dfd82fe65946bdac3a3eae8ea2fa880031a6cc5e",
+      "url": "https://api.github.com/repos/cursor/plugins/git/trees/dfd82fe65946bdac3a3eae8ea2fa880031a6cc5e"
+    },
+    {
+      "path": "create-plugin/skills/create-plugin-scaffold/SKILL.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f3986e8fbd650f15f31211d04c1695dcbefd0ea5",
+      "size": 2903,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/f3986e8fbd650f15f31211d04c1695dcbefd0ea5"
+    },
+    {
+      "path": "create-plugin/skills/review-plugin-submission",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "66757839ce8072c7b6bd1d6e9729544f145cd12f",
+      "url": "https://api.github.com/repos/cursor/plugins/git/trees/66757839ce8072c7b6bd1d6e9729544f145cd12f"
+    },
+    {
+      "path": "create-plugin/skills/review-plugin-submission/SKILL.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "37b0982e30c290d09fa8fdfd44334c8ebab22d74",
+      "size": 1777,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/37b0982e30c290d09fa8fdfd44334c8ebab22d74"
+    },
+    {
+      "path": "cursor-sdk",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "7224fb12664aff39e7ea932bcfaa8fb025d597b2",
+      "url": "https://api.github.com/repos/cursor/plugins/git/trees/7224fb12664aff39e7ea932bcfaa8fb025d597b2"
+    },
+    {
+      "path": "cursor-sdk/.cursor-plugin",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "8b360c8307317c3237100ef849d780e90f9edc0d",
+      "url": "https://api.github.com/repos/cursor/plugins/git/trees/8b360c8307317c3237100ef849d780e90f9edc0d"
+    },
+    {
+      "path": "cursor-sdk/.cursor-plugin/plugin.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "64e4bdc99e689f3cab495f7bdd68ceb59069c74b",
+      "size": 815,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/64e4bdc99e689f3cab495f7bdd68ceb59069c74b"
+    },
+    {
+      "path": "cursor-sdk/LICENSE",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ca2bba771cd39dbef6acf96b52481133983451f3",
+      "size": 1063,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/ca2bba771cd39dbef6acf96b52481133983451f3"
+    },
+    {
+      "path": "cursor-sdk/README.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "d988f4f1e751e532fd57da886db1c448065da57c",
+      "size": 2722,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/d988f4f1e751e532fd57da886db1c448065da57c"
+    },
+    {
+      "path": "cursor-sdk/skills",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "6e244976004facb9233563580f21c104d5bfe01e",
+      "url": "https://api.github.com/repos/cursor/plugins/git/trees/6e244976004facb9233563580f21c104d5bfe01e"
+    },
+    {
+      "path": "cursor-sdk/skills/cursor-sdk",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "892e58fc7053de2a33fdda7a36ef1bfcf7685f87",
+      "url": "https://api.github.com/repos/cursor/plugins/git/trees/892e58fc7053de2a33fdda7a36ef1bfcf7685f87"
+    },
+    {
+      "path": "cursor-sdk/skills/cursor-sdk/SKILL.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "bb070b338da14aa5d0847e793f6f364f25a751c3",
+      "size": 15428,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/bb070b338da14aa5d0847e793f6f364f25a751c3"
+    },
+    {
+      "path": "cursor-sdk/skills/cursor-sdk/references",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "799031152341406feeb31437fa816e014ed62c1e",
+      "url": "https://api.github.com/repos/cursor/plugins/git/trees/799031152341406feeb31437fa816e014ed62c1e"
+    },
+    {
+      "path": "cursor-sdk/skills/cursor-sdk/references/advanced.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "0ae42f243514ad942e2e105904c57afc7ac83067",
+      "size": 8999,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/0ae42f243514ad942e2e105904c57afc7ac83067"
+    },
+    {
+      "path": "cursor-sdk/skills/cursor-sdk/references/auth.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "5306b6285bbc71ef23b9b75bae0faed5281ff62f",
+      "size": 6154,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/5306b6285bbc71ef23b9b75bae0faed5281ff62f"
+    },
+    {
+      "path": "cursor-sdk/skills/cursor-sdk/references/error-handling.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "cc59da7aa76e8d53ae5793f99dfa9a2d60a300b7",
+      "size": 8239,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/cc59da7aa76e8d53ae5793f99dfa9a2d60a300b7"
+    },
+    {
+      "path": "cursor-sdk/skills/cursor-sdk/references/mcp.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "775fa4921171fb1134fd797cede63c8e152f166f",
+      "size": 8133,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/775fa4921171fb1134fd797cede63c8e152f166f"
+    },
+    {
+      "path": "cursor-sdk/skills/cursor-sdk/references/patterns.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "484b153d3dd4ee8033a78af8297ce78a9b2559a7",
+      "size": 10700,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/484b153d3dd4ee8033a78af8297ce78a9b2559a7"
+    },
+    {
+      "path": "cursor-sdk/skills/cursor-sdk/references/runtime-choice.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c6117d47b8757d3bdc9232f43d12829b8a434718",
+      "size": 7239,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/c6117d47b8757d3bdc9232f43d12829b8a434718"
+    },
+    {
+      "path": "cursor-sdk/skills/cursor-sdk/references/streaming.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b9f2eee05fe34cd8a1b2eb0d90975cd85b3b1781",
+      "size": 8362,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/b9f2eee05fe34cd8a1b2eb0d90975cd85b3b1781"
+    },
+    {
+      "path": "cursor-team-kit",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "71d63db70daa65b14ffaac964ec790b44a94313b",
+      "url": "https://api.github.com/repos/cursor/plugins/git/trees/71d63db70daa65b14ffaac964ec790b44a94313b"
+    },
+    {
+      "path": "cursor-team-kit/.cursor-plugin",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "d4659a098e9ac0445f6a701ccd34ddfd05dc7f8b",
+      "url": "https://api.github.com/repos/cursor/plugins/git/trees/d4659a098e9ac0445f6a701ccd34ddfd05dc7f8b"
+    },
+    {
+      "path": "cursor-team-kit/.cursor-plugin/plugin.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "8f9f213674626893682b9204ac13a91bef9eed9e",
+      "size": 933,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/8f9f213674626893682b9204ac13a91bef9eed9e"
+    },
+    {
+      "path": "cursor-team-kit/LICENSE",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ca2bba771cd39dbef6acf96b52481133983451f3",
+      "size": 1063,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/ca2bba771cd39dbef6acf96b52481133983451f3"
+    },
+    {
+      "path": "cursor-team-kit/README.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f25739dc9eb50f8177e1e93e87eaf32ea9c4a3d6",
+      "size": 2526,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/f25739dc9eb50f8177e1e93e87eaf32ea9c4a3d6"
+    },
+    {
+      "path": "cursor-team-kit/agents",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "d352515042dda9e64384b08d9bfaef8475dcfcf4",
+      "url": "https://api.github.com/repos/cursor/plugins/git/trees/d352515042dda9e64384b08d9bfaef8475dcfcf4"
+    },
+    {
+      "path": "cursor-team-kit/agents/ci-watcher.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "8246bf1a5b7c0ed195e5867ffb98aa79c08e5ece",
+      "size": 984,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/8246bf1a5b7c0ed195e5867ffb98aa79c08e5ece"
+    },
+    {
+      "path": "cursor-team-kit/agents/thermo-nuclear-code-quality-review.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "dc83d959306c41bb9a4b504608d9607be34e4297",
+      "size": 1874,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/dc83d959306c41bb9a4b504608d9607be34e4297"
+    },
+    {
+      "path": "cursor-team-kit/assets",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "c53dcd7a133c20fd42115c3e42ca1205d4f1884b",
+      "url": "https://api.github.com/repos/cursor/plugins/git/trees/c53dcd7a133c20fd42115c3e42ca1205d4f1884b"
+    },
+    {
+      "path": "cursor-team-kit/assets/avatar.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "38e870c0fb4b4589280d31f5fb6144e09098f1ee",
+      "size": 59641,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/38e870c0fb4b4589280d31f5fb6144e09098f1ee"
+    },
+    {
+      "path": "cursor-team-kit/rules",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "a2bf408fb697592ba5e52343169425aed114031a",
+      "url": "https://api.github.com/repos/cursor/plugins/git/trees/a2bf408fb697592ba5e52343169425aed114031a"
+    },
+    {
+      "path": "cursor-team-kit/rules/no-inline-imports.mdc",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ddcaf5701b4d4be7295aded799c360cad0a1cbe2",
+      "size": 314,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/ddcaf5701b4d4be7295aded799c360cad0a1cbe2"
+    },
+    {
+      "path": "cursor-team-kit/rules/typescript-exhaustive-switch.mdc",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "4011384a3fba02a16a758efbf79e531b3569666a",
+      "size": 297,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/4011384a3fba02a16a758efbf79e531b3569666a"
+    },
+    {
+      "path": "cursor-team-kit/skills",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "0c75588a661b0048f974a8bd6e22047c7dc23457",
+      "url": "https://api.github.com/repos/cursor/plugins/git/trees/0c75588a661b0048f974a8bd6e22047c7dc23457"
+    },
+    {
+      "path": "cursor-team-kit/skills/check-compiler-errors",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "4d2f1458358fd0f69a830d0de7bf2111d45879df",
+      "url": "https://api.github.com/repos/cursor/plugins/git/trees/4d2f1458358fd0f69a830d0de7bf2111d45879df"
+    },
+    {
+      "path": "cursor-team-kit/skills/check-compiler-errors/SKILL.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "585f4bb67ce55ee04a9a8f8e1b1e86d51b6fdb4b",
+      "size": 535,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/585f4bb67ce55ee04a9a8f8e1b1e86d51b6fdb4b"
+    },
+    {
+      "path": "cursor-team-kit/skills/control-cli",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "21f3eee2663ae7c78464bfc2a69f6a8cc6c4f7ed",
+      "url": "https://api.github.com/repos/cursor/plugins/git/trees/21f3eee2663ae7c78464bfc2a69f6a8cc6c4f7ed"
+    },
+    {
+      "path": "cursor-team-kit/skills/control-cli/SKILL.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "69289ac517e8a28380c8eca5c6692e8a601fa62c",
+      "size": 4333,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/69289ac517e8a28380c8eca5c6692e8a601fa62c"
+    },
+    {
+      "path": "cursor-team-kit/skills/control-ui",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "797e6d20a029b2ae757a97951278d308f3b53026",
+      "url": "https://api.github.com/repos/cursor/plugins/git/trees/797e6d20a029b2ae757a97951278d308f3b53026"
+    },
+    {
+      "path": "cursor-team-kit/skills/control-ui/SKILL.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "68484fd5418cc893a6bf40e0db45b3001dcf5947",
+      "size": 4802,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/68484fd5418cc893a6bf40e0db45b3001dcf5947"
+    },
+    {
+      "path": "cursor-team-kit/skills/deslop",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "ac9ba043f9dd3b3a8850de6624ec5bc12e375599",
+      "url": "https://api.github.com/repos/cursor/plugins/git/trees/ac9ba043f9dd3b3a8850de6624ec5bc12e375599"
+    },
+    {
+      "path": "cursor-team-kit/skills/deslop/SKILL.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "1b3827c7f991182149a7abda696af43ff8f17a12",
+      "size": 719,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/1b3827c7f991182149a7abda696af43ff8f17a12"
+    },
+    {
+      "path": "cursor-team-kit/skills/fix-ci",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "22d79ed45a382df99b95e1135f13ad0170500511",
+      "url": "https://api.github.com/repos/cursor/plugins/git/trees/22d79ed45a382df99b95e1135f13ad0170500511"
+    },
+    {
+      "path": "cursor-team-kit/skills/fix-ci/SKILL.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "60adbdde5b63ee95cea8180df8080498680e338d",
+      "size": 901,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/60adbdde5b63ee95cea8180df8080498680e338d"
+    },
+    {
+      "path": "cursor-team-kit/skills/fix-merge-conflicts",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "9a539a5c5359e25c9a57df5a741e42524f2fe3c8",
+      "url": "https://api.github.com/repos/cursor/plugins/git/trees/9a539a5c5359e25c9a57df5a741e42524f2fe3c8"
+    },
+    {
+      "path": "cursor-team-kit/skills/fix-merge-conflicts/SKILL.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "2940fe4c7f2ada9c119b5726bf276b834e6754b6",
+      "size": 988,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/2940fe4c7f2ada9c119b5726bf276b834e6754b6"
+    },
+    {
+      "path": "cursor-team-kit/skills/get-pr-comments",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "5664b99671eeabafef1159cdb663cb162ace770d",
+      "url": "https://api.github.com/repos/cursor/plugins/git/trees/5664b99671eeabafef1159cdb663cb162ace770d"
+    },
+    {
+      "path": "cursor-team-kit/skills/get-pr-comments/SKILL.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "396aad5ff7cbe981124e9540ae786a120af77149",
+      "size": 529,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/396aad5ff7cbe981124e9540ae786a120af77149"
+    },
+    {
+      "path": "cursor-team-kit/skills/loop-on-ci",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "2fc5e4bdb8c0924137377af7cf9d6b7585e092ec",
+      "url": "https://api.github.com/repos/cursor/plugins/git/trees/2fc5e4bdb8c0924137377af7cf9d6b7585e092ec"
+    },
+    {
+      "path": "cursor-team-kit/skills/loop-on-ci/SKILL.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "23a3860ad9873408960b285739c2927e70ad49c4",
+      "size": 1611,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/23a3860ad9873408960b285739c2927e70ad49c4"
+    },
+    {
+      "path": "cursor-team-kit/skills/make-pr-easy-to-review",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "30493c1d9b061827149f0caafca027a9016f67c6",
+      "url": "https://api.github.com/repos/cursor/plugins/git/trees/30493c1d9b061827149f0caafca027a9016f67c6"
+    },
+    {
+      "path": "cursor-team-kit/skills/make-pr-easy-to-review/SKILL.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f5343c095b6a2196b1474aa5013d82b8ceaa2120",
+      "size": 2275,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/f5343c095b6a2196b1474aa5013d82b8ceaa2120"
+    },
+    {
+      "path": "cursor-team-kit/skills/new-branch-and-pr",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "509e25255c334b539c466d1fc7d8fd99e15745bf",
+      "url": "https://api.github.com/repos/cursor/plugins/git/trees/509e25255c334b539c466d1fc7d8fd99e15745bf"
+    },
+    {
+      "path": "cursor-team-kit/skills/new-branch-and-pr/SKILL.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "860682f0154756f2225daccc6b84fb4360830fd9",
+      "size": 665,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/860682f0154756f2225daccc6b84fb4360830fd9"
+    },
+    {
+      "path": "cursor-team-kit/skills/pr-review-canvas",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "44daadad1fe53ccd3a2773e87879965c1640ab71",
+      "url": "https://api.github.com/repos/cursor/plugins/git/trees/44daadad1fe53ccd3a2773e87879965c1640ab71"
+    },
+    {
+      "path": "cursor-team-kit/skills/pr-review-canvas/SKILL.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "d88de04910e71537455eea8dd252631eea408475",
+      "size": 9088,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/d88de04910e71537455eea8dd252631eea408475"
+    },
+    {
+      "path": "cursor-team-kit/skills/pr-review-canvas/renderer.js",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "8bdf1b71070267d2173af211367328bc57f0a800",
+      "size": 6762,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/8bdf1b71070267d2173af211367328bc57f0a800"
+    },
+    {
+      "path": "cursor-team-kit/skills/pr-review-canvas/styles.css",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e616d7666a0ac0678f4bb6660b0258834c5d47ad",
+      "size": 5788,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/e616d7666a0ac0678f4bb6660b0258834c5d47ad"
+    },
+    {
+      "path": "cursor-team-kit/skills/pr-review-canvas/template.html",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ab58d2977992e3a5d4115aa67382dc1fadbe1b94",
+      "size": 513,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/ab58d2977992e3a5d4115aa67382dc1fadbe1b94"
+    },
+    {
+      "path": "cursor-team-kit/skills/review-and-ship",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "4c59edfc89811ff444ded5e4a3a07932852769a1",
+      "url": "https://api.github.com/repos/cursor/plugins/git/trees/4c59edfc89811ff444ded5e4a3a07932852769a1"
+    },
+    {
+      "path": "cursor-team-kit/skills/review-and-ship/SKILL.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "000e7537949adcbd60c49e1723e55cc700a5a62f",
+      "size": 1398,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/000e7537949adcbd60c49e1723e55cc700a5a62f"
+    },
+    {
+      "path": "cursor-team-kit/skills/run-smoke-tests",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "b02dfd55bc710b80585e1cc0dea76e94923e5dab",
+      "url": "https://api.github.com/repos/cursor/plugins/git/trees/b02dfd55bc710b80585e1cc0dea76e94923e5dab"
+    },
+    {
+      "path": "cursor-team-kit/skills/run-smoke-tests/SKILL.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "fb0337f699926eb5835a82cf9de2b8c9078bd9f4",
+      "size": 967,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/fb0337f699926eb5835a82cf9de2b8c9078bd9f4"
+    },
+    {
+      "path": "cursor-team-kit/skills/thermo-nuclear-code-quality-review",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "d9c8935dd560b3b6f5941247d04a1843f8c7cc35",
+      "url": "https://api.github.com/repos/cursor/plugins/git/trees/d9c8935dd560b3b6f5941247d04a1843f8c7cc35"
+    },
+    {
+      "path": "cursor-team-kit/skills/thermo-nuclear-code-quality-review/SKILL.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ac76a2bc88bb2d895e83ab1788aa584a82346cfc",
+      "size": 12437,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/ac76a2bc88bb2d895e83ab1788aa584a82346cfc"
+    },
+    {
+      "path": "cursor-team-kit/skills/verify-this",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "5a3cfa5b54f69a5fc1f1612518d5a5661634b6b5",
+      "url": "https://api.github.com/repos/cursor/plugins/git/trees/5a3cfa5b54f69a5fc1f1612518d5a5661634b6b5"
+    },
+    {
+      "path": "cursor-team-kit/skills/verify-this/SKILL.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e17217e8edb51924f35ae5c41e19d24b6f27f592",
+      "size": 2803,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/e17217e8edb51924f35ae5c41e19d24b6f27f592"
+    },
+    {
+      "path": "cursor-team-kit/skills/weekly-review",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "41c12c115b622e2a70d726f176766192ccb2d912",
+      "url": "https://api.github.com/repos/cursor/plugins/git/trees/41c12c115b622e2a70d726f176766192ccb2d912"
+    },
+    {
+      "path": "cursor-team-kit/skills/weekly-review/SKILL.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "216e855f7831afacac92c46345fee2ea4ba14629",
+      "size": 902,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/216e855f7831afacac92c46345fee2ea4ba14629"
+    },
+    {
+      "path": "cursor-team-kit/skills/what-did-i-get-done",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "953a0fb2b6d763e4149da38a543778aed3091368",
+      "url": "https://api.github.com/repos/cursor/plugins/git/trees/953a0fb2b6d763e4149da38a543778aed3091368"
+    },
+    {
+      "path": "cursor-team-kit/skills/what-did-i-get-done/SKILL.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e6772b22b74998fc25cd8663981b6ac30cd91613",
+      "size": 1012,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/e6772b22b74998fc25cd8663981b6ac30cd91613"
+    },
+    {
+      "path": "cursor-team-kit/skills/workflow-from-chats",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "c32988e8a39033397465591a2b5f7a58ea6ea337",
+      "url": "https://api.github.com/repos/cursor/plugins/git/trees/c32988e8a39033397465591a2b5f7a58ea6ea337"
+    },
+    {
+      "path": "cursor-team-kit/skills/workflow-from-chats/SKILL.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "a5170df9d84a937c210eb7739bff00451f9aa8cb",
+      "size": 2685,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/a5170df9d84a937c210eb7739bff00451f9aa8cb"
+    },
+    {
+      "path": "docs-canvas",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "327f65878d7cb3ef4bf463e4ff2852e0f69b5d2f",
+      "url": "https://api.github.com/repos/cursor/plugins/git/trees/327f65878d7cb3ef4bf463e4ff2852e0f69b5d2f"
+    },
+    {
+      "path": "docs-canvas/.cursor-plugin",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "fd3430e414788d7d81ce65c0f2bc97b01ab7e38a",
+      "url": "https://api.github.com/repos/cursor/plugins/git/trees/fd3430e414788d7d81ce65c0f2bc97b01ab7e38a"
+    },
+    {
+      "path": "docs-canvas/.cursor-plugin/plugin.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "143033d2e00eb96980459cea27530696c1650648",
+      "size": 800,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/143033d2e00eb96980459cea27530696c1650648"
+    },
+    {
+      "path": "docs-canvas/CHANGELOG.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ab578906ff3f92fc8cf9633566393bab4b2fb6b9",
+      "size": 417,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/ab578906ff3f92fc8cf9633566393bab4b2fb6b9"
+    },
+    {
+      "path": "docs-canvas/LICENSE",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ca2bba771cd39dbef6acf96b52481133983451f3",
+      "size": 1063,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/ca2bba771cd39dbef6acf96b52481133983451f3"
+    },
+    {
+      "path": "docs-canvas/README.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "577bdbf0e120d4b379d7e9eb32f209610b3aa9c3",
+      "size": 2034,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/577bdbf0e120d4b379d7e9eb32f209610b3aa9c3"
+    },
+    {
+      "path": "docs-canvas/assets",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "4aecec14d3762b0fe686e26a9386396652ff5819",
+      "url": "https://api.github.com/repos/cursor/plugins/git/trees/4aecec14d3762b0fe686e26a9386396652ff5819"
+    },
+    {
+      "path": "docs-canvas/assets/avatar.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "052d4cf87e6045e9c442a32890d341167546b9e8",
+      "size": 24255,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/052d4cf87e6045e9c442a32890d341167546b9e8"
+    },
+    {
+      "path": "docs-canvas/skills",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "8db9b376b34c63365e579c9ba8ef1c2f83ed6016",
+      "url": "https://api.github.com/repos/cursor/plugins/git/trees/8db9b376b34c63365e579c9ba8ef1c2f83ed6016"
+    },
+    {
+      "path": "docs-canvas/skills/docs-canvas",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "3c299809023507ea74c5dbe75a2e2f542573a416",
+      "url": "https://api.github.com/repos/cursor/plugins/git/trees/3c299809023507ea74c5dbe75a2e2f542573a416"
+    },
+    {
+      "path": "docs-canvas/skills/docs-canvas/SKILL.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f4336aaacf0a9652fea6158aa49a449c55f03479",
+      "size": 3125,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/f4336aaacf0a9652fea6158aa49a449c55f03479"
+    },
+    {
+      "path": "orchestrate",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "c9b66031ec7ef480d09af7ee67ede45d58490b30",
+      "url": "https://api.github.com/repos/cursor/plugins/git/trees/c9b66031ec7ef480d09af7ee67ede45d58490b30"
+    },
+    {
+      "path": "orchestrate/.cursor-plugin",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "14e54e87de9f2b334265ab668eb6a0c930246472",
+      "url": "https://api.github.com/repos/cursor/plugins/git/trees/14e54e87de9f2b334265ab668eb6a0c930246472"
+    },
+    {
+      "path": "orchestrate/.cursor-plugin/plugin.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "6e969faeaeea94966435103a34b207ad5c8bb6a6",
+      "size": 812,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/6e969faeaeea94966435103a34b207ad5c8bb6a6"
+    },
+    {
+      "path": "orchestrate/.gitignore",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "86c7d8cd9ce4164e590f344e8bd97624049c6c31",
+      "size": 216,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/86c7d8cd9ce4164e590f344e8bd97624049c6c31"
+    },
+    {
+      "path": "orchestrate/LICENSE",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ca2bba771cd39dbef6acf96b52481133983451f3",
+      "size": 1063,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/ca2bba771cd39dbef6acf96b52481133983451f3"
+    },
+    {
+      "path": "orchestrate/README.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "2cdece731a29cbd27e918bfe8210307291b88c11",
+      "size": 3427,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/2cdece731a29cbd27e918bfe8210307291b88c11"
+    },
+    {
+      "path": "orchestrate/assets",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "0ea6d3d980ff430e99e90fddb7ae25e01879e45b",
+      "url": "https://api.github.com/repos/cursor/plugins/git/trees/0ea6d3d980ff430e99e90fddb7ae25e01879e45b"
+    },
+    {
+      "path": "orchestrate/assets/avatar.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c1b5d82b59a975ebe5f58e623cd53e9f0f36ec8c",
+      "size": 68126,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/c1b5d82b59a975ebe5f58e623cd53e9f0f36ec8c"
+    },
+    {
+      "path": "orchestrate/skills",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "968b65de69a467decc5dd3a508f5361a37d3bae8",
+      "url": "https://api.github.com/repos/cursor/plugins/git/trees/968b65de69a467decc5dd3a508f5361a37d3bae8"
+    },
+    {
+      "path": "orchestrate/skills/orchestrate",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "1b7f1dd74b3e63406a16ae540c9cf01c88e605b0",
+      "url": "https://api.github.com/repos/cursor/plugins/git/trees/1b7f1dd74b3e63406a16ae540c9cf01c88e605b0"
+    },
+    {
+      "path": "orchestrate/skills/orchestrate/SKILL.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ff7fc8e3abea9f917b16090a374bf7b86130c4a7",
+      "size": 4220,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/ff7fc8e3abea9f917b16090a374bf7b86130c4a7"
+    },
+    {
+      "path": "orchestrate/skills/orchestrate/prompts",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "1e4344055a2ce0f5adb0629c9f009f155250827a",
+      "url": "https://api.github.com/repos/cursor/plugins/git/trees/1e4344055a2ce0f5adb0629c9f009f155250827a"
+    },
+    {
+      "path": "orchestrate/skills/orchestrate/prompts/andon-block.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "a885888be748ff5dda019717e9d32fa2664df10e",
+      "size": 665,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/a885888be748ff5dda019717e9d32fa2664df10e"
+    },
+    {
+      "path": "orchestrate/skills/orchestrate/prompts/empty-error-handoff.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "9e469b886dc3bb5d2cb46b94e9559629fc2af462",
+      "size": 206,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/9e469b886dc3bb5d2cb46b94e9559629fc2af462"
+    },
+    {
+      "path": "orchestrate/skills/orchestrate/prompts/failure-handoff.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b44ec757c9b26a1321dbb896be80bd2cb1c36d54",
+      "size": 554,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/b44ec757c9b26a1321dbb896be80bd2cb1c36d54"
+    },
+    {
+      "path": "orchestrate/skills/orchestrate/prompts/finished-no-handoff.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "d05e28ba4b5500054cae985e3dd9e50f92fc33fe",
+      "size": 735,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/d05e28ba4b5500054cae985e3dd9e50f92fc33fe"
+    },
+    {
+      "path": "orchestrate/skills/orchestrate/prompts/loop-hygiene.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "6c3db4a0b79dc16564b11ff9d7c5279a8f77e9be",
+      "size": 1827,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/6c3db4a0b79dc16564b11ff9d7c5279a8f77e9be"
+    },
+    {
+      "path": "orchestrate/skills/orchestrate/prompts/root.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "adde883fcdb2ba0b8f0d2302dcbe93477391373c",
+      "size": 670,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/adde883fcdb2ba0b8f0d2302dcbe93477391373c"
+    },
+    {
+      "path": "orchestrate/skills/orchestrate/prompts/slack-block.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c943cfa7b3e3c195f53a18de73e635cc0950a9b3",
+      "size": 1505,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/c943cfa7b3e3c195f53a18de73e635cc0950a9b3"
+    },
+    {
+      "path": "orchestrate/skills/orchestrate/prompts/subplanner.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ea4814b70cf72b5cd6e12c8725ff45557edce308",
+      "size": 3075,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/ea4814b70cf72b5cd6e12c8725ff45557edce308"
+    },
+    {
+      "path": "orchestrate/skills/orchestrate/prompts/verifier.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "060d3febdf32245f350d116447f7a66901bceab8",
+      "size": 3996,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/060d3febdf32245f350d116447f7a66901bceab8"
+    },
+    {
+      "path": "orchestrate/skills/orchestrate/prompts/worker.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f16fe38b2a682a474db76a6b74dde67d2aca92d5",
+      "size": 3079,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/f16fe38b2a682a474db76a6b74dde67d2aca92d5"
+    },
+    {
+      "path": "orchestrate/skills/orchestrate/references",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "115533145503a8987d6a52700af570126d4cfa45",
+      "url": "https://api.github.com/repos/cursor/plugins/git/trees/115533145503a8987d6a52700af570126d4cfa45"
+    },
+    {
+      "path": "orchestrate/skills/orchestrate/references/dispatcher.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "314469db3a35ebade3a23c1c02bf186c59b4ecc8",
+      "size": 3306,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/314469db3a35ebade3a23c1c02bf186c59b4ecc8"
+    },
+    {
+      "path": "orchestrate/skills/orchestrate/references/handoffs.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "15c7c2c529d2623e9086ab454a211996fd66910c",
+      "size": 11481,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/15c7c2c529d2623e9086ab454a211996fd66910c"
+    },
+    {
+      "path": "orchestrate/skills/orchestrate/references/planner.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "d8ea8fe616daee83e4f028c91b485567cbefad5f",
+      "size": 9448,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/d8ea8fe616daee83e4f028c91b485567cbefad5f"
+    },
+    {
+      "path": "orchestrate/skills/orchestrate/references/spawning.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "5412a4445a36fe43dcec1d753293a246d4204594",
+      "size": 8024,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/5412a4445a36fe43dcec1d753293a246d4204594"
+    },
+    {
+      "path": "orchestrate/skills/orchestrate/schemas",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "bbdaa61bcb50244922ec61e9ecd12fd50ccacf6a",
+      "url": "https://api.github.com/repos/cursor/plugins/git/trees/bbdaa61bcb50244922ec61e9ecd12fd50ccacf6a"
+    },
+    {
+      "path": "orchestrate/skills/orchestrate/schemas/plan.schema.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "9bf9b3900e3dc0c0ea3bcdb3f4e1079fb05e8edb",
+      "size": 22510,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/9bf9b3900e3dc0c0ea3bcdb3f4e1079fb05e8edb"
+    },
+    {
+      "path": "orchestrate/skills/orchestrate/schemas/state.schema.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "5bd778165043b9a12c6d758be31950bf14f478fd",
+      "size": 7546,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/5bd778165043b9a12c6d758be31950bf14f478fd"
+    },
+    {
+      "path": "orchestrate/skills/orchestrate/scripts",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "80ed2bdd3bcd2e92c017eae8d3a78a7d8c0a9f39",
+      "url": "https://api.github.com/repos/cursor/plugins/git/trees/80ed2bdd3bcd2e92c017eae8d3a78a7d8c0a9f39"
+    },
+    {
+      "path": "orchestrate/skills/orchestrate/scripts/__tests__",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "e547c1dde0b96f00ac5f1d6dc5f2efcb8dc74c91",
+      "url": "https://api.github.com/repos/cursor/plugins/git/trees/e547c1dde0b96f00ac5f1d6dc5f2efcb8dc74c91"
+    },
+    {
+      "path": "orchestrate/skills/orchestrate/scripts/__tests__/agent-manager-slack-mirror.test.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "7556ad9bad60a1c25c4975e81bf7bffd8c346d1c",
+      "size": 17871,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/7556ad9bad60a1c25c4975e81bf7bffd8c346d1c"
+    },
+    {
+      "path": "orchestrate/skills/orchestrate/scripts/__tests__/andon-root-cache.test.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "9a380195fd4fa2d9a5516042353d6d784aa622ae",
+      "size": 12527,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/9a380195fd4fa2d9a5516042353d6d784aa622ae"
+    },
+    {
+      "path": "orchestrate/skills/orchestrate/scripts/__tests__/checkpoint-restart.test.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "0824f863a0340e426524aa0aeb284ae1e6ecac4f",
+      "size": 6322,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/0824f863a0340e426524aa0aeb284ae1e6ecac4f"
+    },
+    {
+      "path": "orchestrate/skills/orchestrate/scripts/__tests__/comment-cli.test.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "d77ef3eb804d11b61322d3bc97610eecb1001c1a",
+      "size": 7629,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/d77ef3eb804d11b61322d3bc97610eecb1001c1a"
+    },
+    {
+      "path": "orchestrate/skills/orchestrate/scripts/__tests__/comment-retry-queue.test.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c95fd45389cf060ff20dc82aa78425e6bd8ba3b3",
+      "size": 12171,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/c95fd45389cf060ff20dc82aa78425e6bd8ba3b3"
+    },
+    {
+      "path": "orchestrate/skills/orchestrate/scripts/__tests__/exit-on-error.test.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "298181c862979d48e5c6245de851d3b91d76241c",
+      "size": 5071,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/298181c862979d48e5c6245de851d3b91d76241c"
+    },
+    {
+      "path": "orchestrate/skills/orchestrate/scripts/__tests__/failure-handoff.test.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "3416f944e83567b102acfd6d218fe20f213526e7",
+      "size": 6692,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/3416f944e83567b102acfd6d218fe20f213526e7"
+    },
+    {
+      "path": "orchestrate/skills/orchestrate/scripts/__tests__/handoff-branch-parser.test.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "fe94135824f14cfec8cb4b4ed3e2d1044cf68696",
+      "size": 3896,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/fe94135824f14cfec8cb4b4ed3e2d1044cf68696"
+    },
+    {
+      "path": "orchestrate/skills/orchestrate/scripts/__tests__/handoff-verification-parser.test.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c17c656e598612764df9d48a8e1a9442d80509dc",
+      "size": 4182,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/c17c656e598612764df9d48a8e1a9442d80509dc"
+    },
+    {
+      "path": "orchestrate/skills/orchestrate/scripts/__tests__/handoff-verification-record.test.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "fdf6179cb9a486cd9a793d320692dea2a6b61724",
+      "size": 5564,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/fdf6179cb9a486cd9a793d320692dea2a6b61724"
+    },
+    {
+      "path": "orchestrate/skills/orchestrate/scripts/__tests__/kickoff-dedupe.test.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "bc7cc2f0246555dbeb552824eb49f086f4e57cbc",
+      "size": 4690,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/bc7cc2f0246555dbeb552824eb49f086f4e57cbc"
+    },
+    {
+      "path": "orchestrate/skills/orchestrate/scripts/__tests__/measurements-compare.test.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "64f43749081e980ec41737d4a3883f52890384ae",
+      "size": 6289,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/64f43749081e980ec41737d4a3883f52890384ae"
+    },
+    {
+      "path": "orchestrate/skills/orchestrate/scripts/__tests__/measurements-mismatch.test.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "04b08e89331cfa82df88144fad602772f093d84a",
+      "size": 9296,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/04b08e89331cfa82df88144fad602772f093d84a"
+    },
+    {
+      "path": "orchestrate/skills/orchestrate/scripts/__tests__/measurements-parser.test.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "5856622e2b236ac4d3d2473f687a6346ed234963",
+      "size": 3209,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/5856622e2b236ac4d3d2473f687a6346ed234963"
+    },
+    {
+      "path": "orchestrate/skills/orchestrate/scripts/__tests__/models-catalog.test.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "2720fe78193702c35b7959f697e2fee73ab36afd",
+      "size": 3707,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/2720fe78193702c35b7959f697e2fee73ab36afd"
+    },
+    {
+      "path": "orchestrate/skills/orchestrate/scripts/__tests__/operator-boundary.test.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "5ba0a02c1b57cb25f584cd4eef31a6992a716f4b",
+      "size": 3328,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/5ba0a02c1b57cb25f584cd4eef31a6992a716f4b"
+    },
+    {
+      "path": "orchestrate/skills/orchestrate/scripts/__tests__/probe-models.test.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "347b93c1a861178ef4e4ddc403fac4f75e6d1e6a",
+      "size": 1993,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/347b93c1a861178ef4e4ddc403fac4f75e6d1e6a"
+    },
+    {
+      "path": "orchestrate/skills/orchestrate/scripts/__tests__/prompt-plan-validation.test.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "033abcb9e4ebecb5f118133630010c93391557cb",
+      "size": 2638,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/033abcb9e4ebecb5f118133630010c93391557cb"
+    },
+    {
+      "path": "orchestrate/skills/orchestrate/scripts/__tests__/redact-body.test.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "a7fbbd4a800a76ccd1003d2f00bc6f1c60b081fb",
+      "size": 1628,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/a7fbbd4a800a76ccd1003d2f00bc6f1c60b081fb"
+    },
+    {
+      "path": "orchestrate/skills/orchestrate/scripts/__tests__/schemas.test.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "eca4690a739b8846a7af0a2585024663f890d89a",
+      "size": 8706,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/eca4690a739b8846a7af0a2585024663f890d89a"
+    },
+    {
+      "path": "orchestrate/skills/orchestrate/scripts/__tests__/slack-adapter.test.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "bb2a5e285e858e9f502568bbba7d373d7080eb46",
+      "size": 9921,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/bb2a5e285e858e9f502568bbba7d373d7080eb46"
+    },
+    {
+      "path": "orchestrate/skills/orchestrate/scripts/__tests__/slack-channel-boundary.test.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "8c3303cede4df41fc1999c5e2e61808bd5e46b65",
+      "size": 2519,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/8c3303cede4df41fc1999c5e2e61808bd5e46b65"
+    },
+    {
+      "path": "orchestrate/skills/orchestrate/scripts/__tests__/slack-message-format.test.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "664c9ccce1ffd3c711f72ff729236138d56a4861",
+      "size": 2692,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/664c9ccce1ffd3c711f72ff729236138d56a4861"
+    },
+    {
+      "path": "orchestrate/skills/orchestrate/scripts/__tests__/slack-prompt-shape.test.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "8eadd633caefeaa702b5dd5430ac349ac63757ca",
+      "size": 6981,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/8eadd633caefeaa702b5dd5430ac349ac63757ca"
+    },
+    {
+      "path": "orchestrate/skills/orchestrate/scripts/__tests__/support",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "289a66f62b4a8aa55498e734cc41bdc7f1cab133",
+      "url": "https://api.github.com/repos/cursor/plugins/git/trees/289a66f62b4a8aa55498e734cc41bdc7f1cab133"
+    },
+    {
+      "path": "orchestrate/skills/orchestrate/scripts/__tests__/support/slack-web-api-mock.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "1c02adf43149573a3e38e96f9dcbac9f2b942e81",
+      "size": 2188,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/1c02adf43149573a3e38e96f9dcbac9f2b942e81"
+    },
+    {
+      "path": "orchestrate/skills/orchestrate/scripts/__tests__/verifier-startingref-reconcile.test.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "7a065c12a5c23c6b882f061d03391f5544476e22",
+      "size": 8818,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/7a065c12a5c23c6b882f061d03391f5544476e22"
+    },
+    {
+      "path": "orchestrate/skills/orchestrate/scripts/__tests__/wait-handoff-failure.test.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "95acaa671275b06db2e307495bcc1d113d7055f9",
+      "size": 9798,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/95acaa671275b06db2e307495bcc1d113d7055f9"
+    },
+    {
+      "path": "orchestrate/skills/orchestrate/scripts/__tests__/watchdog-inspect.test.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b80f256687a7ddce0c868624b817307f1e85ae60",
+      "size": 2843,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/b80f256687a7ddce0c868624b817307f1e85ae60"
+    },
+    {
+      "path": "orchestrate/skills/orchestrate/scripts/__tests__/worker-branch-discipline.test.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "adae8e52e57ee19b9e3e8c50d1ef40b31109a517",
+      "size": 4023,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/adae8e52e57ee19b9e3e8c50d1ef40b31109a517"
+    },
+    {
+      "path": "orchestrate/skills/orchestrate/scripts/adapters",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "4ba2160cfa19c72d3c6877e7051ea6825724db08",
+      "url": "https://api.github.com/repos/cursor/plugins/git/trees/4ba2160cfa19c72d3c6877e7051ea6825724db08"
+    },
+    {
+      "path": "orchestrate/skills/orchestrate/scripts/adapters/README.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "dd01b10f04e14fecb6aedb4f98a8d68b5cacb9cc",
+      "size": 1224,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/dd01b10f04e14fecb6aedb4f98a8d68b5cacb9cc"
+    },
+    {
+      "path": "orchestrate/skills/orchestrate/scripts/adapters/index.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "4d406d2bcf4c91d2461a4d4ea5305ea40043344e",
+      "size": 366,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/4d406d2bcf4c91d2461a4d4ea5305ea40043344e"
+    },
+    {
+      "path": "orchestrate/skills/orchestrate/scripts/adapters/slack",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "c7559125425ba86a33a85c66683e16ef43586aca",
+      "url": "https://api.github.com/repos/cursor/plugins/git/trees/c7559125425ba86a33a85c66683e16ef43586aca"
+    },
+    {
+      "path": "orchestrate/skills/orchestrate/scripts/adapters/slack/client.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "918ac531044e1a032089dfafd1b760eabc815305",
+      "size": 446,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/918ac531044e1a032089dfafd1b760eabc815305"
+    },
+    {
+      "path": "orchestrate/skills/orchestrate/scripts/adapters/slack/index.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e694e582b2dba8ff758cba26f018435f5c7990da",
+      "size": 8409,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/e694e582b2dba8ff758cba26f018435f5c7990da"
+    },
+    {
+      "path": "orchestrate/skills/orchestrate/scripts/adapters/types.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "179d7addb35df0c459eaed4bd4471413d1c18865",
+      "size": 1850,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/179d7addb35df0c459eaed4bd4471413d1c18865"
+    },
+    {
+      "path": "orchestrate/skills/orchestrate/scripts/biome.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "1654d3a549adbce5a588f431f80a800d16c2ef55",
+      "size": 503,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/1654d3a549adbce5a588f431f80a800d16c2ef55"
+    },
+    {
+      "path": "orchestrate/skills/orchestrate/scripts/bun.lock",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "92057549c3374bb5221ecc640a11944ce36d5ced",
+      "size": 39768,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/92057549c3374bb5221ecc640a11944ce36d5ced"
+    },
+    {
+      "path": "orchestrate/skills/orchestrate/scripts/cli.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "05a7d00dacf737022eba5734ac5205276f25fa09",
+      "size": 73,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/05a7d00dacf737022eba5734ac5205276f25fa09"
+    },
+    {
+      "path": "orchestrate/skills/orchestrate/scripts/cli",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "205d3d62567aad9c8958f08b1e189ff7976a706c",
+      "url": "https://api.github.com/repos/cursor/plugins/git/trees/205d3d62567aad9c8958f08b1e189ff7976a706c"
+    },
+    {
+      "path": "orchestrate/skills/orchestrate/scripts/cli/andon.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "307d569499f5c3738ef3d6ba9e437c518dfe36c9",
+      "size": 3875,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/307d569499f5c3738ef3d6ba9e437c518dfe36c9"
+    },
+    {
+      "path": "orchestrate/skills/orchestrate/scripts/cli/comments.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e6d1f826af73fd89b9a00c47f292bd408dd9e782",
+      "size": 10227,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/e6d1f826af73fd89b9a00c47f292bd408dd9e782"
+    },
+    {
+      "path": "orchestrate/skills/orchestrate/scripts/cli/forensics.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c5ee55675171d7a0fef2a0dace4fa19edd03076c",
+      "size": 5398,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/c5ee55675171d7a0fef2a0dace4fa19edd03076c"
+    },
+    {
+      "path": "orchestrate/skills/orchestrate/scripts/cli/index.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "eca2f1afe124ad2ab6448c77649a1a25a23d4969",
+      "size": 958,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/eca2f1afe124ad2ab6448c77649a1a25a23d4969"
+    },
+    {
+      "path": "orchestrate/skills/orchestrate/scripts/cli/inspect.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "0e2db70a94c9586b38231024e12224378e8bbe92",
+      "size": 7783,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/0e2db70a94c9586b38231024e12224378e8bbe92"
+    },
+    {
+      "path": "orchestrate/skills/orchestrate/scripts/cli/task.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "cd3284e0480f3381daeb15669dfef5a78d190d8d",
+      "size": 20446,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/cd3284e0480f3381daeb15669dfef5a78d190d8d"
+    },
+    {
+      "path": "orchestrate/skills/orchestrate/scripts/cli/util.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "d81272f14b83422617033808abfdac2a665c67c0",
+      "size": 17490,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/d81272f14b83422617033808abfdac2a665c67c0"
+    },
+    {
+      "path": "orchestrate/skills/orchestrate/scripts/core",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "f691d07706352081d6c21c3e0e7fd8e308075b45",
+      "url": "https://api.github.com/repos/cursor/plugins/git/trees/f691d07706352081d6c21c3e0e7fd8e308075b45"
+    },
+    {
+      "path": "orchestrate/skills/orchestrate/scripts/core/agent-manager.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "010eb38ab8726cf47a2c1c53863f3f948af83dee",
+      "size": 67635,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/010eb38ab8726cf47a2c1c53863f3f948af83dee"
+    },
+    {
+      "path": "orchestrate/skills/orchestrate/scripts/core/andon.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ae6e84cae79e9c8cac731b1f1e446b8a866e0e96",
+      "size": 7518,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/ae6e84cae79e9c8cac731b1f1e446b8a866e0e96"
+    },
+    {
+      "path": "orchestrate/skills/orchestrate/scripts/core/branches.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f9d6e52c4774dcb98c79031014e27f61476df401",
+      "size": 1110,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/f9d6e52c4774dcb98c79031014e27f61476df401"
+    },
+    {
+      "path": "orchestrate/skills/orchestrate/scripts/core/comment-retry-queue.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f9a3b3bf39d6d445c37b647ecb21f452b803057b",
+      "size": 9905,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/f9a3b3bf39d6d445c37b647ecb21f452b803057b"
+    },
+    {
+      "path": "orchestrate/skills/orchestrate/scripts/core/failure-handoff.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "be4d8bf134b02886a593ae7541eef65c44e2eb81",
+      "size": 6551,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/be4d8bf134b02886a593ae7541eef65c44e2eb81"
+    },
+    {
+      "path": "orchestrate/skills/orchestrate/scripts/core/handoff.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "666e2dd6187d4f1fb22bcf2f315ac89c265dab84",
+      "size": 7563,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/666e2dd6187d4f1fb22bcf2f315ac89c265dab84"
+    },
+    {
+      "path": "orchestrate/skills/orchestrate/scripts/core/loop.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "bd408db00c633ad6ceb33e05db761d0761f3ce57",
+      "size": 10377,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/bd408db00c633ad6ceb33e05db761d0761f3ce57"
+    },
+    {
+      "path": "orchestrate/skills/orchestrate/scripts/core/prompts.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "044dbcb345e50a6845198be8ec1133a3eae35cd6",
+      "size": 10441,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/044dbcb345e50a6845198be8ec1133a3eae35cd6"
+    },
+    {
+      "path": "orchestrate/skills/orchestrate/scripts/core/redact-body.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "3b1102e8b2bc1e537584532d0049bcd49f7a83b0",
+      "size": 2145,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/3b1102e8b2bc1e537584532d0049bcd49f7a83b0"
+    },
+    {
+      "path": "orchestrate/skills/orchestrate/scripts/errors.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "d4024e86c8fe8f3fa53e63ab9f12353c3792f791",
+      "size": 117,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/d4024e86c8fe8f3fa53e63ab9f12353c3792f791"
+    },
+    {
+      "path": "orchestrate/skills/orchestrate/scripts/measurements.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "2cc008e9cc12747a2845c03e424dcd5ca4694087",
+      "size": 12844,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/2cc008e9cc12747a2845c03e424dcd5ca4694087"
+    },
+    {
+      "path": "orchestrate/skills/orchestrate/scripts/models.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "4be9e7f5416e54cef29e5ce25cdd41238a7cdb91",
+      "size": 7041,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/4be9e7f5416e54cef29e5ce25cdd41238a7cdb91"
+    },
+    {
+      "path": "orchestrate/skills/orchestrate/scripts/package.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "afd5753fcba750d0307db410f3ab5ac4a271df52",
+      "size": 762,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/afd5753fcba750d0307db410f3ab5ac4a271df52"
+    },
+    {
+      "path": "orchestrate/skills/orchestrate/scripts/schemas.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "dc77a59deae5492f1323858a6837cea266ef4a16",
+      "size": 21136,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/dc77a59deae5492f1323858a6837cea266ef4a16"
+    },
+    {
+      "path": "orchestrate/skills/orchestrate/scripts/tools",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "2359342edf3efd82083aff172c2a9794cdf83996",
+      "url": "https://api.github.com/repos/cursor/plugins/git/trees/2359342edf3efd82083aff172c2a9794cdf83996"
+    },
+    {
+      "path": "orchestrate/skills/orchestrate/scripts/tools/generate-json-schemas.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "35c5fd8456612c6620f9714935228e6d6a3a25f4",
+      "size": 1569,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/35c5fd8456612c6620f9714935228e6d6a3a25f4"
+    },
+    {
+      "path": "orchestrate/skills/orchestrate/scripts/tools/nudge-root.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "bf045b83ee998fb257d630d7cbcd5554db927ae2",
+      "size": 6743,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/bf045b83ee998fb257d630d7cbcd5554db927ae2"
+    },
+    {
+      "path": "orchestrate/skills/orchestrate/scripts/tools/probe-models.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "7b1726903a5db9ada975a45dbdea6d4db602a98f",
+      "size": 2676,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/7b1726903a5db9ada975a45dbdea6d4db602a98f"
+    },
+    {
+      "path": "orchestrate/skills/orchestrate/scripts/tsconfig.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "5242f770aed14606b1ce37dbb87e0b65d55f7c9b",
+      "size": 362,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/5242f770aed14606b1ce37dbb87e0b65d55f7c9b"
+    },
+    {
+      "path": "pr-review-canvas",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "d0b86a333b12b46b51fe94b0d8a3b36399bf9419",
+      "url": "https://api.github.com/repos/cursor/plugins/git/trees/d0b86a333b12b46b51fe94b0d8a3b36399bf9419"
+    },
+    {
+      "path": "pr-review-canvas/.cursor-plugin",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "32629c668d409d256efe3e941853519339232634",
+      "url": "https://api.github.com/repos/cursor/plugins/git/trees/32629c668d409d256efe3e941853519339232634"
+    },
+    {
+      "path": "pr-review-canvas/.cursor-plugin/plugin.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "a42e7f754247c2c9abae324943e7be07087ff6be",
+      "size": 834,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/a42e7f754247c2c9abae324943e7be07087ff6be"
+    },
+    {
+      "path": "pr-review-canvas/CHANGELOG.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "faa31c09edd68d1ad2daaa71ff3ba34f86027ec6",
+      "size": 283,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/faa31c09edd68d1ad2daaa71ff3ba34f86027ec6"
+    },
+    {
+      "path": "pr-review-canvas/LICENSE",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ca2bba771cd39dbef6acf96b52481133983451f3",
+      "size": 1063,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/ca2bba771cd39dbef6acf96b52481133983451f3"
+    },
+    {
+      "path": "pr-review-canvas/README.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "0d7698a56042bbf1e13fd2daee76e78ab93b4628",
+      "size": 1775,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/0d7698a56042bbf1e13fd2daee76e78ab93b4628"
+    },
+    {
+      "path": "pr-review-canvas/assets",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "4aecec14d3762b0fe686e26a9386396652ff5819",
+      "url": "https://api.github.com/repos/cursor/plugins/git/trees/4aecec14d3762b0fe686e26a9386396652ff5819"
+    },
+    {
+      "path": "pr-review-canvas/assets/avatar.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "052d4cf87e6045e9c442a32890d341167546b9e8",
+      "size": 24255,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/052d4cf87e6045e9c442a32890d341167546b9e8"
+    },
+    {
+      "path": "pr-review-canvas/skills",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "0766f0fd2a00b67ca42433db3111986dfdabe32e",
+      "url": "https://api.github.com/repos/cursor/plugins/git/trees/0766f0fd2a00b67ca42433db3111986dfdabe32e"
+    },
+    {
+      "path": "pr-review-canvas/skills/pr-review-canvas",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "4525c93130fd1e106b97764e6db228d7bcbdbd3e",
+      "url": "https://api.github.com/repos/cursor/plugins/git/trees/4525c93130fd1e106b97764e6db228d7bcbdbd3e"
+    },
+    {
+      "path": "pr-review-canvas/skills/pr-review-canvas/SKILL.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "1a35b6e87a2762a016bb11e6b986ef5f0d0cb3bb",
+      "size": 4786,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/1a35b6e87a2762a016bb11e6b986ef5f0d0cb3bb"
+    },
+    {
+      "path": "pstack",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "afe50268b8d332ae5e80bc3818005952062d7802",
+      "url": "https://api.github.com/repos/cursor/plugins/git/trees/afe50268b8d332ae5e80bc3818005952062d7802"
+    },
+    {
+      "path": "pstack/.cursor-plugin",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "ba5fde26528eb241b0fbc515b2ecf5eae3aeefc7",
+      "url": "https://api.github.com/repos/cursor/plugins/git/trees/ba5fde26528eb241b0fbc515b2ecf5eae3aeefc7"
+    },
+    {
+      "path": "pstack/.cursor-plugin/plugin.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ed2da622cc8ea24ae97804d5d563071514728b8e",
+      "size": 692,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/ed2da622cc8ea24ae97804d5d563071514728b8e"
+    },
+    {
+      "path": "pstack/.gitignore",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "aafcb345668bd80cbb256b066898d4df8988da0e",
+      "size": 30,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/aafcb345668bd80cbb256b066898d4df8988da0e"
+    },
+    {
+      "path": "pstack/LICENSE",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "6b5400237fdf6545be0b8fae370d6f2fcff8fb25",
+      "size": 1067,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/6b5400237fdf6545be0b8fae370d6f2fcff8fb25"
+    },
+    {
+      "path": "pstack/README.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "5dbb121a4ca7f7a1c893dd1b2bc85200bfdb5e11",
+      "size": 7584,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/5dbb121a4ca7f7a1c893dd1b2bc85200bfdb5e11"
+    },
+    {
+      "path": "pstack/agents",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "28f769fdcedf33853de9845537ed49996f46b207",
+      "url": "https://api.github.com/repos/cursor/plugins/git/trees/28f769fdcedf33853de9845537ed49996f46b207"
+    },
+    {
+      "path": "pstack/agents/poteto-agent.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "444bc430781648def14e70ad3035ca966604a5c0",
+      "size": 621,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/444bc430781648def14e70ad3035ca966604a5c0"
+    },
+    {
+      "path": "pstack/skills",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "cbc5de391d91324bb6f2ea250d57f087475539cc",
+      "url": "https://api.github.com/repos/cursor/plugins/git/trees/cbc5de391d91324bb6f2ea250d57f087475539cc"
+    },
+    {
+      "path": "pstack/skills/architect",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "ec962aaef87898a3520c7df13a342d0ab31db314",
+      "url": "https://api.github.com/repos/cursor/plugins/git/trees/ec962aaef87898a3520c7df13a342d0ab31db314"
+    },
+    {
+      "path": "pstack/skills/architect/SKILL.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ba5ab6f464c768bdc4b4726f1aa8890a93d1149f",
+      "size": 5408,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/ba5ab6f464c768bdc4b4726f1aa8890a93d1149f"
+    },
+    {
+      "path": "pstack/skills/architect/references",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "6937aa917df24aec1d8ac1c5ffb1f5c87cf58830",
+      "url": "https://api.github.com/repos/cursor/plugins/git/trees/6937aa917df24aec1d8ac1c5ffb1f5c87cf58830"
+    },
+    {
+      "path": "pstack/skills/architect/references/rationale-template.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "bd2bba36c9c859d5ddb23534eed15eff8da588fa",
+      "size": 2347,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/bd2bba36c9c859d5ddb23534eed15eff8da588fa"
+    },
+    {
+      "path": "pstack/skills/architect/references/runner-prompt.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "fbc4dad6a464d5be2f105e84b77e932c68779b02",
+      "size": 2576,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/fbc4dad6a464d5be2f105e84b77e932c68779b02"
+    },
+    {
+      "path": "pstack/skills/arena",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "da29d563bcbb8f6e2a64f435db67ecfd390b4736",
+      "url": "https://api.github.com/repos/cursor/plugins/git/trees/da29d563bcbb8f6e2a64f435db67ecfd390b4736"
+    },
+    {
+      "path": "pstack/skills/arena/SKILL.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "9ee0b9279efc185baee24ec86aa15d40b5816551",
+      "size": 5030,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/9ee0b9279efc185baee24ec86aa15d40b5816551"
+    },
+    {
+      "path": "pstack/skills/automate-me",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "43668a3d5ae9a0f28ae5ad43b1e3e17c3c77e02c",
+      "url": "https://api.github.com/repos/cursor/plugins/git/trees/43668a3d5ae9a0f28ae5ad43b1e3e17c3c77e02c"
+    },
+    {
+      "path": "pstack/skills/automate-me/SKILL.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c97ac9ddda941b2402b923b229c83edaf7886c5b",
+      "size": 7489,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/c97ac9ddda941b2402b923b229c83edaf7886c5b"
+    },
+    {
+      "path": "pstack/skills/figure-it-out",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "eeb6f1cbd8554d2ea0c1446a309ea51ae45aa655",
+      "url": "https://api.github.com/repos/cursor/plugins/git/trees/eeb6f1cbd8554d2ea0c1446a309ea51ae45aa655"
+    },
+    {
+      "path": "pstack/skills/figure-it-out/SKILL.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "42f4d463df4f3ba0a75a70620cb840078712adfb",
+      "size": 5020,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/42f4d463df4f3ba0a75a70620cb840078712adfb"
+    },
+    {
+      "path": "pstack/skills/how",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "c5a2aea3dea93f7ae966fa14a16ee7b30ab45f36",
+      "url": "https://api.github.com/repos/cursor/plugins/git/trees/c5a2aea3dea93f7ae966fa14a16ee7b30ab45f36"
+    },
+    {
+      "path": "pstack/skills/how/SKILL.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "efb56fa4e99f8e718109f6a6196f4da8277d5d1c",
+      "size": 7690,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/efb56fa4e99f8e718109f6a6196f4da8277d5d1c"
+    },
+    {
+      "path": "pstack/skills/how/references",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "08cdaba5b2f46ee96efb925a7b505336bcd7f85c",
+      "url": "https://api.github.com/repos/cursor/plugins/git/trees/08cdaba5b2f46ee96efb925a7b505336bcd7f85c"
+    },
+    {
+      "path": "pstack/skills/how/references/critic-prompt.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "3f3bd2357d6bbfd526e1d19024eaa3c4ec4e8edb",
+      "size": 2392,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/3f3bd2357d6bbfd526e1d19024eaa3c4ec4e8edb"
+    },
+    {
+      "path": "pstack/skills/how/references/critique-rubric.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ebc3573aac2cab45f5acd32e8d1fb4b877e328cc",
+      "size": 3027,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/ebc3573aac2cab45f5acd32e8d1fb4b877e328cc"
+    },
+    {
+      "path": "pstack/skills/how/references/explainer-prompt.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "3c9bd5040c3c31966ce73f332e576e0a6742f5b6",
+      "size": 3272,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/3c9bd5040c3c31966ce73f332e576e0a6742f5b6"
+    },
+    {
+      "path": "pstack/skills/how/references/explorer-prompt.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "aa07336bd23783c117b58fa9b0fc0fb2cbd418b7",
+      "size": 2759,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/aa07336bd23783c117b58fa9b0fc0fb2cbd418b7"
+    },
+    {
+      "path": "pstack/skills/interrogate",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "35802a5430da60a2ae3ade25f09fc8f1ec969ca7",
+      "url": "https://api.github.com/repos/cursor/plugins/git/trees/35802a5430da60a2ae3ade25f09fc8f1ec969ca7"
+    },
+    {
+      "path": "pstack/skills/interrogate/SKILL.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "2ae56ef2dfe5b5aa1eef9b46bc391b8ab929c5ee",
+      "size": 5333,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/2ae56ef2dfe5b5aa1eef9b46bc391b8ab929c5ee"
+    },
+    {
+      "path": "pstack/skills/interrogate/references",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "150171508f95f9cbef218bfb2f743075ce9578b4",
+      "url": "https://api.github.com/repos/cursor/plugins/git/trees/150171508f95f9cbef218bfb2f743075ce9578b4"
+    },
+    {
+      "path": "pstack/skills/interrogate/references/lead-judgment.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "9bc0260d2db36175308af3daf50bb5e05ea5c551",
+      "size": 3546,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/9bc0260d2db36175308af3daf50bb5e05ea5c551"
+    },
+    {
+      "path": "pstack/skills/interrogate/references/reviewer-prompt.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "5d81f773b90723566952ed11412d023219d83d10",
+      "size": 2740,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/5d81f773b90723566952ed11412d023219d83d10"
+    },
+    {
+      "path": "pstack/skills/interrogate/references/rubric.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "2bbe4e75566098430e864b5b8f72391cce22105d",
+      "size": 5387,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/2bbe4e75566098430e864b5b8f72391cce22105d"
+    },
+    {
+      "path": "pstack/skills/poteto-mode",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "3f138d225cdab70452a56595862c309e46917a92",
+      "url": "https://api.github.com/repos/cursor/plugins/git/trees/3f138d225cdab70452a56595862c309e46917a92"
+    },
+    {
+      "path": "pstack/skills/poteto-mode/SKILL.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "5e0861bec670b5967deddee4a5c84efe21d2c39f",
+      "size": 12815,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/5e0861bec670b5967deddee4a5c84efe21d2c39f"
+    },
+    {
+      "path": "pstack/skills/poteto-mode/playbooks",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "34b5e53b45fb5f1deb97467859e00c7159291434",
+      "url": "https://api.github.com/repos/cursor/plugins/git/trees/34b5e53b45fb5f1deb97467859e00c7159291434"
+    },
+    {
+      "path": "pstack/skills/poteto-mode/playbooks/authoring-a-skill.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c937f923b20d10c5ecb604a63f047ddd89a8d630",
+      "size": 872,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/c937f923b20d10c5ecb604a63f047ddd89a8d630"
+    },
+    {
+      "path": "pstack/skills/poteto-mode/playbooks/autonomous-run.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "7b3bf4a8052c6a4351e54549ba72d59c6007aa02",
+      "size": 1368,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/7b3bf4a8052c6a4351e54549ba72d59c6007aa02"
+    },
+    {
+      "path": "pstack/skills/poteto-mode/playbooks/bug-fix.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "5b06b3affe71e45c4925db31a9b9f86ebcffe3dd",
+      "size": 2149,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/5b06b3affe71e45c4925db31a9b9f86ebcffe3dd"
+    },
+    {
+      "path": "pstack/skills/poteto-mode/playbooks/eval.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "6eda970db528b3c067f6683600141824c869fdcd",
+      "size": 3224,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/6eda970db528b3c067f6683600141824c869fdcd"
+    },
+    {
+      "path": "pstack/skills/poteto-mode/playbooks/feature.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "87484acd34d068c56ae4126686297f1167a8fcc1",
+      "size": 2526,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/87484acd34d068c56ae4126686297f1167a8fcc1"
+    },
+    {
+      "path": "pstack/skills/poteto-mode/playbooks/investigation.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ebd058f7d08723ee571ddd021a76144dbd8abcf8",
+      "size": 1210,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/ebd058f7d08723ee571ddd021a76144dbd8abcf8"
+    },
+    {
+      "path": "pstack/skills/poteto-mode/playbooks/multi-phase-plan.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "956eee23512e744e6e04b8846b7340de47f81344",
+      "size": 89,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/956eee23512e744e6e04b8846b7340de47f81344"
+    },
+    {
+      "path": "pstack/skills/poteto-mode/playbooks/opening-a-pr.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f48241c1da4c75488076a25a93cf589ababf9823",
+      "size": 1396,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/f48241c1da4c75488076a25a93cf589ababf9823"
+    },
+    {
+      "path": "pstack/skills/poteto-mode/playbooks/perf-issue.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "2a3f4ab9681893c01fd31410281745e05359021e",
+      "size": 734,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/2a3f4ab9681893c01fd31410281745e05359021e"
+    },
+    {
+      "path": "pstack/skills/poteto-mode/playbooks/prototype.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "964f7debe685ad0a8f724d94317162a7cd929b88",
+      "size": 2015,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/964f7debe685ad0a8f724d94317162a7cd929b88"
+    },
+    {
+      "path": "pstack/skills/poteto-mode/playbooks/runtime-forensics.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "436c2f3c3a911576b9f4c6722a29ccc390cb0daf",
+      "size": 1418,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/436c2f3c3a911576b9f4c6722a29ccc390cb0daf"
+    },
+    {
+      "path": "pstack/skills/poteto-mode/playbooks/visual-parity.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e2cff7cd51de2c2e490abfae910ea24ef62586c3",
+      "size": 1417,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/e2cff7cd51de2c2e490abfae910ea24ef62586c3"
+    },
+    {
+      "path": "pstack/skills/poteto-mode/references",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "17fd64bbd4998d95c2f5a1e05b9c723b20ace6d9",
+      "url": "https://api.github.com/repos/cursor/plugins/git/trees/17fd64bbd4998d95c2f5a1e05b9c723b20ace6d9"
+    },
+    {
+      "path": "pstack/skills/poteto-mode/references/plan.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "7855ca13f518a8da4e84cfac31a62001da736aa1",
+      "size": 5122,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/7855ca13f518a8da4e84cfac31a62001da736aa1"
+    },
+    {
+      "path": "pstack/skills/principle-boundary-discipline",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "92272e5ffea08f3ef29babb3d518bc1f358a036c",
+      "url": "https://api.github.com/repos/cursor/plugins/git/trees/92272e5ffea08f3ef29babb3d518bc1f358a036c"
+    },
+    {
+      "path": "pstack/skills/principle-boundary-discipline/SKILL.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "036fcfe81518427a62eb6b4559f5820680d71be8",
+      "size": 1662,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/036fcfe81518427a62eb6b4559f5820680d71be8"
+    },
+    {
+      "path": "pstack/skills/principle-encode-lessons-in-structure",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "88d7d9d14f8423ba0eb3f8ae5196f000bc49ae24",
+      "url": "https://api.github.com/repos/cursor/plugins/git/trees/88d7d9d14f8423ba0eb3f8ae5196f000bc49ae24"
+    },
+    {
+      "path": "pstack/skills/principle-encode-lessons-in-structure/SKILL.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e166f96ab950fd32786d4f7e605a869412ea340a",
+      "size": 1885,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/e166f96ab950fd32786d4f7e605a869412ea340a"
+    },
+    {
+      "path": "pstack/skills/principle-exhaust-the-design-space",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "f9fd2650521a87073f7a8b7456cc5ed7c9c0620b",
+      "url": "https://api.github.com/repos/cursor/plugins/git/trees/f9fd2650521a87073f7a8b7456cc5ed7c9c0620b"
+    },
+    {
+      "path": "pstack/skills/principle-exhaust-the-design-space/SKILL.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "af48f6eaddd0d6aad447f7c9db41528664d2cd2e",
+      "size": 1055,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/af48f6eaddd0d6aad447f7c9db41528664d2cd2e"
+    },
+    {
+      "path": "pstack/skills/principle-experience-first",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "47e1f55b42a134849211ddcd6a3261da9eabbf35",
+      "url": "https://api.github.com/repos/cursor/plugins/git/trees/47e1f55b42a134849211ddcd6a3261da9eabbf35"
+    },
+    {
+      "path": "pstack/skills/principle-experience-first/SKILL.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "641dbd9b32abf4e59951f581aab778a8e11175cf",
+      "size": 1039,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/641dbd9b32abf4e59951f581aab778a8e11175cf"
+    },
+    {
+      "path": "pstack/skills/principle-fix-root-causes",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "02604cbda60628e34e0b66fcbbc8d3f658e6790f",
+      "url": "https://api.github.com/repos/cursor/plugins/git/trees/02604cbda60628e34e0b66fcbbc8d3f658e6790f"
+    },
+    {
+      "path": "pstack/skills/principle-fix-root-causes/SKILL.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f61616097314d1276595b2cbe7dc867f37382d68",
+      "size": 1252,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/f61616097314d1276595b2cbe7dc867f37382d68"
+    },
+    {
+      "path": "pstack/skills/principle-foundational-thinking",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "3061a793abe2d205cd821d418c75141218ad92f0",
+      "url": "https://api.github.com/repos/cursor/plugins/git/trees/3061a793abe2d205cd821d418c75141218ad92f0"
+    },
+    {
+      "path": "pstack/skills/principle-foundational-thinking/SKILL.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "4661891044fe9d0858510b34e382a7f608bb8d20",
+      "size": 1626,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/4661891044fe9d0858510b34e382a7f608bb8d20"
+    },
+    {
+      "path": "pstack/skills/principle-guard-the-context-window",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "160097c93ba42dd955907f5c02ac38a5975f1518",
+      "url": "https://api.github.com/repos/cursor/plugins/git/trees/160097c93ba42dd955907f5c02ac38a5975f1518"
+    },
+    {
+      "path": "pstack/skills/principle-guard-the-context-window/SKILL.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "0862757bbb63e314f13f18528c25db85d0901078",
+      "size": 1152,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/0862757bbb63e314f13f18528c25db85d0901078"
+    },
+    {
+      "path": "pstack/skills/principle-laziness-protocol",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "880b73820ca98532a5c99c9c85f511c3740e2b03",
+      "url": "https://api.github.com/repos/cursor/plugins/git/trees/880b73820ca98532a5c99c9c85f511c3740e2b03"
+    },
+    {
+      "path": "pstack/skills/principle-laziness-protocol/SKILL.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "bde494ef2039f4af98c41483a856922103f96770",
+      "size": 1268,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/bde494ef2039f4af98c41483a856922103f96770"
+    },
+    {
+      "path": "pstack/skills/principle-make-operations-idempotent",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "c69d590d8da3af63e34954aa21254e1ec9a2996c",
+      "url": "https://api.github.com/repos/cursor/plugins/git/trees/c69d590d8da3af63e34954aa21254e1ec9a2996c"
+    },
+    {
+      "path": "pstack/skills/principle-make-operations-idempotent/SKILL.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "a0834247ca99b09c11441747717a8034d4c22d7c",
+      "size": 1390,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/a0834247ca99b09c11441747717a8034d4c22d7c"
+    },
+    {
+      "path": "pstack/skills/principle-migrate-callers-then-delete-legacy-apis",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "2604f87c7ebe4dd2ff8eb9093eb4da938526b13d",
+      "url": "https://api.github.com/repos/cursor/plugins/git/trees/2604f87c7ebe4dd2ff8eb9093eb4da938526b13d"
+    },
+    {
+      "path": "pstack/skills/principle-migrate-callers-then-delete-legacy-apis/SKILL.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "a0c6e65e1eaf58278fa6bac1a01c23f998759f5c",
+      "size": 1152,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/a0c6e65e1eaf58278fa6bac1a01c23f998759f5c"
+    },
+    {
+      "path": "pstack/skills/principle-minimize-reader-load",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "4db7eb7ee07449bc461c5fe94fd6fef080f23537",
+      "url": "https://api.github.com/repos/cursor/plugins/git/trees/4db7eb7ee07449bc461c5fe94fd6fef080f23537"
+    },
+    {
+      "path": "pstack/skills/principle-minimize-reader-load/SKILL.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e4b7640565da24f12a08b82f9fea29db9cce84e5",
+      "size": 1734,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/e4b7640565da24f12a08b82f9fea29db9cce84e5"
+    },
+    {
+      "path": "pstack/skills/principle-never-block-on-the-human",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "2940c8641e3e7729ce8d66f5dcca995e1dd6f495",
+      "url": "https://api.github.com/repos/cursor/plugins/git/trees/2940c8641e3e7729ce8d66f5dcca995e1dd6f495"
+    },
+    {
+      "path": "pstack/skills/principle-never-block-on-the-human/SKILL.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "0c55555f85d6636cc26429cc18016ffdafaff576",
+      "size": 1596,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/0c55555f85d6636cc26429cc18016ffdafaff576"
+    },
+    {
+      "path": "pstack/skills/principle-outcome-oriented-execution",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "df70eb76cacab0c2bcbd8df2a5c50e7f664fbf1e",
+      "url": "https://api.github.com/repos/cursor/plugins/git/trees/df70eb76cacab0c2bcbd8df2a5c50e7f664fbf1e"
+    },
+    {
+      "path": "pstack/skills/principle-outcome-oriented-execution/SKILL.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "4c2ed4695b4ca15ea5a98468c13bfe5de97f16df",
+      "size": 1132,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/4c2ed4695b4ca15ea5a98468c13bfe5de97f16df"
+    },
+    {
+      "path": "pstack/skills/principle-prove-it-works",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "809a6925dac5be32419d4b08a459f92466db11a7",
+      "url": "https://api.github.com/repos/cursor/plugins/git/trees/809a6925dac5be32419d4b08a459f92466db11a7"
+    },
+    {
+      "path": "pstack/skills/principle-prove-it-works/SKILL.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "088c412cc38eb37442914a71d9e05bc6ee430a1b",
+      "size": 2068,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/088c412cc38eb37442914a71d9e05bc6ee430a1b"
+    },
+    {
+      "path": "pstack/skills/principle-redesign-from-first-principles",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "2f9ce6649070033606242178ce56903bab0fe643",
+      "url": "https://api.github.com/repos/cursor/plugins/git/trees/2f9ce6649070033606242178ce56903bab0fe643"
+    },
+    {
+      "path": "pstack/skills/principle-redesign-from-first-principles/SKILL.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "6a8cf256d69d0d5f2ce4b57795f2794c41c8e5a0",
+      "size": 943,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/6a8cf256d69d0d5f2ce4b57795f2794c41c8e5a0"
+    },
+    {
+      "path": "pstack/skills/principle-separate-before-serializing-shared-state",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "c9f8649ad53ebc84344b1037c1383ccca3b7c86c",
+      "url": "https://api.github.com/repos/cursor/plugins/git/trees/c9f8649ad53ebc84344b1037c1383ccca3b7c86c"
+    },
+    {
+      "path": "pstack/skills/principle-separate-before-serializing-shared-state/SKILL.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "523591e0a1bda493598292358bd2142277fdbd19",
+      "size": 1631,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/523591e0a1bda493598292358bd2142277fdbd19"
+    },
+    {
+      "path": "pstack/skills/principle-subtract-before-you-add",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "eb386577c5c7a7dbd27174705feec4e42c6f5c9c",
+      "url": "https://api.github.com/repos/cursor/plugins/git/trees/eb386577c5c7a7dbd27174705feec4e42c6f5c9c"
+    },
+    {
+      "path": "pstack/skills/principle-subtract-before-you-add/SKILL.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "a78937170b83abebecb6b963fb8cfdd80507c01e",
+      "size": 1187,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/a78937170b83abebecb6b963fb8cfdd80507c01e"
+    },
+    {
+      "path": "pstack/skills/principle-type-system-discipline",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "792a47c03ad01956741bb0d6e0ed4f1140d66f44",
+      "url": "https://api.github.com/repos/cursor/plugins/git/trees/792a47c03ad01956741bb0d6e0ed4f1140d66f44"
+    },
+    {
+      "path": "pstack/skills/principle-type-system-discipline/SKILL.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "666fedca89d4e1fbef96a5a04bdbaa5a2d078974",
+      "size": 3817,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/666fedca89d4e1fbef96a5a04bdbaa5a2d078974"
+    },
+    {
+      "path": "pstack/skills/reflect",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "0a8cbf7bc5619d9dd5988e092c81c8176aebb94e",
+      "url": "https://api.github.com/repos/cursor/plugins/git/trees/0a8cbf7bc5619d9dd5988e092c81c8176aebb94e"
+    },
+    {
+      "path": "pstack/skills/reflect/SKILL.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "6b2ad9d8a327286d017db81f297c10e784ce089e",
+      "size": 5185,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/6b2ad9d8a327286d017db81f297c10e784ce089e"
+    },
+    {
+      "path": "pstack/skills/reflect/references",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "2d2d266dc36a7926fe764823bd61dd075486c46a",
+      "url": "https://api.github.com/repos/cursor/plugins/git/trees/2d2d266dc36a7926fe764823bd61dd075486c46a"
+    },
+    {
+      "path": "pstack/skills/reflect/references/divergent-reviewer.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "1ad488a5f702b78a57e5423ade2713f0f91eacb4",
+      "size": 3976,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/1ad488a5f702b78a57e5423ade2713f0f91eacb4"
+    },
+    {
+      "path": "pstack/skills/reflect/references/judgment-reviewer.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "62684a7c4cfbbfb75157210f128a4f5237b964ff",
+      "size": 3342,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/62684a7c4cfbbfb75157210f128a4f5237b964ff"
+    },
+    {
+      "path": "pstack/skills/reflect/references/synthesizer.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "11040b0f4dc639517b569b55460f4a128f503e2a",
+      "size": 4164,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/11040b0f4dc639517b569b55460f4a128f503e2a"
+    },
+    {
+      "path": "pstack/skills/reflect/references/tooling-reviewer.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f096727ff387904bb7f88cab4611f2007a98ed6e",
+      "size": 4859,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/f096727ff387904bb7f88cab4611f2007a98ed6e"
+    },
+    {
+      "path": "pstack/skills/show-me-your-work",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "b3076eee1a83fb389f5cc21545e83547253fe6ae",
+      "url": "https://api.github.com/repos/cursor/plugins/git/trees/b3076eee1a83fb389f5cc21545e83547253fe6ae"
+    },
+    {
+      "path": "pstack/skills/show-me-your-work/SKILL.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "0b2f6c4fb7dc21c3ce1d1d8aa1908aa6aeab13ae",
+      "size": 5715,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/0b2f6c4fb7dc21c3ce1d1d8aa1908aa6aeab13ae"
+    },
+    {
+      "path": "pstack/skills/show-me-your-work/references",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "1671bde8f0361caa3ec0d59a5eed1e1a3dbbbaac",
+      "url": "https://api.github.com/repos/cursor/plugins/git/trees/1671bde8f0361caa3ec0d59a5eed1e1a3dbbbaac"
+    },
+    {
+      "path": "pstack/skills/show-me-your-work/references/decision-log-template.tsv",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "db220376ecb8c582a6a4f6575a8f26469603a38d",
+      "size": 38,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/db220376ecb8c582a6a4f6575a8f26469603a38d"
+    },
+    {
+      "path": "pstack/skills/show-me-your-work/scripts",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "e11dd505aaa6a4ee4bc85fd7996166bea2cfc09f",
+      "url": "https://api.github.com/repos/cursor/plugins/git/trees/e11dd505aaa6a4ee4bc85fd7996166bea2cfc09f"
+    },
+    {
+      "path": "pstack/skills/show-me-your-work/scripts/log.sh",
+      "mode": "100755",
+      "type": "blob",
+      "sha": "523e2a74ee15bfe6528c795a347827f04ecc5e95",
+      "size": 1234,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/523e2a74ee15bfe6528c795a347827f04ecc5e95"
+    },
+    {
+      "path": "pstack/skills/tdd",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "3a761ae539f19c61c7ae73eddbec54951d44e752",
+      "url": "https://api.github.com/repos/cursor/plugins/git/trees/3a761ae539f19c61c7ae73eddbec54951d44e752"
+    },
+    {
+      "path": "pstack/skills/tdd/SKILL.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "7d923bd705e4727b0bc9a378ca0928cc825035de",
+      "size": 3536,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/7d923bd705e4727b0bc9a378ca0928cc825035de"
+    },
+    {
+      "path": "pstack/skills/typescript-best-practices",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "726bd746dbb42e4084bc9c00b83e8051124633ba",
+      "url": "https://api.github.com/repos/cursor/plugins/git/trees/726bd746dbb42e4084bc9c00b83e8051124633ba"
+    },
+    {
+      "path": "pstack/skills/typescript-best-practices/SKILL.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "9a5893c180618c2c86158bdd3ba8fb1751c72f35",
+      "size": 1693,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/9a5893c180618c2c86158bdd3ba8fb1751c72f35"
+    },
+    {
+      "path": "pstack/skills/typescript-best-practices/references",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "8ba19290dea0286c30fce54418d51f5337a3a343",
+      "url": "https://api.github.com/repos/cursor/plugins/git/trees/8ba19290dea0286c30fce54418d51f5337a3a343"
+    },
+    {
+      "path": "pstack/skills/typescript-best-practices/references/patterns.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "aebd5d876283be1b9558c6bbe66b0976411be44f",
+      "size": 6256,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/aebd5d876283be1b9558c6bbe66b0976411be44f"
+    },
+    {
+      "path": "pstack/skills/unslop",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "9eddf10012aec21635c10db93924fdb29266fb7a",
+      "url": "https://api.github.com/repos/cursor/plugins/git/trees/9eddf10012aec21635c10db93924fdb29266fb7a"
+    },
+    {
+      "path": "pstack/skills/unslop/SKILL.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b39ed3e3511df4db15c61aeca6d858074ff681ba",
+      "size": 6322,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/b39ed3e3511df4db15c61aeca6d858074ff681ba"
+    },
+    {
+      "path": "pstack/skills/why",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "519e6b1c9785acc7017e9bae4776d77cbbd46ce1",
+      "url": "https://api.github.com/repos/cursor/plugins/git/trees/519e6b1c9785acc7017e9bae4776d77cbbd46ce1"
+    },
+    {
+      "path": "pstack/skills/why/SKILL.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "76526eab57f8f7af294a37dd06c990c20b3ffde7",
+      "size": 23181,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/76526eab57f8f7af294a37dd06c990c20b3ffde7"
+    },
+    {
+      "path": "pstack/skills/why/references",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "63fb16191c86f617b010648493963fc6b497a4e2",
+      "url": "https://api.github.com/repos/cursor/plugins/git/trees/63fb16191c86f617b010648493963fc6b497a4e2"
+    },
+    {
+      "path": "pstack/skills/why/references/epistemics.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ed2867afc445c1e75233ebbff2faa48ad76129a3",
+      "size": 8263,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/ed2867afc445c1e75233ebbff2faa48ad76129a3"
+    },
+    {
+      "path": "pstack/skills/why/references/investigator-prompt.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "bf283ed5d82bdfea79592b4f4015e0ac04b15dee",
+      "size": 7515,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/bf283ed5d82bdfea79592b4f4015e0ac04b15dee"
+    },
+    {
+      "path": "pstack/skills/why/references/source-playbook.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "d1104b728f0beb85f621ff8f3527fab7784b0460",
+      "size": 1384,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/d1104b728f0beb85f621ff8f3527fab7784b0460"
+    },
+    {
+      "path": "pstack/skills/why/references/sources",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "d1a5ce0e640bb7f52f11aafce22d0fd646d0fd70",
+      "url": "https://api.github.com/repos/cursor/plugins/git/trees/d1a5ce0e640bb7f52f11aafce22d0fd646d0fd70"
+    },
+    {
+      "path": "pstack/skills/why/references/sources/code-archaeology.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "09c10c7fc5b65a99b13300adae4094feee8b74d5",
+      "size": 3656,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/09c10c7fc5b65a99b13300adae4094feee8b74d5"
+    },
+    {
+      "path": "pstack/skills/why/references/sources/databricks.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f90152b8d3710074bc365d018dd893293d3c745f",
+      "size": 7655,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/f90152b8d3710074bc365d018dd893293d3c745f"
+    },
+    {
+      "path": "pstack/skills/why/references/sources/datadog.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "65714b101b251f8fc07da0febcc5cd4306c62579",
+      "size": 5869,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/65714b101b251f8fc07da0febcc5cd4306c62579"
+    },
+    {
+      "path": "pstack/skills/why/references/sources/incident-postmortem.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "12c364c678a30ded0ae44488f6de3e60d7e3d046",
+      "size": 2006,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/12c364c678a30ded0ae44488f6de3e60d7e3d046"
+    },
+    {
+      "path": "pstack/skills/why/references/sources/linear.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "667e4d528a3e725bdda8056f680f7d4b7061f123",
+      "size": 3149,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/667e4d528a3e725bdda8056f680f7d4b7061f123"
+    },
+    {
+      "path": "pstack/skills/why/references/sources/notion.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c9e2994465ae2b884bccb70e861bf390ca9adf1a",
+      "size": 2956,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/c9e2994465ae2b884bccb70e861bf390ca9adf1a"
+    },
+    {
+      "path": "pstack/skills/why/references/sources/sentry.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "24af66abd6bc02581acd3d3e493178da258fe2ff",
+      "size": 5222,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/24af66abd6bc02581acd3d3e493178da258fe2ff"
+    },
+    {
+      "path": "pstack/skills/why/references/sources/slack.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "0193222943bb2e4d731d95c326e9143f44c0bc49",
+      "size": 3204,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/0193222943bb2e4d731d95c326e9143f44c0bc49"
+    },
+    {
+      "path": "pstack/skills/why/references/synthesizer-prompt.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "aff3bf52684317731cb4dbdd5f288fb88fa37c39",
+      "size": 8351,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/aff3bf52684317731cb4dbdd5f288fb88fa37c39"
+    },
+    {
+      "path": "ralph-loop",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "4aa4f6c3010861f4054c21eebfdc84d7d180c388",
+      "url": "https://api.github.com/repos/cursor/plugins/git/trees/4aa4f6c3010861f4054c21eebfdc84d7d180c388"
+    },
+    {
+      "path": "ralph-loop/.cursor-plugin",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "ff1758d7453b44575e43f1265e323a23806fea13",
+      "url": "https://api.github.com/repos/cursor/plugins/git/trees/ff1758d7453b44575e43f1265e323a23806fea13"
+    },
+    {
+      "path": "ralph-loop/.cursor-plugin/plugin.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "529e02ea7b6380442271a346d4c94a1f76868051",
+      "size": 807,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/529e02ea7b6380442271a346d4c94a1f76868051"
+    },
+    {
+      "path": "ralph-loop/LICENSE",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ca2bba771cd39dbef6acf96b52481133983451f3",
+      "size": 1063,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/ca2bba771cd39dbef6acf96b52481133983451f3"
+    },
+    {
+      "path": "ralph-loop/README.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "890e184d7bdaa2aee149f7b0d43839f29c367acd",
+      "size": 2460,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/890e184d7bdaa2aee149f7b0d43839f29c367acd"
+    },
+    {
+      "path": "ralph-loop/assets",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "e0eef6baafabc27a7820260cd011af74f78c5a9a",
+      "url": "https://api.github.com/repos/cursor/plugins/git/trees/e0eef6baafabc27a7820260cd011af74f78c5a9a"
+    },
+    {
+      "path": "ralph-loop/assets/avatar.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "3d835f5fe7167c54e2b0cbec7be8ed406b146a38",
+      "size": 60914,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/3d835f5fe7167c54e2b0cbec7be8ed406b146a38"
+    },
+    {
+      "path": "ralph-loop/hooks",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "23f7d5ef1e1ca1bf3ef7c34e3e92d852a1b86c6f",
+      "url": "https://api.github.com/repos/cursor/plugins/git/trees/23f7d5ef1e1ca1bf3ef7c34e3e92d852a1b86c6f"
+    },
+    {
+      "path": "ralph-loop/hooks/capture-response.sh",
+      "mode": "100755",
+      "type": "blob",
+      "sha": "d8da50a2aeceb066e4715958a6615d116cbb5d37",
+      "size": 1397,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/d8da50a2aeceb066e4715958a6615d116cbb5d37"
+    },
+    {
+      "path": "ralph-loop/hooks/hooks.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "04a99668978b1bf028d41c92fa62cd7ae475d166",
+      "size": 243,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/04a99668978b1bf028d41c92fa62cd7ae475d166"
+    },
+    {
+      "path": "ralph-loop/hooks/stop-hook.sh",
+      "mode": "100755",
+      "type": "blob",
+      "sha": "ba0ba3434ca4d213cfef58f57699bffaed61dabf",
+      "size": 2858,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/ba0ba3434ca4d213cfef58f57699bffaed61dabf"
+    },
+    {
+      "path": "ralph-loop/skills",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "935bb840ed47bac8d4f1f916e738c422a61dde1d",
+      "url": "https://api.github.com/repos/cursor/plugins/git/trees/935bb840ed47bac8d4f1f916e738c422a61dde1d"
+    },
+    {
+      "path": "ralph-loop/skills/cancel-ralph",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "8027df5597628112aa5a13c76b2cedd63fe19980",
+      "url": "https://api.github.com/repos/cursor/plugins/git/trees/8027df5597628112aa5a13c76b2cedd63fe19980"
+    },
+    {
+      "path": "ralph-loop/skills/cancel-ralph/SKILL.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "1e75c5b0ba50de8cd0d8d6baa0f58a9db63c904e",
+      "size": 732,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/1e75c5b0ba50de8cd0d8d6baa0f58a9db63c904e"
+    },
+    {
+      "path": "ralph-loop/skills/ralph-loop-help",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "9b928b6f517079d2de4889e59d53bcb33ba96120",
+      "url": "https://api.github.com/repos/cursor/plugins/git/trees/9b928b6f517079d2de4889e59d53bcb33ba96120"
+    },
+    {
+      "path": "ralph-loop/skills/ralph-loop-help/SKILL.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "8e6a76acc42b71a215edbb29e3ce5a4eea6663a8",
+      "size": 2498,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/8e6a76acc42b71a215edbb29e3ce5a4eea6663a8"
+    },
+    {
+      "path": "ralph-loop/skills/ralph-loop",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "ea05496b6baed1e12f654227ecf6e14928f4b1bc",
+      "url": "https://api.github.com/repos/cursor/plugins/git/trees/ea05496b6baed1e12f654227ecf6e14928f4b1bc"
+    },
+    {
+      "path": "ralph-loop/skills/ralph-loop/SKILL.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "5c943180ac88bb7b0981071a69712e78cfed7089",
+      "size": 1875,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/5c943180ac88bb7b0981071a69712e78cfed7089"
+    },
+    {
+      "path": "schemas",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "f6d74128e57de399b3f4149e49bddc9dcf9d107d",
+      "url": "https://api.github.com/repos/cursor/plugins/git/trees/f6d74128e57de399b3f4149e49bddc9dcf9d107d"
+    },
+    {
+      "path": "schemas/marketplace.schema.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "70eba0f5e48acb00e581346c43042fb233b6d71f",
+      "size": 2265,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/70eba0f5e48acb00e581346c43042fb233b6d71f"
+    },
+    {
+      "path": "schemas/plugin.schema.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "d4c539e0668590f13764be28ce14c5c07b38744a",
+      "size": 3951,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/d4c539e0668590f13764be28ce14c5c07b38744a"
+    },
+    {
+      "path": "scripts",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "0679630d3ac4ba44991a4240ef7f27216c5b09c4",
+      "url": "https://api.github.com/repos/cursor/plugins/git/trees/0679630d3ac4ba44991a4240ef7f27216c5b09c4"
+    },
+    {
+      "path": "scripts/validate-plugins.mjs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "6a7870854d7c82a900a936fd0e34610c86702723",
+      "size": 2823,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/6a7870854d7c82a900a936fd0e34610c86702723"
+    },
+    {
+      "path": "teaching",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "9e259d4112d75010761116e157aa99c45e57e835",
+      "url": "https://api.github.com/repos/cursor/plugins/git/trees/9e259d4112d75010761116e157aa99c45e57e835"
+    },
+    {
+      "path": "teaching/.cursor-plugin",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "c8fb908bbf31958567936f69d414ee4bb3317040",
+      "url": "https://api.github.com/repos/cursor/plugins/git/trees/c8fb908bbf31958567936f69d414ee4bb3317040"
+    },
+    {
+      "path": "teaching/.cursor-plugin/plugin.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "6691793e9ef4a3536f45b78bb7487ed1254e23a9",
+      "size": 733,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/6691793e9ef4a3536f45b78bb7487ed1254e23a9"
+    },
+    {
+      "path": "teaching/LICENSE",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ca2bba771cd39dbef6acf96b52481133983451f3",
+      "size": 1063,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/ca2bba771cd39dbef6acf96b52481133983451f3"
+    },
+    {
+      "path": "teaching/README.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "57823cc6b4bd73c0fe5ad3d690a6e976ea91418f",
+      "size": 444,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/57823cc6b4bd73c0fe5ad3d690a6e976ea91418f"
+    },
+    {
+      "path": "teaching/assets",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "c8d49a19ab5ab0a8d390fdd2f6a48a3ce07c0057",
+      "url": "https://api.github.com/repos/cursor/plugins/git/trees/c8d49a19ab5ab0a8d390fdd2f6a48a3ce07c0057"
+    },
+    {
+      "path": "teaching/assets/avatar.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "20aa21e9af3ada6a59b89bdef89a150f012ab6e6",
+      "size": 56807,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/20aa21e9af3ada6a59b89bdef89a150f012ab6e6"
+    },
+    {
+      "path": "teaching/skills",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "d7b62d2e6b8ce55a4072290ded1f38d139fb5cf1",
+      "url": "https://api.github.com/repos/cursor/plugins/git/trees/d7b62d2e6b8ce55a4072290ded1f38d139fb5cf1"
+    },
+    {
+      "path": "teaching/skills/create-learning-path",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "c5a7d2b76d736e4d32dc63f5b280640031d2483c",
+      "url": "https://api.github.com/repos/cursor/plugins/git/trees/c5a7d2b76d736e4d32dc63f5b280640031d2483c"
+    },
+    {
+      "path": "teaching/skills/create-learning-path/SKILL.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "1744f1ab457eff46126fcf9de2a60ad6aff7009f",
+      "size": 821,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/1744f1ab457eff46126fcf9de2a60ad6aff7009f"
+    },
+    {
+      "path": "teaching/skills/run-learning-retrospective",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "e2b8efdb30a3acc2b99c7dfe128be3b70b39a2ea",
+      "url": "https://api.github.com/repos/cursor/plugins/git/trees/e2b8efdb30a3acc2b99c7dfe128be3b70b39a2ea"
+    },
+    {
+      "path": "teaching/skills/run-learning-retrospective/SKILL.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "d8f465c9eb1a4d087b16423aafd40c85a9fc7dba",
+      "size": 637,
+      "url": "https://api.github.com/repos/cursor/plugins/git/blobs/d8f465c9eb1a4d087b16423aafd40c85a9fc7dba"
+    }
+  ],
+  "truncated": false
+}

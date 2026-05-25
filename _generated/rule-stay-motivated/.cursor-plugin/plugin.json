@@ -1,3 +1,5 @@
 {
-  "name": "rule-stay-motivated"
+  "name": "rule-stay-motivated",
+  "version": "1.0.0",
+  "description": "Always-on rule: stay-motivated. Install, then run activate.sh to symlink the rule into ~/.claude/rules/."
 }

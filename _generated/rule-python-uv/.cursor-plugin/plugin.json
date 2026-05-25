@@ -1,3 +1,5 @@
 {
-  "name": "rule-python-uv"
+  "name": "rule-python-uv",
+  "version": "1.0.0",
+  "description": "Always-on rule: python-uv. Install, then run activate.sh to symlink the rule into ~/.claude/rules/."
 }

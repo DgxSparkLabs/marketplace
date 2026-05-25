@@ -717,6 +717,28 @@ class TestPerPlatformManifests(unittest.TestCase):
                         f"{plugin_name}/.cursor-plugin/plugin.json name mismatch",
                     )
 
+    def test_cursor_skill_plugin_json_has_display_fields(self):
+        """Every Cursor SkillConstruct plugin.json must carry name+version+description+skills.
+
+        Without all four fields, Cursor's slash-popup renderer falls back to
+        install metadata (commit SHA) and produces a mangled display
+        (docs/research/qa-bug-fixes-2026-05/RESEARCH.md Bug 3, 2026-05-25 QA).
+        """
+        cursor = next(p for p in PLATFORMS.values() if isinstance(p, CursorPlatform))
+        skill = next(c for c in CONSTRUCTS.values() if isinstance(c, SkillConstruct))
+        required = {"name", "version", "description", "skills"}
+        for name in scan_source_dir(skill.source_directory):
+            plugin_name = f"skill-{name}"
+            manifest_path = REPO_ROOT / "_generated" / plugin_name / ".cursor-plugin" / "plugin.json"
+            with self.subTest(plugin=plugin_name):
+                data = json.loads(manifest_path.read_text(encoding="utf-8"))
+                missing = required - set(data.keys())
+                self.assertFalse(
+                    missing,
+                    f"{plugin_name}/.cursor-plugin/plugin.json missing required "
+                    f"display fields {missing}; Cursor popup will mangle without these",
+                )
+
 
 # ─── TestRootLevelManifests ───────────────────────────────────────────────────
 
@@ -899,6 +921,12 @@ class TestWindsurfHooksMirror(unittest.TestCase):
     Gemini). Single hook plugin today; multi-plugin merge deferred.
     """
 
+    # Claude-style event names (PascalCase) that Windsurf does NOT understand.
+    CLAUDE_EVENT_NAMES = frozenset({
+        "UserPromptSubmit", "PreToolUse", "PostToolUse", "Notification",
+        "Stop", "SubagentStop", "SessionStart", "SessionEnd", "PreCompact",
+    })
+
     def test_windsurf_hooks_json_exists(self):
         windsurf = next(p for p in PLATFORMS.values() if isinstance(p, WindsurfPlatform))
         hooks_json = windsurf.mirror_directory / "hooks.json"
@@ -908,6 +936,98 @@ class TestWindsurfHooksMirror(unittest.TestCase):
             "hooks", data,
             ".windsurf/hooks.json must contain top-level 'hooks' key",
         )
+
+    def test_windsurf_hooks_use_snake_case_event_names(self):
+        """No Claude-style PascalCase event names may appear in .windsurf/hooks.json.
+
+        Windsurf uses snake_case events (pre_user_prompt, pre_tool_use, etc.)
+        per docs.windsurf.com/windsurf/cascade/hooks (2026-05-25). Claude
+        event names load silently but never fire
+        (docs/research/qa-bug-fixes-2026-05/RESEARCH.md sanity-check #5,
+        QA 2026-05-25).
+        """
+        windsurf = next(p for p in PLATFORMS.values() if isinstance(p, WindsurfPlatform))
+        hooks_json = windsurf.mirror_directory / "hooks.json"
+        if not hooks_json.exists():
+            self.skipTest(".windsurf/hooks.json does not exist")
+        data = json.loads(hooks_json.read_text(encoding="utf-8"))
+        event_keys = set((data.get("hooks") or {}).keys())
+        leaked = event_keys & self.CLAUDE_EVENT_NAMES
+        self.assertFalse(
+            leaked,
+            f".windsurf/hooks.json contains Claude-style event names {leaked}; "
+            f"Windsurf requires snake_case events (pre_user_prompt, etc.) and "
+            f"the file's hooks will never fire as-is",
+        )
+        # Conversely every event key must be lowercase snake_case
+        # (Windsurf docs enumerate only snake_case events).
+        for key in event_keys:
+            with self.subTest(event=key):
+                self.assertRegex(
+                    key, r"^[a-z][a-z_]*$",
+                    f"Windsurf event '{key}' is not snake_case",
+                )
+
+    def test_windsurf_hook_entries_are_flat(self):
+        """Each Windsurf hook entry must be a flat dict, not Claude's nested ``{"hooks": [...]}``.
+
+        Per docs.windsurf.com/windsurf/cascade/hooks (2026-05-25): the shape
+        is ``{"hooks": {<event>: [{"command": "..."}]}}`` — no inner ``hooks``
+        key. Claude's doubly-nested shape lands as opaque junk to Windsurf's
+        parser.
+        """
+        windsurf = next(p for p in PLATFORMS.values() if isinstance(p, WindsurfPlatform))
+        hooks_json = windsurf.mirror_directory / "hooks.json"
+        if not hooks_json.exists():
+            self.skipTest(".windsurf/hooks.json does not exist")
+        data = json.loads(hooks_json.read_text(encoding="utf-8"))
+        for event, entries in (data.get("hooks") or {}).items():
+            for i, entry in enumerate(entries):
+                with self.subTest(event=event, idx=i):
+                    self.assertIsInstance(entry, dict, f"{event}[{i}] not a dict")
+                    self.assertNotIn(
+                        "hooks", entry,
+                        f"{event}[{i}] has Claude-style nested 'hooks' key; "
+                        f"Windsurf requires flat entries with command/powershell",
+                    )
+                    self.assertTrue(
+                        "command" in entry or "powershell" in entry,
+                        f"{event}[{i}] missing required command/powershell",
+                    )
+
+
+class TestHooksToWindsurfConverter(unittest.TestCase):
+    """Unit tests for scripts/converters/hooks_to_windsurf.py."""
+
+    SAMPLE = (
+        '{"description": "x",'
+        '"hooks": {"UserPromptSubmit": [{"hooks": ['
+        '{"type": "command", "command": "echo hi"}'
+        ']}]}}'
+    )
+
+    def setUp(self):
+        from converters.hooks_to_windsurf import claude_hooks_to_windsurf_hooks  # noqa: E402
+        self.convert = claude_hooks_to_windsurf_hooks
+
+    def test_event_renamed_and_flattened(self):
+        out = json.loads(self.convert(self.SAMPLE))
+        self.assertEqual(
+            out, {"hooks": {"pre_user_prompt": [{"command": "echo hi"}]}}
+        )
+
+    def test_unknown_event_dropped(self):
+        src = '{"hooks": {"Stop": [{"hooks": [{"type": "command", "command": "x"}]}]}}'
+        out = json.loads(self.convert(src))
+        self.assertEqual(out, {"hooks": {}})
+
+    def test_no_claude_keys_leak(self):
+        out = self.convert(self.SAMPLE)
+        for forbidden in ("UserPromptSubmit", '"type":', "description"):
+            self.assertNotIn(
+                forbidden, out,
+                f"Windsurf output must not retain '{forbidden}'",
+            )
 
 
 # ─── TestCodexAgentsMirror / TestMdToTomlConverter ───────────────────────────
@@ -1045,6 +1165,101 @@ class TestGeminiAgentsMirror(unittest.TestCase):
                         f".gemini/agents/{agent_md.name} missing for source "
                         f"agents/{name}/agents/{agent_md.name}",
                     )
+
+    def test_gemini_agents_tools_is_yaml_array(self):
+        """Emitted Gemini sub-agent frontmatter must have ``tools`` as a YAML array.
+
+        Per geminicli.com/docs/core/subagents/ (2026-05-25), the Gemini
+        sub-agent loader requires the ``tools`` field as an array. Our
+        canonical Claude source uses a comma-separated string; without
+        per-platform conversion the file is silently skipped by Gemini's
+        /agents discovery (docs/research/qa-bug-fixes-2026-05/RESEARCH.md
+        Bug 2, QA 2026-05-25).
+        """
+        gemini = next(p for p in PLATFORMS.values() if isinstance(p, GeminiPlatform))
+        agents_dir = gemini.mirror_directory / "agents"
+        if not agents_dir.exists():
+            self.skipTest(".gemini/agents/ does not exist")
+        files = sorted(agents_dir.glob("*.md"))
+        self.assertGreater(len(files), 0, ".gemini/agents/ has no .md files")
+        for md_path in files:
+            with self.subTest(agent=md_path.name):
+                text = md_path.read_text(encoding="utf-8")
+                self.assertTrue(
+                    text.startswith("---\n"),
+                    f"{md_path.name}: missing YAML frontmatter opener",
+                )
+                end = text.find("\n---", 4)
+                self.assertGreater(end, 0, f"{md_path.name}: frontmatter unterminated")
+                fm = text[4:end]
+                # If the source agent declared any tools, the emitted file
+                # must render them as a YAML array (one ``  - <tool>`` line
+                # per tool), never as the Claude-style scalar "tools: a, b, c".
+                lines = fm.splitlines()
+                tools_line_idx = next(
+                    (i for i, ln in enumerate(lines) if ln.strip().startswith("tools:")),
+                    None,
+                )
+                if tools_line_idx is None:
+                    continue  # tools field absent: legal per Gemini docs
+                tools_value = lines[tools_line_idx].split(":", 1)[1].strip()
+                self.assertEqual(
+                    tools_value, "",
+                    f"{md_path.name}: 'tools:' must be followed by a YAML "
+                    f"array on subsequent lines (got inline scalar "
+                    f"{tools_value!r}); Gemini /agents will skip the file",
+                )
+                # At least one '  - <tool>' line should follow.
+                array_items = [
+                    ln for ln in lines[tools_line_idx + 1:]
+                    if ln.startswith("  - ")
+                ]
+                self.assertGreater(
+                    len(array_items), 0,
+                    f"{md_path.name}: 'tools:' present but no '  - <tool>' "
+                    f"array items follow",
+                )
+
+
+class TestMdToGeminiMdConverter(unittest.TestCase):
+    """Unit tests for scripts/converters/md_to_gemini_md.py."""
+
+    SAMPLE = (
+        "---\n"
+        "name: notebook-reviewer\n"
+        "description: Reviews a lab notebook entry as a skeptical peer reviewer.\n"
+        "tools: Read, Grep, Glob\n"
+        "---\n"
+        "\n"
+        "You are a peer reviewer for laboratory notebook entries.\n"
+    )
+
+    def setUp(self):
+        from converters.md_to_gemini_md import claude_agent_md_to_gemini_md  # noqa: E402
+        self.convert = claude_agent_md_to_gemini_md
+
+    def test_tools_emitted_as_yaml_array(self):
+        out = self.convert(self.SAMPLE)
+        self.assertIn("tools:\n  - Read\n  - Grep\n  - Glob\n", out)
+        self.assertNotIn("tools: Read, Grep, Glob", out)
+
+    def test_required_fields_preserved(self):
+        out = self.convert(self.SAMPLE)
+        self.assertIn("name: notebook-reviewer", out)
+        self.assertIn(
+            "description: Reviews a lab notebook entry as a skeptical peer reviewer.",
+            out,
+        )
+        self.assertIn("You are a peer reviewer", out)
+
+    def test_missing_frontmatter_raises(self):
+        with self.assertRaises(ValueError):
+            self.convert("no frontmatter here")
+
+    def test_missing_required_name_raises(self):
+        bad = "---\ndescription: x\n---\nbody"
+        with self.assertRaises(ValueError):
+            self.convert(bad)
 
 
 class TestGeminiHooksMirror(unittest.TestCase):

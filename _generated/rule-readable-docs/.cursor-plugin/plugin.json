@@ -1,3 +1,5 @@
 {
-  "name": "rule-readable-docs"
+  "name": "rule-readable-docs",
+  "version": "1.0.0",
+  "description": "Always-on rule: readable-docs. Install, then run activate.sh to symlink the rule into ~/.claude/rules/."
 }

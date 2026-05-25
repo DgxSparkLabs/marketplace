@@ -1,5 +1,40 @@
 # Changelog
 
+## 2026-05-25 — Platform emission bug fixes from QA round
+
+Hands-on QA verification of the platform-feature-routing refactor (merged at `a86cb86`) surfaced several format mismatches where our emitted manifests passed drift checks (byte-identical to committed output) but did not match the platforms' actual loader contracts. This PR fixes the diagnosed bugs and adds a new schema-fitness test category to catch this class of bug at CI time going forward.
+
+### Fixed
+
+- **Cursor skill plugin popup** — `CursorPlatform.build_plugin_json` now emits `description`, `version`, and a `skills` pointer for `SkillConstruct` plugins. Previously emitted only `{"name": ...}`, causing Cursor's display layer to render mangled metadata (version, git SHA, duplicated description) in the slash-command popup (commit `e7f0b65`, per `cursor.com/docs/reference/plugins`, 2026-05-25).
+- **Gemini sub-agent `tools` field** — now emitted as a YAML array per `geminicli.com/docs/core/subagents/` (2026-05-25); previously a comma-separated string. The shape mismatch caused Gemini's `/agents` discovery to silently skip our sub-agents (commit `e53afed`).
+- **Windsurf hook event names** — now translated from Claude PascalCase (`UserPromptSubmit`, …) to Windsurf snake_case (`pre_user_prompt`, …) per `docs.windsurf.com/windsurf/cascade/hooks` (2026-05-25), and the doubly-nested `hooks.<event>[].hooks[]` source shape is flattened to Windsurf's flat per-entry shape. Conservative mapping — ambiguous Claude events (e.g. `PreToolUse`, which Windsurf splits into four sub-events) are dropped rather than guessed (commit `4e63a4e`).
+- **Cursor hook emission** — new `HookConstruct` branch in `CursorPlatform.emit` produces `.cursor/hooks.json` in Cursor's flat schema (`version: 1`, camelCase event names, flattened per-entry structure) per `cursor.com/docs/agent/hooks` (2026-05-25). Previously the per-plugin `.cursor-plugin/plugin.json` "hooks" pointer resolved to an un-converted Claude-shape file and Cursor silently ignored it (closest analog for `UserPromptSubmit` is `beforeSubmitPrompt`, verified against three working community plugins).
+- **Gemini hook event names** — now translated to Gemini's documented PascalCase vocabulary (`UserPromptSubmit` → `BeforeModel`, etc.) per `geminicli.com/docs/hooks/reference/` (2026-05-25). The nested file shape is structurally identical to Claude's (verified against the working `sandipchitale/hooklog` extension), so only the vocabulary is rewritten.
+- **CRLF/LF drift on Windows** — generator's `write_text` calls now pass `newline=""` so regenerated files match committed LF bytes (commit chain landing alongside the refactor). Fixes two previously-flaky tests (`test_check_succeeds`, `test_agents_plugins_marketplace_byte_identical`) on Windows.
+
+### Added
+
+- `scripts/converters/event_name_mapping.py` — shared table of Claude → {Cursor, Gemini, Windsurf} hook event-name translations. Per-platform tables (`CLAUDE_TO_CURSOR_EVENTS`, `CLAUDE_TO_GEMINI_EVENTS`, `CLAUDE_TO_WINDSURF_EVENTS`) plus `map_event(event, platform)` lookup. Each converter imports from here so the mapping for any given Claude event lives in exactly one place.
+- `scripts/converters/hooks_to_cursor.py` — Claude-shape → Cursor flat-schema converter (adds `version: 1`, renames events, flattens entries).
+- `scripts/converters/hooks_to_gemini.py` — Claude → Gemini hook event-name rewrite (same nested structure; only vocabulary differs).
+- `tests/test_schema_fitness.py` — validates emitted per-platform manifests against reference JSON Schemas captured directly from the platforms' docs. Coverage: Cursor `SkillConstruct` plugin.json, Gemini `AgentConstruct` frontmatter, Windsurf hooks event names + shape, Cursor hooks shape + `version` presence, Gemini hooks event-name vocabulary. Uses an inline ~30-line JSON Schema subset validator to avoid adding a runtime `jsonschema` dependency. Initial: 9 tests; this PR brings it to 15.
+- `docs/TEST_YOURSELF.md` — 53 per-construct × per-platform hands-on operator-QA cells (up from ~5 in the prior revision). Comprehensive verification doc covering all 6 platforms + the `agents` CLI; flags 8 specific UNKNOWN-method gaps for the next research round.
+- `docs/research/qa-bug-fixes-2026-05/` — research artifacts that diagnosed the bugs fixed in this PR: `RESEARCH.md` (32 KB, two-round investigation + empirical verification), `logs/` (community-plugin manifests + hermetic install probe outputs for Codex and Gemini).
+
+### Known limitations (NOT fixed in this PR)
+
+- **Codex sub-agent install** — `.codex/agents/<name>.toml` emission is kept (forward-looking) but does not currently install. Per `developers.openai.com/codex/plugins/build` (2026-05-25), Codex's plugin.json schema has only `skills`, `mcpServers`, `apps`, `hooks` — no `agents` field exists. Empirical probe (`docs/research/qa-bug-fixes-2026-05/logs/codex-probe-output.log`) confirms `codex plugin add` installs the plugin's source `agent.md` but does NOT copy our generated `.codex/agents/notebook-reviewer.toml` into any path Codex discovers at runtime (`~/.codex/agents/` is never created). The install pathway for plugin-shipped sub-agents appears to not yet be implemented upstream. Our TOML emission remains in place for the day Codex adds support; until then, Codex users can install sub-agents by manually copying the TOML to `~/.codex/agents/notebook-reviewer.toml`.
+- 8 specific UNKNOWN-method gaps are flagged in `docs/TEST_YOURSELF.md` for the next research round (Codex hook listing, Gemini hook listing, Cursor command/hook/MCP enumeration, Cursor CLI dispatch, Windsurf hook triggers, `agents` CLI default spray policy, LSP/Monitor/OutputStyle/Theme observability).
+
+### Tests
+
+- `tests/test_marketplace.py` — 78 tests (unchanged in this arc).
+- `tests/test_schema_fitness.py` — 15 tests (up from 9 in the prior commit `c10cb45`).
+- Total: 93 (up from 87 in the baseline immediately before this PR; 67 in `main`).
+
+---
+
 ## 2026-05-25 — Platform feature routing refactor
 
 Surveyed every platform's native capabilities (Cursor 2.4 sub-agents, Codex sub-agents TOML, Gemini hooks/agents, Windsurf hooks) and discovered the generator was under-emitting against documented APIs. This refactor (a) retires two dead skill mirrors, (b) expands per-platform `supports` sets to cover sub-agents on Cursor + Gemini + Codex and hooks on Cursor + Gemini + Windsurf and commands/MCP on Cursor, (c) adds a forward-looking `.agents/rules/` mirror and `.agents/plugins/marketplace.json` (Codex canonical path), and (d) introduces an `agents` CLI shim for Class B platforms.

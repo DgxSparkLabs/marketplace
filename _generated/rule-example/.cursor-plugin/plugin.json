@@ -1,3 +1,5 @@
 {
-  "name": "rule-example"
+  "name": "rule-example",
+  "version": "1.0.0",
+  "description": "Always-on rule: example. Install, then run activate.sh to symlink the rule into ~/.claude/rules/."
 }

@@ -1,3 +1,6 @@
 {
-  "name": "skill-session-history"
+  "name": "skill-session-history",
+  "version": "1.0.0",
+  "description": "Query past Devin CLI conversations from the local session database",
+  "skills": "./"
 }

@@ -1,0 +1,13 @@
+{
+  "name": "hooklog",
+  "description": "Logs all Gemini CLI hook events to a file for debugging and analysis.",
+  "version": "1.0.0",
+  "settings": [
+    {
+      "name": "Enable Logging",
+      "description": "Whether to enable logging of hook events.",
+      "envVar": "GEMINI_HOOKLOG_ENABLE",
+      "sensitive": false
+    }
+  ]
+}
