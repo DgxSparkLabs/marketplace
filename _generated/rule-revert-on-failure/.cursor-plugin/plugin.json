@@ -1,3 +1,5 @@
 {
-  "name": "rule-revert-on-failure"
+  "name": "rule-revert-on-failure",
+  "version": "1.0.0",
+  "description": "Always-on rule: revert-on-failure. Install, then run activate.sh to symlink the rule into ~/.claude/rules/."
 }

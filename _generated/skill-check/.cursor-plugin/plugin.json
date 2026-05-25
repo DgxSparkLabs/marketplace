@@ -1,3 +1,6 @@
 {
-  "name": "skill-check"
+  "name": "skill-check",
+  "version": "1.0.0",
+  "description": "Mid-session course correction \u2014 stop, review rules, and realign",
+  "skills": "./"
 }

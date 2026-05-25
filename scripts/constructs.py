@@ -166,7 +166,7 @@ class RuleConstruct:
 
         # Generate activate.sh from template
         activate_path = target_dir / "activate.sh"
-        activate_path.write_text(ACTIVATE_SH_TEMPLATE, encoding="utf-8")
+        activate_path.write_text(ACTIVATE_SH_TEMPLATE, encoding="utf-8", newline="")
         activate_path.chmod(0o755)
 
         # Write plugin.json under .claude-plugin/

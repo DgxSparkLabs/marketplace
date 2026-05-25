@@ -172,7 +172,7 @@ class CodexPlatform:
                     agent_md.read_text(encoding="utf-8")
                 )
                 (agents_dir / f"{agent_md.stem}.toml").write_text(
-                    toml_text, encoding="utf-8"
+                    toml_text, encoding="utf-8", newline=""
                 )
 
     def build_plugin_json(self, construct: Construct, name: str) -> dict:
@@ -252,7 +252,7 @@ class GeminiPlatform:
         }
         self.mirror_directory.mkdir(parents=True, exist_ok=True)
         (self.mirror_directory / "gemini-extension.json").write_text(
-            _to_json(manifest), encoding="utf-8"
+            _to_json(manifest), encoding="utf-8", newline=""
         )
 
 
@@ -309,11 +309,21 @@ class CursorPlatform:
 
     def build_plugin_json(self, construct: Construct, name: str) -> dict:
         # Per cursor.com/docs/reference/plugins (2026-05-25): name is required;
-        # optional pointer fields ``agents``, ``commands``, ``hooks``,
-        # ``mcpServers`` make installer intent explicit even though Cursor
-        # auto-discovers from default subdirs inside an installed plugin.
-        manifest: dict = {"name": f"{construct.prefix}-{name}"}
-        if isinstance(construct, AgentConstruct):
+        # description + version + pointer fields (``agents``, ``commands``,
+        # ``hooks``, ``mcpServers``, ``skills``) make installer intent explicit.
+        # Without ``description`` and ``version``, Cursor's slash-popup renderer
+        # falls back to install metadata (commit SHA, etc.) and produces a
+        # mangled display — see docs/research/qa-bug-fixes-2026-05/RESEARCH.md
+        # Bug 3 (2026-05-25 QA).
+        full_name = f"{construct.prefix}-{name}"
+        manifest: dict = {
+            "name": full_name,
+            "version": _marketplace_version(),
+            "description": _description_from_construct(construct, name),
+        }
+        if isinstance(construct, SkillConstruct):
+            manifest["skills"] = "./"  # SKILL.md is at plugin root
+        elif isinstance(construct, AgentConstruct):
             manifest["agents"] = "./agents/"
         elif isinstance(construct, CommandConstruct):
             manifest["commands"] = "./commands/"
@@ -326,7 +336,7 @@ class CursorPlatform:
                 construct.source_directory / name / ".claude-plugin" / "plugin.json"
             )
             manifest["mcpServers"] = source_pj["mcpServers"]
-        # RuleConstruct + SkillConstruct: name-only minimal manifest (existing behavior).
+        # RuleConstruct: name + version + description only (no pointer field needed).
         return manifest
 
 

@@ -717,6 +717,28 @@ class TestPerPlatformManifests(unittest.TestCase):
                         f"{plugin_name}/.cursor-plugin/plugin.json name mismatch",
                     )
 
+    def test_cursor_skill_plugin_json_has_display_fields(self):
+        """Every Cursor SkillConstruct plugin.json must carry name+version+description+skills.
+
+        Without all four fields, Cursor's slash-popup renderer falls back to
+        install metadata (commit SHA) and produces a mangled display
+        (docs/research/qa-bug-fixes-2026-05/RESEARCH.md Bug 3, 2026-05-25 QA).
+        """
+        cursor = next(p for p in PLATFORMS.values() if isinstance(p, CursorPlatform))
+        skill = next(c for c in CONSTRUCTS.values() if isinstance(c, SkillConstruct))
+        required = {"name", "version", "description", "skills"}
+        for name in scan_source_dir(skill.source_directory):
+            plugin_name = f"skill-{name}"
+            manifest_path = REPO_ROOT / "_generated" / plugin_name / ".cursor-plugin" / "plugin.json"
+            with self.subTest(plugin=plugin_name):
+                data = json.loads(manifest_path.read_text(encoding="utf-8"))
+                missing = required - set(data.keys())
+                self.assertFalse(
+                    missing,
+                    f"{plugin_name}/.cursor-plugin/plugin.json missing required "
+                    f"display fields {missing}; Cursor popup will mangle without these",
+                )
+
 
 # ─── TestRootLevelManifests ───────────────────────────────────────────────────
 

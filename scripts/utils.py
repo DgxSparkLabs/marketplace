@@ -113,7 +113,14 @@ def write_plugin_json(target_dir: Path, plugin_json: dict) -> None:
     """Write plugin.json under target_dir/.claude-plugin/plugin.json.
 
     Creates the .claude-plugin/ subdirectory if it doesn't exist.
+
+    Uses ``newline=""`` so the embedded ``\\n`` line endings produced by
+    ``_to_json`` are written verbatim on every platform (without this,
+    Python on Windows translates ``\\n`` to ``\\r\\n`` and breaks our
+    byte-identity drift check against LF-committed files).
     """
     plugin_subdir = target_dir / ".claude-plugin"
     plugin_subdir.mkdir(parents=True, exist_ok=True)
-    (plugin_subdir / "plugin.json").write_text(_to_json(plugin_json), encoding="utf-8")
+    (plugin_subdir / "plugin.json").write_text(
+        _to_json(plugin_json), encoding="utf-8", newline=""
+    )

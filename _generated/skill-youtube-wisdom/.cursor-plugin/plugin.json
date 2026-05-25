@@ -1,3 +1,6 @@
 {
-  "name": "skill-youtube-wisdom"
+  "name": "skill-youtube-wisdom",
+  "version": "1.0.0",
+  "description": "Extract key knowledge from a YouTube video transcript",
+  "skills": "./"
 }

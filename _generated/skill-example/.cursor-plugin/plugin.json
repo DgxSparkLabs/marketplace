@@ -1,3 +1,6 @@
 {
-  "name": "skill-example"
+  "name": "skill-example",
+  "version": "1.0.0",
+  "description": "Reference example. Echoes back a formatted lab-notebook-style status message. Shows how to write a SKILL.md with frontmatter, allowed-tools, and argument handling.",
+  "skills": "./"
 }

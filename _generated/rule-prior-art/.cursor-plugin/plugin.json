@@ -1,3 +1,5 @@
 {
-  "name": "rule-prior-art"
+  "name": "rule-prior-art",
+  "version": "1.0.0",
+  "description": "Always-on rule: prior-art. Install, then run activate.sh to symlink the rule into ~/.claude/rules/."
 }

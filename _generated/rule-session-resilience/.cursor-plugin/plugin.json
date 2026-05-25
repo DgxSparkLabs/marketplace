@@ -1,3 +1,5 @@
 {
-  "name": "rule-session-resilience"
+  "name": "rule-session-resilience",
+  "version": "1.0.0",
+  "description": "Always-on rule: session-resilience. Install, then run activate.sh to symlink the rule into ~/.claude/rules/."
 }

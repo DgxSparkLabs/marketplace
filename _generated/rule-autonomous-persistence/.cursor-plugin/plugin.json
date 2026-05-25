@@ -1,3 +1,5 @@
 {
-  "name": "rule-autonomous-persistence"
+  "name": "rule-autonomous-persistence",
+  "version": "1.0.0",
+  "description": "Always-on rule: autonomous-persistence. Install, then run activate.sh to symlink the rule into ~/.claude/rules/."
 }
