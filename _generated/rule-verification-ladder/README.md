@@ -11,7 +11,7 @@ Five-layer automated testing: compile, unit, integration, perf, e2e
 
 # Then activate (one-time):
 bash ~/.claude/plugins/cache/dgxsparklabs-marketplace/rule-verification-ladder/activate.sh
-```nFor other platforms (Devin, Cursor, Windsurf), see the auto-generated mirrors in `.devin/rules/`, `.cursor/rules/`, `.windsurf/rules/` after `git clone`.
+```nFor other platforms (Devin, Cursor, Windsurf), see the auto-generated mirrors in `.cursor/rules/`, `.windsurf/rules/` after `git clone`.
 
 ## What it does
 

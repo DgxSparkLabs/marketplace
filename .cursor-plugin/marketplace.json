@@ -2,6 +2,22 @@
   "name": "dgxsparklabs-marketplace",
   "plugins": [
     {
+      "name": "agent-example",
+      "source": "./_generated/agent-example"
+    },
+    {
+      "name": "command-example",
+      "source": "./_generated/command-example"
+    },
+    {
+      "name": "hook-example",
+      "source": "./_generated/hook-example"
+    },
+    {
+      "name": "mcp-example",
+      "source": "./_generated/mcp-example"
+    },
+    {
       "name": "rule-autonomous-persistence",
       "source": "./_generated/rule-autonomous-persistence"
     },

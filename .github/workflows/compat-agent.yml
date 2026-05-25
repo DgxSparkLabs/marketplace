@@ -43,3 +43,58 @@ jobs:
           claude plugin uninstall agent-example --scope project || true
           claude plugin prune --scope project -y || true
           claude plugin marketplace remove dgxsparklabs-marketplace || true
+
+  cursor-emission:
+    # Filesystem assertion: after generation, Cursor's per-plugin manifest
+    # for agent-example must include the "agents" pointer field.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v4
+        with:
+          version: "latest"
+      - name: Regenerate manifests
+        run: uv run scripts/generate_manifest.py
+      - name: Assert .cursor/agents/notebook-reviewer.md exists
+        run: test -f .cursor/agents/notebook-reviewer.md
+      - name: Assert .cursor-plugin/plugin.json for agent-example includes 'agents' field
+        run: |
+          python3 -c "
+          import json, sys
+          d = json.load(open('_generated/agent-example/.cursor-plugin/plugin.json'))
+          sys.exit(0 if 'agents' in d else 1)
+          "
+
+  gemini-emission:
+    # Filesystem assertion: .gemini/agents/<n>.md must exist after generation.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v4
+        with:
+          version: "latest"
+      - name: Regenerate manifests
+        run: uv run scripts/generate_manifest.py
+      - name: Assert .gemini/agents/notebook-reviewer.md exists
+        run: test -f .gemini/agents/notebook-reviewer.md
+
+  codex-emission:
+    # Filesystem assertion: .codex/agents/<n>.toml must exist + parse as valid TOML
+    # with the required Codex fields (name, description, developer_instructions).
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v4
+        with:
+          version: "latest"
+      - name: Regenerate manifests
+        run: uv run scripts/generate_manifest.py
+      - name: Assert .codex/agents/notebook-reviewer.toml parses with required fields
+        run: |
+          python3 -c "
+          import tomllib, sys
+          d = tomllib.load(open('.codex/agents/notebook-reviewer.toml', 'rb'))
+          for k in ('name', 'description', 'developer_instructions'):
+              assert k in d, f'missing {k}'
+          sys.exit(0)
+          "

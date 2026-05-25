@@ -44,3 +44,54 @@ jobs:
           claude plugin prune --scope project -y || true
           claude plugin marketplace remove dgxsparklabs-marketplace || true
 
+  cursor-emission:
+    # Filesystem assertion: Cursor's per-plugin manifest for hook-example
+    # must include the "hooks" pointer field.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v4
+        with:
+          version: "latest"
+      - name: Regenerate manifests
+        run: uv run scripts/generate_manifest.py
+      - name: Assert .cursor-plugin/plugin.json for hook-example includes 'hooks' field
+        run: |
+          python3 -c "
+          import json, sys
+          d = json.load(open('_generated/hook-example/.cursor-plugin/plugin.json'))
+          sys.exit(0 if 'hooks' in d else 1)
+          "
+
+  gemini-emission:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v4
+        with:
+          version: "latest"
+      - name: Regenerate manifests
+        run: uv run scripts/generate_manifest.py
+      - name: Assert .gemini/hooks/hooks.json exists and is valid JSON
+        run: |
+          python3 -c "
+          import json
+          json.load(open('.gemini/hooks/hooks.json'))
+          "
+
+  windsurf-emission:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v4
+        with:
+          version: "latest"
+      - name: Regenerate manifests
+        run: uv run scripts/generate_manifest.py
+      - name: Assert .windsurf/hooks.json exists and is valid JSON
+        run: |
+          python3 -c "
+          import json
+          json.load(open('.windsurf/hooks.json'))
+          "
+

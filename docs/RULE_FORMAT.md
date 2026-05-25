@@ -114,7 +114,9 @@ For non-Claude-Code platforms (Cursor, Windsurf, Devin), the generator produces 
 
 - `.cursor/rules/<name>.md` — from `rules/<name>/formats/cursor.md`
 - `.windsurf/rules/<name>.md` — from `rules/<name>/formats/windsurf.md`
-- `.devin/rules/<name>.md` — from the raw `rule.md`
+- `.agents/rules/<name>.md` — raw `rule.md`, forward-looking convergence (per D-12, 2026-05-25). No platform reads `.agents/rules/` today, but Cursor 2.7+ and Windsurf 2.0 are credible adopters.
+
+Devin reads rules from `.cursor/rules/` natively (no separate `.devin/rules/` mirror is emitted).
 
 Users `git clone` the repo and point their tool at the matching directory.
 

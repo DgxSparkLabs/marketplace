@@ -41,11 +41,13 @@ sys.path.insert(0, str(REPO_ROOT / "scripts"))
 from bundles import BundleMember, load_bundles
 from constructs import (
     CONSTRUCTS,
+    AgentConstruct,
+    HookConstruct,
     RuleConstruct,
     SkillConstruct,
     ThemeConstruct,
 )
-from platforms import PLATFORMS, AgentsPlatform, CodexPlatform, CursorPlatform
+from platforms import PLATFORMS, AgentsPlatform, CodexPlatform, CursorPlatform, GeminiPlatform, WindsurfPlatform
 from utils import CATALOG, MARKETPLACE_JSON, scan_source_dir
 
 MARKETPLACE_TOML = REPO_ROOT / "MARKETPLACE.toml"
@@ -208,23 +210,22 @@ class TestCatchAllBundles(unittest.TestCase):
 class TestPlatformMirrors(unittest.TestCase):
     """Per-platform mirror contents — integration tests."""
 
-    def test_codex_skills_mirror(self):
-        """Codex mirror must contain a directory for every skill."""
+    def test_codex_no_skills_mirror(self):
+        """Codex skills mirror retired (D-1) — .codex/skills/ must not exist.
+
+        SkillConstruct stays in CodexPlatform.supports so per-plugin
+        .codex-plugin/plugin.json is still emitted (Phase 1.5); but the
+        repo-root .codex/skills/ mirror tree is gone (Codex never read it —
+        hermetic act run Q-A1 confirmation).
+        """
         codex = PLATFORMS["codex"]
-        if SkillConstruct not in codex.supports:
-            self.skipTest("Codex does not declare skill support")
-        skill = next(c for c in CONSTRUCTS.values() if isinstance(c, SkillConstruct))
-        for name in scan_source_dir(skill.source_directory):
-            with self.subTest(skill=name):
-                mirror_dir = codex.mirror_directory / "skills" / name
-                self.assertTrue(
-                    mirror_dir.exists(),
-                    f"Codex mirror missing skills/{name}/",
-                )
-                self.assertTrue(
-                    (mirror_dir / "SKILL.md").exists(),
-                    f"Codex mirror skills/{name}/ missing SKILL.md",
-                )
+        # mirror_directory is intentionally kept (.codex/) so Unit 4 can write
+        # .codex/agents/<n>.toml; only the skills/ subtree was retired.
+        skills_dir = codex.mirror_directory / "skills"
+        self.assertFalse(
+            skills_dir.exists(),
+            f"Codex skills mirror retired but {skills_dir} still exists",
+        )
 
     def test_gemini_skills_mirror_and_extension_manifest(self):
         """Gemini mirror must contain skills and a valid gemini-extension.json."""
@@ -270,20 +271,23 @@ class TestPlatformMirrors(unittest.TestCase):
                     f"Windsurf mirror missing rules/{name}.md",
                 )
 
-    def test_devin_skills_mirror(self):
-        """Devin mirror must contain a directory for every skill.
+    def test_devin_no_mirror_directory(self):
+        """DevinPlatform.mirror_directory is None after D-1 retirement.
 
-        Devin reads rules from .cursor/ and .windsurf/ natively (empirically
-        verified); we emit a Devin-native skills mirror only.
+        Devin enumerates .agents/skills/ natively (verified hermetic act run
+        Q-B1 2026-05-25); the .devin/skills/ mirror was a redundant copy.
+        SkillConstruct stays in DevinPlatform.supports so a future per-plugin
+        Devin manifest format can plug into Phase 1.5 without code changes.
         """
         devin = PLATFORMS["devin"]
-        skill = next(c for c in CONSTRUCTS.values() if isinstance(c, SkillConstruct))
-        for name in scan_source_dir(skill.source_directory):
-            with self.subTest(skill=name):
-                self.assertTrue(
-                    (devin.mirror_directory / "skills" / name / "SKILL.md").exists(),
-                    f"Devin mirror missing skills/{name}/SKILL.md",
-                )
+        self.assertIsNone(
+            devin.mirror_directory,
+            "DevinPlatform.mirror_directory must be None after D-1 retirement",
+        )
+        self.assertFalse(
+            (REPO_ROOT / ".devin").exists(),
+            ".devin/ directory must not exist after D-1 retirement",
+        )
 
 
 # ─── TestMarketplaceJson ──────────────────────────────────────────────────────
@@ -856,6 +860,266 @@ class TestAgentsMirror(unittest.TestCase):
         )
 
 
+# ─── TestAgentsPluginsMarketplace ─────────────────────────────────────────────
+
+class TestAgentsPluginsMarketplace(unittest.TestCase):
+    """Phase 5.5 .agents/plugins/marketplace.json (Unit 6 / D-14 / A5).
+
+    Codex documents .agents/plugins/marketplace.json as the canonical
+    marketplace path per developers.openai.com/codex/plugins/build
+    (2026-05-25). We emit it as a byte-identical copy of
+    .claude-plugin/marketplace.json (the legacy-compat path); both remain
+    valid until Codex deprecates the legacy form.
+    """
+
+    def test_agents_plugins_marketplace_exists(self):
+        self.assertTrue(
+            (REPO_ROOT / ".agents" / "plugins" / "marketplace.json").exists(),
+            ".agents/plugins/marketplace.json missing — Codex canonical path "
+            "per developers.openai.com/codex/plugins/build (2026-05-25)",
+        )
+
+    def test_agents_plugins_marketplace_byte_identical(self):
+        canonical = (REPO_ROOT / ".agents" / "plugins" / "marketplace.json").read_bytes()
+        legacy = (REPO_ROOT / ".claude-plugin" / "marketplace.json").read_bytes()
+        self.assertEqual(
+            canonical, legacy,
+            ".agents/plugins/marketplace.json must be byte-identical to "
+            ".claude-plugin/marketplace.json (Phase 5.5 is a copy, not a re-emit)",
+        )
+
+
+# ─── TestWindsurfHooksMirror ──────────────────────────────────────────────────
+
+class TestWindsurfHooksMirror(unittest.TestCase):
+    """Windsurf hooks at .windsurf/hooks.json (Unit 5 / A10).
+
+    Per docs.windsurf.com/windsurf/cascade/hooks (2026-05-25): Windsurf reads
+    .windsurf/hooks.json at the workspace root (no hooks/ subdir, unlike
+    Gemini). Single hook plugin today; multi-plugin merge deferred.
+    """
+
+    def test_windsurf_hooks_json_exists(self):
+        windsurf = next(p for p in PLATFORMS.values() if isinstance(p, WindsurfPlatform))
+        hooks_json = windsurf.mirror_directory / "hooks.json"
+        self.assertTrue(hooks_json.exists(), ".windsurf/hooks.json missing")
+        data = json.loads(hooks_json.read_text(encoding="utf-8"))
+        self.assertIn(
+            "hooks", data,
+            ".windsurf/hooks.json must contain top-level 'hooks' key",
+        )
+
+
+# ─── TestCodexAgentsMirror / TestMdToTomlConverter ───────────────────────────
+
+class TestCodexAgentsMirror(unittest.TestCase):
+    """Codex sub-agents at .codex/agents/<n>.toml (Unit 4 / A4).
+
+    Source is Claude-style markdown (D-16); .codex/agents/<n>.toml is the
+    converted Codex shape per developers.openai.com/codex/subagents/
+    (2026-05-25). Required Codex fields: name, description,
+    developer_instructions.
+    """
+
+    def test_codex_agents_toml_exists(self):
+        codex = next(p for p in PLATFORMS.values() if isinstance(p, CodexPlatform))
+        agent = next(c for c in CONSTRUCTS.values() if isinstance(c, AgentConstruct))
+        for name in scan_source_dir(agent.source_directory):
+            src_agents = agent.source_directory / name / "agents"
+            if not src_agents.exists():
+                continue
+            for agent_md in sorted(src_agents.glob("*.md")):
+                with self.subTest(agent_plugin=name, agent_file=agent_md.name):
+                    toml_path = codex.mirror_directory / "agents" / f"{agent_md.stem}.toml"
+                    self.assertTrue(
+                        toml_path.exists(),
+                        f".codex/agents/{agent_md.stem}.toml missing for source "
+                        f"agents/{name}/agents/{agent_md.name}",
+                    )
+
+    def test_codex_agents_toml_valid(self):
+        """Every emitted .codex/agents/<n>.toml parses + has required Codex fields."""
+        codex = next(p for p in PLATFORMS.values() if isinstance(p, CodexPlatform))
+        agents_dir = codex.mirror_directory / "agents"
+        if not agents_dir.exists():
+            self.skipTest(".codex/agents/ does not exist (no agent sources)")
+        toml_files = sorted(agents_dir.glob("*.toml"))
+        self.assertGreater(len(toml_files), 0, ".codex/agents/ has no .toml files")
+        for toml_path in toml_files:
+            with self.subTest(toml=toml_path.name):
+                data = tomllib.loads(toml_path.read_text(encoding="utf-8"))
+                for required in ("name", "description", "developer_instructions"):
+                    self.assertIn(
+                        required, data,
+                        f"{toml_path.name}: required Codex field '{required}' missing",
+                    )
+
+    def test_codex_agents_toml_roundtrip(self):
+        """Known input (notebook-reviewer) round-trips through tomllib with expected fields."""
+        codex = next(p for p in PLATFORMS.values() if isinstance(p, CodexPlatform))
+        toml_path = codex.mirror_directory / "agents" / "notebook-reviewer.toml"
+        if not toml_path.exists():
+            self.skipTest("notebook-reviewer.toml not present")
+        data = tomllib.loads(toml_path.read_text(encoding="utf-8"))
+        self.assertEqual(data["name"], "notebook-reviewer")
+        self.assertTrue(
+            data["description"].startswith("Reviews"),
+            f"description starts with: {data['description'][:40]!r}",
+        )
+        self.assertIn("peer reviewer", data["developer_instructions"])
+        self.assertEqual(data.get("tools"), ["Read", "Grep", "Glob"])
+
+
+class TestMdToTomlConverter(unittest.TestCase):
+    """Unit tests for scripts/converters/md_to_toml.py (Unit 4)."""
+
+    SAMPLE = (
+        "---\n"
+        "name: notebook-reviewer\n"
+        "description: Reviews a lab notebook entry as a skeptical peer reviewer.\n"
+        "tools: Read, Grep, Glob\n"
+        "---\n"
+        "\n"
+        "You are a peer reviewer for laboratory notebook entries.\n"
+        "\n"
+        "Apply skeptical eye.\n"
+    )
+
+    def setUp(self):
+        # Imported here so any import-time errors fail loudly in this class only.
+        from converters.md_to_toml import claude_agent_md_to_codex_toml  # noqa: E402
+        self.convert = claude_agent_md_to_codex_toml
+
+    def test_required_fields_emitted(self):
+        out = self.convert(self.SAMPLE)
+        data = tomllib.loads(out)
+        self.assertEqual(data["name"], "notebook-reviewer")
+        self.assertTrue(data["description"].startswith("Reviews"))
+        self.assertIn("peer reviewer", data["developer_instructions"])
+
+    def test_tools_parsed_as_array(self):
+        out = self.convert(self.SAMPLE)
+        data = tomllib.loads(out)
+        self.assertEqual(data["tools"], ["Read", "Grep", "Glob"])
+
+    def test_missing_frontmatter_raises(self):
+        with self.assertRaises(ValueError):
+            self.convert("no frontmatter here")
+
+    def test_missing_required_name_raises(self):
+        bad = "---\ndescription: x\n---\nbody"
+        with self.assertRaises(ValueError):
+            self.convert(bad)
+
+    def test_round_trip_on_real_example(self):
+        """The committed agent source converts and re-parses cleanly."""
+        src_path = REPO_ROOT / "agents" / "example" / "agents" / "notebook-reviewer.md"
+        if not src_path.exists():
+            self.skipTest(f"{src_path} not present")
+        out = self.convert(src_path.read_text(encoding="utf-8"))
+        data = tomllib.loads(out)  # round-trips through stdlib TOML reader
+        self.assertEqual(data["name"], "notebook-reviewer")
+
+
+# ─── TestGeminiAgentsMirror / TestGeminiHooksMirror ──────────────────────────
+
+class TestGeminiAgentsMirror(unittest.TestCase):
+    """Gemini sub-agents at .gemini/agents/<n>.md (Unit 3 / A3).
+
+    Per geminicli.com/docs/extensions/reference/ (2026-05-25): sub-agents are
+    .md files inside the agents/ directory of the extension root (.gemini/).
+    """
+
+    def test_gemini_agents_mirror_exists(self):
+        gemini = next(p for p in PLATFORMS.values() if isinstance(p, GeminiPlatform))
+        agent = next(c for c in CONSTRUCTS.values() if isinstance(c, AgentConstruct))
+        for name in scan_source_dir(agent.source_directory):
+            src_agents = agent.source_directory / name / "agents"
+            if not src_agents.exists():
+                continue
+            for agent_md in sorted(src_agents.glob("*.md")):
+                with self.subTest(agent_plugin=name, agent_file=agent_md.name):
+                    mirrored = gemini.mirror_directory / "agents" / agent_md.name
+                    self.assertTrue(
+                        mirrored.exists(),
+                        f".gemini/agents/{agent_md.name} missing for source "
+                        f"agents/{name}/agents/{agent_md.name}",
+                    )
+
+
+class TestGeminiHooksMirror(unittest.TestCase):
+    """Gemini hooks at .gemini/hooks/hooks.json (Unit 3 / A9).
+
+    Per geminicli.com/docs/extensions/reference/ (2026-05-25): hooks live at
+    hooks/hooks.json inside the extension root. Single hook plugin today —
+    multi-plugin merge semantics deferred until a second hook plugin lands.
+    """
+
+    def test_gemini_hooks_json_exists(self):
+        gemini = next(p for p in PLATFORMS.values() if isinstance(p, GeminiPlatform))
+        hooks_json = gemini.mirror_directory / "hooks" / "hooks.json"
+        self.assertTrue(hooks_json.exists(), ".gemini/hooks/hooks.json missing")
+        # Must parse as valid JSON
+        data = json.loads(hooks_json.read_text(encoding="utf-8"))
+        self.assertIn(
+            "hooks", data,
+            ".gemini/hooks/hooks.json must contain top-level 'hooks' key",
+        )
+
+
+# ─── TestCursorAgentsMirror ──────────────────────────────────────────────────
+
+class TestCursorAgentsMirror(unittest.TestCase):
+    """Cursor workspace-level sub-agents at .cursor/agents/<n>.md (Unit 2 / A2).
+
+    Cursor reads .cursor/agents/<n>.md natively per cursor.com/docs/agent/subagents
+    (2026-05-25). One AgentConstruct plugin can contain multiple sub-agent .md
+    files; each lands in .cursor/agents/.
+    """
+
+    def test_cursor_agents_mirror_exists(self):
+        """.cursor/agents/<n>.md must exist for every source sub-agent .md."""
+        cursor = next(p for p in PLATFORMS.values() if isinstance(p, CursorPlatform))
+        agent = next(c for c in CONSTRUCTS.values() if isinstance(c, AgentConstruct))
+        for name in scan_source_dir(agent.source_directory):
+            src_agents = agent.source_directory / name / "agents"
+            if not src_agents.exists():
+                continue
+            for agent_md in sorted(src_agents.glob("*.md")):
+                with self.subTest(agent_plugin=name, agent_file=agent_md.name):
+                    mirrored = cursor.mirror_directory / "agents" / agent_md.name
+                    self.assertTrue(
+                        mirrored.exists(),
+                        f".cursor/agents/{agent_md.name} missing for source "
+                        f"agents/{name}/agents/{agent_md.name}",
+                    )
+
+
+# ─── TestAgentsRulesMirror ────────────────────────────────────────────────────
+
+class TestAgentsRulesMirror(unittest.TestCase):
+    """AgentsPlatform .agents/rules/ mirror (Unit 1 / D-12).
+
+    Forward-looking convergence: no platform reads .agents/rules/ today
+    (verified Q-R1/Q-R2 2026-05-25), but Cursor 2.7+ / Windsurf 2.0 are
+    credible adopters. Emit now so we are already in place when one of
+    them flips. Raw rule.md is copied; no frontmatter conversion.
+    """
+
+    def test_rules_mirror_exists(self):
+        """.agents/rules/<name>.md must exist for every source rule."""
+        agents = next(p for p in PLATFORMS.values() if isinstance(p, AgentsPlatform))
+        rule = next(c for c in CONSTRUCTS.values() if isinstance(c, RuleConstruct))
+        for name in scan_source_dir(rule.source_directory):
+            with self.subTest(rule=name):
+                rule_md = agents.mirror_directory / "rules" / f"{name}.md"
+                self.assertTrue(
+                    rule_md.exists(),
+                    f".agents/rules/{name}.md missing — forward-looking emission "
+                    "must cover every source rule",
+                )
+
+
 # ─── TestMirrorHygiene ────────────────────────────────────────────────────────
 
 class TestMirrorHygiene(unittest.TestCase):
@@ -864,7 +1128,9 @@ class TestMirrorHygiene(unittest.TestCase):
     Verifies no cross-platform manifest directories leaked into mirror dirs.
     """
 
-    MIRROR_DIRS_TO_CHECK = [".codex", ".gemini", ".devin", ".agents"]
+    # .devin removed post-D-1 (DevinPlatform.mirror_directory = None).
+    # .codex retained — mirror_directory still set (.codex/agents/ in Unit 4).
+    MIRROR_DIRS_TO_CHECK = [".codex", ".gemini", ".agents"]
 
     def _find_leaked_dirs(self, mirror_root: Path, leak_pattern: str) -> list[str]:
         """Walk mirror_root and return paths of any leak_pattern subdirs."""
@@ -888,8 +1154,8 @@ class TestMirrorHygiene(unittest.TestCase):
                 )
 
     def test_no_codex_plugin_in_mirror_dirs(self):
-        """No .codex-plugin/ must appear inside .gemini/, .devin/, .agents/ mirrors."""
-        for mirror_name in [".gemini", ".devin", ".agents"]:
+        """No .codex-plugin/ must appear inside .gemini/, .agents/ mirrors."""
+        for mirror_name in [".gemini", ".agents"]:
             mirror_root = REPO_ROOT / mirror_name
             with self.subTest(mirror=mirror_name):
                 leaked = self._find_leaked_dirs(mirror_root, ".codex-plugin")

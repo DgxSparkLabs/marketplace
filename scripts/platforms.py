@@ -47,6 +47,7 @@ from constructs import (
 from utils import (
     REPO_ROOT,
     _frontmatter,
+    _load_plugin_json,
     _marketplace_description,
     _marketplace_name,
     _marketplace_version,
@@ -128,14 +129,15 @@ class ClaudeCodePlatform:
 class CodexPlatform:
     """Codex CLI platform.
 
-    Codex reuses our .claude-plugin/marketplace.json directly and also
-    supports skill mirrors at .codex/skills/<name>/.
+    Codex reuses our .claude-plugin/marketplace.json directly. Skills are
+    served per-plugin via _generated/<plugin>/.codex-plugin/plugin.json
+    (Phase 1.5) — the legacy repo-root .codex/skills/ mirror was retired
+    (D-1, hermetic act run Q-A1 confirmed Codex never consumed it).
 
     ``supports`` controls both Phase 3 mirror emission AND Phase 1.5 plugin
-    manifest emission. ``emit`` only writes mirrors for SkillConstruct (skills
-    are the only content that maps to a Codex mirror directory). For
-    MCPConstruct and HookConstruct, only the ``build_plugin_json`` plugin
-    manifest is emitted (Phase 1.5); no mirror directory content is written.
+    manifest emission. For SkillConstruct, MCPConstruct, and HookConstruct,
+    only the ``build_plugin_json`` plugin manifest is emitted (Phase 1.5);
+    no mirror directory content is written for these types.
 
     build_plugin_json produces a Codex-shaped manifest per
     developers.openai.com/codex/plugins/build (fetched 2026-05-24):
@@ -145,20 +147,33 @@ class CodexPlatform:
 
     name = "codex"
     mirror_directory: Path = REPO_ROOT / ".codex"
-    supports: set[type[Construct]] = {SkillConstruct, MCPConstruct, HookConstruct}
+    supports: set[type[Construct]] = {
+        SkillConstruct, MCPConstruct, HookConstruct, AgentConstruct,
+    }
 
     def emit(self, construct: Construct, name: str) -> None:
-        # Only skill content has a Codex mirror directory (.codex/skills/).
-        # MCP and hook manifests are handled by build_plugin_json only.
-        if not isinstance(construct, SkillConstruct):
-            return
-        dst = self.mirror_directory / "skills" / name
-        shutil.copytree(
-            construct.source_directory / name,
-            dst,
-            dirs_exist_ok=True,
-            ignore=_COPY_IGNORE,
-        )
+        # Skill mirror retired (D-1): skills are surfaced via Phase 1.5
+        # _generated/<plugin>/.codex-plugin/plugin.json only.
+        # MCP and hook manifests are also handled by build_plugin_json only.
+        # Unit 4 adds AgentConstruct: .codex/agents/<n>.toml per
+        # developers.openai.com/codex/subagents/ (2026-05-25). The source
+        # is Claude-style markdown (D-16); convert at emit time.
+        if isinstance(construct, AgentConstruct):
+            # Lazy import — only Codex needs the converter, keeps the cycle small.
+            from converters.md_to_toml import claude_agent_md_to_codex_toml
+
+            agents_dir = self.mirror_directory / "agents"
+            agents_dir.mkdir(parents=True, exist_ok=True)
+            src_agents = construct.source_directory / name / "agents"
+            if not src_agents.exists():
+                return
+            for agent_md in sorted(src_agents.glob("*.md")):
+                toml_text = claude_agent_md_to_codex_toml(
+                    agent_md.read_text(encoding="utf-8")
+                )
+                (agents_dir / f"{agent_md.stem}.toml").write_text(
+                    toml_text, encoding="utf-8"
+                )
 
     def build_plugin_json(self, construct: Construct, name: str) -> dict:
         full_name = f"{construct.prefix}-{name}"
@@ -179,23 +194,45 @@ class CodexPlatform:
 class GeminiPlatform:
     """Gemini CLI platform.
 
-    Gemini expects:
+    The .gemini/ directory is the extension root per
+    geminicli.com/docs/extensions/reference/ (2026-05-25). Skills, agents,
+    and hooks subdirs are all auto-discovered relative to that root:
       - .gemini/gemini-extension.json (repo-level extension manifest)
-      - .gemini/skills/<name>/ (per-skill mirror)
+      - .gemini/skills/<name>/   (per-skill mirror)
+      - .gemini/agents/<n>.md    (sub-agent definitions, Unit 3 / A3)
+      - .gemini/hooks/hooks.json (hooks file, Unit 3 / A9)
     """
 
     name = "gemini"
     mirror_directory: Path = REPO_ROOT / ".gemini"
-    supports: set[type[Construct]] = {SkillConstruct}
+    supports: set[type[Construct]] = {SkillConstruct, AgentConstruct, HookConstruct}
 
     def emit(self, construct: Construct, name: str) -> None:
-        dst = self.mirror_directory / "skills" / name
-        shutil.copytree(
-            construct.source_directory / name,
-            dst,
-            dirs_exist_ok=True,
-            ignore=_COPY_IGNORE,
-        )
+        if isinstance(construct, SkillConstruct):
+            dst = self.mirror_directory / "skills" / name
+            shutil.copytree(
+                construct.source_directory / name,
+                dst,
+                dirs_exist_ok=True,
+                ignore=_COPY_IGNORE,
+            )
+        elif isinstance(construct, AgentConstruct):
+            agents_dir = self.mirror_directory / "agents"
+            agents_dir.mkdir(parents=True, exist_ok=True)
+            src_agents = construct.source_directory / name / "agents"
+            if src_agents.exists():
+                for agent_md in sorted(src_agents.glob("*.md")):
+                    shutil.copy(agent_md, agents_dir / agent_md.name)
+        elif isinstance(construct, HookConstruct):
+            # TODO: with multiple hook plugins, this last-writer-wins overwrite.
+            # Add merge semantics (concatenate hooks arrays) when a second hook
+            # plugin lands. Single plugin today, so direct copy is sufficient.
+            hooks_dir = self.mirror_directory / "hooks"
+            hooks_dir.mkdir(parents=True, exist_ok=True)
+            shutil.copy(
+                construct.source_directory / name / "hooks" / "hooks.json",
+                hooks_dir / "hooks.json",
+            )
 
     def build_plugin_json(self, construct: Construct, name: str) -> dict:
         # Gemini doesn't use a per-plugin manifest format; extension install
@@ -222,18 +259,28 @@ class GeminiPlatform:
 class CursorPlatform:
     """Cursor IDE platform.
 
-    Cursor detects .cursor/rules/<name>.md files on workspace open and reads
-    .agents/skills/ for skills. Team-marketplace import requires a root-level
-    .cursor-plugin/marketplace.json (emitted by generator Phase 6).
+    Cursor detects .cursor/rules/<name>.md files on workspace open, reads
+    .agents/skills/ for skills, and (Unit 2) reads .cursor/agents/<n>.md
+    for workspace-level sub-agents. Team-marketplace import requires a
+    root-level .cursor-plugin/marketplace.json (emitted by generator Phase 6).
 
-    build_plugin_json returns a minimal manifest — Cursor's plugin.json schema
-    only requires ``name``; everything else is auto-discovered from default
-    subdirs (skills/, rules/, agents/, ...).
+    Per Unit 2 (D-10/D-11), ``supports`` now covers six construct types:
+    Rule, Skill, Agent, Command, Hook, MCP. Cursor's plugin manifest schema
+    (cursor.com/docs/reference/plugins, 2026-05-25) supports the pointer
+    fields ``agents``, ``commands``, ``hooks``, ``mcpServers`` and auto-
+    discovers from the matching subdirs inside an installed plugin. So
+    Command/Hook/MCP need no Phase 3 mirror branch — they are surfaced
+    purely through the per-plugin .cursor-plugin/plugin.json (Phase 1.5).
+    AgentConstruct is the exception: .cursor/agents/<n>.md is a workspace-
+    level file (read before any plugin install) so emit copies it directly.
     """
 
     name = "cursor"
     mirror_directory: Path = REPO_ROOT / ".cursor"
-    supports: set[type[Construct]] = {RuleConstruct, SkillConstruct}
+    supports: set[type[Construct]] = {
+        RuleConstruct, SkillConstruct, AgentConstruct,
+        CommandConstruct, HookConstruct, MCPConstruct,
+    }
 
     def emit(self, construct: Construct, name: str) -> None:
         if isinstance(construct, RuleConstruct):
@@ -246,34 +293,77 @@ class CursorPlatform:
                 shutil.copy(fmt_file, rules_dir / f"{name}.md")
             else:
                 shutil.copy(src_rule / "rule.md", rules_dir / f"{name}.md")
+        elif isinstance(construct, AgentConstruct):
+            # Workspace-level sub-agents at .cursor/agents/<n>.md per
+            # cursor.com/docs/agent/subagents (2026-05-25). One plugin can
+            # contain multiple sub-agent .md files — copy them all.
+            agents_dir = self.mirror_directory / "agents"
+            agents_dir.mkdir(parents=True, exist_ok=True)
+            src_agents = construct.source_directory / name / "agents"
+            if src_agents.exists():
+                for agent_md in sorted(src_agents.glob("*.md")):
+                    shutil.copy(agent_md, agents_dir / agent_md.name)
+        # Command/Hook/MCP: no mirror branch — surfaced through Phase 1.5
+        # .cursor-plugin/plugin.json auto-discovery only.
         # Skills are served from .agents/ (AgentsPlatform); no .cursor/skills/ needed.
 
     def build_plugin_json(self, construct: Construct, name: str) -> dict:
-        # Cursor only requires `name`; everything else auto-discovers from subdirs.
-        return {"name": f"{construct.prefix}-{name}"}
+        # Per cursor.com/docs/reference/plugins (2026-05-25): name is required;
+        # optional pointer fields ``agents``, ``commands``, ``hooks``,
+        # ``mcpServers`` make installer intent explicit even though Cursor
+        # auto-discovers from default subdirs inside an installed plugin.
+        manifest: dict = {"name": f"{construct.prefix}-{name}"}
+        if isinstance(construct, AgentConstruct):
+            manifest["agents"] = "./agents/"
+        elif isinstance(construct, CommandConstruct):
+            manifest["commands"] = "./commands/"
+        elif isinstance(construct, HookConstruct):
+            manifest["hooks"] = "./hooks/hooks.json"
+        elif isinstance(construct, MCPConstruct):
+            # Reuse the source plugin.json's mcpServers value (path or inline dict),
+            # mirroring the Codex pattern above.
+            source_pj = _load_plugin_json(
+                construct.source_directory / name / ".claude-plugin" / "plugin.json"
+            )
+            manifest["mcpServers"] = source_pj["mcpServers"]
+        # RuleConstruct + SkillConstruct: name-only minimal manifest (existing behavior).
+        return manifest
 
 
 class WindsurfPlatform:
     """Windsurf IDE platform.
 
-    Windsurf detects .windsurf/rules/<name>.md files on workspace open.
-    No headless install command — file detection only.
+    Windsurf detects .windsurf/rules/<name>.md files on workspace open and
+    (Unit 5) reads .windsurf/hooks.json natively per
+    docs.windsurf.com/windsurf/cascade/hooks (2026-05-25). No headless
+    install command — file detection only.
     """
 
     name = "windsurf"
     mirror_directory: Path = REPO_ROOT / ".windsurf"
-    supports: set[type[Construct]] = {RuleConstruct}
+    supports: set[type[Construct]] = {RuleConstruct, HookConstruct}
 
     def emit(self, construct: Construct, name: str) -> None:
-        rules_dir = self.mirror_directory / "rules"
-        rules_dir.mkdir(parents=True, exist_ok=True)
-        src_rule = construct.source_directory / name
-        # Prefer platform-specific format file if present; fall back to rule.md
-        fmt_file = src_rule / "formats" / "windsurf.md"
-        if fmt_file.exists():
-            shutil.copy(fmt_file, rules_dir / f"{name}.md")
-        else:
-            shutil.copy(src_rule / "rule.md", rules_dir / f"{name}.md")
+        if isinstance(construct, RuleConstruct):
+            rules_dir = self.mirror_directory / "rules"
+            rules_dir.mkdir(parents=True, exist_ok=True)
+            src_rule = construct.source_directory / name
+            # Prefer platform-specific format file if present; fall back to rule.md
+            fmt_file = src_rule / "formats" / "windsurf.md"
+            if fmt_file.exists():
+                shutil.copy(fmt_file, rules_dir / f"{name}.md")
+            else:
+                shutil.copy(src_rule / "rule.md", rules_dir / f"{name}.md")
+        elif isinstance(construct, HookConstruct):
+            # TODO: with multiple hook plugins, this last-writer-wins overwrite.
+            # Add merge semantics (concatenate hooks arrays) when a second hook
+            # plugin lands. Windsurf reads hooks.json directly at .windsurf/
+            # root (no hooks/ subdir, unlike Gemini).
+            self.mirror_directory.mkdir(parents=True, exist_ok=True)
+            shutil.copy(
+                construct.source_directory / name / "hooks" / "hooks.json",
+                self.mirror_directory / "hooks.json",
+            )
 
     def build_plugin_json(self, construct: Construct, name: str) -> dict:
         # Windsurf has no plugin manifest format; return {} to skip emission.
@@ -285,21 +375,19 @@ class DevinPlatform:
 
     Devin reads rules from .cursor/rules/ and .windsurf/rules/ natively
     (verified empirically — no separate .devin/rules/ emission needed).
-    Skills are mirrored at .devin/skills/<name>/.
+    Skills are read from .agents/skills/ natively (verified hermetic act
+    run Q-B1 2026-05-25); the legacy .devin/skills/ mirror was retired
+    per D-1. SkillConstruct stays in ``supports`` so a future per-plugin
+    Devin manifest schema can plug in via Phase 1.5 without code changes.
     """
 
     name = "devin"
-    mirror_directory: Path = REPO_ROOT / ".devin"
+    mirror_directory: Path | None = None
     supports: set[type[Construct]] = {SkillConstruct}
 
     def emit(self, construct: Construct, name: str) -> None:
-        dst = self.mirror_directory / "skills" / name
-        shutil.copytree(
-            construct.source_directory / name,
-            dst,
-            dirs_exist_ok=True,
-            ignore=_COPY_IGNORE,
-        )
+        # No mirror directory (D-1): Devin reads .agents/skills/ natively.
+        return
 
     def build_plugin_json(self, construct: Construct, name: str) -> dict:
         # Devin has no plugin manifest format; return {} to skip emission.
@@ -307,7 +395,7 @@ class DevinPlatform:
 
 
 class AgentsPlatform:
-    """Cross-platform .agents/ skill convergence layer (Decision A1).
+    """Cross-platform .agents/ convergence layer (Decisions A1 + D-12).
 
     Windsurf, Cursor, and Devin all read `.agents/skills/<name>/SKILL.md`
     natively (verified 2026-05-24 from official docs). This Platform emits
@@ -316,13 +404,20 @@ class AgentsPlatform:
     Per Decision A1: AgentsPlatform is a proper Platform class — same shape
     as the other six Platforms: name, mirror_directory, supports, emit.
 
-    build_plugin_json returns {} — AgentsPlatform hosts skill content only,
+    Per Decision D-12 (Unit 1): also emits .agents/rules/<name>.md as a
+    forward-looking convergence layer. No platform reads this path today
+    (verified Q-R1/Q-R2 2026-05-25), but Cursor 2.7+ and Windsurf 2.0 are
+    credible adopters — emitting now means we are already in place when
+    one of them flips. Raw rule.md is copied; no format conversion (each
+    consumer can adopt its own frontmatter conventions later).
+
+    build_plugin_json returns {} — AgentsPlatform hosts content only,
     not plugin manifests.
     """
 
     name = "agents"
     mirror_directory: Path = REPO_ROOT / ".agents"
-    supports: set[type[Construct]] = {SkillConstruct}
+    supports: set[type[Construct]] = {SkillConstruct, RuleConstruct}
 
     def emit(self, construct: Construct, name: str) -> None:
         if isinstance(construct, SkillConstruct):
@@ -333,9 +428,17 @@ class AgentsPlatform:
                 dirs_exist_ok=True,
                 ignore=_COPY_IGNORE,
             )
+        elif isinstance(construct, RuleConstruct):
+            rules_dir = self.mirror_directory / "rules"
+            rules_dir.mkdir(parents=True, exist_ok=True)
+            # Raw rule.md (no frontmatter conversion) per D-12.
+            shutil.copy(
+                construct.source_directory / name / "rule.md",
+                rules_dir / f"{name}.md",
+            )
 
     def build_plugin_json(self, construct: Construct, name: str) -> dict:
-        # AgentsPlatform hosts skill content only, not plugin manifests.
+        # AgentsPlatform hosts content only, not plugin manifests.
         return {}
 
 

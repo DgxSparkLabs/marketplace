@@ -1,0 +1,4 @@
+{
+  "name": "mcp-example",
+  "mcpServers": "./mcp-config.json"
+}

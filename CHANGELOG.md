@@ -1,5 +1,56 @@
 # Changelog
 
+## 2026-05-25 — Platform feature routing refactor
+
+Surveyed every platform's native capabilities (Cursor 2.4 sub-agents, Codex sub-agents TOML, Gemini hooks/agents, Windsurf hooks) and discovered the generator was under-emitting against documented APIs. This refactor (a) retires two dead skill mirrors, (b) expands per-platform `supports` sets to cover sub-agents on Cursor + Gemini + Codex and hooks on Cursor + Gemini + Windsurf and commands/MCP on Cursor, (c) adds a forward-looking `.agents/rules/` mirror and `.agents/plugins/marketplace.json` (Codex canonical path), and (d) introduces an `agents` CLI shim for Class B platforms.
+
+### Retired (breaking — no migration helper per D-7)
+
+- `.codex/skills/` mirror tree (27 directories) — Codex installs plugins via `_generated/<plugin>/.codex-plugin/plugin.json`, not the repo-root skill mirror (verified hermetic act run Q-A1 PASS).
+- `.devin/skills/` mirror tree (27 directories) — Devin enumerates `.agents/skills/` natively (verified hermetic act run Q-B1: 27 skills enumerated post-retirement).
+- Migration: nothing required for users — content remains available at `.agents/skills/` and via per-plugin manifests.
+
+### Added — per-platform emission
+
+- **Cursor sub-agents** at `.cursor/agents/<name>.md` (`CursorPlatform.supports += {AgentConstruct}`); per-plugin `.cursor-plugin/plugin.json` now includes `agents`, `commands`, `hooks`, `mcpServers` fields for agent/command/hook/MCP plugins (per `cursor.com/docs/reference/plugins`, 2026-05-25).
+- **Gemini sub-agents** at `.gemini/agents/<name>.md` (`GeminiPlatform.supports += {AgentConstruct}`) and **Gemini hooks** at `.gemini/hooks/hooks.json` (`+= {HookConstruct}`) per `geminicli.com/docs/extensions/reference/` (2026-05-25).
+- **Codex sub-agents** at `.codex/agents/<name>.toml` (`CodexPlatform.supports += {AgentConstruct}`) per `developers.openai.com/codex/subagents/` (2026-05-25). Source format stays Claude-style markdown with YAML frontmatter (D-16); conversion happens at emit time via `scripts/converters/md_to_toml.py`.
+- **Windsurf hooks** at `.windsurf/hooks.json` (`WindsurfPlatform.supports += {HookConstruct}`) per `docs.windsurf.com/windsurf/cascade/hooks` (2026-05-25).
+- **`.agents/rules/<name>.md`** forward-looking convergence (`AgentsPlatform.supports += {RuleConstruct}`) — no platform reads it today (verified Q-R1/Q-R2) but Cursor 2.7+ and Windsurf 2.0 are credible adopters.
+
+### Added — generator infrastructure
+
+- **Phase 5.5**: emit `.agents/plugins/marketplace.json` (byte-identical copy of `.claude-plugin/marketplace.json`) — Codex's canonical marketplace path per `developers.openai.com/codex/plugins/build` (2026-05-25). Both paths remain valid; we now serve both.
+- **`scripts/converters/md_to_toml.py`** — Claude-md → Codex-TOML translator for sub-agent emission.
+
+### Added — `agents` CLI shim (`scripts/agents_cli/`)
+
+- New CLI providing Claude-equivalent install UX for Class B platforms (Windsurf, Devin, Cursor CLI). Subcommands: `install`, `uninstall`, `list`, `list --available`, `upgrade`, `upgrade --all`, `info`, `marketplace add|list|remove`, `--version`, `--help`.
+- `--scope project|user` semantics: project = `./.agents/<construct>/` + per-platform paths; user = `~/.agents/<construct>/` only (per D-6).
+- `--agents-only` strict mode skips per-platform spray (D-13 Option C).
+- Content source: `git clone` (per D-4).
+- Install location: `~/.local/bin/agents` (POSIX) / `$env:LOCALAPPDATA\agents\bin\agents.ps1` (Windows) (per D-17).
+- One-liner installers at repo root: `install.sh` (POSIX) and `install.ps1` (Windows).
+
+### Documentation
+
+- `docs/PLATFORMS.md`, `docs/ARCHITECTURE.md`, `docs/RULE_FORMAT.md` aligned with new per-platform support matrix.
+- `docs/RULE_FORMAT.md:117` removed stale `.devin/rules/` claim (the generator never emitted that path).
+- `rules/*/README.md` (21 files) — dropped `.devin/rules/` references.
+- `README.md` — added `agents` CLI install section and a row to the GitHub-direct-install table.
+
+### Tests
+
+- `tests/test_marketplace.py` — 67 tests passing (unchanged in this refactor's Units 7-9; Units 0-6 already extended it).
+- `tests/test_agents_cli.py` (new, 25 tests) — CLI argparse, dispatch, path resolution, install/uninstall round-trip, --agents-only verification.
+
+### CI
+
+- Extended `compat-agent.yml`, `compat-hook.yml`, `compat-command.yml`, `compat-mcp.yml` with `cursor-emission` / `gemini-emission` / `codex-emission` / `windsurf-emission` filesystem assertion jobs.
+- New `compat-agents-cli.yml` — install.sh → `agents install skill-example --scope project` round-trip on ubuntu-latest, plus advisory windows-latest install.ps1 smoke.
+
+---
+
 ## 2026-05-24 — Phase 5 cross-platform native install compliance (merged: bfb476d)
 
 Verification round exposed that the README documented install commands that didn't fully work on Codex / Gemini / Windsurf / Cursor. Fixed by emitting per-platform per-plugin manifests and root-level entry-point manifests so each platform's native installer succeeds.
