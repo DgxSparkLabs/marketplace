@@ -6,14 +6,23 @@ Prevents the gradual entropy that makes codebases unmaintainable — duplicate d
 
 ## Install
 
-```bash
-# Native Claude Code plugin install:
-/plugin marketplace add DgxSparkLabs/marketplace
-/plugin install rule-code-hygiene@dgxsparklabs-marketplace
+### Claude Code (filesystem only — not a plugin)
 
-# Then activate (one-time):
-bash ~/.claude/plugins/cache/dgxsparklabs-marketplace/rule-code-hygiene/activate.sh
-```nFor other platforms (Devin, Cursor, Windsurf), see the auto-generated mirrors in `.cursor/rules/`, `.windsurf/rules/` after `git clone`.
+Per code.claude.com/docs/en/plugins-reference (2026-05-26), rules are not a Claude plugin component. Install into Claude's memory subsystem at `.claude/rules/` directly:
+
+```bash
+mkdir -p .claude/rules
+ln -s "$(pwd)/rules/code-hygiene/rule.md" .claude/rules/code-hygiene.md   # symlink (live updates)
+# or:
+cp rules/code-hygiene/rule.md .claude/rules/code-hygiene.md                # copy (portable)
+```
+
+For user-scope (every project on this machine), replace `.claude/rules/` with `~/.claude/rules/`. See `docs/USER_GUIDE.md` Claude section for the full operator workflow.
+
+### Cursor / Codex / Gemini / Windsurf
+
+`rule-code-hygiene` IS still a plugin for these platforms. Install via the platform's native marketplace surface or clone the marketplace; the rule is auto-mirrored to `.cursor/rules/`, `.windsurf/rules/`, etc.
+
 
 ## What it enforces
 

@@ -108,12 +108,25 @@ class ClaudeCodePlatform:
 
     build_plugin_json delegates to the construct's own build_plugin_json so
     the per-plugin Claude schema stays a single source of truth.
+
+    Note: RuleConstruct is intentionally absent from ``supports``. Per
+    code.claude.com/docs/en/plugins-reference#plugin-components-reference
+    (fetched 2026-05-26), rules are NOT a Claude plugin component — they
+    are a memory feature consumed via ``.claude/rules/*.md``
+    (code.claude.com/docs/en/memory#organize-rules-with-claude-rules,
+    fetched 2026-05-26). The previous emission of 22 useless
+    ``_generated/rule-<name>/.claude-plugin/plugin.json`` files was
+    retired. Source ``rules/<name>/`` still feeds Cursor / Windsurf /
+    Codex / Gemini rule emission via the other Platform classes; only
+    the Claude-plugin wrapping is gone. See
+    docs/research/claude-qa-2026-05-26/RESEARCH.md F8 for the full
+    rationale.
     """
 
     name = "claude-code"
     mirror_directory = None
     supports: set[type[Construct]] = {
-        SkillConstruct, RuleConstruct, CommandConstruct, AgentConstruct,
+        SkillConstruct, CommandConstruct, AgentConstruct,
         HookConstruct, MCPConstruct, LSPConstruct, MonitorConstruct,
         OutputStyleConstruct, ThemeConstruct,
     }

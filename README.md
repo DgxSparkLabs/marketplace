@@ -33,7 +33,7 @@ At-a-glance: which platforms install this marketplace directly from a GitHub URL
 
 ## Quick Start
 
-Pick your platform, copy the block, and you're running.
+Pick your platform, copy the block, and you're running. For end-to-end management (install, list, enable/disable, uninstall, scope semantics) across all six platforms plus the `agents` CLI, see [`docs/USER_GUIDE.md`](docs/USER_GUIDE.md) — one document instead of chasing each vendor's docs separately.
 
 ### Claude Code
 
@@ -154,7 +154,7 @@ The CLI supports all `.agents/` constructs (skill, rule, agent, hook, mcp, comma
 | Type | Prefix | Description | Count |
 |------|--------|-------------|-------|
 | [skill](skills/) | `skill-` | Slash-command invoked on demand | 27 |
-| [rule](rules/) | `rule-` | Always-on context loaded every session | 21 |
+| [rule](rules/) | `rule-` | Always-on context loaded every session | 22 |
 | [command](commands/) | `command-` | Structured agent command definitions | 1 (example) |
 | [agent](agents/) | `agent-` | Autonomous agent configuration | 1 (example) |
 | [hook](hooks/) | `hook-` | Event-triggered automation | 1 (example) |
@@ -425,7 +425,7 @@ devin skills paths
 devin rules paths
 ```
 
-**Notable behavior:** Devin reads `.cursor/rules/` and `.windsurf/rules/` natively — it sees all 21 of our rules automatically from those mirror directories. Skills come from both `.devin/skills/` and `.agents/skills/`; the `.agents/skills/` path is the cross-platform convergence point shared with Windsurf and Cursor. `devin auth login` says "Log in to Windsurf" — Devin is built on Windsurf/Codeium infrastructure.
+**Notable behavior:** Devin reads `.cursor/rules/` and `.windsurf/rules/` natively — it sees all 22 of our rules automatically from those mirror directories. Skills come from both `.devin/skills/` and `.agents/skills/`; the `.agents/skills/` path is the cross-platform convergence point shared with Windsurf and Cursor. `devin auth login` says "Log in to Windsurf" — Devin is built on Windsurf/Codeium infrastructure.
 
 ---
 
@@ -482,6 +482,7 @@ To add a new construct, see [`docs/ADDING_A_CONSTRUCT.md`](docs/ADDING_A_CONSTRU
 
 | Document | Purpose |
 |----------|---------|
+| [`docs/USER_GUIDE.md`](docs/USER_GUIDE.md) | End-user reference for managing plugins/extensions (install, list, enable/disable, uninstall, scope) across all 6 platforms + the `agents` CLI |
 | [`docs/PLATFORMS.md`](docs/PLATFORMS.md) | Per-platform install, support, discovery, and CI reference (Claude/Codex/Gemini/Cursor/Windsurf/Devin/Agents) |
 | [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) | Generator architecture — Construct/Platform/Bundle protocols, generation phases |
 | [`docs/RESUME_HERE.md`](docs/RESUME_HERE.md) | Project orientation for new agents and contributors |

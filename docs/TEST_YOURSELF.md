@@ -45,7 +45,7 @@ This matrix is the index. Each cell tells you what to expect in the per-platform
 |                 | Claude  | Codex   | Gemini  | Cursor IDE | Cursor CLI | Windsurf | Devin   | `agents` CLI |
 |---              |---      |---      |---      |---         |---         |---       |---      |---           |
 | skill           | TEST    | TEST    | TEST    | TEST¹      | TEST²      | TEST     | TEST    | TEST         |
-| rule            | TEST³   | N/A⁴    | N/A⁵    | TEST       | TEST²      | TEST     | TEST⁶   | TEST         |
+| rule            | N/A³    | N/A⁴    | N/A⁵    | TEST       | TEST²      | TEST     | TEST⁶   | TEST         |
 | agent           | TEST    | TEST⁷   | TEST⁸   | TEST ✅⁹   | TEST²      | N/A      | N/A     | TEST         |
 | command         | TEST    | N/A     | N/A¹⁰   | TEST¹¹     | TEST²      | N/A      | N/A     | TEST¹²       |
 | hook            | TEST    | TEST    | TEST¹³  | TEST¹¹     | TEST²      | TEST¹⁴   | N/A     | TEST         |
@@ -59,7 +59,7 @@ This matrix is the index. Each cell tells you what to expect in the per-platform
 
 1. Cursor IDE skill popup is **🐛 KNOWN BUG (2026-05-25 QA)** — install works, but the popup's metadata fields are mangled. See the bug callout in the Cursor section. Per `docs/PLATFORMS.md` Cursor section, skill discovery uses `.agents/skills/` (the cross-platform convergence path).
 2. Cursor CLI (`agent` binary) has **no plugin install commands** per `docs/PLATFORMS.md` Cursor section. The CLI reads from `.agents/skills/`, `.cursor/rules/`, `.cursor/agents/`, and `.cursor-plugin/plugin.json` pointers natively — populate those by running the `agents` CLI (cross-platform) and verify the Cursor CLI sees them. Hands-on test path is "install via `agents` CLI → open repo with `agent` → ask CLI to use construct".
-3. Claude rules require a manual `bash <cache>/activate.sh` post-install step (per `docs/PLATFORMS.md` Claude "Known gaps" section, upstream issue `anthropics/claude-code#21163`).
+3. **Rules are NOT a Claude plugin component** as of 2026-05-26 (per `code.claude.com/docs/en/plugins-reference#plugin-components-reference`, fetched 2026-05-26). Claude consumes rules via its memory subsystem at `.claude/rules/*.md` (project) and `~/.claude/rules/*.md` (user). `RuleConstruct` has been removed from `ClaudeCodePlatform.supports`; no `rule-<name>` plugins are surfaced to Claude. To use a rule with Claude, symlink or copy `rules/<name>/rule.md` into `.claude/rules/<name>.md`. See `docs/USER_GUIDE.md` Claude section + the new Claude validation 8 below for the post-deprecation check.
 4. Per `docs/PLATFORMS.md` Codex "What constructs it supports": Codex reads rules from `AGENTS.md`, `.cursor/rules/*.md`, `.windsurf/rules/*.md` directly — no separate Codex rule install. **Verification method: open Codex in the marketplace clone and confirm rule context is reflected in behavior.**
 5. Per `docs/PLATFORMS.md` Gemini "What constructs it supports": rule context comes from `GEMINI.md` and `AGENTS.md`, not a Gemini-native rule install.
 6. Devin reads rules from `.cursor/rules/`, `.windsurf/rules/`, `.cursorrules`, and `AGENTS.md` per `devin rules paths` (per `docs/PLATFORMS.md` Devin section). Verification is via `devin rules list`.
@@ -200,7 +200,7 @@ Throughout the per-construct tests below, these plugin names are used as the sta
 
 ## Platform 1: Claude Code
 
-**What we're verifying**: marketplace registration + per-construct install for **all 10 construct types** Claude supports (`ClaudeCodePlatform.supports` is the full set per `docs/PLATFORMS.md` Claude "What constructs it supports"). Nothing newly emitted for Claude in this refactor — this is the regression-check platform.
+**What we're verifying**: marketplace registration + per-construct install for the **9 construct types** Claude supports (`ClaudeCodePlatform.supports` per `docs/PLATFORMS.md` Claude "What constructs it supports" — `RuleConstruct` was removed 2026-05-26 because rules are not a Claude plugin component per `code.claude.com/docs/en/plugins-reference#plugin-components-reference`). This is also the verification surface for the 2026-05-26 Claude QA fixes (marketplace description, LSP / monitor / theme / hook example fixes, `uv` prereq doc, rule emission retirement) — see the validation list below.
 
 ### Setup option A: Docker (hermetic)
 
@@ -265,11 +265,12 @@ Each test installs ONE plugin of the construct type, then invokes it. Per-constr
 - [ ] **Expected**: the skill appears in the slash-command dropdown with its correct description; invocation executes the skill body.
 - [ ] **Diagnostic (only if hands-on fails)**: `claude plugin details skill-example` should show the skill metadata, and `~/.claude/plugins/cache/dgxsparklabs-marketplace/skill-example/<version>/` should be populated.
 
-#### Rule — `rule-example`
-- [ ] **Install**: `claude plugin install rule-example@dgxsparklabs-marketplace --scope project`
-- [ ] **Activate** (Claude has no native rule install slot yet, per `docs/PLATFORMS.md` Claude "Known gaps"): `bash ~/.claude/plugins/cache/dgxsparklabs-marketplace/rule-example/<version>/activate.sh`
-- [ ] **Hands-on invocation**: start a `claude` session in the project and ask "what rules are currently active?" or attempt an action the rule should constrain.
-- [ ] **Expected**: Claude's response reflects the rule's guidance (e.g., the example rule should make Claude qualify its plans with explicit example framing). Note: the slot is "manual activation" so a missed activation step is a likely failure mode — flag if `activate.sh` doesn't exist.
+#### Rule — N/A for Claude (retired 2026-05-26)
+
+- [ ] **No Claude plugin install path for rules.** Per `code.claude.com/docs/en/plugins-reference#plugin-components-reference` (fetched 2026-05-26), rules are not a Claude plugin component — they live in Claude's memory subsystem.
+- [ ] **Manual install (filesystem)**: `mkdir -p .claude/rules && cp rules/example/rule.md .claude/rules/example.md` (or `ln -s` for live updates).
+- [ ] **Hands-on**: start a `claude` session in the project and attempt an action the rule should constrain — Claude's response reflects the rule's guidance.
+- [ ] See Claude validation 8 below to confirm no `rule-*` plugins surface in Claude's marketplace listing post-deprecation.
 
 #### Sub-agent — `agent-example`
 - [ ] **Install**: `claude plugin install agent-example@dgxsparklabs-marketplace --scope project`
@@ -319,15 +320,86 @@ Each test installs ONE plugin of the construct type, then invokes it. Per-constr
 - [ ] **Expected**: terminal output uses the new theme's colors.
 - [ ] **Diagnostic**: `claude plugin list | grep -F theme-example` confirms install.
 
-### Specifically for THIS refactor
+### Specifically for THIS refactor (2026-05-26 Claude QA arc)
 
-No Claude-side changes in 2026-05-25 refactor. If any of the above fails on `main` post-merge, that's a regression worth flagging. The lsp/monitor/output-style/theme cells are "thin coverage" historically — first hands-on QA in this revision. Bugs found there are more likely "longstanding" than "this-refactor regression."
+This arc fixed 6 example-plugin bugs and retired Claude rule emission. The hands-on validations below come from `docs/research/claude-qa-2026-05-26/RESEARCH.md` Appendix A and prove each fix landed end-to-end. Each numbered validation is operator-runnable; "do X, observe Y" — no file-existence-only checks.
+
+#### Claude validation 1 — marketplace description (F1)
+- [ ] **Action**: from the marketplace repo root run `claude plugin validate ./` (or `claude plugin validate ./ --strict` if your CLI version supports the flag).
+- [ ] **Expected**: exit code 0; output contains `Validation passed`; the previously-seen `description: No marketplace description provided` warning is GONE.
+- [ ] **CI gate**: `.github/workflows/compat-validate.yml` runs this on every PR and fails the build if ANY warning or error appears.
+
+#### Claude validation 2 — lsp-example schema (F2)
+- [ ] **Action**: install `lsp-example` (`claude plugin install lsp-example@dgxsparklabs-marketplace --scope project`), then open or edit a `.md` file in a project with the plugin enabled.
+- [ ] **Expected**: Claude surfaces `marksman` diagnostics (e.g., broken-link or heading warnings) inline; `/plugin` Errors tab shows no LSP errors. Pre-fix the `/plugin` Errors tab would show three validator errors complaining about `lspServers.command`, `lspServers.extensionToLanguage`, and `unrecognized_keys: ["example-markdown"]` (per F2 symptom block).
+
+#### Claude validation 3 — monitor-example shape (F3)
+- [ ] **Action**: install `monitor-example`, start a `claude` session in the project, watch the bottom-status / notification panel during the first 30 seconds.
+- [ ] **Expected**: a notification appears with the `df -h .` disk usage summary, sourced from the `example-disk` monitor. Pre-fix `/plugin` Errors tab would show `Failed to load monitors ... expected array, received object`.
+
+#### Claude validation 4 — theme-example distinctiveness (F4)
+- [ ] **Action**: install `theme-example`, run `/theme`, pick **Lab Notebook**, confirm with Enter.
+- [ ] **Expected**: terminal visibly switches to a light/paper-toned palette (foreground darkens, background lightens). Compare to the default dark theme — the Lab Notebook entry should be obviously distinct.
+- [ ] **Persistence check**: `cat ~/.claude/settings.json | grep theme` shows `custom:theme-example:lab-notebook` (per `code.claude.com/docs/en/plugins-reference#themes`).
+
+#### Claude validation 5a — UserPromptSubmit hook firing (F5)
+- [ ] **Action**: with `hook-example` installed, submit any prompt in a `claude` session. In another terminal: `tail /tmp/hook-fired-userpromptsubmit.log`.
+- [ ] **Expected**: a new line in the form `<UTC-ISO-timestamp> userPromptSubmit fired` (the hook command writes the sentinel). The injected `[Lab Notebook context: timestamp=...]` line goes into Claude's prompt context — not visible at the operator terminal by design; `claude --debug` reveals it.
+
+#### Claude validation 5b — SessionStart hook firing (F5)
+- [ ] **Action**: restart `claude` in the project (exit + re-enter, or open a new session). In another terminal: `tail /tmp/hook-fired-sessionstart.log`.
+- [ ] **Expected**: a new line with the session-start timestamp.
+
+#### Claude validation 5c — PreToolUse hook with matcher (F5)
+- [ ] **Action**: ask Claude to edit any file (e.g., "edit README.md and add a blank line at the bottom"). In another terminal: `tail /tmp/hook-fired-pretooluse.log`.
+- [ ] **Expected**: a line like `<UTC-ISO-timestamp> preToolUse Edit` (or `preToolUse Write`). The matcher `Write|Edit` in `hooks.json` gates which tool calls trigger this hook.
+
+#### Claude validation 5d — PostToolUse hook firing (F5)
+- [ ] **Action**: same edit as 5c. After the tool call completes: `tail /tmp/hook-fired-posttooluse.log`.
+- [ ] **Expected**: mirror line right after the PreToolUse entry (`<ts> postToolUse Edit` or `postToolUse Write`).
+
+#### Claude validation 5e — Stop hook firing (F5)
+- [ ] **Action**: ask Claude any question and wait for the response to complete. Then: `tail /tmp/hook-fired-stop.log`.
+- [ ] **Expected**: a new line per assistant turn.
+
+#### Claude validation 5f — SessionEnd hook firing (F5)
+- [ ] **Action**: exit the Claude session (`/exit` or `Ctrl+D`). Then in a separate shell: `tail /tmp/hook-fired-sessionend.log`.
+- [ ] **Expected**: a final line with the session-end timestamp.
+
+#### Claude validation 6 — mcp-example uv prerequisite (F6)
+- [ ] **Action**: on a fresh host (no `uv` installed): `claude plugin install mcp-example@dgxsparklabs-marketplace --scope project`, then in a `claude` session try a tool that hits the example MCP. Check `/plugin` Errors tab.
+- [ ] **Pre-install-uv expected**: error in `/plugin` Errors tab — `plugin:mcp-example:example-fetch: uvx mcp-server-fetch - ✗ Failed to connect` (because `uvx` is not on PATH).
+- [ ] **Then install uv**: `curl -LsSf https://astral.sh/uv/install.sh | sh` (POSIX) or `powershell -c "irm https://astral.sh/uv/install.ps1 | iex"` (Windows). Restart the session.
+- [ ] **Post-install-uv expected**: `/plugin` shows `plugin:mcp-example:example-fetch: uvx mcp-server-fetch - ✓ Connected`. The fix is the README documenting this prereq (see `mcp-servers/example/README.md`).
+
+#### Claude validation 7a — skill slash command namespacing (F7)
+- [ ] **Action**: with `skill-example` installed, type `/` in Claude and read the autocomplete dropdown entry.
+- [ ] **Expected**: the entry resolves to `/skill-example:example-skill` (the UI may show a shorter label, but the actual invocation is the namespaced form). Per `code.claude.com/docs/en/plugins` (2026-05-26): *"Plugin skills are always namespaced (like `/my-first-plugin:hello`) to prevent conflicts..."*
+
+#### Claude validation 7b — agent namespacing (F7)
+- [ ] **Action**: with `agent-example` installed, run `/agents` in a `claude` session.
+- [ ] **Expected**: the entry appears as `agent-example:notebook-reviewer` (no `/` prefix — the colon-namespaced form is what `/agents` displays).
+
+#### Claude validation 7c — MCP tool namespacing (F7)
+- [ ] **Action**: with `mcp-example` installed, ask Claude to fetch a URL. Watch the tool name in `claude --debug` output.
+- [ ] **Expected**: tool name appears as `mcp__mcp-example__example-fetch` (the hook-matcher form) or `plugin:mcp-example:example-fetch` (the CLI display form). Both are documented per `code.claude.com/docs/en/hooks` and `code.claude.com/docs/en/plugins-reference`.
+
+#### Claude validation 8 — rule deprecation (F8)
+- [ ] **Action**: run `claude plugin list --available --json | jq '.available | map(.name) | map(select(startswith("rule-"))) | length'` (or any equivalent count).
+- [ ] **Expected**: `0` — no `rule-*` plugins are surfaced to Claude after the 2026-05-26 deprecation. Additionally, Claude-side bundle cascade: `bundle-quality-rules`, `bundle-workflow-rules`, `bundle-documentation-rules`, `bundle-environment-rules`, `bundle-notifications-rules`, and `bundle-rule-all` are also gone (their dependencies are no longer valid Claude plugins). They remain available to Cursor / Codex / Gemini / Windsurf.
+
+#### Claude validation 9 — output style applied (F9)
+- [ ] **Action**: with `output-style-example` installed, type `/config` in a `claude` session, navigate to **Output style**, pick "Lab Notebook Voice", and confirm.
+- [ ] **Persistence check**: `cat .claude/settings.local.json | jq .outputStyle` returns `"Lab Notebook Voice"`.
+- [ ] **Apply**: type `/clear` to force a fresh session that re-reads the system prompt.
+- [ ] **Behavioral check**: ask Claude: *"Explain what the `_base_plugin_shape` function in `scripts/constructs.py` does."*
+- [ ] **Expected response markers** (from the SKILL.md spec): plain factual sentences citing file paths and line numbers; no hedging language unless flagged as uncertainty; the response ends with one line tagged `Next:` proposing the immediate next checkable step. The `Next:` line is the cleanest binary signal — present means active, absent means not.
+- [ ] **A/B compare**: in a separate clean session, set `outputStyle: "Default"`, ask the same question — observe no `Next:` line and more conversational tone.
 
 ### Cleanup
 
 ```bash
 claude plugin uninstall skill-example --scope project
-claude plugin uninstall rule-example --scope project
 claude plugin uninstall agent-example --scope project
 claude plugin uninstall command-example --scope project
 claude plugin uninstall hook-example --scope project

@@ -23,7 +23,7 @@ The four detail-reference docs ([[ADDING_A_CONSTRUCT]], [[CONSTRUCT_TYPES]], [[R
 
 | Platform | Install command (one-liner) | Native CLI? | Plugin install via CLI? | Skills auto-discovery? | Status |
 |---|---|:--:|:--:|:--:|---|
-| Claude Code | `/plugin marketplace add DgxSparkLabs/marketplace` | yes | yes | via plugin install | fully working |
+| Claude Code | `/plugin marketplace add DgxSparkLabs/marketplace` | yes | yes (9 of 10 constructs — rules via filesystem) | via plugin install | fully working |
 | Codex | `codex plugin marketplace add DgxSparkLabs/marketplace` | yes | yes | via plugin install | fully working |
 | Gemini | `gemini extensions install https://github.com/DgxSparkLabs/marketplace --consent` | yes | extensions, not plugins | `.gemini/skills/` (via extension) | fully working |
 | Cursor | Dashboard → Settings → Plugins → Import → paste GitHub URL | yes (`agent`) | no — IDE-only install | `.agents/skills/` | IDE install only |
@@ -96,10 +96,33 @@ Bundles auto-install their dependencies. The install output reports `(+ N depend
 | Construct | Supported | Notes |
 |---|:--:|---|
 | skill | yes | installed via `/plugin install`; activates immediately |
-| rule | yes (with workaround) | install via `/plugin install`, then `bash <cache>/activate.sh` — Claude Code has no native `rules` field in plugin.json yet (see [[RULE_FORMAT#Installation Mechanism]]) |
+| rule | **NO (filesystem-only)** | Rules are not a Claude plugin component per `code.claude.com/docs/en/plugins-reference#plugin-components-reference` (fetched 2026-05-26). Claude consumes rules via its memory subsystem at `.claude/rules/*.md` (project) and `~/.claude/rules/*.md` (user) per `code.claude.com/docs/en/memory#organize-rules-with-claude-rules`. `RuleConstruct` was removed from `ClaudeCodePlatform.supports` on 2026-05-26 — see "Claude rule discovery" below for the install path. |
 | command, agent, hook, mcp, lsp, monitor, output-style, theme | yes | native plugin install |
 
-All 10 construct types declared in `ClaudeCodePlatform.supports` at `scripts/platforms.py:114-118`.
+Nine construct types declared in `ClaudeCodePlatform.supports` at `scripts/platforms.py:128-132` (RuleConstruct intentionally absent — see the inline comment at `scripts/platforms.py:112-123`).
+
+### Claude rule discovery
+
+After the 2026-05-26 deprecation, no `rule-<name>` plugins surface in Claude's marketplace listing. Operators install rules from this marketplace into Claude's memory subsystem directly:
+
+```bash
+# Project scope — symlink (live updates as the rule file changes upstream)
+mkdir -p .claude/rules
+ln -s "$(pwd)/rules/blast-radius/rule.md" .claude/rules/blast-radius.md
+
+# Or copy for portability
+cp rules/blast-radius/rule.md .claude/rules/blast-radius.md
+
+# User scope (apply to every project on this machine)
+mkdir -p ~/.claude/rules
+cp rules/blast-radius/rule.md ~/.claude/rules/blast-radius.md
+```
+
+The `agents` CLI shim automates the per-marketplace install when targeted at `.agents/rules/` (`agents install rule-blast-radius --scope project --agents-only`), but Claude does not currently auto-discover from `.agents/rules/` — for Claude specifically the symlink-or-copy approach above is canonical. See `docs/USER_GUIDE.md` Claude section for the full operator walkthrough.
+
+**Claude-side bundle cascade**: bundles whose members are exclusively `rule:` references (`bundle-quality-rules`, `bundle-workflow-rules`, `bundle-documentation-rules`, `bundle-environment-rules`, `bundle-notifications-rules`) and the catch-all `bundle-rule-all` are no longer surfaced in Claude's marketplace listing because their dependencies are no longer valid Claude plugins. They remain available to Cursor / Codex / Gemini / Windsurf where rule plugins are still valid.
+
+Source `rules/<name>/` directories remain — they still feed Cursor / Windsurf / Codex / Gemini rule emission. Cursor and Codex per-plugin manifests still surface them. Only the Claude-plugin wrapping is gone.
 
 ### Discovery paths it reads
 
@@ -123,7 +146,6 @@ All cleanup steps run `claude plugin uninstall <name> --scope project || true` t
 
 ### Known gaps
 
-- **Rule activation is a manual step.** Plugins install fine; the rule body has to be symlinked into `.claude/rules/` via the bundled `activate.sh`. Tracked upstream: `anthropics/claude-code#21163`. See [[RULE_FORMAT#Installation Mechanism]].
 - **Branch-specific install not documented.** The `claude plugin marketplace add` CLI surface as captured in our act logs has no `--ref` equivalent. If you need a specific branch, clone first and add `./`.
 
 ### Out-of-scope or non-applicable
@@ -705,7 +727,7 @@ Every Platform's `emit` method passes `ignore=_COPY_IGNORE` to `shutil.copytree`
 
 | Platform | Marketplace manifest | Per-plugin manifest | Skill content mirror | Rule / agent / hook mirror |
 |---|---|---|---|---|
-| Claude Code | `.claude-plugin/marketplace.json` | `_generated/<plugin>/.claude-plugin/plugin.json` | (via plugin install) | (via plugin install + activate.sh for rules) |
+| Claude Code | `.claude-plugin/marketplace.json` | `_generated/<plugin>/.claude-plugin/plugin.json` | (via plugin install) | rules consumed via filesystem (`.claude/rules/*.md`) — not a plugin component as of 2026-05-26 |
 | Codex | `.claude-plugin/marketplace.json` (legacy) + `.agents/plugins/marketplace.json` (canonical, Phase 5.5) | `_generated/<plugin>/.codex-plugin/plugin.json` | (via per-plugin manifest only — `.codex/skills/` retired 2026-05-25) | `.codex/agents/<name>.toml` (sub-agents); reads rules from `AGENTS.md`, `.cursor/`, `.windsurf/` |
 | Gemini | `gemini-extension.json` (root, for GitHub URL) or `.gemini/gemini-extension.json` (local) | n/a (extensions, not plugins) | `.gemini/skills/` | `.gemini/agents/<name>.md`, `.gemini/hooks/hooks.json`; reads rules from `GEMINI.md`, `AGENTS.md` |
 | Cursor | `.cursor-plugin/marketplace.json` (root, team-import) | `_generated/<plugin>/.cursor-plugin/plugin.json` (with `agents`/`commands`/`hooks`/`mcpServers` pointer fields) | `.agents/skills/` (primary) | `.cursor/rules/`, `.cursor/agents/<name>.md` |

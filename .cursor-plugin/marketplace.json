@@ -1,5 +1,6 @@
 {
   "name": "dgxsparklabs-marketplace",
+  "description": "Cross-platform AI agent skills, rules, and reference plugins for Claude Code, Codex, Gemini, Cursor, Windsurf, and Devin.",
   "plugins": [
     {
       "name": "agent-example",

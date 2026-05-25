@@ -6,14 +6,23 @@ Complements [document-lifecycle](../document-lifecycle/) (which covers agent-fac
 
 ## Install
 
-```bash
-# Native Claude Code plugin install:
-/plugin marketplace add DgxSparkLabs/marketplace
-/plugin install rule-readable-docs@dgxsparklabs-marketplace
+### Claude Code (filesystem only — not a plugin)
 
-# Then activate (one-time):
-bash ~/.claude/plugins/cache/dgxsparklabs-marketplace/rule-readable-docs/activate.sh
-```nFor other platforms (Devin, Cursor, Windsurf), see the auto-generated mirrors in `.cursor/rules/`, `.windsurf/rules/` after `git clone`.
+Per code.claude.com/docs/en/plugins-reference (2026-05-26), rules are not a Claude plugin component. Install into Claude's memory subsystem at `.claude/rules/` directly:
+
+```bash
+mkdir -p .claude/rules
+ln -s "$(pwd)/rules/readable-docs/rule.md" .claude/rules/readable-docs.md   # symlink (live updates)
+# or:
+cp rules/readable-docs/rule.md .claude/rules/readable-docs.md                # copy (portable)
+```
+
+For user-scope (every project on this machine), replace `.claude/rules/` with `~/.claude/rules/`. See `docs/USER_GUIDE.md` Claude section for the full operator workflow.
+
+### Cursor / Codex / Gemini / Windsurf
+
+`rule-readable-docs` IS still a plugin for these platforms. Install via the platform's native marketplace surface or clone the marketplace; the rule is auto-mirrored to `.cursor/rules/`, `.windsurf/rules/`, etc.
+
 
 ## What it enforces
 

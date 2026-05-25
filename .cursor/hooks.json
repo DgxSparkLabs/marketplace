@@ -1,9 +1,34 @@
 {
   "version": 1,
   "hooks": {
+    "sessionStart": [
+      {
+        "command": "printf '%s sessionStart fired\\n' \"$(date -u +%FT%TZ)\" >> /tmp/hook-fired-sessionstart.log"
+      }
+    ],
     "beforeSubmitPrompt": [
       {
-        "command": "printf '[Lab Notebook context: timestamp=%s]\\n' \"$(date -u +%FT%TZ)\""
+        "command": "ts=\"$(date -u +%FT%TZ)\"; printf '[Lab Notebook context: timestamp=%s]\\n' \"$ts\"; printf '%s userPromptSubmit fired\\n' \"$ts\" >> /tmp/hook-fired-userpromptsubmit.log"
+      }
+    ],
+    "preToolUse": [
+      {
+        "command": "printf '%s preToolUse %s\\n' \"$(date -u +%FT%TZ)\" \"${CLAUDE_TOOL_NAME:-unknown}\" >> /tmp/hook-fired-pretooluse.log"
+      }
+    ],
+    "postToolUse": [
+      {
+        "command": "printf '%s postToolUse %s\\n' \"$(date -u +%FT%TZ)\" \"${CLAUDE_TOOL_NAME:-unknown}\" >> /tmp/hook-fired-posttooluse.log"
+      }
+    ],
+    "stop": [
+      {
+        "command": "printf '%s stop fired\\n' \"$(date -u +%FT%TZ)\" >> /tmp/hook-fired-stop.log"
+      }
+    ],
+    "sessionEnd": [
+      {
+        "command": "printf '%s sessionEnd fired\\n' \"$(date -u +%FT%TZ)\" >> /tmp/hook-fired-sessionend.log"
       }
     ]
   }

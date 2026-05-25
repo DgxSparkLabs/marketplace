@@ -19,8 +19,9 @@ cd marketplace
 # macOS/Linux:    curl -LsSf https://astral.sh/uv/install.sh | sh
 # Windows (PS):   irm https://astral.sh/uv/install.ps1 | iex
 
-# 3. Run the test suite (52 tests; should all pass)
+# 3. Run the test suite (78 marketplace + 21 schema-fitness = 99 tests; should all pass)
 uv run tests/test_marketplace.py
+uv run tests/test_schema_fitness.py
 
 # 4. Regenerate manifests + mirrors from sources
 uv run scripts/generate_manifest.py
@@ -63,8 +64,8 @@ When you're ready to contribute changes back upstream:
 2. **Create a branch** from `main`: `git checkout -b your-branch-name`.
 3. **Make your changes** per the [[#Adding things]] section above.
 4. **Regenerate and check for drift**: `uv run scripts/generate_manifest.py --check`. This must exit 0.
-5. **Validate generated plugin manifests**: `claude plugin validate _generated/<your-plugin>` for each plugin you added or changed. Catches manifest errors before CI does.
-6. **Run the test suite**: `uv run tests/test_marketplace.py` (52 tests, all must pass).
+5. **Validate generated plugin manifests** (see [[#Running `claude plugin validate`]] below): `claude plugin validate _generated/<your-plugin>` for each plugin you added or changed, AND `claude plugin validate ./` for the marketplace as a whole. Both must produce zero warnings — CI gates on this via `.github/workflows/compat-validate.yml`.
+6. **Run the test suite**: `uv run tests/test_marketplace.py` (78 tests) AND `uv run tests/test_schema_fitness.py` (21 tests). Both must exit 0.
 7. **Open a PR** against `main`. See the [[#PR-only flow (never push to main)]] convention below.
 
 ## Testing
@@ -72,14 +73,60 @@ When you're ready to contribute changes back upstream:
 ### Running the test suite
 
 ```bash
-uv run tests/test_marketplace.py        # all 52 tests
+uv run tests/test_marketplace.py        # all 78 marketplace tests
+uv run tests/test_schema_fitness.py     # all 21 platform-schema-fitness tests
 uv run tests/test_marketplace.py -v     # verbose
 uv run tests/test_marketplace.py -k rule  # only rule-related tests
 ```
 
-Tests live in `tests/test_marketplace.py` and cover: directory structure, YAML frontmatter parity, catalog consistency, generator drift, manifest schema, per-platform per-plugin manifest emission, mirror dir hygiene (no leaked `.claude-plugin/`), and secret scanning. Always run before committing.
+Tests live in two files:
+
+- `tests/test_marketplace.py` (78 tests): directory structure, YAML frontmatter parity, catalog consistency, generator drift, manifest schema, per-platform per-plugin manifest emission, mirror dir hygiene (no leaked `.claude-plugin/`), secret scanning.
+- `tests/test_schema_fitness.py` (21 tests): per-platform schema fitness — validates emitted manifests against reference JSON Schemas captured directly from each platform's docs (Cursor `SkillConstruct` plugin.json, Gemini `AgentConstruct` frontmatter, Windsurf hooks event names + shape, Cursor hooks shape + `version` presence, Gemini hooks event-name vocabulary, marketplace.json description presence, LSP / monitor / theme / hook example schemas).
+
+Always run both before committing.
 
 The drift gate (`uv run scripts/generate_manifest.py --check`) runs in CI and exits 1 if regenerated output differs from committed output. Run it before pushing if you've changed anything under `scripts/`, `<construct>/`, or `MARKETPLACE.toml`/`catalog.toml`.
+
+### Running `claude plugin validate`
+
+This marketplace gates CI on `claude plugin validate ./` producing zero warnings (per `.github/workflows/compat-validate.yml`, added 2026-05-26). Contributors should run validate locally before pushing to catch warnings and errors the byte-identical drift check is blind to.
+
+**What it does**:
+
+```bash
+# Validate the entire marketplace (top-level marketplace.json + every per-plugin manifest)
+claude plugin validate ./
+
+# Validate one specific plugin
+claude plugin validate _generated/skill-my-skill
+```
+
+Per [code.claude.com/docs/en/plugins-reference#unrecognized-fields](https://code.claude.com/docs/en/plugins-reference#unrecognized-fields) (fetched 2026-05-26), Claude's validator catches misspelled field names, fields left over from other tools' manifests, and other schema-shape problems. `--strict` promotes any warning to an error (CI uses a portable equivalent: grep the output for `warning|error` and fail).
+
+**When to run it**:
+
+- After adding a new plugin (any construct type).
+- After editing any `<construct>/<plugin>/.claude-plugin/plugin.json`, `MARKETPLACE.toml` description, or any source file the generator inlines into `_generated/<plugin>/.claude-plugin/plugin.json`.
+- Before opening or updating a PR — CI will fail if your changes introduce any warning or error.
+
+**How CI enforces it**:
+
+The `.github/workflows/compat-validate.yml` workflow runs on every PR and push to `main`. It:
+
+1. Regenerates manifests from sources (`uv run scripts/generate_manifest.py`).
+2. Installs the Claude CLI via `./.github/actions/setup-claude`.
+3. Runs `claude plugin validate ./` and fails the build if the output contains any warning or error (case-insensitive grep).
+
+If CI fails here but the drift check passed, the offending file is one of: top-level `.claude-plugin/marketplace.json` (e.g., missing `description`), an inlined per-plugin `plugin.json` field name typo, or an unrecognized field the validator does not expect. Run validate locally to see the exact warning message; fix at source; regenerate; re-validate.
+
+**Common warnings and how to fix them**:
+
+| Warning | Cause | Fix |
+|---|---|---|
+| `description: No marketplace description provided` | Top-level `description` missing from `marketplace.json` | Add a `description` field to `MARKETPLACE.toml` — the generator propagates it to the top-level `.claude-plugin/marketplace.json`. |
+| `Unrecognized field "<name>"` in a `plugin.json` | Typo or stale field name | Compare against the [Claude plugin manifest schema](https://code.claude.com/docs/en/plugins-reference#manifest-schema); fix at the source file the generator copies. |
+| LSP / monitor / theme / hook schema errors | Source content uses an invented schema shape | See `docs/research/claude-qa-2026-05-26/RESEARCH.md` Findings 2-5 for canonical schemas with examples. |
 
 ### Running act-based verification
 

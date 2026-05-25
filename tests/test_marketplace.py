@@ -47,7 +47,15 @@ from constructs import (
     SkillConstruct,
     ThemeConstruct,
 )
-from platforms import PLATFORMS, AgentsPlatform, CodexPlatform, CursorPlatform, GeminiPlatform, WindsurfPlatform
+from platforms import (
+    PLATFORMS,
+    AgentsPlatform,
+    ClaudeCodePlatform,
+    CodexPlatform,
+    CursorPlatform,
+    GeminiPlatform,
+    WindsurfPlatform,
+)
 from utils import CATALOG, MARKETPLACE_JSON, scan_source_dir
 
 MARKETPLACE_TOML = REPO_ROOT / "MARKETPLACE.toml"
@@ -144,10 +152,17 @@ class TestGeneratedPlugins(unittest.TestCase):
                     )
 
     def test_bundle_dependencies_resolve_to_real_plugins(self):
-        """Every catalog bundle's dependencies must resolve to real plugin files."""
+        """Every catalog bundle's NON-RULE dependencies must resolve to real
+        Claude plugin files. Rule-* deps are intentionally absent from the
+        Claude marketplace post-F8 (RESEARCH.md, 2026-05-26); they are
+        filtered out before emission. The raw catalog deps may still
+        reference rule-* (for Cursor/Codex consumers), but those don't
+        appear in the emitted bundle's Claude plugin.json dependencies."""
         for bundle in load_bundles(CATALOG, CONSTRUCTS):
             deps = bundle.resolve_dependencies(CONSTRUCTS)
             for dep_name in deps:
+                if dep_name.startswith("rule-"):
+                    continue
                 with self.subTest(bundle=bundle.name, dep=dep_name):
                     self.assertTrue(
                         Path(f"_generated/{dep_name}/.claude-plugin/plugin.json").exists(),
@@ -155,8 +170,15 @@ class TestGeneratedPlugins(unittest.TestCase):
                     )
 
     def test_individual_plugin_name_matches_prefix_and_source(self):
-        """Each individual plugin's name field must equal <prefix>-<source_name>."""
+        """Each individual plugin's name field must equal <prefix>-<source_name>.
+
+        RuleConstruct is excluded per F8 — rules don't get a
+        .claude-plugin/plugin.json since they are not a Claude plugin
+        component (see ClaudeCodePlatform.supports docstring).
+        """
         for construct in CONSTRUCTS.values():
+            if type(construct) not in ClaudeCodePlatform.supports:
+                continue
             for name in scan_source_dir(construct.source_directory):
                 plugin_path = REPO_ROOT / "_generated" / f"{construct.prefix}-{name}" / ".claude-plugin" / "plugin.json"
                 with self.subTest(construct=construct.prefix, name=name):
@@ -166,19 +188,46 @@ class TestGeneratedPlugins(unittest.TestCase):
                         f"Plugin name mismatch for {construct.prefix}-{name}",
                     )
 
+    def test_rule_plugins_have_no_claude_plugin_manifest(self):
+        """Per F8 (RESEARCH.md, 2026-05-26): rules are not a Claude plugin
+        component. The 22 ``_generated/rule-<name>/.claude-plugin/`` dirs
+        that used to be emitted are gone. The dir itself still exists
+        because Cursor / Codex per-platform manifests live inside it."""
+        rule = next(c for c in CONSTRUCTS.values() if isinstance(c, RuleConstruct))
+        for name in scan_source_dir(rule.source_directory):
+            with self.subTest(rule=name):
+                claude_plugin_dir = REPO_ROOT / "_generated" / f"rule-{name}" / ".claude-plugin"
+                self.assertFalse(
+                    claude_plugin_dir.exists(),
+                    f"rule-{name}/.claude-plugin/ must not exist (F8 retired "
+                    "rule emission for Claude — see "
+                    "docs/research/claude-qa-2026-05-26/RESEARCH.md F8)",
+                )
+                activate_path = REPO_ROOT / "_generated" / f"rule-{name}" / "activate.sh"
+                self.assertFalse(
+                    activate_path.exists(),
+                    f"rule-{name}/activate.sh must not exist (orphaned by F8)",
+                )
+
 
 # ─── TestCatchAllBundles ──────────────────────────────────────────────────────
 
 class TestCatchAllBundles(unittest.TestCase):
-    """Code-generated bundle-<prefix>-all bundles — integration tests."""
+    """Code-generated bundle-<prefix>-all bundles — integration tests.
 
-    def test_catchall_present_for_each_construct_with_sources(self):
-        """bundle-<prefix>-all must exist iff the construct has at least one source."""
+    Catch-alls only exist for constructs in ClaudeCodePlatform.supports
+    (F8 retired bundle-rule-all because rules are not a Claude plugin
+    component — see RESEARCH.md F8, 2026-05-26)."""
+
+    def test_catchall_present_for_each_claude_construct_with_sources(self):
+        """bundle-<prefix>-all must exist iff the construct is in
+        ClaudeCodePlatform.supports AND has at least one source."""
         for construct in CONSTRUCTS.values():
             sources = scan_source_dir(construct.source_directory)
             catchall_path = REPO_ROOT / "_generated" / f"bundle-{construct.prefix}-all" / ".claude-plugin" / "plugin.json"
             with self.subTest(construct=construct.prefix):
-                if sources:
+                is_claude_plugin = type(construct) in ClaudeCodePlatform.supports
+                if sources and is_claude_plugin:
                     self.assertTrue(
                         catchall_path.exists(),
                         f"Catch-all missing for {construct.prefix} (sources present: {sources})",
@@ -186,12 +235,16 @@ class TestCatchAllBundles(unittest.TestCase):
                 else:
                     self.assertFalse(
                         catchall_path.exists(),
-                        f"Catch-all should be absent for {construct.prefix} (no sources)",
+                        f"Catch-all should be absent for {construct.prefix} "
+                        f"(sources present: {bool(sources)}, "
+                        f"claude_plugin: {is_claude_plugin})",
                     )
 
     def test_catchall_deps_match_all_sources(self):
         """Each catch-all bundle's deps must equal exactly every instance of that construct."""
         for construct in CONSTRUCTS.values():
+            if type(construct) not in ClaudeCodePlatform.supports:
+                continue
             sources = scan_source_dir(construct.source_directory)
             if not sources:
                 continue
@@ -303,6 +356,20 @@ class TestMarketplaceJson(unittest.TestCase):
         self.assertIn("plugins", data)
         self.assertIn("owner", data)
 
+    def test_marketplace_json_has_top_level_description(self):
+        """Per code.claude.com/docs/en/plugin-marketplaces#marketplace-schema
+        (fetched 2026-05-26), ``description`` is an optional top-level field;
+        omitting it triggers ``claude plugin validate`` warning. We always
+        emit it (sourced from MARKETPLACE.toml) so the validator is clean."""
+        data = load_marketplace_json()
+        self.assertIn(
+            "description", data,
+            ".claude-plugin/marketplace.json missing top-level 'description' "
+            "field — claude plugin validate will warn",
+        )
+        self.assertIsInstance(data["description"], str)
+        self.assertGreater(len(data["description"]), 0)
+
     def test_marketplace_entries_have_required_fields(self):
         """Every marketplace.json entry must have all required fields."""
         required = {"name", "source", "description", "version", "author", "category"}
@@ -326,22 +393,38 @@ class TestMarketplaceJson(unittest.TestCase):
         self.assertEqual(actual_order, expected_order, "marketplace.json entries are not sorted")
 
     def test_marketplace_lists_all_expected_plugins(self):
-        """Marketplace must list exactly: all individuals + catalog bundles + catch-alls."""
+        """Marketplace must list exactly: individuals in
+        ClaudeCodePlatform.supports + catalog bundles with at least one
+        non-rule member + catch-alls for Claude-supported constructs.
+
+        F8 (RESEARCH.md, 2026-05-26): RuleConstruct is excluded; bundles
+        whose entire membership is rule-* are dropped; mixed bundles shed
+        their rule-* deps.
+        """
         manifest = load_marketplace_json()
         actual_names = {e["name"] for e in manifest["plugins"]}
 
-        # Individual construct plugins
         expected: set[str] = set()
+
+        # Individual construct plugins (Claude-supported only)
         for construct in CONSTRUCTS.values():
+            if type(construct) not in ClaudeCodePlatform.supports:
+                continue
             for name in scan_source_dir(construct.source_directory):
                 expected.add(f"{construct.prefix}-{name}")
 
-        # Catalog bundles
+        # Catalog bundles: drop bundles whose deps are entirely rule-*
         for bundle in load_bundles(CATALOG, CONSTRUCTS):
+            deps = bundle.resolve_dependencies(CONSTRUCTS)
+            non_rule_deps = [d for d in deps if not d.startswith("rule-")]
+            if not non_rule_deps:
+                continue
             expected.add(f"bundle-{bundle.name}")
 
-        # Code-generated catch-alls
+        # Code-generated catch-alls (Claude-supported only)
         for construct in CONSTRUCTS.values():
+            if type(construct) not in ClaudeCodePlatform.supports:
+                continue
             if scan_source_dir(construct.source_directory):
                 expected.add(f"bundle-{construct.prefix}-all")
 
@@ -354,19 +437,25 @@ class TestNoOrphanedConstructs(unittest.TestCase):
     """Every construct instance appears in at least one bundle — integration."""
 
     def test_every_construct_in_at_least_one_bundle(self):
-        """Every individual plugin must be reachable via some bundle."""
+        """Every Claude-supported individual plugin must be reachable via
+        some bundle. Rule-* are excluded post-F8 — see RESEARCH.md F8."""
         all_bundle_deps: set[str] = set()
         # Catalog bundles
         for bundle in load_bundles(CATALOG, CONSTRUCTS):
             all_bundle_deps.update(bundle.resolve_dependencies(CONSTRUCTS))
         # Code-generated catch-alls (decision #23) — these include everything
+        # for Claude-supported constructs only (F8 excludes RuleConstruct).
         for construct in CONSTRUCTS.values():
+            if type(construct) not in ClaudeCodePlatform.supports:
+                continue
             all_bundle_deps.update(
                 f"{construct.prefix}-{n}"
                 for n in scan_source_dir(construct.source_directory)
             )
-        # Every instance must be in the union
+        # Every Claude-supported instance must be in the union
         for construct in CONSTRUCTS.values():
+            if type(construct) not in ClaudeCodePlatform.supports:
+                continue
             for name in scan_source_dir(construct.source_directory):
                 plugin_name = f"{construct.prefix}-{name}"
                 with self.subTest(plugin=plugin_name):
@@ -447,18 +536,30 @@ class TestConstructRegistry(unittest.TestCase):
 # ─── TestPluginCount ──────────────────────────────────────────────────────────
 
 class TestPluginCount(unittest.TestCase):
-    """Plugin count formula — integration test (replaces hardcoded == 81)."""
+    """Plugin count formula — integration test.
+
+    Count = claude_individuals + non_rule_catalog_bundles + claude_catchalls.
+    F8 (RESEARCH.md, 2026-05-26) excludes RuleConstruct from the count.
+    """
 
     def test_marketplace_count_matches_expected_formula(self):
-        """Count = individuals + catalog_bundles + catch-alls (one per construct with sources)."""
         manifest = load_marketplace_json()
         individuals = sum(
-            len(scan_source_dir(c.source_directory)) for c in CONSTRUCTS.values()
+            len(scan_source_dir(c.source_directory))
+            for c in CONSTRUCTS.values()
+            if type(c) in ClaudeCodePlatform.supports
         )
-        catalog_bundles = len(load_bundles(CATALOG, CONSTRUCTS))
+        catalog_bundles = sum(
+            1 for b in load_bundles(CATALOG, CONSTRUCTS)
+            if any(
+                not d.startswith("rule-")
+                for d in b.resolve_dependencies(CONSTRUCTS)
+            )
+        )
         catchalls = sum(
             1 for c in CONSTRUCTS.values()
-            if scan_source_dir(c.source_directory)
+            if type(c) in ClaudeCodePlatform.supports
+            and scan_source_dir(c.source_directory)
         )
         expected = individuals + catalog_bundles + catchalls
         self.assertEqual(
@@ -567,34 +668,6 @@ class TestMarketplaceToml(unittest.TestCase):
             )
         # Must have bundle entries
         self.assertIn("bundle", cat, "catalog.toml must have [bundle.*] entries")
-
-
-# ─── TestActivateScripts ──────────────────────────────────────────────────────
-
-class TestActivateScripts(unittest.TestCase):
-    """Generated activate.sh scripts are well-formed — contract tests."""
-
-    def test_activate_scripts_have_shebang(self):
-        rule = next(c for c in CONSTRUCTS.values() if isinstance(c, RuleConstruct))
-        for name in scan_source_dir(rule.source_directory):
-            activate = REPO_ROOT / "_generated" / f"rule-{name}" / "activate.sh"
-            with self.subTest(rule=name):
-                first_line = activate.read_text(encoding="utf-8").splitlines()[0]
-                self.assertTrue(
-                    first_line.startswith("#!"),
-                    f"rule-{name}/activate.sh missing shebang",
-                )
-
-    def test_activate_scripts_use_strict_bash(self):
-        rule = next(c for c in CONSTRUCTS.values() if isinstance(c, RuleConstruct))
-        for name in scan_source_dir(rule.source_directory):
-            activate = REPO_ROOT / "_generated" / f"rule-{name}" / "activate.sh"
-            with self.subTest(rule=name):
-                text = activate.read_text(encoding="utf-8")
-                self.assertIn(
-                    "set -euo pipefail", text,
-                    f"rule-{name}/activate.sh missing 'set -euo pipefail'",
-                )
 
 
 # ─── TestPerPlatformManifests ─────────────────────────────────────────────────

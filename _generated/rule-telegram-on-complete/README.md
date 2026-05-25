@@ -8,14 +8,23 @@ Unlike a skill (which must be invoked), this is a **rule** — it activates auto
 
 ## Install
 
-```bash
-# Native Claude Code plugin install:
-/plugin marketplace add DgxSparkLabs/marketplace
-/plugin install rule-telegram-on-complete@dgxsparklabs-marketplace
+### Claude Code (filesystem only — not a plugin)
 
-# Then activate (one-time):
-bash ~/.claude/plugins/cache/dgxsparklabs-marketplace/rule-telegram-on-complete/activate.sh
-```nFor other platforms (Devin, Cursor, Windsurf), see the auto-generated mirrors in `.cursor/rules/`, `.windsurf/rules/` after `git clone`.
+Per code.claude.com/docs/en/plugins-reference (2026-05-26), rules are not a Claude plugin component. Install into Claude's memory subsystem at `.claude/rules/` directly:
+
+```bash
+mkdir -p .claude/rules
+ln -s "$(pwd)/rules/telegram-on-complete/rule.md" .claude/rules/telegram-on-complete.md   # symlink (live updates)
+# or:
+cp rules/telegram-on-complete/rule.md .claude/rules/telegram-on-complete.md                # copy (portable)
+```
+
+For user-scope (every project on this machine), replace `.claude/rules/` with `~/.claude/rules/`. See `docs/USER_GUIDE.md` Claude section for the full operator workflow.
+
+### Cursor / Codex / Gemini / Windsurf
+
+`rule-telegram-on-complete` IS still a plugin for these platforms. Install via the platform's native marketplace surface or clone the marketplace; the rule is auto-mirrored to `.cursor/rules/`, `.windsurf/rules/`, etc.
+
 
 ## What it enforces
 

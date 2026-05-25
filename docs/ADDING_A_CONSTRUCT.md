@@ -50,9 +50,12 @@ The marketplace supports 10 plugin construct types. The contribution workflow is
 5. **Test**:
    ```bash
    uv run tests/test_marketplace.py
+   uv run tests/test_schema_fitness.py
    ```
 
-6. **Commit** with a conventional commit message. No AI co-author attribution (`rules/no-ai-credit/`).
+6. **Validate**: run `claude plugin validate _generated/<your-prefix>-<your-name>` for your new plugin and `claude plugin validate ./` for the marketplace as a whole. Both must produce zero warnings — CI gates on this. See [`../CONTRIBUTING.md`](../CONTRIBUTING.md#running-claude-plugin-validate) for the full validate workflow, common warnings, and how the CI gate is wired.
+
+7. **Commit** with a conventional commit message. No AI co-author attribution (`rules/no-ai-credit/`).
 
 ## Adding a new bundle
 
@@ -85,11 +88,14 @@ Plugin name: `bundle-my-domain-skills@dgxsparklabs-marketplace`.
 /plugin install bundle-<prefix>-all@dgxsparklabs-marketplace
 ```
 
-**Rules require an extra step** after install (Claude Code limitation — rules aren't installable natively):
+**Rules are not a Claude plugin component** (per `code.claude.com/docs/en/plugins-reference#plugin-components-reference`, 2026-05-26). For Claude, install rules into the memory subsystem by symlinking or copying into `.claude/rules/`:
 ```bash
-/plugin install rule-my-rule@dgxsparklabs-marketplace
-bash ~/.claude/plugins/cache/dgxsparklabs-marketplace/rule-my-rule/activate.sh
+mkdir -p .claude/rules
+ln -s "$(pwd)/rules/my-rule/rule.md" .claude/rules/my-rule.md
+# Or copy for portability:
+cp rules/my-rule/rule.md .claude/rules/my-rule.md
 ```
+Cursor / Windsurf / Codex / Gemini still install rule plugins via their respective marketplaces — only Claude's plugin path was retired. See `docs/USER_GUIDE.md` Claude section for the full operator workflow.
 
 ## Architecture context
 

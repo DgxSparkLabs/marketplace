@@ -4,72 +4,61 @@ A working reference plugin demonstrating the **rule** construct type. Copy this 
 
 ## What it does
 
-Ships an always-on behavioral rule that gets symlinked into Claude Code's `.claude/rules/` directory. Once activated, the rule's text is loaded into Claude's context at every session start.
+Ships an always-on behavioral rule. The rule gets emitted to per-platform mirrors that Cursor / Codex / Gemini / Windsurf consume directly. For Claude Code, the rule is installed into the memory subsystem at `.claude/rules/` (rules are not a Claude plugin component as of 2026-05-26).
 
-Install:
+## Install
+
+### Claude Code (filesystem only — not a plugin)
+
+Per `code.claude.com/docs/en/plugins-reference#plugin-components-reference` (fetched 2026-05-26), rules are not a Claude plugin component. Install into Claude's memory subsystem at `.claude/rules/` directly:
+
+```bash
+# Project scope (live updates if symlinked)
+mkdir -p .claude/rules
+ln -s "$(pwd)/rules/example/rule.md" .claude/rules/example.md
+
+# Or copy for portability:
+cp rules/example/rule.md .claude/rules/example.md
+
+# User scope (every project on this machine)
+mkdir -p ~/.claude/rules
+cp rules/example/rule.md ~/.claude/rules/example.md
 ```
-/plugin install example-rule@dgxsparklabs-marketplace
-```
 
-Then activate (one-time):
-```
-bash ~/.claude/plugins/cache/dgxsparklabs-marketplace/example-rule/activate.sh
-```
+See `docs/USER_GUIDE.md` Claude section for the full operator workflow and the rationale.
 
-After that, Claude Code loads the rule automatically every session.
+### Cursor / Codex / Gemini / Windsurf (still a plugin)
 
-## Why two steps?
+For these platforms `rule-example` IS a plugin — install via the platform's native marketplace surface (`codex plugin add rule-example@dgxsparklabs-marketplace`, Cursor `/add-plugin rule-example@<url>`, etc.). See `docs/USER_GUIDE.md` per-platform sections.
 
-Claude Code's `/plugin install` does not natively install rules — there is no `rules` field in `plugin.json`. The workaround is to ship the rule file inside a plugin, then provide an `activate.sh` that symlinks it into `.claude/rules/`. Once symlinked, future plugin updates automatically propagate (the symlink points back into the plugin cache).
-
-See `docs/archive/phase-1-compliance/INVESTIGATION_PLUGIN_DEPENDENCIES.md` and `docs/archive/phase-1-compliance/PLAN_PLUGIN_COMPLIANCE.md` (the rules architecture section) for the full rationale.
+After install, Cursor reads `.cursor/rules/example.md`, Windsurf reads `.windsurf/rules/example.md`, and Codex/Gemini read the file through their per-plugin manifest pointers.
 
 ## File-by-file walkthrough
 
 ```
-example-rule/
-├── .claude-plugin/
-│   └── plugin.json        ← plugin manifest (Claude Code reads this)
-├── rules/
-│   └── example-rule.md    ← the actual rule body (symlinked into .claude/rules/)
-├── activate.sh            ← one-shot helper that creates the symlink
-└── README.md              ← human-facing tutorial (you are here)
+example/
+├── rule.md           ← the actual rule body (single source of truth)
+├── formats/          ← per-platform format variants (if any) — auto-generated where missing
+└── README.md         ← human-facing tutorial (you are here)
 ```
 
-### `.claude-plugin/plugin.json`
-
-A minimal manifest. Notably **no `skills`, `commands`, `agents`, or other component fields** — the rule content is loaded via the `.claude/rules/` symlink, not via any plugin auto-discovery.
-
-### `rules/example-rule.md`
-
-The actual rule. Plain markdown. Short, imperative, focused on one behavior. The filename you choose here becomes the filename in `.claude/rules/` after activation.
-
-### `activate.sh`
-
-A small shell script that symlinks every `*.md` file in `rules/` into the target rules directory (`.claude/rules/` by default). Symlinks (not copies) so future plugin updates propagate.
-
-If the project does not yet have `.claude/rules/`, the script creates it.
-
-To activate into a different location (e.g., user-global rules at `~/.claude/rules/`):
-```
-bash activate.sh ~/.claude/rules
-```
+The generator emits `_generated/rule-example/rules/example.md` (for Cursor/Codex/Gemini per-plugin manifests) and mirrors the rule into `.cursor/rules/example.md`, `.windsurf/rules/example.md`, and `.agents/rules/example.md` (forward-looking convergence) on every `uv run scripts/generate_manifest.py` run.
 
 ## To make your own rule from this template
 
-1. Copy this directory: `cp -r examples/example-rule rules/my-rule`
+1. Copy this directory: `cp -r rules/example rules/my-rule`
 2. Rename `my-rule` to whatever you want (kebab-case).
-3. Edit `.claude-plugin/plugin.json` — update `name`, `description`, `homepage`, `keywords`.
-4. Replace `rules/example-rule.md` with your rule body. Filename should match your rule name.
-5. `activate.sh` does not need changes — it globs `*.md` from the `rules/` subdirectory.
-6. Add your rule name to a domain in `catalog.toml` under `[rule_domain.<domain>]`.
-7. Run `uv run scripts/generate_manifest.py` to refresh manifests.
+3. Edit `rule.md` with your behavioral guideline. Keep it short, imperative, focused on one behavior.
+4. Edit `README.md` to describe your rule (used as the per-plugin description in Cursor/Codex manifests).
+5. Add your rule name to a domain in `catalog.toml` if you want a domain bundle to include it.
+6. Run `uv run scripts/generate_manifest.py` to refresh manifests.
+7. Run `uv run tests/test_marketplace.py` and `uv run tests/test_schema_fitness.py`.
 8. Commit.
 
 ## Related
 
 - Full rule format reference: `docs/RULE_FORMAT.md`
-- Investigation of rule installation alternatives: `docs/archive/phase-1-compliance/INVESTIGATION_PLUGIN_DEPENDENCIES.md`
-- Other example plugins: `examples/example-*`
+- User-facing install workflow: `docs/USER_GUIDE.md`
+- Per-platform technical reference: `docs/PLATFORMS.md` (Claude rule discovery section)
+- Other example plugins: `<construct>/example/`
 - Real rules shipped by this marketplace: `rules/`
-- Repo-root bulk activator: `activate-installed-rules.sh` (symlinks every installed rule plugin's rules at once)

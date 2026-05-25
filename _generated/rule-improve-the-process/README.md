@@ -4,14 +4,23 @@ Every session should leave the workflow better than it found it. Fix friction st
 
 ## Install
 
-```bash
-# Native Claude Code plugin install:
-/plugin marketplace add DgxSparkLabs/marketplace
-/plugin install rule-improve-the-process@dgxsparklabs-marketplace
+### Claude Code (filesystem only — not a plugin)
 
-# Then activate (one-time):
-bash ~/.claude/plugins/cache/dgxsparklabs-marketplace/rule-improve-the-process/activate.sh
-```nFor other platforms (Devin, Cursor, Windsurf), see the auto-generated mirrors in `.cursor/rules/`, `.windsurf/rules/` after `git clone`.
+Per code.claude.com/docs/en/plugins-reference (2026-05-26), rules are not a Claude plugin component. Install into Claude's memory subsystem at `.claude/rules/` directly:
+
+```bash
+mkdir -p .claude/rules
+ln -s "$(pwd)/rules/improve-the-process/rule.md" .claude/rules/improve-the-process.md   # symlink (live updates)
+# or:
+cp rules/improve-the-process/rule.md .claude/rules/improve-the-process.md                # copy (portable)
+```
+
+For user-scope (every project on this machine), replace `.claude/rules/` with `~/.claude/rules/`. See `docs/USER_GUIDE.md` Claude section for the full operator workflow.
+
+### Cursor / Codex / Gemini / Windsurf
+
+`rule-improve-the-process` IS still a plugin for these platforms. Install via the platform's native marketplace surface or clone the marketplace; the rule is auto-mirrored to `.cursor/rules/`, `.windsurf/rules/`, etc.
+
 
 ## What it does
 

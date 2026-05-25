@@ -1,9 +1,9 @@
 {
-  "lspServers": {
-    "example-markdown": {
-      "command": "marksman",
-      "args": ["server"],
-      "fileExtensions": [".md"]
+  "markdown": {
+    "command": "marksman",
+    "args": ["server"],
+    "extensionToLanguage": {
+      ".md": "markdown"
     }
   }
 }
