@@ -316,7 +316,29 @@ class CursorPlatform:
             if src_agents.exists():
                 for agent_md in sorted(src_agents.glob("*.md")):
                     shutil.copy(agent_md, agents_dir / agent_md.name)
-        # Command/Hook/MCP: no mirror branch — surfaced through Phase 1.5
+        elif isinstance(construct, HookConstruct):
+            # TODO: with multiple hook plugins, this last-writer-wins overwrite.
+            # Add merge semantics (concatenate hooks arrays) when a second hook
+            # plugin lands.
+            #
+            # Convert from Claude shape: event names (UserPromptSubmit etc.)
+            # are renamed via CLAUDE_TO_CURSOR_EVENTS (beforeSubmitPrompt etc.)
+            # and the doubly-nested ``hooks.<event>[].hooks[]`` shape is
+            # flattened to Cursor's ``hooks.<event>[]`` with a top-level
+            # ``version: 1`` per cursor.com/docs/agent/hooks (fetched
+            # 2026-05-25). Without this, the file loads but no hook fires
+            # (docs/research/qa-bug-fixes-2026-05/RESEARCH.md Q1, QA
+            # 2026-05-25).
+            from converters.hooks_to_cursor import claude_hooks_to_cursor_hooks
+
+            self.mirror_directory.mkdir(parents=True, exist_ok=True)
+            src = construct.source_directory / name / "hooks" / "hooks.json"
+            (self.mirror_directory / "hooks.json").write_text(
+                claude_hooks_to_cursor_hooks(src.read_text(encoding="utf-8")),
+                encoding="utf-8",
+                newline="",
+            )
+        # Command/MCP: no mirror branch — surfaced through Phase 1.5
         # .cursor-plugin/plugin.json auto-discovery only.
         # Skills are served from .agents/ (AgentsPlatform); no .cursor/skills/ needed.
 
