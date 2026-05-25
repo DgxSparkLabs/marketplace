@@ -303,6 +303,20 @@ class TestMarketplaceJson(unittest.TestCase):
         self.assertIn("plugins", data)
         self.assertIn("owner", data)
 
+    def test_marketplace_json_has_top_level_description(self):
+        """Per code.claude.com/docs/en/plugin-marketplaces#marketplace-schema
+        (fetched 2026-05-26), ``description`` is an optional top-level field;
+        omitting it triggers ``claude plugin validate`` warning. We always
+        emit it (sourced from MARKETPLACE.toml) so the validator is clean."""
+        data = load_marketplace_json()
+        self.assertIn(
+            "description", data,
+            ".claude-plugin/marketplace.json missing top-level 'description' "
+            "field — claude plugin validate will warn",
+        )
+        self.assertIsInstance(data["description"], str)
+        self.assertGreater(len(data["description"]), 0)
+
     def test_marketplace_entries_have_required_fields(self):
         """Every marketplace.json entry must have all required fields."""
         required = {"name", "source", "description", "version", "author", "category"}

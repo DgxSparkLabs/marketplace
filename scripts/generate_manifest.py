@@ -75,6 +75,7 @@ def _write_marketplace_json(entries: list[dict]) -> None:
     manifest = {
         "name": _marketplace_name(),
         "owner": _marketplace_author(),
+        "description": _marketplace_description(),
         "plugins": entries,
     }
     MARKETPLACE_JSON.parent.mkdir(parents=True, exist_ok=True)
@@ -243,6 +244,7 @@ def main() -> None:
     cursor_plugin_entries.sort(key=lambda e: e["name"])
     cursor_marketplace = {
         "name": _marketplace_name(),
+        "description": _marketplace_description(),
         "plugins": cursor_plugin_entries,
     }
     cursor_plugin_dir = REPO_ROOT / ".cursor-plugin"

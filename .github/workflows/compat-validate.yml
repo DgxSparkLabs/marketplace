@@ -1,0 +1,49 @@
+name: Compat — Validate (no warnings)
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main, "feat/**", "claude/**"]
+  workflow_dispatch:
+
+concurrency:
+  group: '${{ github.workflow }}-${{ github.ref }}'
+  cancel-in-progress: true
+
+jobs:
+  validate-no-warnings:
+    # CI gate: claude plugin validate must produce zero warnings.
+    # Catches marketplace.json schema drift (e.g. missing top-level
+    # description) that the byte-diff drift check is blind to. Per
+    # code.claude.com/docs/en/plugins-reference#unrecognized-fields
+    # (2026-05-26): "Pass --strict to treat warnings as errors. Use it
+    # in CI to catch a misspelled field name or a field left over from
+    # another tool's manifest before publishing".
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: astral-sh/setup-uv@v4
+        with:
+          version: "latest"
+
+      - name: Regenerate manifests from sources
+        run: uv run scripts/generate_manifest.py
+
+      - uses: ./.github/actions/setup-claude
+        id: claude
+
+      - name: Validate marketplace (fail on any warning)
+        run: |
+          out=$(claude plugin validate ./ 2>&1)
+          echo "$out"
+          # Fail the build if any warning OR error appears in the output.
+          # claude plugin validate exits 0 on warnings-only; we promote
+          # warnings to errors here. --strict would also work but is
+          # unavailable in some Claude CLI versions, so we grep the
+          # human-readable output as a portable fallback.
+          if echo "$out" | grep -qiE 'warning|error'; then
+            echo "ERROR: validate output contains warning(s) or error(s)"
+            exit 1
+          fi
