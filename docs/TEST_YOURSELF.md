@@ -232,6 +232,30 @@ claude --version
 
 Marketplace registration, listing, and install are auth-free (verified by `act`-based CI). `claude auth login` is only required if you actually use Claude for chat — not for the QA flow here.
 
+### Hermetic Claude session (no auth required)
+
+For verifying F5 / F7 / F9 in CI or on a host with no Anthropic account, run Claude against a local stub server that returns Anthropic-shape responses. Hooks fire before the API call, slash commands resolve client-side, and output-style content appears verbatim in the request body — all three become observable from the stub's access log + captured bodies + sentinel files. F4 (theme visual distinctness) still requires interactive auth because it's a TTY paint operation with no observable in the request stream.
+
+Inside the container after installing Claude:
+
+```bash
+# 1. Install the stub's only dependency.
+apt-get update && apt-get install -y python3-flask
+
+# 2. Pick which stub to run.
+#    Use stub.py for F5 (sentinel files are the observable).
+#    Use stub_body_dumper.py for F7 / F9 (request bodies need grepping).
+python3 tests/fixtures/claude-stub/stub.py > /tmp/stub-server.log 2>&1 &
+sleep 1   # wait for Flask to bind
+
+# 3. Point Claude at the stub.
+export ANTHROPIC_BASE_URL=http://127.0.0.1:8088
+export ANTHROPIC_AUTH_TOKEN=stub            # any non-empty value works
+export API_TIMEOUT_MS=20000                 # fail fast on stub bugs
+```
+
+Now any `claude` invocation routes through the stub. Each affected validation below has a "Hermetic verification" sub-step you can use in place of the interactive-auth step. The stub's source + per-env-var details live at `tests/fixtures/claude-stub/README.md`. CI runs the same recipe in `.github/workflows/compat-headless-claude.yml`.
+
 ### Marketplace registration
 
 Use the `claude` CLI directly — these commands are scriptable and work in headless containers (the equivalent `/plugin ...` slash commands require the interactive Claude session UI).
@@ -343,27 +367,37 @@ This arc fixed 6 example-plugin bugs and retired Claude rule emission. The hands
 - [ ] **Persistence check**: `cat ~/.claude/settings.json | grep theme` shows `custom:theme-example:lab-notebook` (per `code.claude.com/docs/en/plugins-reference#themes`).
 
 #### Claude validation 5a — UserPromptSubmit hook firing (F5)
-- [ ] **Action**: with `hook-example` installed, submit any prompt in a `claude` session. In another terminal: `tail /tmp/hook-fired-userpromptsubmit.log`.
+- [ ] **Hermetic verification** (run the stub session above first): `rm -f /tmp/hook-fired-userpromptsubmit.log && echo "test prompt" | claude --print && test -s /tmp/hook-fired-userpromptsubmit.log`.
+- [ ] **Expected (hermetic)**: exit 0; the sentinel file exists and contains a `<UTC-ISO-timestamp> userPromptSubmit fired` line.
+- [ ] **Action (interactive)**: with `hook-example` installed, submit any prompt in a `claude` session. In another terminal: `tail /tmp/hook-fired-userpromptsubmit.log`.
 - [ ] **Expected**: a new line in the form `<UTC-ISO-timestamp> userPromptSubmit fired` (the hook command writes the sentinel). The injected `[Lab Notebook context: timestamp=...]` line goes into Claude's prompt context — not visible at the operator terminal by design; `claude --debug` reveals it.
 
 #### Claude validation 5b — SessionStart hook firing (F5)
-- [ ] **Action**: restart `claude` in the project (exit + re-enter, or open a new session). In another terminal: `tail /tmp/hook-fired-sessionstart.log`.
+- [ ] **Hermetic verification**: `rm -f /tmp/hook-fired-sessionstart.log && echo "x" | claude --print && test -s /tmp/hook-fired-sessionstart.log`.
+- [ ] **Expected (hermetic)**: exit 0; sentinel contains a `sessionStart fired` line. A fresh `claude --print` invocation is a fresh session, so SessionStart always fires.
+- [ ] **Action (interactive)**: restart `claude` in the project (exit + re-enter, or open a new session). In another terminal: `tail /tmp/hook-fired-sessionstart.log`.
 - [ ] **Expected**: a new line with the session-start timestamp.
 
 #### Claude validation 5c — PreToolUse hook with matcher (F5)
-- [ ] **Action**: ask Claude to edit any file (e.g., "edit README.md and add a blank line at the bottom"). In another terminal: `tail /tmp/hook-fired-pretooluse.log`.
+- [ ] **Hermetic verification (partial)**: PreToolUse only fires when Claude returns a `tool_use` content block. The default `stub.py` returns text-only, so this hook does NOT fire under hermetic — extending the stub to emit a canned `Edit` tool_use block is future work. Use the interactive step for now.
+- [ ] **Action (interactive)**: ask Claude to edit any file (e.g., "edit README.md and add a blank line at the bottom"). In another terminal: `tail /tmp/hook-fired-pretooluse.log`.
 - [ ] **Expected**: a line like `<UTC-ISO-timestamp> preToolUse Edit` (or `preToolUse Write`). The matcher `Write|Edit` in `hooks.json` gates which tool calls trigger this hook.
 
 #### Claude validation 5d — PostToolUse hook firing (F5)
-- [ ] **Action**: same edit as 5c. After the tool call completes: `tail /tmp/hook-fired-posttooluse.log`.
+- [ ] **Hermetic verification (partial)**: same caveat as 5c — needs the stub to return a `tool_use` block. Use the interactive step.
+- [ ] **Action (interactive)**: same edit as 5c. After the tool call completes: `tail /tmp/hook-fired-posttooluse.log`.
 - [ ] **Expected**: mirror line right after the PreToolUse entry (`<ts> postToolUse Edit` or `postToolUse Write`).
 
 #### Claude validation 5e — Stop hook firing (F5)
-- [ ] **Action**: ask Claude any question and wait for the response to complete. Then: `tail /tmp/hook-fired-stop.log`.
+- [ ] **Hermetic verification**: `rm -f /tmp/hook-fired-stop.log && echo "x" | claude --print && test -s /tmp/hook-fired-stop.log`.
+- [ ] **Expected (hermetic)**: exit 0; sentinel contains a `stop fired` line. Stop fires at the end of every assistant turn, including the single stub turn.
+- [ ] **Action (interactive)**: ask Claude any question and wait for the response to complete. Then: `tail /tmp/hook-fired-stop.log`.
 - [ ] **Expected**: a new line per assistant turn.
 
 #### Claude validation 5f — SessionEnd hook firing (F5)
-- [ ] **Action**: exit the Claude session (`/exit` or `Ctrl+D`). Then in a separate shell: `tail /tmp/hook-fired-sessionend.log`.
+- [ ] **Hermetic verification**: `rm -f /tmp/hook-fired-sessionend.log && echo "x" | claude --print && test -s /tmp/hook-fired-sessionend.log`.
+- [ ] **Expected (hermetic)**: exit 0; sentinel contains a `sessionEnd fired` line. `claude --print` always exits the session after one turn, so SessionEnd fires.
+- [ ] **Action (interactive)**: exit the Claude session (`/exit` or `Ctrl+D`). Then in a separate shell: `tail /tmp/hook-fired-sessionend.log`.
 - [ ] **Expected**: a final line with the session-end timestamp.
 
 #### Claude validation 6 — mcp-example uv prerequisite (F6)
@@ -373,15 +407,19 @@ This arc fixed 6 example-plugin bugs and retired Claude rule emission. The hands
 - [ ] **Post-install-uv expected**: `/plugin` shows `plugin:mcp-example:example-fetch: uvx mcp-server-fetch - ✓ Connected`. The fix is the README documenting this prereq (see `mcp-servers/example/README.md`).
 
 #### Claude validation 7a — skill slash command namespacing (F7)
-- [ ] **Action**: with `skill-example` installed, type `/` in Claude and read the autocomplete dropdown entry.
+- [ ] **Hermetic verification** (use `stub_body_dumper.py` so request bodies are captured): with `command-example` installed and the body-dumper stub running on port 8089 (set `ANTHROPIC_BASE_URL=http://127.0.0.1:8089`), run `echo "/command-example:example-command" | claude --print` then `grep -F "/command-example:example-command" /tmp/stub-bodies.log`.
+- [ ] **Expected (hermetic)**: grep matches — the namespaced slash form reaches the request body, proving Claude resolved it client-side. (The skill-example body lives under the same namespacing convention.)
+- [ ] **Action (interactive)**: with `skill-example` installed, type `/` in Claude and read the autocomplete dropdown entry.
 - [ ] **Expected**: the entry resolves to `/skill-example:example-skill` (the UI may show a shorter label, but the actual invocation is the namespaced form). Per `code.claude.com/docs/en/plugins` (2026-05-26): *"Plugin skills are always namespaced (like `/my-first-plugin:hello`) to prevent conflicts..."*
 
 #### Claude validation 7b — agent namespacing (F7)
-- [ ] **Action**: with `agent-example` installed, run `/agents` in a `claude` session.
+- [ ] **Hermetic verification (partial)**: `/agents` is an interactive TUI command — there is no headless equivalent. The 7a hermetic check exercises the same client-side resolver code path, so a green 7a is strong evidence the namespacing infrastructure works for agents too. Use the interactive step for the agent-specific surface.
+- [ ] **Action (interactive)**: with `agent-example` installed, run `/agents` in a `claude` session.
 - [ ] **Expected**: the entry appears as `agent-example:notebook-reviewer` (no `/` prefix — the colon-namespaced form is what `/agents` displays).
 
 #### Claude validation 7c — MCP tool namespacing (F7)
-- [ ] **Action**: with `mcp-example` installed, ask Claude to fetch a URL. Watch the tool name in `claude --debug` output.
+- [ ] **Hermetic verification (partial)**: same as 7b — `mcp__*` tool names only appear once Claude returns a `tool_use` block; the default stub doesn't. Future work to extend the stub. Use the interactive step.
+- [ ] **Action (interactive)**: with `mcp-example` installed, ask Claude to fetch a URL. Watch the tool name in `claude --debug` output.
 - [ ] **Expected**: tool name appears as `mcp__mcp-example__example-fetch` (the hook-matcher form) or `plugin:mcp-example:example-fetch` (the CLI display form). Both are documented per `code.claude.com/docs/en/hooks` and `code.claude.com/docs/en/plugins-reference`.
 
 #### Claude validation 8 — rule deprecation (F8)
@@ -389,7 +427,15 @@ This arc fixed 6 example-plugin bugs and retired Claude rule emission. The hands
 - [ ] **Expected**: `0` — no `rule-*` plugins are surfaced to Claude after the 2026-05-26 deprecation. Additionally, Claude-side bundle cascade: `bundle-quality-rules`, `bundle-workflow-rules`, `bundle-documentation-rules`, `bundle-environment-rules`, `bundle-notifications-rules`, and `bundle-rule-all` are also gone (their dependencies are no longer valid Claude plugins). They remain available to Cursor / Codex / Gemini / Windsurf.
 
 #### Claude validation 9 — output style applied (F9)
-- [ ] **Action**: with `output-style-example` installed, type `/config` in a `claude` session, navigate to **Output style**, pick "Lab Notebook Voice", and confirm.
+- [ ] **Hermetic verification** (use `stub_body_dumper.py` on port 8089, `ANTHROPIC_BASE_URL=http://127.0.0.1:8089`): with `output-style-example` installed, the simplest injection path is `--append-system-prompt`:
+  ```bash
+  rm -f /tmp/stub-bodies.log
+  claude --print --append-system-prompt "$(cat output-styles/example/output-styles/lab-notebook-voice.md)" "explain F9"
+  grep -F "Lab Notebook Voice" /tmp/stub-bodies.log
+  grep -F "Next:" /tmp/stub-bodies.log
+  ```
+- [ ] **Expected (hermetic)**: both greps match — the output-style content reaches the `system[]` array of the captured request body verbatim, which is the proof the style would be applied if a real model were behind the stub. The persistence-vs-application distinction (`/config` selection vs `--append-system-prompt` injection) can be tested separately by setting `outputStyle` in settings and re-running.
+- [ ] **Action (interactive)**: with `output-style-example` installed, type `/config` in a `claude` session, navigate to **Output style**, pick "Lab Notebook Voice", and confirm.
 - [ ] **Persistence check**: `cat .claude/settings.local.json | jq .outputStyle` returns `"Lab Notebook Voice"`.
 - [ ] **Apply**: type `/clear` to force a fresh session that re-reads the system prompt.
 - [ ] **Behavioral check**: ask Claude: *"Explain what the `_base_plugin_shape` function in `scripts/constructs.py` does."*
