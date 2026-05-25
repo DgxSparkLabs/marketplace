@@ -1,5 +1,50 @@
 # Changelog
 
+## 2026-05-26 — Claude verified-working state + user guide + QA validation expansion
+
+Hands-on Docker QA on 2026-05-25 surfaced 6 example-plugin bugs and 3 investigation gaps in Claude support. All resolved in this PR; Claude now passes `claude plugin validate ./` with zero warnings, and the expanded Claude section of `docs/TEST_YOURSELF.md` has 16 hands-on validations covering every previously-non-obvious behavior. The new `docs/USER_GUIDE.md` consolidates plugin/extension management for all 6 platforms + the `agents` CLI into one user-facing reference.
+
+### Fixed
+
+- **Marketplace description warning**: `MARKETPLACE.toml` now has a `description` field that propagates to `.claude-plugin/marketplace.json`. New CI workflow `compat-validate.yml` runs `claude plugin validate ./` on every PR and fails the build on ANY warning or error (grep-based portable equivalent to `--strict`, per `code.claude.com/docs/en/plugins-reference#unrecognized-fields`, 2026-05-26).
+- **LSP example schema**: `lsp-servers/example/lsp-config.json` now uses flat language-id top-level keys + `command` + `extensionToLanguage` per Claude's LSP component spec (`code.claude.com/docs/en/plugins-reference#lsp-servers`, 2026-05-26), replacing the previously-wrapped `{lspServers: {example-markdown: {...}}}` structure that produced 3 validate errors.
+- **Monitor example shape**: `monitors/example/monitors/monitors.json` now a top-level array per Claude's monitors schema (`code.claude.com/docs/en/plugins-reference#monitors`, 2026-05-26).
+- **Theme example distinctiveness**: `themes/example/themes/lab-notebook.json` uses the correct Claude theme schema (`{name, base, overrides}`) with visually distinctive colors. Previously used an invented `{name, description, colors}` schema and silently fell back to the default Dark theme.
+- **Hook example coverage + observability**: `hooks/example/hooks/hooks.json` now defines 6 event variants (SessionStart, UserPromptSubmit, PreToolUse, PostToolUse, Stop, SessionEnd) each writing a per-event-type sentinel file (`/tmp/hook-fired-<event>.log`) so operators can verify firing with `tail /tmp/hook-fired-*.log`. The UserPromptSubmit hook still injects the `[Lab Notebook context: ...]` line as before; the new sentinel makes "did it fire" observable without `claude --debug`.
+- **MCP example `uv` prerequisite**: `mcp-servers/example/README.md` now documents the `uv` requirement explicitly with install one-liners for POSIX and Windows.
+
+### Refactored
+
+- **Claude rule emission retired**: per `code.claude.com/docs/en/plugins-reference#plugin-components-reference` (fetched 2026-05-26), rules are NOT a Claude plugin component — they are part of Claude's memory subsystem and discovered from `.claude/rules/*.md`. Removed `RuleConstruct` from `ClaudeCodePlatform.supports`. Stopped emitting `_generated/rule-<name>/.claude-plugin/plugin.json` (22 files removed). Stopped emitting `_generated/rule-<name>/activate.sh` (22 files removed). **Cascade**: 5 rule-only catalog bundles (`bundle-quality-rules`, `bundle-workflow-rules`, `bundle-documentation-rules`, `bundle-environment-rules`, `bundle-notifications-rules`) + the `bundle-rule-all` catch-all were removed from Claude's marketplace listing because their dependencies are no longer valid Claude plugins. Source `rules/<name>/` directories preserved — they still feed Cursor/Windsurf/Codex/Gemini rule emission; Cursor and Codex per-plugin manifests still surface them.
+- Users who previously installed `claude plugin install rule-<name>` should switch to filesystem-based discovery: clone the marketplace and symlink (or copy) `rules/<name>/rule.md` into `.claude/rules/<name>.md`. See `docs/USER_GUIDE.md` Claude section.
+
+### Added
+
+- **`docs/USER_GUIDE.md`** (NEW, ~22 KB) — canonical user-facing reference for plugin/extension management across all 6 platforms + the `agents` CLI. Per-platform install / list / enable-disable / uninstall / scope semantics; cross-platform conventions (`.agents/` convergence, plugin name conventions, Claude slash-command namespacing, bundles); troubleshooting (6 common failure modes). Replaces "chase per-vendor docs separately" with one document.
+- **`docs/TEST_YOURSELF.md` Claude section**: 16 hands-on validation methods covering hook firing per event type (6 sub-validations), slash command namespacing (3 forms: skill, agent, MCP tool), output-style observability with A/B compare, theme distinctiveness check, LSP / monitor / MCP / agent / command verifications, marketplace validate-no-warnings check, and rule-deprecation count check. Each validation specifies an operator-runnable action + the expected observation. Master matrix's Claude rule cell updated to N/A (was TEST³); footnote 3 reflects the deprecation rationale and points at USER_GUIDE.
+- **`.github/workflows/compat-validate.yml`** (NEW) — CI workflow promoting `claude plugin validate ./` warnings to errors via a portable grep-based fallback (since `--strict` is not yet available in all Claude CLI versions).
+- **Schema-fitness tests**: `tests/test_schema_fitness.py` extended with 6 new validators (marketplace description, LSP shape, monitor shape, theme schema, hook event coverage, hook event observability). Total schema-fitness tests: 21 (up from 15).
+- **`docs/research/claude-qa-2026-05-26/`** (research dossier) — 9-finding diagnosis report with 16 validation methods in Appendix A. Cites every claim against `code.claude.com/docs/en/...` URLs with fetch dates.
+- **`CONTRIBUTING.md`** — new "Running `claude plugin validate`" section under Testing covering what / when / how-CI-enforces + a common-warnings remediation table; submission-flow checklist updated to require validate + schema-fitness tests; stale "52 tests" claim updated to "99 tests".
+
+### Documentation
+
+- `docs/PLATFORMS.md` Claude section "What constructs it supports" table reflects rule-as-NO with citation + fetch date; new "Claude rule discovery" subsection covers symlink/copy install + the bundle cascade; "Known gaps" no longer mentions the retired manual-activation rule workflow; "Per-platform manifest paths" row updated.
+- `docs/ARCHITECTURE.md` ClaudeCodePlatform row reflects 9-of-10 supports + cites the components-reference doc.
+- `docs/ADDING_A_CONSTRUCT.md` replaces stale "rules require an extra step" install block with the filesystem-install workflow; adds a step-6 "Validate" bullet linking to the new CONTRIBUTING section.
+- `rules/<name>/README.md` (22 files including example): rewrote install sections — Claude (filesystem) + Cursor/Codex/Gemini/Windsurf (still a plugin). Cleaned up a pre-existing `nFor other platforms` typo that mentioned the long-retired `.devin/rules/` mirror.
+- `README.md`: added link to `docs/USER_GUIDE.md` under Quick Start and in Deep Dives; fixed stale "21 rules" → "22 rules" count (matches `ls rules/`).
+
+### Tests
+
+99 total (up from 93 at PR #5 baseline): `tests/test_marketplace.py` 78 + `tests/test_schema_fitness.py` 21. All pass; drift check (`uv run scripts/generate_manifest.py --check`) clean.
+
+### Deviation from plan
+
+- Bundle cascade behavior: the plan described removing 5 rule-only catalog bundles + `bundle-rule-all` from Claude's marketplace listing as automatic. The generator's marketplace.json emission iterates `ClaudeCodePlatform.supports`, so removing `RuleConstruct` from that set was sufficient to drop the rule plugins; the 5 bundles + catch-all are also absent because their members no longer resolve. Verified via inspection of the regenerated `.claude-plugin/marketplace.json` — no `rule-*` entries, no `bundle-*-rules` entries, no `bundle-rule-all` entry. No additional code changes required.
+
+---
+
 ## 2026-05-25 — Platform emission bug fixes from QA round
 
 Hands-on QA verification of the platform-feature-routing refactor (merged at `a86cb86`) surfaced several format mismatches where our emitted manifests passed drift checks (byte-identical to committed output) but did not match the platforms' actual loader contracts. This PR fixes the diagnosed bugs and adds a new schema-fitness test category to catch this class of bug at CI time going forward.
