@@ -62,6 +62,7 @@ from constructs import (
     AgentConstruct,
     HookConstruct,
     LSPConstruct,
+    MonitorConstruct,
     SkillConstruct,
 )
 from utils import scan_source_dir
@@ -353,6 +354,31 @@ CLAUDE_LSP_CONFIG_SCHEMA = {
         r"^[a-z][a-zA-Z0-9_-]*$": _LSP_SERVER_ENTRY_SCHEMA,
     },
     "additionalProperties": False,
+}
+
+
+# Claude Monitors standalone config file.
+# Source: code.claude.com/docs/en/plugins-reference#monitors (fetched
+# 2026-05-26). Top-level value is a JSON ARRAY of monitor objects with
+# required fields name / command / description (and optional ``when``).
+# The previous object-with-named-keys shape failed Claude's validator
+# with ``expected: array, code: invalid_type`` at the document root.
+# +     : docs/research/claude-qa-2026-05-26/RESEARCH.md (F3)
+_MONITOR_ENTRY_SCHEMA = {
+    "type": "object",
+    "required": ["name", "command", "description"],
+    "properties": {
+        "name": {"type": "string"},
+        "command": {"type": "string"},
+        "description": {"type": "string"},
+        "when": {"type": "string"},
+    },
+    "additionalProperties": True,
+}
+
+CLAUDE_MONITORS_SCHEMA = {
+    "type": "array",
+    "items": _MONITOR_ENTRY_SCHEMA,
 }
 
 
@@ -650,6 +676,44 @@ class TestClaudeLSPConfigSchema(unittest.TestCase):
                     "'lspServers' — Claude's standalone lsp-config.json takes "
                     "language IDs as top-level keys (see "
                     "docs/research/claude-qa-2026-05-26/RESEARCH.md F2)",
+                )
+
+
+class TestClaudeMonitorsSchema(unittest.TestCase):
+    """Claude monitors.json must be a top-level JSON array per
+    code.claude.com/docs/en/plugins-reference#monitors (fetched 2026-05-26)."""
+
+    def test_monitors_file_is_array(self):
+        monitor = next(c for c in CONSTRUCTS.values() if isinstance(c, MonitorConstruct))
+        for name in scan_source_dir(monitor.source_directory):
+            for fixture in (
+                monitor.source_directory / name / "monitors" / "monitors.json",
+                REPO_ROOT / "_generated" / f"monitor-{name}" / "monitors" / "monitors.json",
+            ):
+                with self.subTest(fixture=str(fixture.relative_to(REPO_ROOT))):
+                    if not fixture.exists():
+                        self.skipTest(f"{fixture} not present")
+                    data = json.loads(fixture.read_text(encoding="utf-8"))
+                    self.assertIsInstance(
+                        data, list,
+                        f"{fixture.relative_to(REPO_ROOT)} top-level value must "
+                        "be a JSON array (see docs/research/claude-qa-2026-05-26/"
+                        "RESEARCH.md F3)",
+                    )
+
+    def test_monitors_file_schema_fitness(self):
+        monitor = next(c for c in CONSTRUCTS.values() if isinstance(c, MonitorConstruct))
+        for name in scan_source_dir(monitor.source_directory):
+            fixture = monitor.source_directory / name / "monitors" / "monitors.json"
+            with self.subTest(name=name):
+                if not fixture.exists():
+                    self.skipTest(f"{fixture} not present")
+                data = json.loads(fixture.read_text(encoding="utf-8"))
+                errors = validate_schema(data, CLAUDE_MONITORS_SCHEMA)
+                self.assertEqual(
+                    errors, [],
+                    f"{fixture.relative_to(REPO_ROOT)}: schema violations:\n  "
+                    + "\n  ".join(errors),
                 )
 
 
