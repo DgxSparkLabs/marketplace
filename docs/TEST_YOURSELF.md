@@ -185,8 +185,8 @@ Throughout the per-construct tests below, these plugin names are used as the sta
 
 | Construct | Plugin name | Source dir |
 |---|---|---|
-| skill | `skill-telegram-notify` | `skills/telegram-notify/` |
-| rule | `rule-blast-radius` | `rules/blast-radius/` |
+| skill | `skill-example` | `skills/example/` |
+| rule | `rule-example` | `rules/example/` |
 | agent (sub-agent) | `agent-example` | `agents/example/` |
 | command | `command-example` | `commands/example/` |
 | hook | `hook-example` | `hooks/example/` |
@@ -259,15 +259,15 @@ Use the `claude` CLI directly — these commands are scriptable and work in head
 
 Each test installs ONE plugin of the construct type, then invokes it. Per-construct cleanup is folded into the master cleanup block at the end.
 
-#### Skill — `skill-telegram-notify`
-- [ ] **Install**: `claude plugin install skill-telegram-notify@dgxsparklabs-marketplace --scope project`
+#### Skill — `skill-example`
+- [ ] **Install**: `claude plugin install skill-example@dgxsparklabs-marketplace --scope project`
 - [ ] **Hands-on invocation**: in a `claude` session, type `/telegram-notify` (or the actual command name) and observe the skill prompts you for the notification payload.
 - [ ] **Expected**: the skill appears in the slash-command dropdown with its correct description; invocation executes the skill body.
-- [ ] **Diagnostic (only if hands-on fails)**: `claude plugin details skill-telegram-notify` should show the skill metadata, and `~/.claude/plugins/cache/dgxsparklabs-marketplace/skill-telegram-notify/<version>/` should be populated.
+- [ ] **Diagnostic (only if hands-on fails)**: `claude plugin details skill-example` should show the skill metadata, and `~/.claude/plugins/cache/dgxsparklabs-marketplace/skill-example/<version>/` should be populated.
 
-#### Rule — `rule-blast-radius`
-- [ ] **Install**: `claude plugin install rule-blast-radius@dgxsparklabs-marketplace --scope project`
-- [ ] **Activate** (Claude has no native rule install slot yet, per `docs/PLATFORMS.md` Claude "Known gaps"): `bash ~/.claude/plugins/cache/dgxsparklabs-marketplace/rule-blast-radius/<version>/activate.sh`
+#### Rule — `rule-example`
+- [ ] **Install**: `claude plugin install rule-example@dgxsparklabs-marketplace --scope project`
+- [ ] **Activate** (Claude has no native rule install slot yet, per `docs/PLATFORMS.md` Claude "Known gaps"): `bash ~/.claude/plugins/cache/dgxsparklabs-marketplace/rule-example/<version>/activate.sh`
 - [ ] **Hands-on invocation**: start a `claude` session in the project and ask "what rules are currently active?" or attempt an action the rule should constrain.
 - [ ] **Expected**: Claude's response reflects the rule's guidance (e.g., the blast-radius rule should make Claude qualify its plans with explicit blast-radius framing). Note: the slot is "manual activation" so a missed activation step is a likely failure mode — flag if `activate.sh` doesn't exist.
 
@@ -326,8 +326,8 @@ No Claude-side changes in 2026-05-25 refactor. If any of the above fails on `mai
 ### Cleanup
 
 ```bash
-claude plugin uninstall skill-telegram-notify --scope project
-claude plugin uninstall rule-blast-radius --scope project
+claude plugin uninstall skill-example --scope project
+claude plugin uninstall rule-example --scope project
 claude plugin uninstall agent-example --scope project
 claude plugin uninstall command-example --scope project
 claude plugin uninstall hook-example --scope project
@@ -416,15 +416,15 @@ Marketplace registration and `codex plugin list` are auth-free; `codex plugin ad
 
 ### Per-construct verification
 
-#### Skill — `skill-telegram-notify`
-- [ ] **Install**: `codex plugin add skill-telegram-notify@dgxsparklabs-marketplace`
+#### Skill — `skill-example`
+- [ ] **Install**: `codex plugin add skill-example@dgxsparklabs-marketplace`
 - [ ] **Hands-on invocation**: open a Codex session and ask it to use the skill:
   ```bash
   codex
   > use the telegram-notify skill to send a test notification
   ```
 - [ ] **Expected**: Codex recognizes the skill and invokes it (or describes how it would). Codex surfaces skills via the per-plugin `.codex-plugin/plugin.json` pointing at `./skills/`.
-- [ ] **Diagnostic (only if hands-on fails)**: `codex plugin list | grep -F "skill-telegram-notify"` shows STATUS = `installed`.
+- [ ] **Diagnostic (only if hands-on fails)**: `codex plugin list | grep -F "skill-example"` shows STATUS = `installed`.
 
 #### Sub-agent — `agent-example`
 - [ ] **Install**: `codex plugin add agent-example@dgxsparklabs-marketplace`
@@ -452,7 +452,7 @@ Marketplace registration and `codex plugin list` are auth-free; `codex plugin ad
 - [ ] **Expected**: `mcp-example` (or its server name) appears in the MCP server list, OR Codex exposes the MCP's tools in-session.
 - [ ] **Note**: Codex also accepts manually-added MCP servers via `codex mcp add` — verify our plugin-installed MCP is enumerated separately from any test MCPs added by hand.
 
-#### Rule (no native install, file-discovery only) — `rule-blast-radius`
+#### Rule (no native install, file-discovery only) — `rule-example`
 - [ ] **Setup**: this is N/A as a Codex-native install path. Codex reads rules from `AGENTS.md`, `.cursor/rules/*.md`, `.windsurf/rules/*.md` natively. Verify by opening Codex inside the workspace you cloned in setup:
   ```bash
   cd /workspace/marketplace   # already on fix/platform-emission-bugs from setup
@@ -471,7 +471,7 @@ Phase 5.5's `.agents/plugins/marketplace.json` is also new — Step 2 of marketp
 ### Cleanup
 
 ```bash
-codex plugin remove skill-telegram-notify@dgxsparklabs-marketplace
+codex plugin remove skill-example@dgxsparklabs-marketplace
 codex plugin remove agent-example@dgxsparklabs-marketplace
 codex plugin remove hook-example@dgxsparklabs-marketplace
 codex plugin remove mcp-example@dgxsparklabs-marketplace
@@ -545,7 +545,7 @@ gemini auth login        # Google OAuth; needs browser
 
 ### Per-construct verification
 
-#### Skill — `skill-telegram-notify`
+#### Skill — `skill-example`
 - [ ] **Install**: covered by the extension install above (Gemini installs all skills as part of the extension).
 - [ ] **Hands-on invocation**: in a `gemini` session, ask Gemini to invoke the skill:
   ```bash
@@ -641,8 +641,8 @@ Native install:
 
 #### Per-construct verification (IDE)
 
-##### Skill — `skill-telegram-notify`
-- [ ] **Install**: in Cursor chat panel, run `/add-plugin skill-telegram-notify@https://github.com/DgxSparkLabs/marketplace`
+##### Skill — `skill-example`
+- [ ] **Install**: in Cursor chat panel, run `/add-plugin skill-example@https://github.com/DgxSparkLabs/marketplace`
 - [ ] **Hands-on invocation**: type `/telegram-notify` (or just `/telegram`) in Cursor.
 - [ ] **Expected**: clean popup showing skill name and description; selecting it invokes the skill.
 - [ ] **🐛 KNOWN BUG (2026-05-25 QA)**: The skill popup displays mangled metadata. Instead of clean description text, you see something like:
@@ -654,8 +654,8 @@ Native install:
   ```
   The version, commit SHA, and duplicated description appear in slots Cursor expects different fields in. Likely cause: our `.cursor-plugin/plugin.json` populates fields Cursor's display layer renders in unexpected positions. Skill is functional (install succeeds, settings.json populated correctly), just the popup metadata is mis-rendered. See "Known issues surfaced by QA" below.
 
-##### Rule — `rule-blast-radius`
-- [ ] **Install**: `/add-plugin rule-blast-radius@https://github.com/DgxSparkLabs/marketplace`
+##### Rule — `rule-example`
+- [ ] **Install**: `/add-plugin rule-example@https://github.com/DgxSparkLabs/marketplace`
 - [ ] **Hands-on invocation**: open the Cursor chat panel and ask "what rules are currently in effect?", or attempt an action the rule constrains.
 - [ ] **Expected**: Cursor's reply reflects the rule's framing (the blast-radius rule should make Cursor qualify plans with explicit blast-radius consideration). Rule is read from `.cursor/rules/blast-radius.md` (the `CursorPlatform.emit` Rule branch copies `formats/cursor.md` → `.cursor/rules/<name>.md`).
 
@@ -714,23 +714,23 @@ Use the `agents` cross-platform CLI to populate the project's `.agents/` and (wh
 Set up a scratch project:
 ```bash
 mkdir scratch-cursor-cli && cd scratch-cursor-cli
-agents install skill-telegram-notify --scope project    # populates .agents/skills/telegram-notify/
-agents install rule-blast-radius --scope project        # populates .cursor/rules/ (per-platform spray)
+agents install skill-example --scope project    # populates .agents/skills/example/
+agents install rule-example --scope project        # populates .cursor/rules/ (per-platform spray)
 agents install agent-example --scope project            # populates .cursor/agents/notebook-reviewer.md
 agents install command-example --scope project
 agents install hook-example --scope project
 agents install mcp-example --scope project
 ```
 
-##### Skill — `skill-telegram-notify`
+##### Skill — `skill-example`
 - [ ] **Hands-on invocation**: open the scratch dir with the Cursor CLI:
   ```bash
   agent
   > use the telegram-notify skill
   ```
-- [ ] **Expected**: the CLI's agent discovers the skill from `.agents/skills/telegram-notify/SKILL.md` (per `docs/PLATFORMS.md` Cursor "Discovery paths" — `.agents/skills/<name>/SKILL.md` is the primary path).
+- [ ] **Expected**: the CLI's agent discovers the skill from `.agents/skills/example/SKILL.md` (per `docs/PLATFORMS.md` Cursor "Discovery paths" — `.agents/skills/<name>/SKILL.md` is the primary path).
 
-##### Rule — `rule-blast-radius`
+##### Rule — `rule-example`
 - [ ] **Hands-on invocation**: with the CLI in the scratch dir, ask the agent for an action the rule should affect.
 - [ ] **Expected**: rule from `.cursor/rules/blast-radius.md` is in effect — the agent's response reflects the rule's framing.
 
@@ -802,20 +802,20 @@ Windsurf reads from the filesystem only — no install command, no marketplace r
 3. **Scratch dir + `agents` CLI** (works for both, depends on which branch the `agents` CLI was installed from — see Platform 7 for `AGENTS_REF`):
    ```bash
    mkdir scratch-windsurf && cd scratch-windsurf
-   agents install rule-blast-radius --scope project
+   agents install rule-example --scope project
    agents install hook-example --scope project
-   agents install skill-telegram-notify --scope project
+   agents install skill-example --scope project
    ```
    Open `scratch-windsurf` in Windsurf.
 
 ### Per-construct verification
 
-#### Skill — `skill-telegram-notify` (read via `.agents/skills/`)
-- [ ] **Hands-on invocation**: in Windsurf, open Cascade and type `@skill-telegram-notify` (or just `@telegram`).
-- [ ] **Expected**: Cascade recognizes the `@skill-X` syntax and uses the skill — auto-discovered from `.agents/skills/telegram-notify/SKILL.md` per `docs/PLATFORMS.md` Windsurf "Discovery paths".
+#### Skill — `skill-example` (read via `.agents/skills/`)
+- [ ] **Hands-on invocation**: in Windsurf, open Cascade and type `@skill-example` (or just `@telegram`).
+- [ ] **Expected**: Cascade recognizes the `@skill-X` syntax and uses the skill — auto-discovered from `.agents/skills/example/SKILL.md` per `docs/PLATFORMS.md` Windsurf "Discovery paths".
 - [ ] **Alternative hands-on**: ask Cascade "list the skills you have available" — `telegram-notify` should appear.
 
-#### Rule — `rule-blast-radius`
+#### Rule — `rule-example`
 - [ ] **Hands-on invocation**: ask Cascade for an action the rule should affect (e.g., a refactor where blast-radius reasoning would change the recommendation).
 - [ ] **Expected**: Cascade's reply reflects the rule's framing. Rule discovered from `.windsurf/rules/blast-radius.md` (with the required `trigger:` frontmatter — `always_on` for `blast-radius` per the source `rule.md`).
 - [ ] **Diagnostic**: confirm `.windsurf/rules/blast-radius.md` exists in the workspace.
@@ -895,14 +895,14 @@ git clone --branch fix/platform-emission-bugs https://github.com/DgxSparkLabs/ma
 
 ### Per-construct verification
 
-#### Skill — `skill-telegram-notify` (read via `.agents/skills/`)
+#### Skill — `skill-example` (read via `.agents/skills/`)
 - [ ] **Hands-on invocation**: `devin skills list`
 - [ ] **Expected**: lists 27 skills from `.agents/skills/` (since `.devin/skills/` was retired this round). `telegram-notify` is one of them. Output format per `docs/PLATFORMS.md` Devin "Discovery commands": `/<slash-command> [triggers] (path) - description`.
 - [ ] **Hands-on (dispatching the skill)**: in a `devin` session, ask Devin to use the skill.
 - [ ] **Diagnostic**: `devin skills paths` should mention `.agents/skills/` AND `~/.agents/skills/` (user scope) — `.devin/skills/` should be ABSENT (the legacy mirror was retired per D-1).
 - [ ] **Hands-on (show)**: `devin skills show telegram-notify` — prints the skill body.
 
-#### Rule — `rule-blast-radius` (read via `.windsurf/rules/`, `.cursor/rules/`)
+#### Rule — `rule-example` (read via `.windsurf/rules/`, `.cursor/rules/`)
 - [ ] **Hands-on invocation**: `devin rules list`
 - [ ] **Expected**: rules listed with provider tags (`Cursor`, `Windsurf`, `Standard`) per `docs/PLATFORMS.md` Devin "Discovery commands". `blast-radius` appears tagged with both `Cursor` and `Windsurf` (it's mirrored to both `.cursor/rules/blast-radius.md` and `.windsurf/rules/blast-radius.md`).
 - [ ] **Diagnostic**: `devin rules paths` lists `.windsurf/rules/*.md`, `.cursorrules`, `.cursor/rules/*.md`.
@@ -1017,7 +1017,7 @@ mkdir scratch-agents-cli && cd scratch-agents-cli
 
 - [ ] **Info on a plugin**:
   ```bash
-  agents info skill-telegram-notify
+  agents info skill-example
   ```
   - **Expected**: metadata (description, version, source, author)
 
@@ -1032,18 +1032,18 @@ mkdir scratch-agents-cli && cd scratch-agents-cli
 
 For every supported construct, install and verify the on-disk landing path. The matrix's TEST¹² cells live here — construct types for which `agents` is the emit surface but no platform reads `.agents/<type>/` natively (yet) are still tested for correct emission.
 
-#### Skill — `skill-telegram-notify`
-- [ ] **Project install**: `agents install skill-telegram-notify --scope project`
+#### Skill — `skill-example`
+- [ ] **Project install**: `agents install skill-example --scope project`
 - [ ] **Verify path**:
   ```bash
   test -d .agents/skills/telegram-notify && echo "agents YES"   # expected: agents YES
-  test -f .agents/skills/telegram-notify/SKILL.md && echo "skill YES"   # expected: skill YES
+  test -f .agents/skills/example/SKILL.md && echo "skill YES"   # expected: skill YES
   ```
-- [ ] **Hands-on (Cursor CLI or Windsurf consumes)**: the SKILL.md at `.agents/skills/telegram-notify/` is what Cursor CLI and Windsurf read — see those platforms' per-construct sections for the consumption test.
-- [ ] **Per-platform spray** (default): `ls .cursor/skills/telegram-notify/ 2>/dev/null` may also exist if the CLI sprays to per-platform paths; verify it matches the expected default scope.
+- [ ] **Hands-on (Cursor CLI or Windsurf consumes)**: the SKILL.md at `.agents/skills/example/` is what Cursor CLI and Windsurf read — see those platforms' per-construct sections for the consumption test.
+- [ ] **Per-platform spray** (default): `ls .cursor/skills/example/ 2>/dev/null` may also exist if the CLI sprays to per-platform paths; verify it matches the expected default scope.
 
-#### Rule — `rule-blast-radius`
-- [ ] **Project install (strict `.agents/` only)**: `agents install rule-blast-radius --scope project --agents-only`
+#### Rule — `rule-example`
+- [ ] **Project install (strict `.agents/` only)**: `agents install rule-example --scope project --agents-only`
 - [ ] **Verify**:
   ```bash
   test -f .agents/rules/blast-radius.md && echo "agents YES"   # expected: agents YES
@@ -1120,7 +1120,7 @@ For every supported construct, install and verify the on-disk landing path. The 
 ### Scope and flag verification
 
 #### `--scope user` (writes to `~/.agents/` only per D-6)
-- [ ] **Install**: `agents install rule-blast-radius --scope user`
+- [ ] **Install**: `agents install rule-example --scope user`
 - [ ] **Verify**:
   ```bash
   test -f "$HOME/.agents/rules/blast-radius.md" && echo "user YES"     # expected: user YES
@@ -1141,7 +1141,7 @@ For every supported construct, install and verify the on-disk landing path. The 
 - [ ] **Expected**: shows all the installs from the per-construct tests above; distinguishes project vs user scope clearly.
 
 #### `agents uninstall` cleans both per-platform AND `.agents/` paths
-- [ ] **Uninstall**: `agents uninstall skill-telegram-notify --scope project`
+- [ ] **Uninstall**: `agents uninstall skill-example --scope project`
 - [ ] **Verify**:
   ```bash
   test -d .agents/skills/telegram-notify && echo "still there"     # expected: NOTHING
@@ -1161,7 +1161,7 @@ The CLI is brand new. Watch for:
 
 ```bash
 # Inside container:
-agents uninstall rule-blast-radius --scope project
+agents uninstall rule-example --scope project
 agents uninstall agent-example --scope project
 agents uninstall command-example --scope project
 agents uninstall hook-example --scope project
@@ -1171,7 +1171,7 @@ agents uninstall monitor-example --scope project
 agents uninstall output-style-example --scope project
 agents uninstall theme-example --scope project
 # user-scope cleanup
-agents uninstall rule-blast-radius --scope user
+agents uninstall rule-example --scope user
 agents uninstall agent-example --scope user
 exit
 ```
@@ -1291,7 +1291,7 @@ Discovered during the first hands-on QA pass of this doc. All three are real and
 
 ### 🐛 Cursor skill popup mangled metadata
 
-- **Symptom**: After `/add-plugin skill-telegram-notify@<url>` succeeds, typing `/telegram` in Cursor shows a popup with mangled fields — version string, commit SHA, and the description duplicated, instead of a clean description-only popup.
+- **Symptom**: After `/add-plugin skill-example@<url>` succeeds, typing `/telegram` in Cursor shows a popup with mangled fields — version string, commit SHA, and the description duplicated, instead of a clean description-only popup.
 - **State on disk**: `.cursor/settings.json` is populated correctly with the plugin entry. The actual install path works.
 - **Hypothesis**: Our `.cursor-plugin/plugin.json` for skills populates fields that Cursor's display layer renders in unexpected slots. Compare against a working Cursor-native skill plugin's manifest.
 - **Scope to investigate**: `CursorPlatform.build_plugin_json` for SkillConstruct in `scripts/platforms.py` + Cursor plugin manifest reference at `cursor.com/docs/reference/plugins`.
