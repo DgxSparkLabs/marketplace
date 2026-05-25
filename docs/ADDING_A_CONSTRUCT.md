@@ -85,11 +85,14 @@ Plugin name: `bundle-my-domain-skills@dgxsparklabs-marketplace`.
 /plugin install bundle-<prefix>-all@dgxsparklabs-marketplace
 ```
 
-**Rules require an extra step** after install (Claude Code limitation — rules aren't installable natively):
+**Rules are not a Claude plugin component** (per `code.claude.com/docs/en/plugins-reference#plugin-components-reference`, 2026-05-26). For Claude, install rules into the memory subsystem by symlinking or copying into `.claude/rules/`:
 ```bash
-/plugin install rule-my-rule@dgxsparklabs-marketplace
-bash ~/.claude/plugins/cache/dgxsparklabs-marketplace/rule-my-rule/activate.sh
+mkdir -p .claude/rules
+ln -s "$(pwd)/rules/my-rule/rule.md" .claude/rules/my-rule.md
+# Or copy for portability:
+cp rules/my-rule/rule.md .claude/rules/my-rule.md
 ```
+Cursor / Windsurf / Codex / Gemini still install rule plugins via their respective marketplaces — only Claude's plugin path was retired. See `docs/USER_GUIDE.md` Claude section for the full operator workflow.
 
 ## Architecture context
 
