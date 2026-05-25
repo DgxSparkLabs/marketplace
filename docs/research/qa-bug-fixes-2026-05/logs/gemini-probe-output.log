@@ -1,0 +1,410 @@
+===versions===
++ echo ===versions===
++ node --version
+v20.20.2
++ npm --version
+10.8.2
+===install gemini===
++ echo '===install gemini==='
++ npm install -g @google/gemini-cli
++ tail -5
+npm notice
+npm notice New major version of npm available! 10.8.2 -> 11.15.0
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v11.15.0
+npm notice To update run: npm install -g npm@11.15.0
+npm notice
++ gemini --version
+0.43.0
++ which gemini
+/usr/local/bin/gemini
+===install marketplace ext (no auth, may fail)===
++ echo '===install marketplace ext (no auth, may fail)==='
++ mkdir -p /workspace
++ cd /workspace
++ gemini extensions install https://github.com/DgxSparkLabs/marketplace --consent
++ head -50
+You have consented to the following:
+The extension you are about to install may have been created by a third-party developer and sourced from a public repository. Google does not vet, endorse, or guarantee the functionality or security of extensions. Please carefully inspect any extension and its source code before installing to understand the permissions it requires and the actions it may perform.
+Extension "dgxsparklabs-marketplace" installed successfully and enabled.
+===ext tree===
++ echo '===ext tree==='
++ find /root/.gemini -type f
++ head -80
+/root/.gemini/gemini-credentials.json
+/root/.gemini/extensions/extension-enablement.json
+/root/.gemini/extensions/dgxsparklabs-marketplace/.codex/agents/notebook-reviewer.toml
+/root/.gemini/extensions/dgxsparklabs-marketplace/scripts/validate-gemini-local.sh
+/root/.gemini/extensions/dgxsparklabs-marketplace/scripts/constructs.py
+/root/.gemini/extensions/dgxsparklabs-marketplace/scripts/bundles.py
+/root/.gemini/extensions/dgxsparklabs-marketplace/scripts/generate_manifest.py
+/root/.gemini/extensions/dgxsparklabs-marketplace/scripts/platforms.py
+/root/.gemini/extensions/dgxsparklabs-marketplace/scripts/converters/__init__.py
+/root/.gemini/extensions/dgxsparklabs-marketplace/scripts/converters/md_to_toml.py
+/root/.gemini/extensions/dgxsparklabs-marketplace/scripts/agents_cli/list.py
+/root/.gemini/extensions/dgxsparklabs-marketplace/scripts/agents_cli/install.py
+/root/.gemini/extensions/dgxsparklabs-marketplace/scripts/agents_cli/__init__.py
+/root/.gemini/extensions/dgxsparklabs-marketplace/scripts/agents_cli/main.py
+/root/.gemini/extensions/dgxsparklabs-marketplace/scripts/agents_cli/constructs/hook.py
+/root/.gemini/extensions/dgxsparklabs-marketplace/scripts/agents_cli/constructs/agent.py
+/root/.gemini/extensions/dgxsparklabs-marketplace/scripts/agents_cli/constructs/__init__.py
+/root/.gemini/extensions/dgxsparklabs-marketplace/scripts/agents_cli/constructs/command.py
+/root/.gemini/extensions/dgxsparklabs-marketplace/scripts/agents_cli/constructs/rule.py
+/root/.gemini/extensions/dgxsparklabs-marketplace/scripts/agents_cli/constructs/skill.py
+/root/.gemini/extensions/dgxsparklabs-marketplace/scripts/agents_cli/constructs/mcp.py
+/root/.gemini/extensions/dgxsparklabs-marketplace/scripts/agents_cli/utils/paths.py
+/root/.gemini/extensions/dgxsparklabs-marketplace/scripts/agents_cli/utils/__init__.py
+/root/.gemini/extensions/dgxsparklabs-marketplace/scripts/agents_cli/utils/git_ops.py
+/root/.gemini/extensions/dgxsparklabs-marketplace/scripts/agents_cli/marketplace.py
+/root/.gemini/extensions/dgxsparklabs-marketplace/scripts/validate-codex-local.sh
+/root/.gemini/extensions/dgxsparklabs-marketplace/scripts/utils.py
+/root/.gemini/extensions/dgxsparklabs-marketplace/CHANGELOG.md
+/root/.gemini/extensions/dgxsparklabs-marketplace/README.md
+/root/.gemini/extensions/dgxsparklabs-marketplace/CONTRIBUTING.md
+/root/.gemini/extensions/dgxsparklabs-marketplace/AGENTS.md
+/root/.gemini/extensions/dgxsparklabs-marketplace/install.ps1
+/root/.gemini/extensions/dgxsparklabs-marketplace/_generated/rule-blast-radius/activate.sh
+/root/.gemini/extensions/dgxsparklabs-marketplace/_generated/rule-blast-radius/README.md
+/root/.gemini/extensions/dgxsparklabs-marketplace/_generated/rule-blast-radius/rules/blast-radius.md
+/root/.gemini/extensions/dgxsparklabs-marketplace/_generated/rule-blast-radius/.cursor-plugin/plugin.json
+/root/.gemini/extensions/dgxsparklabs-marketplace/_generated/rule-blast-radius/.claude-plugin/plugin.json
+/root/.gemini/extensions/dgxsparklabs-marketplace/_generated/skill-pitfall-check/scripts/pitfall_check.py
+/root/.gemini/extensions/dgxsparklabs-marketplace/_generated/skill-pitfall-check/README.md
+/root/.gemini/extensions/dgxsparklabs-marketplace/_generated/skill-pitfall-check/SKILL.md
+/root/.gemini/extensions/dgxsparklabs-marketplace/_generated/skill-pitfall-check/.codex-plugin/plugin.json
+/root/.gemini/extensions/dgxsparklabs-marketplace/_generated/skill-pitfall-check/.cursor-plugin/plugin.json
+/root/.gemini/extensions/dgxsparklabs-marketplace/_generated/skill-pitfall-check/.claude-plugin/plugin.json
+/root/.gemini/extensions/dgxsparklabs-marketplace/_generated/bundle-agent-all/.claude-plugin/plugin.json
+/root/.gemini/extensions/dgxsparklabs-marketplace/_generated/bundle-command-all/.claude-plugin/plugin.json
+/root/.gemini/extensions/dgxsparklabs-marketplace/_generated/skill-web-scraper/scripts/scrape.py
+/root/.gemini/extensions/dgxsparklabs-marketplace/_generated/skill-web-scraper/README.md
+/root/.gemini/extensions/dgxsparklabs-marketplace/_generated/skill-web-scraper/SKILL.md
+/root/.gemini/extensions/dgxsparklabs-marketplace/_generated/skill-web-scraper/.codex-plugin/plugin.json
+/root/.gemini/extensions/dgxsparklabs-marketplace/_generated/skill-web-scraper/.cursor-plugin/plugin.json
+/root/.gemini/extensions/dgxsparklabs-marketplace/_generated/skill-web-scraper/.claude-plugin/plugin.json
+/root/.gemini/extensions/dgxsparklabs-marketplace/_generated/rule-prior-art/activate.sh
+/root/.gemini/extensions/dgxsparklabs-marketplace/_generated/rule-prior-art/README.md
+/root/.gemini/extensions/dgxsparklabs-marketplace/_generated/rule-prior-art/rules/prior-art.md
+/root/.gemini/extensions/dgxsparklabs-marketplace/_generated/rule-prior-art/.cursor-plugin/plugin.json
+/root/.gemini/extensions/dgxsparklabs-marketplace/_generated/rule-prior-art/.claude-plugin/plugin.json
+/root/.gemini/extensions/dgxsparklabs-marketplace/_generated/bundle-notifications-rules/.claude-plugin/plugin.json
+/root/.gemini/extensions/dgxsparklabs-marketplace/_generated/skill-ssh-tunnel/scripts/ssh-tunnel.sh
+/root/.gemini/extensions/dgxsparklabs-marketplace/_generated/skill-ssh-tunnel/README.md
+/root/.gemini/extensions/dgxsparklabs-marketplace/_generated/skill-ssh-tunnel/SKILL.md
+/root/.gemini/extensions/dgxsparklabs-marketplace/_generated/skill-ssh-tunnel/.codex-plugin/plugin.json
+/root/.gemini/extensions/dgxsparklabs-marketplace/_generated/skill-ssh-tunnel/.cursor-plugin/plugin.json
+/root/.gemini/extensions/dgxsparklabs-marketplace/_generated/skill-ssh-tunnel/.claude-plugin/plugin.json
+/root/.gemini/extensions/dgxsparklabs-marketplace/_generated/theme-example/README.md
+/root/.gemini/extensions/dgxsparklabs-marketplace/_generated/theme-example/themes/lab-notebook.json
+/root/.gemini/extensions/dgxsparklabs-marketplace/_generated/theme-example/.claude-plugin/plugin.json
+/root/.gemini/extensions/dgxsparklabs-marketplace/_generated/skill-google-drive-reader/scripts/read_drive_doc.py
+/root/.gemini/extensions/dgxsparklabs-marketplace/_generated/skill-google-drive-reader/README.md
+/root/.gemini/extensions/dgxsparklabs-marketplace/_generated/skill-google-drive-reader/SKILL.md
+/root/.gemini/extensions/dgxsparklabs-marketplace/_generated/skill-google-drive-reader/.codex-plugin/plugin.json
+/root/.gemini/extensions/dgxsparklabs-marketplace/_generated/skill-google-drive-reader/.cursor-plugin/plugin.json
+/root/.gemini/extensions/dgxsparklabs-marketplace/_generated/skill-google-drive-reader/.claude-plugin/plugin.json
+/root/.gemini/extensions/dgxsparklabs-marketplace/_generated/skill-google-drive-reader/setup.sh
+/root/.gemini/extensions/dgxsparklabs-marketplace/_generated/skill-gemini-chat/scripts/chat.py
+/root/.gemini/extensions/dgxsparklabs-marketplace/_generated/skill-gemini-chat/README.md
+/root/.gemini/extensions/dgxsparklabs-marketplace/_generated/skill-gemini-chat/SKILL.md
+/root/.gemini/extensions/dgxsparklabs-marketplace/_generated/skill-gemini-chat/.codex-plugin/plugin.json
+/root/.gemini/extensions/dgxsparklabs-marketplace/_generated/skill-gemini-chat/.cursor-plugin/plugin.json
+/root/.gemini/extensions/dgxsparklabs-marketplace/_generated/skill-gemini-chat/.claude-plugin/plugin.json
+/root/.gemini/extensions/dgxsparklabs-marketplace/_generated/skill-gemini-chat/setup.sh
++ echo '===our hooks file in installed ext==='
+===our hooks file in installed ext===
++ find /root/.gemini/extensions -name hooks.json -exec sh -c 'echo "== $1 ==" ; cat "$1"' _ '{}' ';'
+== /root/.gemini/extensions/dgxsparklabs-marketplace/_generated/hook-example/hooks/hooks.json ==
+{
+  "description": "Reference example hook. Prepends a timestamp marker to every user prompt so Claude sees session context.",
+  "hooks": {
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "printf '[Lab Notebook context: timestamp=%s]\\n' \"$(date -u +%FT%TZ)\""
+          }
+        ]
+      }
+    ]
+  }
+}
+== /root/.gemini/extensions/dgxsparklabs-marketplace/.windsurf/hooks.json ==
+{
+  "description": "Reference example hook. Prepends a timestamp marker to every user prompt so Claude sees session context.",
+  "hooks": {
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "printf '[Lab Notebook context: timestamp=%s]\\n' \"$(date -u +%FT%TZ)\""
+          }
+        ]
+      }
+    ]
+  }
+}
+== /root/.gemini/extensions/dgxsparklabs-marketplace/.gemini/hooks/hooks.json ==
+{
+  "description": "Reference example hook. Prepends a timestamp marker to every user prompt so Claude sees session context.",
+  "hooks": {
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "printf '[Lab Notebook context: timestamp=%s]\\n' \"$(date -u +%FT%TZ)\""
+          }
+        ]
+      }
+    ]
+  }
+}
+== /root/.gemini/extensions/dgxsparklabs-marketplace/hooks/example/hooks/hooks.json ==
+{
+  "description": "Reference example hook. Prepends a timestamp marker to every user prompt so Claude sees session context.",
+  "hooks": {
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "printf '[Lab Notebook context: timestamp=%s]\\n' \"$(date -u +%FT%TZ)\""
+          }
+        ]
+      }
+    ]
+  }
+}
++ echo '===our agents files in installed ext==='
++ find /root/.gemini/extensions -name '*.md' -path '*/agents/*' -exec sh -c 'echo "== $1 ==" ; cat "$1"' _ '{}' ';'
+===our agents files in installed ext===
+== /root/.gemini/extensions/dgxsparklabs-marketplace/_generated/agent-example/agents/notebook-reviewer.md ==
+---
+name: notebook-reviewer
+description: Reviews a lab notebook entry as a skeptical peer reviewer. Use when the user has drafted a notebook entry and wants a critical second opinion before publishing.
+tools: Read, Grep, Glob
+---
+
+You are a peer reviewer for laboratory notebook entries. Your job is to apply a skeptical eye, not to be helpful.
+
+When asked to review an entry:
+
+1. Read the entry carefully (use Read).
+2. Check for these failure modes:
+   - Claims without measurements (e.g., "performance improved" without numbers).
+   - Measurements without units.
+   - Experimental setup that omits inputs, controls, or random seeds.
+   - Conclusions stronger than the evidence supports.
+   - Missing reproducibility information (commit SHA, environment, dataset version).
+3. Report findings in this format:
+   - **Strong**: what is solid and well-supported.
+   - **Weak**: claims that need more evidence.
+   - **Missing**: information that should be present but isn't.
+4. End with a verdict: ship as-is / revise / reject.
+
+Do not soften feedback. The author needs honest criticism, not encouragement.
+== /root/.gemini/extensions/dgxsparklabs-marketplace/agents/example/README.md ==
+# example-agent
+
+Reference plugin for the **agent** (sub-agent) construct type. Copy this directory to scaffold your own.
+
+## What it does
+
+Ships an agent named `notebook-reviewer` with a skeptical-peer-reviewer system prompt. The user can invoke it via Claude Code's agent picker (`--agent notebook-reviewer` or via `/agents`) when they want a critical review of a notebook entry.
+
+Install:
+```
+/plugin install example-agent@dgxsparklabs-marketplace
+```
+
+## File-by-file walkthrough
+
+```
+example-agent/
+├── .claude-plugin/plugin.json    ← minimal manifest (no "agents" field needed)
+├── agents/
+│   └── notebook-reviewer.md      ← agent definition (filename = agent name)
+└── README.md
+```
+
+**Auto-discovery:** Claude Code automatically picks up any `agents/*.md` files in the plugin root — you do NOT need to declare an `agents` field in `plugin.json`. (You can add `"agents": ["./custom/path"]` to override the default location, but for the standard `agents/` directory, omit the field entirely.)
+
+The `agents/<name>.md` file uses YAML frontmatter for metadata (name, description, optionally `tools` to restrict which tools the agent can use) and a markdown body that becomes the agent's system prompt.
+
+## Agent vs skill vs command
+
+- **Agent**: persistent persona with its own system prompt and scoped tool access. Invoked when you want Claude to "be" something else for a task.
+- **Skill**: domain expertise loaded on demand. Doesn't change Claude's persona.
+- **Command**: one-shot prompt for a deterministic task.
+
+## To make your own agent from this template
+
+1. `cp -r examples/example-agent agents/my-agent`
+2. Rename, edit `.claude-plugin/plugin.json` and the `agents/*.md` file.
+3. `uv run scripts/generate_manifest.py` and commit.
+
+See `docs/ADDING_AN_AGENT.md` for full conventions.
+== /root/.gemini/extensions/dgxsparklabs-marketplace/agents/example/agents/notebook-reviewer.md ==
+---
+name: notebook-reviewer
+description: Reviews a lab notebook entry as a skeptical peer reviewer. Use when the user has drafted a notebook entry and wants a critical second opinion before publishing.
+tools: Read, Grep, Glob
+---
+
+You are a peer reviewer for laboratory notebook entries. Your job is to apply a skeptical eye, not to be helpful.
+
+When asked to review an entry:
+
+1. Read the entry carefully (use Read).
+2. Check for these failure modes:
+   - Claims without measurements (e.g., "performance improved" without numbers).
+   - Measurements without units.
+   - Experimental setup that omits inputs, controls, or random seeds.
+   - Conclusions stronger than the evidence supports.
+   - Missing reproducibility information (commit SHA, environment, dataset version).
+3. Report findings in this format:
+   - **Strong**: what is solid and well-supported.
+   - **Weak**: claims that need more evidence.
+   - **Missing**: information that should be present but isn't.
+4. End with a verdict: ship as-is / revise / reject.
+
+Do not soften feedback. The author needs honest criticism, not encouragement.
+== /root/.gemini/extensions/dgxsparklabs-marketplace/.gemini/agents/notebook-reviewer.md ==
+---
+name: notebook-reviewer
+description: Reviews a lab notebook entry as a skeptical peer reviewer. Use when the user has drafted a notebook entry and wants a critical second opinion before publishing.
+tools: Read, Grep, Glob
+---
+
+You are a peer reviewer for laboratory notebook entries. Your job is to apply a skeptical eye, not to be helpful.
+
+When asked to review an entry:
+
+1. Read the entry carefully (use Read).
+2. Check for these failure modes:
+   - Claims without measurements (e.g., "performance improved" without numbers).
+   - Measurements without units.
+   - Experimental setup that omits inputs, controls, or random seeds.
+   - Conclusions stronger than the evidence supports.
+   - Missing reproducibility information (commit SHA, environment, dataset version).
+3. Report findings in this format:
+   - **Strong**: what is solid and well-supported.
+   - **Weak**: claims that need more evidence.
+   - **Missing**: information that should be present but isn't.
+4. End with a verdict: ship as-is / revise / reject.
+
+Do not soften feedback. The author needs honest criticism, not encouragement.
+== /root/.gemini/extensions/dgxsparklabs-marketplace/.cursor/agents/notebook-reviewer.md ==
+---
+name: notebook-reviewer
+description: Reviews a lab notebook entry as a skeptical peer reviewer. Use when the user has drafted a notebook entry and wants a critical second opinion before publishing.
+tools: Read, Grep, Glob
+---
+
+You are a peer reviewer for laboratory notebook entries. Your job is to apply a skeptical eye, not to be helpful.
+
+When asked to review an entry:
+
+1. Read the entry carefully (use Read).
+2. Check for these failure modes:
+   - Claims without measurements (e.g., "performance improved" without numbers).
+   - Measurements without units.
+   - Experimental setup that omits inputs, controls, or random seeds.
+   - Conclusions stronger than the evidence supports.
+   - Missing reproducibility information (commit SHA, environment, dataset version).
+3. Report findings in this format:
+   - **Strong**: what is solid and well-supported.
+   - **Weak**: claims that need more evidence.
+   - **Missing**: information that should be present but isn't.
+4. End with a verdict: ship as-is / revise / reject.
+
+Do not soften feedback. The author needs honest criticism, not encouragement.
+===gemini help===
++ echo '===gemini help==='
++ gemini --help
++ head -80
+Usage: gemini [options] [command]
+
+Gemini CLI - Defaults to interactive mode. Use -p/--prompt for non-interactive (headless) mode.
+
+Commands:
+  gemini mcp                   Manage MCP servers
+  gemini extensions <command>  Manage Gemini CLI extensions.  [aliases: extension]
+  gemini skills <command>      Manage agent skills.  [aliases: skill]
+  gemini hooks <command>       Manage Gemini CLI hooks.  [aliases: hook]
+  gemini gemma                 Manage local Gemma model routing
+  gemini [query..]             Launch Gemini CLI  [default]
+
+Positionals:
+  query  Initial prompt. Runs in interactive mode by default; use -p/--prompt for non-interactive.
+
+Options:
+  -d, --debug                     Run in debug mode (open debug console with F12)  [boolean] [default: false]
+  -m, --model                     Model  [string]
+  -p, --prompt                    Run in non-interactive (headless) mode with the given prompt. Appended to input on stdin (if any).  [string]
+  -i, --prompt-interactive        Execute the provided prompt and continue in interactive mode  [string]
+      --skip-trust                Trust the current workspace for this session.  [boolean] [default: false]
+  -w, --worktree                  Start Gemini in a new git worktree. If no name is provided, one is generated automatically.  [string]
+  -s, --sandbox                   Run in sandbox?  [boolean]
+  -y, --yolo                      Automatically accept all actions (aka YOLO mode, see https://www.youtube.com/watch?v=xvFZjo5PgG0 for more details)?  [boolean] [default: false]
+      --approval-mode             Set the approval mode: default (prompt for approval), auto_edit (auto-approve edit tools), yolo (auto-approve all tools), plan (read-only mode)  [string] [choices: "default", "auto_edit", "yolo", "plan"]
+      --policy                    Additional policy files or directories to load (comma-separated or multiple --policy)  [array]
+      --admin-policy              Additional admin policy files or directories to load (comma-separated or multiple --admin-policy)  [array]
+      --acp                       Starts the agent in ACP mode  [boolean]
+      --experimental-acp          Starts the agent in ACP mode (deprecated, use --acp instead)  [boolean]
+      --allowed-mcp-server-names  Allowed MCP server names  [array]
+      --allowed-tools             [DEPRECATED: Use Policy Engine instead See https://geminicli.com/docs/core/policy-engine] Tools that are allowed to run without confirmation  [array]
+  -e, --extensions                A list of extensions to use. If not provided, all extensions are used.  [array]
+  -l, --list-extensions           List all available extensions and exit.  [boolean]
+  -r, --resume                    Resume a previous session. Use "latest" for most recent or index number (e.g. --resume 5)  [string]
+      --session-file              Load a session from a JSON file  [string]
+      --session-id                Start a new session with a manually provided UUID.  [string]
+      --list-sessions             List available sessions for the current project and exit.  [boolean]
+      --delete-session            Delete a session by index number (use --list-sessions to see available sessions).  [string]
+      --include-directories       Additional directories to include in the workspace (comma-separated or multiple --include-directories)  [array]
+      --screen-reader             Enable screen reader mode for accessibility.  [boolean]
+  -o, --output-format             The format of the CLI output.  [string] [choices: "text", "json", "stream-json"]
+      --raw-output                Disable sanitization of model output (e.g. allow ANSI escape sequences). WARNING: This can be a security risk if the model output is untrusted.  [boolean]
+      --accept-raw-output-risk    Suppress the security warning when using --raw-output.  [boolean]
+  -v, --version                   Show version number  [boolean]
+  -h, --help                      Show help  [boolean]
++ echo '===gemini extensions list==='
++ gemini extensions list
+===gemini extensions list===
+✓ dgxsparklabs-marketplace (1.0.0)
+ ID: 63b1e087f35413369191586ca9661a49c0836ef95fb89250e7eccc7f6b1e0079
+ name: 310b75b81b916c5dabda9be9496c25931d4a6a3aede26df3cce4554ddc00586b
+ Path: /root/.gemini/extensions/dgxsparklabs-marketplace
+ Source: https://github.com/DgxSparkLabs/marketplace (Type: git)
+ Enabled (User): true
+ Enabled (Workspace): true
+ Agent skills:
+  youtube-wisdom: Extract key knowledge from a YouTube video transcript
+  youtube-search: Search YouTube for technical videos, tutorials, and talks on a topic
+  web-scraper: Fetch a web page and extract its main content as clean readable text
+  textual-tui-guide: Build rich terminal UIs with Python Textual — layouts, widgets, modals, styling
+  telegram-notify: Send a Telegram notification with a task summary
+  sync-rules: Sync rules from global AI agent configs into the workspace
+  structured-handoff: Generate structured task files for autonomous agent sessions
+  ssh-tunnel: Set up SSH port forwarding tunnels (local, remote, SOCKS proxy)
+  skill-creator: Create, test, and iteratively improve agent skills with evals
+  skill-analytics: Analyze skill usage patterns and generate an interactive HTML dashboard
+  session-wrapup: End-of-session audit — check docs, commits, and readiness for the next agent
+  session-history: Query past Devin CLI conversations from the local session database
+  send-email: Send an email to someone using the Resend API
+  recall-rules: Re-read global rules and thinking framework to realign mid-session
+  project-bootstrap: Initialize project docs — AGENTS.md, HANDOFF.md, CHANGELOG.md, PITFALLS.md
+  pitfall-check: Search PITFALLS.md and git log for known issues before starting work
+  motivation: Completeness checker — report what's actually unfinished before stopping
+  google-drive-reader: Read Google Docs from personal Drive, extract URLs and conclusions
+  github-search: Search GitHub for repositories, prior art, and implementation inspiration
+  github-repo-setup: Create a GitHub repo with CI, branch protection, and naming rules
+  gemini-chat: Interactive multi-turn chat with Google Gemini
+  expose-port: Expose a local port via HTTPS (localhost.run) or TCP (bore)
+  example-skill: Reference example. Echoes back a formatted lab-notebook-style status message. Shows how to write a SKILL.md with frontmatter, allowed-tools, and argument handling.
+  duckduckgo-search: Search DuckDuckGo and return results as structured text
+  code-health-audit: Audit codebase for DRY violations, oversized files, and scattered definitions
+  check: Mid-session course correction — stop, review rules, and realign
+  act-runner: Run GitHub Actions workflows locally with act and podman

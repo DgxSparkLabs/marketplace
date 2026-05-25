@@ -1,0 +1,136 @@
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "startup",
+        "hooks": [
+          {
+            "name": "log-session-start",
+            "type": "command",
+            "command": "node ${extensionPath}/scripts/hooklog.ts"
+          }
+        ]
+      }
+    ],
+    "BeforeModel": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "name": "log-before-model",
+            "type": "command",
+            "command": "node ${extensionPath}/scripts/hooklog.ts"
+          }
+        ]
+      }
+    ],
+    "AfterModel": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "name": "log-after-model",
+            "type": "command",
+            "command": "node ${extensionPath}/scripts/hooklog.ts"
+          }
+        ]
+      }
+    ],
+    "SessionEnd": [
+      {
+        "matcher": "exit",
+        "hooks": [
+          {
+            "name": "log-session-end",
+            "type": "command",
+            "command": "node ${extensionPath}/scripts/hooklog.ts"
+          }
+        ]
+      }
+    ],
+    "BeforeAgent": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "name": "log-before-agent",
+            "type": "command",
+            "command": "node ${extensionPath}/scripts/hooklog.ts"
+          }
+        ]
+      }
+    ],
+    "AfterAgent": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "name": "log-after-agent",
+            "type": "command",
+            "command": "node ${extensionPath}/scripts/hooklog.ts"
+          }
+        ]
+      }
+    ],
+    "BeforeToolSelection": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "name": "log-before-tool-selection",
+            "type": "command",
+            "command": "node ${extensionPath}/scripts/hooklog.ts"
+          }
+        ]
+      }
+    ],
+    "BeforeTool": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "name": "log-before-tool",
+            "type": "command",
+            "command": "node ${extensionPath}/scripts/hooklog.ts"
+          }
+        ]
+      }
+    ],
+    "AfterTool": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "name": "log-after-tool",
+            "type": "command",
+            "command": "node ${extensionPath}/scripts/hooklog.ts"
+          }
+        ]
+      }
+    ],
+    "PreCompress": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "name": "log-pre-compress",
+            "type": "command",
+            "command": "node ${extensionPath}/scripts/hooklog.ts"
+          }
+        ]
+      }
+    ],
+    "Notification": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "name": "log-notification",
+            "type": "command",
+            "command": "node ${extensionPath}/scripts/hooklog.ts"
+          }
+        ]
+      }
+    ]
+  }
+}

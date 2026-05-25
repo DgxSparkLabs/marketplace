@@ -1,0 +1,12 @@
+{
+  "name": "Prisma",
+  "version": "1.0.0",
+  "description": "The official Prisma plugin for Cursor: MCP server integration, rules, skills, and automation for database development",
+  "author": {
+    "name": "Prisma",
+    "email": "support@prisma.io"
+  },
+  "logo": "assets/logo.svg",
+  "keywords": ["prisma", "database", "orm", "schema", "migration", "postgres", "mysql", "sqlite"],
+  "hooks": "hooks.json"
+}
