@@ -67,48 +67,6 @@ def _base_plugin_shape(construct: Construct, name: str) -> dict:
     }
 
 
-# ─── activate.sh template (rules) ────────────────────────────────────────────
-
-ACTIVATE_SH_TEMPLATE = """\
-#!/usr/bin/env bash
-# activate.sh — symlink (or copy on platforms without symlink support)
-# this plugin's rule file(s) into the project's .claude/rules/.
-# Run once after installing this plugin.
-#
-# Usage:
-#   bash <path>/activate.sh                   # default target: .claude/rules
-#   bash <path>/activate.sh <rules-dir>       # custom target
-#
-# On Linux/macOS: creates symlinks so plugin updates auto-propagate.
-# On Windows (Git Bash, MSYS) without symlink privileges: falls back
-# to file copy. After a plugin update, re-run activate.sh to refresh.
-set -euo pipefail
-
-RULES_DIR="${{1:-.claude/rules}}"
-PLUGIN_DIR="$(cd "$(dirname "$0")" && pwd)"
-
-mkdir -p "$RULES_DIR"
-mode="symlinked"
-for rule in "$PLUGIN_DIR/rules"/*.md; do
-  [ -e "$rule" ] || continue
-  target="$RULES_DIR/$(basename "$rule")"
-  rm -f "$target"
-  if ln -s "$rule" "$target" 2>/dev/null && [ -L "$target" ]; then
-    :  # real symlink created
-  else
-    # Symlink unsupported on this platform; fall back to copy.
-    cp -f "$rule" "$target"
-    mode="copied"
-  fi
-done
-echo "$mode rule(s) into $RULES_DIR. Claude Code will load them at next session start."
-if [ "$mode" = "copied" ]; then
-  echo "Note: copies, not symlinks (your platform doesn't allow symlinks here)."
-  echo "      Re-run activate.sh after a plugin update to refresh."
-fi
-"""
-
-
 # ─── Construct implementations ────────────────────────────────────────────────
 
 class SkillConstruct:
@@ -137,21 +95,44 @@ class SkillConstruct:
 
 
 class RuleConstruct:
+    """Rule construct — not a Claude plugin component (F8, 2026-05-26).
+
+    Per code.claude.com/docs/en/plugins-reference#plugin-components-reference
+    (fetched 2026-05-26), Claude's plugin component list does not include
+    rules. Claude reads rules from ``.claude/rules/*.md`` via the memory
+    subsystem (code.claude.com/docs/en/memory#organize-rules-with-claude-rules,
+    fetched 2026-05-26), so we no longer emit a ``.claude-plugin/plugin.json``
+    or an ``activate.sh`` wrapper into ``_generated/rule-<name>/``.
+
+    The dir is still created (with rule.md inside) so per-platform
+    manifests for Cursor / Codex can land their own
+    ``.cursor-plugin/plugin.json`` and ``.codex-plugin/plugin.json``
+    files via Phase 1.5 — those platforms still surface our rules.
+    """
+
     prefix = "rule"
     source_directory = REPO_ROOT / "rules"
     category = "rule"
 
     def build_plugin_json(self, name: str) -> dict:
+        # No Claude plugin.json is written for rules, but the description
+        # is still consumed by per-platform manifest builders (Cursor /
+        # Codex) via _description_from_construct in platforms.py.
         base = _base_plugin_shape(self, name)
         base["description"] = (
-            f"Always-on rule: {name}. Install, then run activate.sh "
-            f"to symlink the rule into ~/.claude/rules/."
+            f"Rule: {name}. On Cursor/Windsurf this surfaces as a workspace "
+            f"rule; on Claude Code, copy rules/{name}/rule.md into "
+            f"~/.claude/rules/ (or .claude/rules/ for project scope) per "
+            f"code.claude.com/docs/en/memory#organize-rules-with-claude-rules."
         )
         base["keywords"] = ["rule", name]
         return base
 
     def emit(self, name: str, target_dir: Path) -> None:
-        # Copy rule.md into rules/<name>.md subdir (activate.sh expects rules/*.md)
+        # Copy rule.md into rules/<name>.md subdir so per-platform
+        # manifests (Cursor / Codex) can point at it. No activate.sh
+        # and no .claude-plugin/plugin.json: F8 retired the
+        # rule-as-Claude-plugin emission.
         rules_subdir = target_dir / "rules"
         rules_subdir.mkdir(parents=True, exist_ok=True)
         shutil.copy(
@@ -159,18 +140,10 @@ class RuleConstruct:
             rules_subdir / f"{name}.md",
         )
 
-        # Copy README.md if present
+        # Copy README.md if present (Cursor/Codex consumers may surface it)
         readme = self.source_directory / name / "README.md"
         if readme.exists():
             shutil.copy(readme, target_dir / "README.md")
-
-        # Generate activate.sh from template
-        activate_path = target_dir / "activate.sh"
-        activate_path.write_text(ACTIVATE_SH_TEMPLATE, encoding="utf-8", newline="")
-        activate_path.chmod(0o755)
-
-        # Write plugin.json under .claude-plugin/
-        write_plugin_json(target_dir, self.build_plugin_json(name))
 
 
 class CommandConstruct:

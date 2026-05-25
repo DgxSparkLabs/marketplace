@@ -36,7 +36,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 from bundles import _auto_description, load_bundles
 from constructs import CONSTRUCTS
-from platforms import CursorPlatform, GeminiPlatform, PLATFORMS
+from platforms import ClaudeCodePlatform, CursorPlatform, GeminiPlatform, PLATFORMS
 from utils import (
     CATALOG,
     GENERATED,
@@ -115,21 +115,34 @@ def main() -> None:
     # Track (plugin_dir, construct, name) tuples for Phase 1.5
     individual_plugins: list[tuple[Path, object, str]] = []
 
+    # Constructs that emit a Claude plugin (== entry in
+    # ``.claude-plugin/marketplace.json``). RuleConstruct is intentionally
+    # absent per F8: rules are a Claude memory feature, not a plugin
+    # component. See ClaudeCodePlatform.supports docstring in platforms.py
+    # and docs/research/claude-qa-2026-05-26/RESEARCH.md F8.
+    claude_supports = ClaudeCodePlatform.supports
+
     # Clear and recreate _generated/ (clean slate each run)
     if GENERATED.exists():
         shutil.rmtree(GENERATED)
     GENERATED.mkdir()
 
     # ── Phase 1: Individual construct plugins ──────────────────────────────────
+    # ``construct.emit`` always runs so per-platform manifests (Cursor /
+    # Codex) emitted in Phase 1.5 still have a directory to populate. The
+    # Claude marketplace entry is only added when the construct is in
+    # ClaudeCodePlatform.supports.
     for construct in CONSTRUCTS.values():
+        is_claude_plugin = type(construct) in claude_supports
         for name in scan_source_dir(construct.source_directory):
-            plugin_json = construct.build_plugin_json(name)
             plugin_dir = GENERATED / f"{construct.prefix}-{name}"
             plugin_dir.mkdir(parents=True, exist_ok=True)
             construct.emit(name, plugin_dir)
-            marketplace_entries.append(
-                _make_marketplace_entry(plugin_json, plugin_dir, construct.category)
-            )
+            if is_claude_plugin:
+                plugin_json = construct.build_plugin_json(name)
+                marketplace_entries.append(
+                    _make_marketplace_entry(plugin_json, plugin_dir, construct.category)
+                )
             individual_plugins.append((plugin_dir, construct, name))
 
     # ── Phase 1.5: Per-platform per-plugin manifests (Decision B2) ────────────
@@ -157,18 +170,36 @@ def main() -> None:
             )
 
     # ── Phase 2a: User-declared catalog bundles ────────────────────────────────
+    # F8: filter rule-* out of every bundle's dependencies — those plugins
+    # no longer exist in the Claude marketplace, so a bundle install would
+    # fail at the dependency resolution step. Catalog bundles whose entire
+    # membership was rule-* (bundle.quality-rules, bundle.workflow-rules,
+    # bundle.documentation-rules, bundle.environment-rules,
+    # bundle.notifications-rules) become empty post-filter and are dropped.
+    # Mixed bundles (bundle.examples) shed only their rule member.
+    # Cursor / Codex consumers still see the full rule set via the
+    # _generated/rule-<name>/ dirs + per-platform manifests in Phase 1.5.
     bundles = load_bundles(CATALOG, CONSTRUCTS)
     for bundle in bundles:
-        deps = bundle.resolve_dependencies(CONSTRUCTS)
+        raw_deps = bundle.resolve_dependencies(CONSTRUCTS)
+        deps = [d for d in raw_deps if not d.startswith("rule-")]
+        if not deps:
+            # Bundle was entirely rule-*; nothing left for Claude.
+            continue
         description = bundle.description or _auto_description(deps)
         marketplace_entries.append(
             _emit_bundle_plugin(bundle.name, description, deps)
         )
 
     # ── Phase 2b: Code-generated catch-all bundles (decision #23) ─────────────
-    #    For each construct: emit bundle-<prefix>-all with deps = every instance.
-    #    Skip constructs that have no source instances (no empty bundles).
+    #    For each construct in ClaudeCodePlatform.supports: emit
+    #    bundle-<prefix>-all with deps = every instance. Skip constructs
+    #    not in Claude's supports set (F8 retired rule-all, which referenced
+    #    rule-* plugins that no longer exist on the Claude side) and
+    #    constructs that have no source instances (no empty bundles).
     for construct in CONSTRUCTS.values():
+        if type(construct) not in claude_supports:
+            continue
         deps = [
             f"{construct.prefix}-{n}"
             for n in scan_source_dir(construct.source_directory)

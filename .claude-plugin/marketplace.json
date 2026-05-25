@@ -84,28 +84,6 @@
       "category": "bundle"
     },
     {
-      "name": "bundle-documentation-rules",
-      "source": "./_generated/bundle-documentation-rules",
-      "description": "Tracking work, documenting decisions, maintaining project history",
-      "version": "1.0.0",
-      "author": {
-        "name": "DgxSparkLabs",
-        "url": "https://github.com/DgxSparkLabs"
-      },
-      "category": "bundle"
-    },
-    {
-      "name": "bundle-environment-rules",
-      "source": "./_generated/bundle-environment-rules",
-      "description": "Tooling conventions and output discipline",
-      "version": "1.0.0",
-      "author": {
-        "name": "DgxSparkLabs",
-        "url": "https://github.com/DgxSparkLabs"
-      },
-      "category": "bundle"
-    },
-    {
       "name": "bundle-examples",
       "source": "./_generated/bundle-examples",
       "description": "Reference examples \u2014 install to study every construct type",
@@ -172,17 +150,6 @@
       "category": "bundle"
     },
     {
-      "name": "bundle-notifications-rules",
-      "source": "./_generated/bundle-notifications-rules",
-      "description": "Alert hooks for important events",
-      "version": "1.0.0",
-      "author": {
-        "name": "DgxSparkLabs",
-        "url": "https://github.com/DgxSparkLabs"
-      },
-      "category": "bundle"
-    },
-    {
       "name": "bundle-output-style-all",
       "source": "./_generated/bundle-output-style-all",
       "description": "Every output-style in the marketplace",
@@ -197,28 +164,6 @@
       "name": "bundle-project-scaffolding-skills",
       "source": "./_generated/bundle-project-scaffolding-skills",
       "description": "Initialize project documentation and structured handoffs",
-      "version": "1.0.0",
-      "author": {
-        "name": "DgxSparkLabs",
-        "url": "https://github.com/DgxSparkLabs"
-      },
-      "category": "bundle"
-    },
-    {
-      "name": "bundle-quality-rules",
-      "source": "./_generated/bundle-quality-rules",
-      "description": "Code quality, testing, verification, and review discipline",
-      "version": "1.0.0",
-      "author": {
-        "name": "DgxSparkLabs",
-        "url": "https://github.com/DgxSparkLabs"
-      },
-      "category": "bundle"
-    },
-    {
-      "name": "bundle-rule-all",
-      "source": "./_generated/bundle-rule-all",
-      "description": "Every rule in the marketplace",
       "version": "1.0.0",
       "author": {
         "name": "DgxSparkLabs",
@@ -271,17 +216,6 @@
       "category": "bundle"
     },
     {
-      "name": "bundle-workflow-rules",
-      "source": "./_generated/bundle-workflow-rules",
-      "description": "How agents approach, decompose, and execute tasks",
-      "version": "1.0.0",
-      "author": {
-        "name": "DgxSparkLabs",
-        "url": "https://github.com/DgxSparkLabs"
-      },
-      "category": "bundle"
-    },
-    {
       "name": "command-example",
       "source": "./_generated/command-example",
       "description": "Reference example slash command. Prints a formatted lab-notebook header.",
@@ -295,7 +229,7 @@
     {
       "name": "hook-example",
       "source": "./_generated/hook-example",
-      "description": "Reference example hook. Prepends a timestamp marker to every user prompt so Claude sees session context.",
+      "description": "Reference example hook covering session-lifecycle, per-turn, and tool-lifecycle Claude events. Each hook writes a per-event sentinel line to /tmp/hook-fired-<event>.log so operators can verify firing with `tail /tmp/hook-fired-*.log` (the UserPromptSubmit hook also injects a context line into the prompt as before).",
       "version": "1.0.0",
       "author": {
         "name": "DgxSparkLabs",
@@ -346,248 +280,6 @@
         "url": "https://github.com/DgxSparkLabs"
       },
       "category": "output-style"
-    },
-    {
-      "name": "rule-autonomous-persistence",
-      "source": "./_generated/rule-autonomous-persistence",
-      "description": "Always-on rule: autonomous-persistence. Install, then run activate.sh to symlink the rule into ~/.claude/rules/.",
-      "version": "1.0.0",
-      "author": {
-        "name": "DgxSparkLabs",
-        "url": "https://github.com/DgxSparkLabs"
-      },
-      "category": "rule"
-    },
-    {
-      "name": "rule-blast-radius",
-      "source": "./_generated/rule-blast-radius",
-      "description": "Always-on rule: blast-radius. Install, then run activate.sh to symlink the rule into ~/.claude/rules/.",
-      "version": "1.0.0",
-      "author": {
-        "name": "DgxSparkLabs",
-        "url": "https://github.com/DgxSparkLabs"
-      },
-      "category": "rule"
-    },
-    {
-      "name": "rule-code-hygiene",
-      "source": "./_generated/rule-code-hygiene",
-      "description": "Always-on rule: code-hygiene. Install, then run activate.sh to symlink the rule into ~/.claude/rules/.",
-      "version": "1.0.0",
-      "author": {
-        "name": "DgxSparkLabs",
-        "url": "https://github.com/DgxSparkLabs"
-      },
-      "category": "rule"
-    },
-    {
-      "name": "rule-continuous-improvement",
-      "source": "./_generated/rule-continuous-improvement",
-      "description": "Always-on rule: continuous-improvement. Install, then run activate.sh to symlink the rule into ~/.claude/rules/.",
-      "version": "1.0.0",
-      "author": {
-        "name": "DgxSparkLabs",
-        "url": "https://github.com/DgxSparkLabs"
-      },
-      "category": "rule"
-    },
-    {
-      "name": "rule-document-lifecycle",
-      "source": "./_generated/rule-document-lifecycle",
-      "description": "Always-on rule: document-lifecycle. Install, then run activate.sh to symlink the rule into ~/.claude/rules/.",
-      "version": "1.0.0",
-      "author": {
-        "name": "DgxSparkLabs",
-        "url": "https://github.com/DgxSparkLabs"
-      },
-      "category": "rule"
-    },
-    {
-      "name": "rule-document-progress",
-      "source": "./_generated/rule-document-progress",
-      "description": "Always-on rule: document-progress. Install, then run activate.sh to symlink the rule into ~/.claude/rules/.",
-      "version": "1.0.0",
-      "author": {
-        "name": "DgxSparkLabs",
-        "url": "https://github.com/DgxSparkLabs"
-      },
-      "category": "rule"
-    },
-    {
-      "name": "rule-example",
-      "source": "./_generated/rule-example",
-      "description": "Always-on rule: example. Install, then run activate.sh to symlink the rule into ~/.claude/rules/.",
-      "version": "1.0.0",
-      "author": {
-        "name": "DgxSparkLabs",
-        "url": "https://github.com/DgxSparkLabs"
-      },
-      "category": "rule"
-    },
-    {
-      "name": "rule-improve-the-process",
-      "source": "./_generated/rule-improve-the-process",
-      "description": "Always-on rule: improve-the-process. Install, then run activate.sh to symlink the rule into ~/.claude/rules/.",
-      "version": "1.0.0",
-      "author": {
-        "name": "DgxSparkLabs",
-        "url": "https://github.com/DgxSparkLabs"
-      },
-      "category": "rule"
-    },
-    {
-      "name": "rule-no-ai-credit",
-      "source": "./_generated/rule-no-ai-credit",
-      "description": "Always-on rule: no-ai-credit. Install, then run activate.sh to symlink the rule into ~/.claude/rules/.",
-      "version": "1.0.0",
-      "author": {
-        "name": "DgxSparkLabs",
-        "url": "https://github.com/DgxSparkLabs"
-      },
-      "category": "rule"
-    },
-    {
-      "name": "rule-output-discipline",
-      "source": "./_generated/rule-output-discipline",
-      "description": "Always-on rule: output-discipline. Install, then run activate.sh to symlink the rule into ~/.claude/rules/.",
-      "version": "1.0.0",
-      "author": {
-        "name": "DgxSparkLabs",
-        "url": "https://github.com/DgxSparkLabs"
-      },
-      "category": "rule"
-    },
-    {
-      "name": "rule-pitfalls-discipline",
-      "source": "./_generated/rule-pitfalls-discipline",
-      "description": "Always-on rule: pitfalls-discipline. Install, then run activate.sh to symlink the rule into ~/.claude/rules/.",
-      "version": "1.0.0",
-      "author": {
-        "name": "DgxSparkLabs",
-        "url": "https://github.com/DgxSparkLabs"
-      },
-      "category": "rule"
-    },
-    {
-      "name": "rule-prior-art",
-      "source": "./_generated/rule-prior-art",
-      "description": "Always-on rule: prior-art. Install, then run activate.sh to symlink the rule into ~/.claude/rules/.",
-      "version": "1.0.0",
-      "author": {
-        "name": "DgxSparkLabs",
-        "url": "https://github.com/DgxSparkLabs"
-      },
-      "category": "rule"
-    },
-    {
-      "name": "rule-python-uv",
-      "source": "./_generated/rule-python-uv",
-      "description": "Always-on rule: python-uv. Install, then run activate.sh to symlink the rule into ~/.claude/rules/.",
-      "version": "1.0.0",
-      "author": {
-        "name": "DgxSparkLabs",
-        "url": "https://github.com/DgxSparkLabs"
-      },
-      "category": "rule"
-    },
-    {
-      "name": "rule-readable-docs",
-      "source": "./_generated/rule-readable-docs",
-      "description": "Always-on rule: readable-docs. Install, then run activate.sh to symlink the rule into ~/.claude/rules/.",
-      "version": "1.0.0",
-      "author": {
-        "name": "DgxSparkLabs",
-        "url": "https://github.com/DgxSparkLabs"
-      },
-      "category": "rule"
-    },
-    {
-      "name": "rule-revert-on-failure",
-      "source": "./_generated/rule-revert-on-failure",
-      "description": "Always-on rule: revert-on-failure. Install, then run activate.sh to symlink the rule into ~/.claude/rules/.",
-      "version": "1.0.0",
-      "author": {
-        "name": "DgxSparkLabs",
-        "url": "https://github.com/DgxSparkLabs"
-      },
-      "category": "rule"
-    },
-    {
-      "name": "rule-session-resilience",
-      "source": "./_generated/rule-session-resilience",
-      "description": "Always-on rule: session-resilience. Install, then run activate.sh to symlink the rule into ~/.claude/rules/.",
-      "version": "1.0.0",
-      "author": {
-        "name": "DgxSparkLabs",
-        "url": "https://github.com/DgxSparkLabs"
-      },
-      "category": "rule"
-    },
-    {
-      "name": "rule-simplicity-bar",
-      "source": "./_generated/rule-simplicity-bar",
-      "description": "Always-on rule: simplicity-bar. Install, then run activate.sh to symlink the rule into ~/.claude/rules/.",
-      "version": "1.0.0",
-      "author": {
-        "name": "DgxSparkLabs",
-        "url": "https://github.com/DgxSparkLabs"
-      },
-      "category": "rule"
-    },
-    {
-      "name": "rule-stay-motivated",
-      "source": "./_generated/rule-stay-motivated",
-      "description": "Always-on rule: stay-motivated. Install, then run activate.sh to symlink the rule into ~/.claude/rules/.",
-      "version": "1.0.0",
-      "author": {
-        "name": "DgxSparkLabs",
-        "url": "https://github.com/DgxSparkLabs"
-      },
-      "category": "rule"
-    },
-    {
-      "name": "rule-task-formation",
-      "source": "./_generated/rule-task-formation",
-      "description": "Always-on rule: task-formation. Install, then run activate.sh to symlink the rule into ~/.claude/rules/.",
-      "version": "1.0.0",
-      "author": {
-        "name": "DgxSparkLabs",
-        "url": "https://github.com/DgxSparkLabs"
-      },
-      "category": "rule"
-    },
-    {
-      "name": "rule-telegram-on-complete",
-      "source": "./_generated/rule-telegram-on-complete",
-      "description": "Always-on rule: telegram-on-complete. Install, then run activate.sh to symlink the rule into ~/.claude/rules/.",
-      "version": "1.0.0",
-      "author": {
-        "name": "DgxSparkLabs",
-        "url": "https://github.com/DgxSparkLabs"
-      },
-      "category": "rule"
-    },
-    {
-      "name": "rule-verification-ladder",
-      "source": "./_generated/rule-verification-ladder",
-      "description": "Always-on rule: verification-ladder. Install, then run activate.sh to symlink the rule into ~/.claude/rules/.",
-      "version": "1.0.0",
-      "author": {
-        "name": "DgxSparkLabs",
-        "url": "https://github.com/DgxSparkLabs"
-      },
-      "category": "rule"
-    },
-    {
-      "name": "rule-verify-your-work",
-      "source": "./_generated/rule-verify-your-work",
-      "description": "Always-on rule: verify-your-work. Install, then run activate.sh to symlink the rule into ~/.claude/rules/.",
-      "version": "1.0.0",
-      "author": {
-        "name": "DgxSparkLabs",
-        "url": "https://github.com/DgxSparkLabs"
-      },
-      "category": "rule"
     },
     {
       "name": "skill-act-runner",
