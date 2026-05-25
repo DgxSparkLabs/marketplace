@@ -261,7 +261,7 @@ Each test installs ONE plugin of the construct type, then invokes it. Per-constr
 
 #### Skill — `skill-example`
 - [ ] **Install**: `claude plugin install skill-example@dgxsparklabs-marketplace --scope project`
-- [ ] **Hands-on invocation**: in a `claude` session, type `/telegram-notify` (or the actual command name) and observe the skill prompts you for the notification payload.
+- [ ] **Hands-on invocation**: in a `claude` session, type `/example` (or the actual command name) and observe the skill prompts you for the notification payload.
 - [ ] **Expected**: the skill appears in the slash-command dropdown with its correct description; invocation executes the skill body.
 - [ ] **Diagnostic (only if hands-on fails)**: `claude plugin details skill-example` should show the skill metadata, and `~/.claude/plugins/cache/dgxsparklabs-marketplace/skill-example/<version>/` should be populated.
 
@@ -421,7 +421,7 @@ Marketplace registration and `codex plugin list` are auth-free; `codex plugin ad
 - [ ] **Hands-on invocation**: open a Codex session and ask it to use the skill:
   ```bash
   codex
-  > use the telegram-notify skill to send a test notification
+  > use the example skill to send a test notification
   ```
 - [ ] **Expected**: Codex recognizes the skill and invokes it (or describes how it would). Codex surfaces skills via the per-plugin `.codex-plugin/plugin.json` pointing at `./skills/`.
 - [ ] **Diagnostic (only if hands-on fails)**: `codex plugin list | grep -F "skill-example"` shows STATUS = `installed`.
@@ -550,10 +550,10 @@ gemini auth login        # Google OAuth; needs browser
 - [ ] **Hands-on invocation**: in a `gemini` session, ask Gemini to invoke the skill:
   ```bash
   gemini
-  > use the telegram-notify skill to send a test
+  > use the example skill to send a test
   ```
 - [ ] **Expected**: Gemini recognizes the skill and executes it (or asks for needed params).
-- [ ] **Diagnostic**: `gemini skills list --all 2>&1 | grep -F telegram-notify` matches.
+- [ ] **Diagnostic**: `gemini skills list --all 2>&1 | grep -F example` matches.
 
 #### Sub-agent — `agent-example`
 - [ ] **Install**: covered by the extension install above.
@@ -643,7 +643,7 @@ Native install:
 
 ##### Skill — `skill-example`
 - [ ] **Install**: in Cursor chat panel, run `/add-plugin skill-example@https://github.com/DgxSparkLabs/marketplace`
-- [ ] **Hands-on invocation**: type `/telegram-notify` (or just `/telegram`) in Cursor.
+- [ ] **Hands-on invocation**: type `/example` in Cursor.
 - [ ] **Expected**: clean popup showing skill name and description; selecting it invokes the skill.
 - [ ] **🐛 KNOWN BUG (2026-05-25 QA)**: The skill popup displays mangled metadata. Instead of clean description text, you see something like:
   ```
@@ -726,7 +726,7 @@ agents install mcp-example --scope project
 - [ ] **Hands-on invocation**: open the scratch dir with the Cursor CLI:
   ```bash
   agent
-  > use the telegram-notify skill
+  > use the example skill
   ```
 - [ ] **Expected**: the CLI's agent discovers the skill from `.agents/skills/example/SKILL.md` (per `docs/PLATFORMS.md` Cursor "Discovery paths" — `.agents/skills/<name>/SKILL.md` is the primary path).
 
@@ -813,7 +813,7 @@ Windsurf reads from the filesystem only — no install command, no marketplace r
 #### Skill — `skill-example` (read via `.agents/skills/`)
 - [ ] **Hands-on invocation**: in Windsurf, open Cascade and type `@skill-example` (or just `@telegram`).
 - [ ] **Expected**: Cascade recognizes the `@skill-X` syntax and uses the skill — auto-discovered from `.agents/skills/example/SKILL.md` per `docs/PLATFORMS.md` Windsurf "Discovery paths".
-- [ ] **Alternative hands-on**: ask Cascade "list the skills you have available" — `telegram-notify` should appear.
+- [ ] **Alternative hands-on**: ask Cascade "list the skills you have available" — `example` should appear.
 
 #### Rule — `rule-example`
 - [ ] **Hands-on invocation**: ask Cascade for an action the rule should affect (e.g., a refactor where example reasoning would change the recommendation).
@@ -897,10 +897,10 @@ git clone --branch fix/platform-emission-bugs https://github.com/DgxSparkLabs/ma
 
 #### Skill — `skill-example` (read via `.agents/skills/`)
 - [ ] **Hands-on invocation**: `devin skills list`
-- [ ] **Expected**: lists 27 skills from `.agents/skills/` (since `.devin/skills/` was retired this round). `telegram-notify` is one of them. Output format per `docs/PLATFORMS.md` Devin "Discovery commands": `/<slash-command> [triggers] (path) - description`.
+- [ ] **Expected**: lists 27 skills from `.agents/skills/` (since `.devin/skills/` was retired this round). `example` is one of them. Output format per `docs/PLATFORMS.md` Devin "Discovery commands": `/<slash-command> [triggers] (path) - description`.
 - [ ] **Hands-on (dispatching the skill)**: in a `devin` session, ask Devin to use the skill.
 - [ ] **Diagnostic**: `devin skills paths` should mention `.agents/skills/` AND `~/.agents/skills/` (user scope) — `.devin/skills/` should be ABSENT (the legacy mirror was retired per D-1).
-- [ ] **Hands-on (show)**: `devin skills show telegram-notify` — prints the skill body.
+- [ ] **Hands-on (show)**: `devin skills show example` — prints the skill body.
 
 #### Rule — `rule-example` (read via `.windsurf/rules/`, `.cursor/rules/`)
 - [ ] **Hands-on invocation**: `devin rules list`
@@ -1036,7 +1036,7 @@ For every supported construct, install and verify the on-disk landing path. The 
 - [ ] **Project install**: `agents install skill-example --scope project`
 - [ ] **Verify path**:
   ```bash
-  test -d .agents/skills/telegram-notify && echo "agents YES"   # expected: agents YES
+  test -d .agents/skills/example && echo "agents YES"   # expected: agents YES
   test -f .agents/skills/example/SKILL.md && echo "skill YES"   # expected: skill YES
   ```
 - [ ] **Hands-on (Cursor CLI or Windsurf consumes)**: the SKILL.md at `.agents/skills/example/` is what Cursor CLI and Windsurf read — see those platforms' per-construct sections for the consumption test.
@@ -1144,8 +1144,8 @@ For every supported construct, install and verify the on-disk landing path. The 
 - [ ] **Uninstall**: `agents uninstall skill-example --scope project`
 - [ ] **Verify**:
   ```bash
-  test -d .agents/skills/telegram-notify && echo "still there"     # expected: NOTHING
-  test -d .cursor/skills/telegram-notify && echo "still there"     # expected: NOTHING
+  test -d .agents/skills/example && echo "still there"     # expected: NOTHING
+  test -d .cursor/skills/example && echo "still there"     # expected: NOTHING
   ```
 
 ### Specifically for THIS refactor
@@ -1291,7 +1291,7 @@ Discovered during the first hands-on QA pass of this doc. All three are real and
 
 ### 🐛 Cursor skill popup mangled metadata
 
-- **Symptom**: After `/add-plugin skill-example@<url>` succeeds, typing `/telegram` in Cursor shows a popup with mangled fields — version string, commit SHA, and the description duplicated, instead of a clean description-only popup.
+- **Symptom**: After `/add-plugin skill-example@<url>` succeeds, typing `/example` (the skill's invocation name) in Cursor shows a popup with mangled fields — version string, commit SHA, and the description duplicated, instead of a clean description-only popup. (Originally observed during 2026-05-25 QA with `skill-telegram-notify` / `/telegram`; symptom reproduces with the example fixture.)
 - **State on disk**: `.cursor/settings.json` is populated correctly with the plugin entry. The actual install path works.
 - **Hypothesis**: Our `.cursor-plugin/plugin.json` for skills populates fields that Cursor's display layer renders in unexpected slots. Compare against a working Cursor-native skill plugin's manifest.
 - **Scope to investigate**: `CursorPlatform.build_plugin_json` for SkillConstruct in `scripts/platforms.py` + Cursor plugin manifest reference at `cursor.com/docs/reference/plugins`.
