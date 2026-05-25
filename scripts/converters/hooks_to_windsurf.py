@@ -53,43 +53,16 @@ from __future__ import annotations
 
 import json
 
+from converters.event_name_mapping import (
+    CLAUDE_TO_WINDSURF_EVENTS,
+    WINDSURF_EVENTS,
+)
+
 __all__ = [
     "claude_hooks_to_windsurf_hooks",
     "CLAUDE_TO_WINDSURF_EVENTS",
+    "WINDSURF_EVENTS",
 ]
-
-# Per docs.windsurf.com/windsurf/cascade/hooks (2026-05-25): 12 supported
-# Windsurf events.
-WINDSURF_EVENTS: frozenset[str] = frozenset({
-    "pre_read_code",
-    "post_read_code",
-    "pre_write_code",
-    "post_write_code",
-    "pre_run_command",
-    "post_run_command",
-    "pre_mcp_tool_use",
-    "post_mcp_tool_use",
-    "pre_user_prompt",
-    "post_cascade_response",
-    "post_cascade_response_with_transcript",
-    "post_setup_worktree",
-})
-
-# Claude → Windsurf event-name mapping.
-#
-# Only entries with a clean semantic 1:1 match are listed. Claude events
-# without a Windsurf analog (Stop, SubagentStop, SessionStart, SessionEnd,
-# Notification, PreCompact) are dropped on conversion. PreToolUse and
-# PostToolUse are not mapped because Windsurf splits "tool" into four
-# sub-events (read_code, write_code, run_command, mcp_tool_use); our
-# Claude source does not disambiguate which sub-event applies, so we
-# would emit incorrect events. When a Claude hook author wants Windsurf
-# coverage for tool events they should declare per-event entries in the
-# source hooks.json (mirroring the Windsurf shape) and the table can be
-# expanded.
-CLAUDE_TO_WINDSURF_EVENTS: dict[str, str] = {
-    "UserPromptSubmit": "pre_user_prompt",
-}
 
 # Pass-through field names from Claude inner-hook entries to Windsurf
 # entries. ``type`` is dropped on conversion (Windsurf inferred type
