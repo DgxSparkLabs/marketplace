@@ -26,9 +26,9 @@ The four detail-reference docs ([[ADDING_A_CONSTRUCT]], [[CONSTRUCT_TYPES]], [[R
 | Claude Code | `/plugin marketplace add DgxSparkLabs/marketplace` | yes | yes | via plugin install | fully working |
 | Codex | `codex plugin marketplace add DgxSparkLabs/marketplace` | yes | yes | via plugin install | fully working |
 | Gemini | `gemini extensions install https://github.com/DgxSparkLabs/marketplace --consent` | yes | extensions, not plugins | `.gemini/skills/` (via extension) | fully working |
-| Cursor | Dashboard → Settings → Plugins → Import → paste GitHub URL | yes (`agent`) | no — IDE-only install | `.agents/skills/`, `.cursor/skills/`, `.claude/skills/`, `.codex/skills/` | IDE install only |
-| Windsurf | `git clone` + open in IDE | no | n/a | `.windsurf/skills/` + `.agents/skills/` | clone-only |
-| Devin | `git clone` + `devin skills list` | yes | n/a (no marketplace) | `.devin/skills/` + `.agents/skills/` | clone-only |
+| Cursor | Dashboard → Settings → Plugins → Import → paste GitHub URL | yes (`agent`) | no — IDE-only install | `.agents/skills/` | IDE install only |
+| Windsurf | `git clone` + open in IDE | no | n/a | `.agents/skills/` | clone-only |
+| Devin | `git clone` + `devin skills list` | yes | n/a (no marketplace) | `.agents/skills/` | clone-only |
 
 Sources: [[archive/phase-5-cross-platform-install/VERIFICATION_2026-05/SUMMARY#Per-platform install story (what's true today)]] (Claude/Codex/Gemini), [[archive/phase-5-cross-platform-install/VERIFICATION_2026-05/cursor#Executive summary]] (Cursor), [[archive/empirical-cli-findings/windsurf]] (Windsurf), [[archive/empirical-cli-findings/devin]] (Devin).
 
@@ -202,18 +202,20 @@ Reads `_generated/<plugin>/.codex-plugin/plugin.json` (emitted by generator Phas
 
 | Construct | Supported | Notes |
 |---|:--:|---|
-| skill | yes | `_generated/skill-*/.codex-plugin/plugin.json` emits `"skills": "./skills/"` pointer |
+| skill | yes (manifest-only) | `_generated/skill-*/.codex-plugin/plugin.json` emits `"skills": "./skills/"` pointer. Skill mirror retired 2026-05-25 (D-1) — Codex reads skills via the per-plugin manifest, not a repo-root `.codex/skills/` tree. |
 | mcp | yes | manifest emits `"mcpServers": "./mcp.json"` |
 | hook | yes | manifest emits `"hooks": "./hooks/hooks.json"` |
-| rule, command, agent, lsp, monitor, output-style, theme | no | Codex reads rules from `AGENTS.md`, `.cursor/rules/*.md`, `.windsurf/rules/*.md` directly; other constructs are Claude-specific |
+| agent | yes | `.codex/agents/<name>.toml` per `developers.openai.com/codex/subagents/` (2026-05-25). Source is Claude-style markdown (D-16); converted at emit time by `scripts/converters/md_to_toml.py`. |
+| rule, command, lsp, monitor, output-style, theme | no | Codex reads rules from `AGENTS.md`, `.cursor/rules/*.md`, `.windsurf/rules/*.md` directly; other constructs are Claude-specific |
 
-`CodexPlatform.supports = {SkillConstruct, MCPConstruct, HookConstruct}` at `scripts/platforms.py:148`.
+`CodexPlatform.supports = {SkillConstruct, MCPConstruct, HookConstruct, AgentConstruct}` at `scripts/platforms.py:150`.
 
 ### Discovery paths it reads
 
 - `.claude-plugin/marketplace.json` (legacy-compatible marketplace manifest)
+- `.agents/plugins/marketplace.json` (Codex canonical path per `developers.openai.com/codex/plugins/build`, 2026-05-25 — emitted by Phase 5.5, byte-identical to the legacy path)
 - `_generated/<plugin>/.codex-plugin/plugin.json` (per-plugin manifest)
-- `.codex/skills/<name>/` (mirror for skill content)
+- `.codex/agents/<name>.toml` (sub-agent definitions, Unit 4)
 - `AGENTS.md`, `.cursor/rules/*.md`, `.windsurf/rules/*.md` for rule context
 - Config: `~/.codex/config.toml`
 
@@ -415,19 +417,23 @@ Not applicable for the CLI. In the IDE, `/add-plugin` is the per-plugin install 
 
 | Construct | Supported | Notes |
 |---|:--:|---|
-| skill | yes | read from `.agents/skills/<name>/SKILL.md` (primary), `.cursor/skills/`, `.claude/skills/`, `.codex/skills/` (compatibility) |
+| skill | yes | read from `.agents/skills/<name>/SKILL.md` (single canonical path) |
 | rule | yes | read from `.cursor/rules/<name>.md`; per-plugin `.cursor-plugin/plugin.json` emitted for inclusion in team marketplace |
-| command, agent, hook, mcp, lsp, monitor, output-style, theme | no | not currently emitted to Cursor; theoretically possible via plugin manifest's other fields |
+| agent | yes | read from `.cursor/agents/<name>.md` (workspace-level sub-agents, per `cursor.com/docs/agent/subagents`, 2026-05-25) |
+| command | yes (manifest-only) | per-plugin `.cursor-plugin/plugin.json` includes `"commands": "./commands/"` pointer; Cursor auto-discovers `commands/` inside the installed plugin |
+| hook | yes (manifest-only) | per-plugin `.cursor-plugin/plugin.json` includes `"hooks": "./hooks/hooks.json"` pointer |
+| mcp | yes (manifest-only) | per-plugin `.cursor-plugin/plugin.json` includes `"mcpServers"` field |
+| lsp, monitor, output-style, theme | no | Claude-specific construct types |
 
-`CursorPlatform.supports = {RuleConstruct, SkillConstruct}` at `scripts/platforms.py:236`.
+`CursorPlatform.supports = {RuleConstruct, SkillConstruct, AgentConstruct, CommandConstruct, HookConstruct, MCPConstruct}` at `scripts/platforms.py:280`.
 
 ### Discovery paths it reads
 
 - `.cursor/rules/*.md` (with optional `.mdc` extension for richer frontmatter)
+- `.cursor/agents/<name>.md` (workspace-level sub-agents per `cursor.com/docs/agent/subagents`, 2026-05-25)
 - `.agents/skills/<name>/SKILL.md` (primary skill path per [cursor.com/docs/context/skills, 2026-05-24](https://cursor.com/docs/context/skills))
-- `.cursor/skills/`, `.claude/skills/`, `.codex/skills/` (compatibility skill paths)
 - `.cursor-plugin/marketplace.json` at repo root (team marketplace import)
-- `_generated/<plugin>/.cursor-plugin/plugin.json` (per-plugin manifest; only `name` is required)
+- `_generated/<plugin>/.cursor-plugin/plugin.json` (per-plugin manifest with `agents` / `commands` / `hooks` / `mcpServers` pointer fields as applicable per `cursor.com/docs/reference/plugins`, 2026-05-25)
 - `.cursorrules` (legacy single-file rule format; still valid as of May 2026)
 
 ### CI assertions
@@ -507,16 +513,18 @@ Not applicable — Windsurf has no plugin marketplace concept. Rules and skills 
 | Construct | Supported | Notes |
 |---|:--:|---|
 | rule | yes | mirrored to `.windsurf/rules/<name>.md` with `trigger: always_on` frontmatter |
-| skill | yes (via `.agents/`) | Windsurf Cascade auto-discovers `.windsurf/skills/<name>/SKILL.md` AND `.agents/skills/<name>/SKILL.md` per [docs.windsurf.com/windsurf/cascade/skills, 2026-05-24] |
-| everything else | no | Windsurf has no concepts beyond rules + skills |
+| skill | yes (via `.agents/`) | Windsurf Cascade auto-discovers `.agents/skills/<name>/SKILL.md` per [docs.windsurf.com/windsurf/cascade/skills, 2026-05-25] |
+| hook | yes | `.windsurf/hooks.json` (single hooks file at the `.windsurf/` root) per [docs.windsurf.com/windsurf/cascade/hooks, 2026-05-25] |
+| everything else | no | Windsurf has no concepts beyond rules + skills + hooks |
 
-`WindsurfPlatform.supports = {RuleConstruct}` at `scripts/platforms.py:265`. Skills reach Windsurf via the shared `.agents/skills/` mirror emitted by `AgentsPlatform` (see [[ARCHITECTURE#The seven platform classes]]).
+`WindsurfPlatform.supports = {RuleConstruct, HookConstruct}` at `scripts/platforms.py:344`. Skills reach Windsurf via the shared `.agents/skills/` mirror emitted by `AgentsPlatform` (see [[ARCHITECTURE#The seven platform classes]]).
 
 ### Discovery paths it reads
 
 - `.windsurf/rules/<name>.md` (with required `trigger:` frontmatter field — `always_on`, `model_decision`, `glob`, or `manual`; 12,000 char body limit per file)
-- `.windsurf/skills/<name>/SKILL.md` AND `.agents/skills/<name>/SKILL.md` (both auto-discovered by Cascade)
-- User-scope equivalents: `~/.windsurf/...`, `~/.agents/skills/`
+- `.windsurf/hooks.json` (Cascade-triggered hooks per docs.windsurf.com/windsurf/cascade/hooks, 2026-05-25)
+- `.agents/skills/<name>/SKILL.md` (auto-discovered by Cascade)
+- User-scope equivalents: `~/.codeium/windsurf/...`, `~/.agents/skills/`
 
 ### CI assertions
 
@@ -606,16 +614,16 @@ Not applicable — Devin has no marketplace. Content is discovered live from the
 
 | Construct | Supported | Notes |
 |---|:--:|---|
-| skill | yes | reads `.devin/skills/<name>/SKILL.md` AND `.agents/skills/<name>/SKILL.md` natively (per `devin skills paths` output) |
+| skill | yes (via `.agents/`) | reads `.agents/skills/<name>/SKILL.md` natively (per `devin skills paths` output). Legacy `.devin/skills/` mirror retired 2026-05-25 (D-1) — Devin's own enumeration confirms `.agents/skills/` is sufficient (Q-B1 PASS). |
 | rule | yes (via Cursor/Windsurf mirrors) | reads `.windsurf/rules/*.md`, `.cursor/rules/*.md`, `.cursorrules`, `AGENTS.md` natively — no separate `.devin/rules/` emission needed |
 | mcp | yes | `devin mcp list` / `devin mcp add` manage MCP server configs |
 | everything else | no | Devin has no concepts beyond skills, rules, and MCP |
 
-`DevinPlatform.supports = {SkillConstruct}` at `scripts/platforms.py:293`. Skills additionally reach Devin via the `.agents/skills/` shared mirror.
+`DevinPlatform.supports = {SkillConstruct}` at `scripts/platforms.py:386` (kept so a future per-plugin Devin manifest schema can plug in via Phase 1.5 without code changes). `DevinPlatform.mirror_directory = None` — no Phase 3 mirror is emitted; skills reach Devin via the `.agents/skills/` shared mirror.
 
 ### Discovery paths it reads
 
-Per `devin skills paths` (verified 2026-05-22):
+Per `devin skills paths` (verified 2026-05-22, post-retirement re-verified 2026-05-25):
 
 ```
 User skills (global):
@@ -623,7 +631,6 @@ User skills (global):
   ~/.agents/skills/<skill-name>/SKILL.md
 
 Project skills:
-  .devin/skills/<skill-name>/SKILL.md
   .agents/skills/<skill-name>/SKILL.md
 ```
 
@@ -692,18 +699,19 @@ _COPY_IGNORE = shutil.ignore_patterns(
 )
 ```
 
-Every Platform's `emit` method passes `ignore=_COPY_IGNORE` to `shutil.copytree`. Result: `.codex/skills/<name>/` will never contain a stray `.claude-plugin/` directory from the source tree.
+Every Platform's `emit` method passes `ignore=_COPY_IGNORE` to `shutil.copytree`. Result: mirrored skill content (e.g. `.gemini/skills/<name>/`) will never contain a stray `.claude-plugin/` directory from the source tree.
 
 ### Per-platform manifest paths (one-line each)
 
-| Platform | Marketplace manifest | Per-plugin manifest | Skill content mirror | Rule content mirror |
+| Platform | Marketplace manifest | Per-plugin manifest | Skill content mirror | Rule / agent / hook mirror |
 |---|---|---|---|---|
-| Claude Code | `.claude-plugin/marketplace.json` | `_generated/<plugin>/.claude-plugin/plugin.json` | (via plugin install) | (via plugin install + activate.sh) |
-| Codex | `.claude-plugin/marketplace.json` (legacy) | `_generated/<plugin>/.codex-plugin/plugin.json` | `.codex/skills/` | reads from `AGENTS.md`, `.cursor/`, `.windsurf/` |
-| Gemini | `gemini-extension.json` (root, for GitHub URL) or `.gemini/gemini-extension.json` (local) | n/a (extensions, not plugins) | `.gemini/skills/` | reads from `GEMINI.md`, `AGENTS.md` |
-| Cursor | `.cursor-plugin/marketplace.json` (root, team-import) | `_generated/<plugin>/.cursor-plugin/plugin.json` | `.agents/skills/` (primary) | `.cursor/rules/` |
-| Windsurf | n/a | n/a | `.windsurf/skills/` + `.agents/skills/` | `.windsurf/rules/` |
-| Devin | n/a | n/a | `.devin/skills/` + `.agents/skills/` | reads from `.cursor/`, `.windsurf/`, `AGENTS.md` |
+| Claude Code | `.claude-plugin/marketplace.json` | `_generated/<plugin>/.claude-plugin/plugin.json` | (via plugin install) | (via plugin install + activate.sh for rules) |
+| Codex | `.claude-plugin/marketplace.json` (legacy) + `.agents/plugins/marketplace.json` (canonical, Phase 5.5) | `_generated/<plugin>/.codex-plugin/plugin.json` | (via per-plugin manifest only — `.codex/skills/` retired 2026-05-25) | `.codex/agents/<name>.toml` (sub-agents); reads rules from `AGENTS.md`, `.cursor/`, `.windsurf/` |
+| Gemini | `gemini-extension.json` (root, for GitHub URL) or `.gemini/gemini-extension.json` (local) | n/a (extensions, not plugins) | `.gemini/skills/` | `.gemini/agents/<name>.md`, `.gemini/hooks/hooks.json`; reads rules from `GEMINI.md`, `AGENTS.md` |
+| Cursor | `.cursor-plugin/marketplace.json` (root, team-import) | `_generated/<plugin>/.cursor-plugin/plugin.json` (with `agents`/`commands`/`hooks`/`mcpServers` pointer fields) | `.agents/skills/` (primary) | `.cursor/rules/`, `.cursor/agents/<name>.md` |
+| Windsurf | n/a | n/a | `.agents/skills/` | `.windsurf/rules/`, `.windsurf/hooks.json` |
+| Devin | n/a | n/a | `.agents/skills/` (legacy `.devin/skills/` retired 2026-05-25) | reads from `.cursor/`, `.windsurf/`, `AGENTS.md` |
+| Agents (convergence) | `.agents/plugins/marketplace.json` (Phase 5.5; byte-identical to `.claude-plugin/marketplace.json`) | n/a | `.agents/skills/<name>/SKILL.md` | `.agents/rules/<name>.md` (forward-looking) |
 
 For the architecture behind why Cursor is IDE-only and how `AgentsPlatform` exists, see [[ARCHITECTURE#The seven platform classes]].
 
@@ -719,7 +727,7 @@ One table cross-referencing every platform's discovery commands. Use this when y
 | Codex | `codex plugin list` (lists installed and available together) | same | `codex mcp get <name>` (for MCP only) | `~/.codex/config.toml` + `~/.codex/.tmp/marketplaces/` |
 | Gemini | `gemini extensions list 2>&1`, `gemini skills list --all 2>&1` | `gemini skills list --all 2>&1` | `gemini extensions validate <path>` | `~/.gemini/extensions/`, `.gemini/skills/` |
 | Cursor | (no CLI introspection) | (Dashboard UI) | (none headless) | `.cursor/rules/`, `.agents/skills/`, `.cursor-plugin/marketplace.json` |
-| Windsurf | (no CLI) | (no CLI) | (none) | `.windsurf/rules/`, `.windsurf/skills/`, `.agents/skills/` |
+| Windsurf | (no CLI) | (no CLI) | (none) | `.windsurf/rules/`, `.windsurf/hooks.json`, `.agents/skills/` |
 | Devin | `devin skills list`, `devin rules list`, `devin mcp list` | same (filesystem-discovered) | `devin skills show <name>`, `devin rules show <name>`, `devin mcp get <name>` | `devin skills paths` + `devin rules paths` print them |
 
 Note all `gemini` list commands need `2>&1` because Gemini writes list output to stderr on Linux.

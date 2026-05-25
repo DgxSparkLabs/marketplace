@@ -11,7 +11,7 @@ Three-tier documentation: rules, reference, history — no sprawl
 
 # Then activate (one-time):
 bash ~/.claude/plugins/cache/dgxsparklabs-marketplace/rule-document-lifecycle/activate.sh
-```nFor other platforms (Devin, Cursor, Windsurf), see the auto-generated mirrors in `.devin/rules/`, `.cursor/rules/`, `.windsurf/rules/` after `git clone`.
+```nFor other platforms (Devin, Cursor, Windsurf), see the auto-generated mirrors in `.cursor/rules/`, `.windsurf/rules/` after `git clone`.
 
 ## What it does
 

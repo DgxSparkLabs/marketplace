@@ -29,6 +29,7 @@ At-a-glance: which platforms install this marketplace directly from a GitHub URL
 | Cursor | ⚙️ IDE-only (paste GitHub URL) | Dashboard → Settings → Plugins → Import → paste repo URL (Cursor 2.6+) |
 | Windsurf | ❌ Clone required (no CLI exists) | `git clone https://github.com/DgxSparkLabs/marketplace` then open in IDE |
 | Devin | ❌ Clone required (no marketplace concept) | `git clone https://github.com/DgxSparkLabs/marketplace` then `devin skills list` |
+| `agents` CLI (cross-platform) | ✅ Yes (one-line installer) | `curl -fsSL https://raw.githubusercontent.com/DgxSparkLabs/marketplace/main/install.sh \| bash` then `agents install <plugin> --scope project` |
 
 ## Quick Start
 
@@ -115,7 +116,36 @@ devin skills list
 devin rules list
 ```
 
-Note: skills come from both `.devin/skills/` and `.agents/skills/` — Devin reads both paths natively.
+Note: skills come from `.agents/skills/` — Devin reads it natively. The legacy `.devin/skills/` mirror was retired 2026-05-25 (verified empirically); no migration needed.
+
+### Cross-platform: `agents` CLI
+
+For any platform where you'd rather drive installs from a shell than rely on each tool's native installer, the `agents` CLI ships a small Python shim that installs a plugin into `.agents/<construct>/` (the shared convergence path) and, optionally, every per-platform path (`.cursor/`, `.windsurf/`, `.gemini/`, `.codex/`, `.claude/`) in one command.
+
+```bash
+# POSIX one-liner installer (drops `agents` into ~/.local/bin/)
+curl -fsSL https://raw.githubusercontent.com/DgxSparkLabs/marketplace/main/install.sh | bash
+
+# Windows PowerShell one-liner
+irm https://raw.githubusercontent.com/DgxSparkLabs/marketplace/main/install.ps1 | iex
+
+# Install a skill into the current project (.agents/ + per-platform paths)
+agents install skill-telegram-notify --scope project
+
+# Strict mode — write only to .agents/, skip per-platform spray
+agents install rule-blast-radius --scope project --agents-only
+
+# Install for the user (~/.agents/ only)
+agents install agent-example --scope user
+
+# Browse what's available
+agents list --available
+
+# Remove
+agents uninstall skill-telegram-notify --scope project
+```
+
+The CLI supports all `.agents/` constructs (skill, rule, agent, hook, mcp, command). Claude-only constructs (lsp, monitor, output-style, theme) install via `claude plugin install` as before.
 
 ---
 

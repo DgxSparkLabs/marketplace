@@ -28,6 +28,22 @@ Bundles are dep-only plugins that group constructs for one-command installation.
 
 Catch-all bundles (`bundle-skill-all`, `bundle-rule-all`, etc.) are code-generated — the generator emits one per construct type that has at least one instance. They are NOT declared in `catalog.toml` (decision #23). Attempting to define them in the catalog raises a `ValueError`.
 
+## Per-platform support matrix (as of 2026-05-25)
+
+The platform-feature-routing refactor (CHANGELOG 2026-05-25) widened several platforms' `supports` sets so per-construct emission lines up with each platform's documented APIs. See [`PLATFORMS.md`](./PLATFORMS.md) and [`ARCHITECTURE.md`](./ARCHITECTURE.md) for full per-platform reference; the short version:
+
+| Construct | Claude | Codex | Gemini | Cursor | Windsurf | Devin | Agents |
+|---|:--:|:--:|:--:|:--:|:--:|:--:|:--:|
+| skill        | ✅ | ✅ (manifest-only) | ✅ | served via `.agents/` | served via `.agents/` | served via `.agents/` | ✅ |
+| rule         | ✅ |  |  | ✅ | ✅ |  | ✅ (forward-looking) |
+| command      | ✅ |  |  | ✅ |  |  |  |
+| agent        | ✅ | ✅ (`.codex/agents/*.toml`) | ✅ (`.gemini/agents/*.md`) | ✅ (`.cursor/agents/*.md`) |  |  |  |
+| hook         | ✅ | ✅ (manifest-only) | ✅ (`.gemini/hooks/hooks.json`) | ✅ | ✅ (`.windsurf/hooks.json`) |  |  |
+| mcp          | ✅ | ✅ (manifest-only) |  | ✅ (`mcpServers` pointer) |  |  |  |
+| lsp / monitor / output-style / theme | ✅ |  |  |  |  |  |  |
+
+"manifest-only" = surfaced via the per-plugin `.<platform>-plugin/plugin.json` (Phase 1.5) without a separate mirror file.
+
 ## Plugin naming convention
 
 ```
