@@ -1,0 +1,307 @@
+time="2026-05-25T02:14:41+03:00" level=info msg="Using docker host 'npipe:////./pipe/docker_engine', and daemon socket 'npipe:////./pipe/docker_engine'"
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ] 🚀  Start image=catthehacker/ubuntu:act-latest
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   🐳  docker pull image=catthehacker/ubuntu:act-latest platform=linux/amd64 username= forcePull=false
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   🐳  docker create image=catthehacker/ubuntu:act-latest platform=linux/amd64 entrypoint=["tail" "-f" "/dev/null"] cmd=[] network="host"
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   🐳  docker run image=catthehacker/ubuntu:act-latest platform=linux/amd64 entrypoint=["tail" "-f" "/dev/null"] cmd=[] network="host"
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ] ⭐ Run Main Checkout repo
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   🐳  docker cp src=C:\Users\devic\source\marketplace\. dst=/mnt/c/Users/devic/source/marketplace
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   ✅  Success - Main Checkout repo
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ] ⭐ Run Main Install uv
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   🐳  docker exec cmd=[bash --noprofile --norc -e -o pipefail /var/run/act/workflow/1] user= workdir=
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | downloading uv 0.11.16 x86_64-unknown-linux-gnu
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | installing to /root/.local/bin
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   |   uv
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   |   uvx
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | everything's installed!
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | 
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | To add $HOME/.local/bin to your PATH, either restart your shell or run:
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | 
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   |     source $HOME/.local/bin/env (sh, bash, zsh)
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   |     source $HOME/.local/bin/env.fish (fish)
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | uv 0.11.16 (x86_64-unknown-linux-gnu)
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   ✅  Success - Main Install uv
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   ⚙  ::add-path:: /root/.local/bin
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   ⚙  ::add-path:: /root/.local/bin
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ] ⭐ Run Main Regenerate manifests (baseline state)
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   🐳  docker exec cmd=[bash --noprofile --norc -e -o pipefail /var/run/act/workflow/2] user= workdir=
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | Generated 81 plugin entries in marketplace.json
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   |   agent: 1
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   |   bundle: 24
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   |   command: 1
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   |   hook: 1
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   |   lsp: 1
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   |   mcp: 1
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   |   monitor: 1
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   |   output-style: 1
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   |   rule: 22
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   |   skill: 27
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   |   theme: 1
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   |   per-platform manifests emitted for 57 individual plugins
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   ✅  Success - Main Regenerate manifests (baseline state)
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ] ⭐ Run Main PRE-STATE — show .codex/, .devin/, .agents/ before retirement
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   🐳  docker exec cmd=[bash --noprofile --norc -e -o pipefail /var/run/act/workflow/3] user= workdir=
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | === PRE-STATE START ===
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | --- .codex/skills/ count ---
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | 27
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | --- .devin/skills/ count ---
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | 27
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | --- .agents/skills/ count ---
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | 27
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | === PRE-STATE END ===
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   ✅  Success - Main PRE-STATE — show .codex/, .devin/, .agents/ before retirement
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ] ⭐ Run Main Q-A1 / Q-B1 — Simulate retirement: rm -rf .codex/skills .devin/skills
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   🐳  docker exec cmd=[bash --noprofile --norc -e -o pipefail /var/run/act/workflow/4] user= workdir=
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | === SIMULATE-RETIREMENT START ===
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | After rm:
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | ls: cannot access '.codex': No such file or directory
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | no .codex
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | ls: cannot access '.devin': No such file or directory
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | no .devin
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | 27
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | === SIMULATE-RETIREMENT END ===
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   ✅  Success - Main Q-A1 / Q-B1 — Simulate retirement: rm -rf .codex/skills .devin/skills
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ] ⭐ Run Main Install Node.js 20
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   🐳  docker exec cmd=[bash --noprofile --norc -e -o pipefail /var/run/act/workflow/5] user= workdir=
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | [38;5;79m2026-05-24 23:15:30 - Installing pre-requisites[0m
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | 
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | WARNING: apt does not have a stable CLI interface. Use with caution in scripts.
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | 
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | Get:1 http://security.ubuntu.com/ubuntu noble-security InRelease [126 kB]
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | Get:2 https://packages.microsoft.com/ubuntu/24.04/prod noble InRelease [3600 B]
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | Get:3 http://archive.ubuntu.com/ubuntu noble InRelease [256 kB]
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | Get:4 http://archive.ubuntu.com/ubuntu noble-updates InRelease [126 kB]
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | Get:5 https://packages.microsoft.com/ubuntu/24.04/prod noble/main all Packages [643 B]
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | Get:6 https://packages.microsoft.com/ubuntu/24.04/prod noble/main amd64 Packages [155 kB]
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | Get:7 https://ppa.launchpadcontent.net/git-core/ppa/ubuntu noble InRelease [24.3 kB]
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | Get:8 http://archive.ubuntu.com/ubuntu noble-backports InRelease [126 kB]
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | Get:9 http://security.ubuntu.com/ubuntu noble-security/universe amd64 Packages [1505 kB]
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | Get:10 http://archive.ubuntu.com/ubuntu noble/multiverse amd64 Packages [331 kB]
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | Get:11 http://archive.ubuntu.com/ubuntu noble/universe amd64 Packages [19.3 MB]
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | Get:12 http://security.ubuntu.com/ubuntu noble-security/multiverse amd64 Packages [48.4 kB]
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | Get:13 http://security.ubuntu.com/ubuntu noble-security/main amd64 Packages [2074 kB]
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | Get:14 https://ppa.launchpadcontent.net/git-core/ppa/ubuntu noble/main amd64 Packages [2988 B]
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | Get:16 http://security.ubuntu.com/ubuntu noble-security/restricted amd64 Packages [3671 kB]
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | Get:17 http://archive.ubuntu.com/ubuntu noble/main amd64 Packages [1808 kB]
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | Get:15 https://packagecloud.io/github/git-lfs/ubuntu noble InRelease [29.2 kB]
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | Get:18 http://archive.ubuntu.com/ubuntu noble/restricted amd64 Packages [117 kB]
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | Get:19 http://archive.ubuntu.com/ubuntu noble-updates/universe amd64 Packages [2148 kB]
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | Get:20 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 Packages [2457 kB]
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | Get:22 http://archive.ubuntu.com/ubuntu noble-updates/restricted amd64 Packages [3920 kB]
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | Get:21 https://packagecloud.io/github/git-lfs/ubuntu noble/main amd64 Packages [1273 B]
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | Get:23 http://archive.ubuntu.com/ubuntu noble-updates/multiverse amd64 Packages [54.6 kB]
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | Get:24 http://archive.ubuntu.com/ubuntu noble-backports/main amd64 Packages [49.0 kB]
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | Get:25 http://archive.ubuntu.com/ubuntu noble-backports/universe amd64 Packages [35.9 kB]
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | Get:26 http://archive.ubuntu.com/ubuntu noble-backports/multiverse amd64 Packages [671 B]
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | Fetched 38.4 MB in 9s (4408 kB/s)
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | Reading package lists...
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | Building dependency tree...
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | Reading state information...
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | 22 packages can be upgraded. Run 'apt list --upgradable' to see them.
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | 
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | WARNING: apt does not have a stable CLI interface. Use with caution in scripts.
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | 
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | Reading package lists...
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | Building dependency tree...
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | Reading state information...
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | apt-transport-https is already the newest version (2.8.3).
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | ca-certificates is already the newest version (20240203).
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | curl is already the newest version (8.5.0-2ubuntu10.9).
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | gnupg is already the newest version (2.4.4-2ubuntu17.4).
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | 0 upgraded, 0 newly installed, 0 to remove and 22 not upgraded.
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | 
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | WARNING: apt does not have a stable CLI interface. Use with caution in scripts.
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | 
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | Hit:1 http://archive.ubuntu.com/ubuntu noble InRelease
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | Hit:2 http://security.ubuntu.com/ubuntu noble-security InRelease
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | Hit:3 https://ppa.launchpadcontent.net/git-core/ppa/ubuntu noble InRelease
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | Get:4 https://deb.nodesource.com/node_20.x nodistro InRelease [12.1 kB]
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | Hit:5 http://archive.ubuntu.com/ubuntu noble-updates InRelease
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | Hit:6 https://packages.microsoft.com/ubuntu/24.04/prod noble InRelease
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | Hit:7 http://archive.ubuntu.com/ubuntu noble-backports InRelease
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | Get:9 https://deb.nodesource.com/node_20.x nodistro/main amd64 Packages [14.7 kB]
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | Hit:8 https://packagecloud.io/github/git-lfs/ubuntu noble InRelease
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | Fetched 26.8 kB in 2s (16.2 kB/s)
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | Reading package lists...
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | Building dependency tree...
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | Reading state information...
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | 22 packages can be upgraded. Run 'apt list --upgradable' to see them.
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | [1;34m2026-05-24 23:15:53 - Repository configured successfully.[0m
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | [38;5;79m2026-05-24 23:15:53 - To install Node.js, run: apt install nodejs -y[0m
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | [38;5;79m2026-05-24 23:15:53 - You can use N|solid Runtime as a node.js alternative[0m
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | [1;32m2026-05-24 23:15:53 - To install N|solid Runtime, run: apt install nsolid -y 
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | [0m
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | Reading package lists...
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | Building dependency tree...
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | Reading state information...
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | The following NEW packages will be installed:
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   |   nodejs
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | 0 upgraded, 1 newly installed, 0 to remove and 22 not upgraded.
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | Need to get 32.2 MB of archives.
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | After this operation, 196 MB of additional disk space will be used.
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | Get:1 https://deb.nodesource.com/node_20.x nodistro/main amd64 nodejs amd64 20.20.2-1nodesource1 [32.2 MB]
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | debconf: delaying package configuration, since apt-utils is not installed
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | Fetched 32.2 MB in 11s (3066 kB/s)
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | Selecting previously unselected package nodejs.
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | (Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 26513 files and directories currently installed.)
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | Preparing to unpack .../nodejs_20.20.2-1nodesource1_amd64.deb ...
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | Unpacking nodejs (20.20.2-1nodesource1) ...
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | Setting up nodejs (20.20.2-1nodesource1) ...
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   ✅  Success - Main Install Node.js 20
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ] ⭐ Run Main Install Codex CLI
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   🐳  docker exec cmd=[bash --noprofile --norc -e -o pipefail /var/run/act/workflow/6] user= workdir=
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | 
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | added 2 packages in 34s
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   ✅  Success - Main Install Codex CLI
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ] ⭐ Run Main Install Devin CLI (Q-B1 setup)
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   🐳  docker exec cmd=[bash --noprofile --norc -e -o pipefail /var/run/act/workflow/7] user= workdir=
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | #=#=#                                                                          ##O#-#                                                                                                                                                    1.3%##                                                                         3.0%###                                                                        4.9%####                                                                       6.9%#####                                                                      8.2%#######                                                                    9.7%#######                                                                   10.3%########                                                                  11.2%########                                                                  11.9%#########                                                                 12.5%#########                                                                 12.7%#########                                                                 13.5%##########                                                                14.3%##########                                                                14.5%##########                                                                15.2%###########                                                               15.9%###########                                                               16.3%############                                                              17.2%#############                                                             18.1%##############                                                            19.5%##############                                                            20.1%###############                                                           21.9%################                                                          23.4%#################                                                         24.7%###################                                                       26.5%####################                                                      28.7%#####################                                                     29.3%#####################                                                     30.3%######################                                                    31.8%########################                                                  33.5%#########################                                                 35.0%##########################                                                36.8%############################                                              39.3%##############################                                            41.9%###############################                                           43.3%################################                                          44.6%#################################                                         46.0%#################################                                         47.2%###################################                                       49.4%####################################                                      50.9%######################################                                    53.1%#######################################                                   55.0%#########################################                                 57.2%##########################################                                59.0%#############################################                             62.7%##############################################                            64.9%################################################                          67.7%#################################################                         69.3%###################################################                       71.7%#####################################################                     74.4%######################################################                    75.5%########################################################                  77.8%##########################################################                81.2%###########################################################               82.4%#############################################################             84.7%#############################################################             85.6%##############################################################            86.3%##############################################################            87.3%###############################################################           88.7%#################################################################         90.3%##################################################################        92.4%####################################################################      94.5%####################################################################      95.4%#####################################################################     96.9%######################################################################    97.5%######################################################################    98.3%#######################################################################   99.4%######################################################################## 100.0%
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | [1A[2K[0;32m✓[0m Installed devin v2026.5.6-12 to ~/.local/bin/devin.
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | 
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | [1mWelcome to Devin for Terminal![0m
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | [s[?2004lError: Login canceled
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | /root/.local/bin/devin
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | devin 2026.5.6-12 (df51ddd)
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   ✅  Success - Main Install Devin CLI (Q-B1 setup)
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ] ⭐ Run Main Q-A1.1 — codex plugin marketplace add ./ AFTER .codex/skills/ removed
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   🐳  docker exec cmd=[bash --noprofile --norc -e -o pipefail /var/run/act/workflow/qa1_marketplace] user= workdir=
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | === Q-A1.1 START ===
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | Added marketplace `dgxsparklabs-marketplace` from /mnt/c/Users/devic/source/marketplace.
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | Installed marketplace root: /mnt/c/Users/devic/source/marketplace
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | QA1_MARKETPLACE_EXIT=0
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | QA1_MARKETPLACE=PASS
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | === Q-A1.1 END ===
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   ✅  Success - Main Q-A1.1 — codex plugin marketplace add ./ AFTER .codex/skills/ removed
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ] ⭐ Run Main Q-A1.2 — codex plugin list (enumerate) AFTER .codex/skills/ removed
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   🐳  docker exec cmd=[bash --noprofile --norc -e -o pipefail /var/run/act/workflow/qa1_list] user= workdir=
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | === Q-A1.2 START ===
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | Marketplace `dgxsparklabs-marketplace`
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | /mnt/c/Users/devic/source/marketplace/.claude-plugin/marketplace.json
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | 
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | PLUGIN                                                      STATUS         VERSION  PATH                                                                              
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | agent-example@dgxsparklabs-marketplace                      not installed           /mnt/c/Users/devic/source/marketplace/_generated/agent-example                    
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | bundle-agent-all@dgxsparklabs-marketplace                   not installed           /mnt/c/Users/devic/source/marketplace/_generated/bundle-agent-all                 
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | bundle-ai-services-skills@dgxsparklabs-marketplace          not installed           /mnt/c/Users/devic/source/marketplace/_generated/bundle-ai-services-skills        
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | bundle-code-analysis-skills@dgxsparklabs-marketplace        not installed           /mnt/c/Users/devic/source/marketplace/_generated/bundle-code-analysis-skills      
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | bundle-command-all@dgxsparklabs-marketplace                 not installed           /mnt/c/Users/devic/source/marketplace/_generated/bundle-command-all               
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | bundle-communication-skills@dgxsparklabs-marketplace        not installed           /mnt/c/Users/devic/source/marketplace/_generated/bundle-communication-skills      
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | bundle-devops-skills@dgxsparklabs-marketplace               not installed           /mnt/c/Users/devic/source/marketplace/_generated/bundle-devops-skills             
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | bundle-documentation-rules@dgxsparklabs-marketplace         not installed           /mnt/c/Users/devic/source/marketplace/_generated/bundle-documentation-rules       
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | bundle-environment-rules@dgxsparklabs-marketplace           not installed           /mnt/c/Users/devic/source/marketplace/_generated/bundle-environment-rules         
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | bundle-examples@dgxsparklabs-marketplace                    not installed           /mnt/c/Users/devic/source/marketplace/_generated/bundle-examples                  
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | bundle-hook-all@dgxsparklabs-marketplace                    not installed           /mnt/c/Users/devic/source/marketplace/_generated/bundle-hook-all                  
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | bundle-lsp-all@dgxsparklabs-marketplace                     not installed           /mnt/c/Users/devic/source/marketplace/_generated/bundle-lsp-all                   
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | bundle-mcp-all@dgxsparklabs-marketplace                     not installed           /mnt/c/Users/devic/source/marketplace/_generated/bundle-mcp-all                   
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | bundle-meta-tooling-skills@dgxsparklabs-marketplace         not installed           /mnt/c/Users/devic/source/marketplace/_generated/bundle-meta-tooling-skills       
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | bundle-monitor-all@dgxsparklabs-marketplace                 not installed           /mnt/c/Users/devic/source/marketplace/_generated/bundle-monitor-all               
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | bundle-notifications-rules@dgxsparklabs-marketplace         not installed           /mnt/c/Users/devic/source/marketplace/_generated/bundle-notifications-rules       
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | bundle-output-style-all@dgxsparklabs-marketplace            not installed           /mnt/c/Users/devic/source/marketplace/_generated/bundle-output-style-all          
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | bundle-project-scaffolding-skills@dgxsparklabs-marketplace  not installed           /mnt/c/Users/devic/source/marketplace/_generated/bundle-project-scaffolding-skills
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | bundle-quality-rules@dgxsparklabs-marketplace               not installed           /mnt/c/Users/devic/source/marketplace/_generated/bundle-quality-rules             
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | bundle-rule-all@dgxsparklabs-marketplace                    not installed           /mnt/c/Users/devic/source/marketplace/_generated/bundle-rule-all                  
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | bundle-search-research-skills@dgxsparklabs-marketplace      not installed           /mnt/c/Users/devic/source/marketplace/_generated/bundle-search-research-skills    
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | bundle-session-management-skills@dgxsparklabs-marketplace   not installed           /mnt/c/Users/devic/source/marketplace/_generated/bundle-session-management-skills 
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | bundle-skill-all@dgxsparklabs-marketplace                   not installed           /mnt/c/Users/devic/source/marketplace/_generated/bundle-skill-all                 
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | bundle-theme-all@dgxsparklabs-marketplace                   not installed           /mnt/c/Users/devic/source/marketplace/_generated/bundle-theme-all                 
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | bundle-workflow-rules@dgxsparklabs-marketplace              not installed           /mnt/c/Users/devic/source/marketplace/_generated/bundle-workflow-rules            
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | command-example@dgxsparklabs-marketplace                    not installed           /mnt/c/Users/devic/source/marketplace/_generated/command-example                  
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | hook-example@dgxsparklabs-marketplace                       not installed           /mnt/c/Users/devic/source/marketplace/_generated/hook-example                     
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | lsp-example@dgxsparklabs-marketplace                        not installed           /mnt/c/Users/devic/source/marketplace/_generated/lsp-example                      
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | mcp-example@dgxsparklabs-marketplace                        not installed           /mnt/c/Users/devic/source/marketplace/_generated/mcp-example                      
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | monitor-example@dgxsparklabs-marketplace                    not installed           /mnt/c/Users/devic/source/marketplace/_generated/monitor-example                  
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | output-style-example@dgxsparklabs-marketplace               not installed           /mnt/c/Users/devic/source/marketplace/_generated/output-style-example             
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | rule-autonomous-persistence@dgxsparklabs-marketplace        not installed           /mnt/c/Users/devic/source/marketplace/_generated/rule-autonomous-persistence      
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | rule-blast-radius@dgxsparklabs-marketplace                  not installed           /mnt/c/Users/devic/source/marketplace/_generated/rule-blast-radius                
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | rule-code-hygiene@dgxsparklabs-marketplace                  not installed           /mnt/c/Users/devic/source/marketplace/_generated/rule-code-hygiene                
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | rule-continuous-improvement@dgxsparklabs-marketplace        not installed           /mnt/c/Users/devic/source/marketplace/_generated/rule-continuous-improvement      
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | rule-document-lifecycle@dgxsparklabs-marketplace            not installed           /mnt/c/Users/devic/source/marketplace/_generated/rule-document-lifecycle          
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | QA1_LIST_EXIT=0
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | skill-example@dgxsparklabs-marketplace                      not installed           /mnt/c/Users/devic/source/marketplace/_generated/skill-example                    
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | skill-telegram-notify@dgxsparklabs-marketplace              not installed           /mnt/c/Users/devic/source/marketplace/_generated/skill-telegram-notify            
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | QA1_LIST_FOUND=YES
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | === Q-A1.2 END ===
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   ✅  Success - Main Q-A1.2 — codex plugin list (enumerate) AFTER .codex/skills/ removed
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ] ⭐ Run Main Q-A1.3 — codex plugin add skill-example AFTER .codex/skills/ removed
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   🐳  docker exec cmd=[bash --noprofile --norc -e -o pipefail /var/run/act/workflow/qa1_add] user= workdir=
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | === Q-A1.3 START ===
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | Added plugin `skill-example` from marketplace `dgxsparklabs-marketplace`.
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | Installed plugin root: /root/.codex/plugins/cache/dgxsparklabs-marketplace/skill-example/1.0.0
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | QA1_ADD_EXIT=0
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | QA1_ADD=NEW_FAILURE_MODE
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | === Q-A1.3 END ===
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   ✅  Success - Main Q-A1.3 — codex plugin add skill-example AFTER .codex/skills/ removed
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ] ⭐ Run Main Q-B1.1 — devin skills paths (confirms .agents/skills/ is discovery path)
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   🐳  docker exec cmd=[bash --noprofile --norc -e -o pipefail /var/run/act/workflow/qb1_paths] user= workdir=
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | === Q-B1.1 START ===
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | Skill Directory Locations
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | 
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | Skills are loaded from:
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | 
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | User skills (global):
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   |   /root/.config/devin/skills/<skill-name>/SKILL.md
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   |   /root/.agents/skills/<skill-name>/SKILL.md
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | 
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | Project skills:
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   |   .devin/skills/<skill-name>/SKILL.md
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   |   .agents/skills/<skill-name>/SKILL.md
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | 
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   |   Current directory: /mnt/c/Users/devic/source/marketplace
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | QB1_PATHS_EXIT=0
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   |   /root/.agents/skills/<skill-name>/SKILL.md
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   |   .agents/skills/<skill-name>/SKILL.md
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | QB1_PATHS_AGENTS_LISTED=YES
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   |   .devin/skills/<skill-name>/SKILL.md
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | QB1_PATHS_DEVIN_LISTED=YES
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | === Q-B1.1 END ===
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   ✅  Success - Main Q-B1.1 — devin skills paths (confirms .agents/skills/ is discovery path)
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ] ⭐ Run Main Q-B1.2 — devin skills list AFTER .devin/skills/ removed; verify skills still found via .agents/
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   🐳  docker exec cmd=[bash --noprofile --norc -e -o pipefail /var/run/act/workflow/qb1_list] user= workdir=
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | === Q-B1.2 START ===
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | Available Skills
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | 
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   |   /github-repo-setup [user] (./.agents/skills/github-repo-setup) - Create a GitHub repo with CI, branch protection, and naming rules
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   |   /gemini-chat [user,model] (./.agents/skills/gemini-chat) - Interactive multi-turn chat with Google Gemini
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   |   /structured-handoff [user,model] (./.agents/skills/structured-handoff) - Generate structured task files for autonomous agent sessions
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   |   /ssh-tunnel [user] (./.agents/skills/ssh-tunnel) - Set up SSH port forwarding tunnels (local, remote, SOCKS proxy)
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   |   /motivation [user,model] (./.agents/skills/motivation) - Completeness checker — report what's actually unfinished before stopping
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   |   /session-wrapup [user,model] (./.agents/skills/session-wrapup) - End-of-session audit — check docs, commits, and readiness for the next agent
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   |   /skill-creator [user] (./.agents/skills/skill-creator) - Create, test, and iteratively improve agent skills with evals
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   |   /expose-port [user,model] (./.agents/skills/expose-port) - Expose a local port via HTTPS (localhost.run) or TCP (bore)
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   |   /code-health-audit [user,model] (./.agents/skills/code-health-audit) - Audit codebase for DRY violations, oversized files, and scattered definitions
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   |   /telegram-notify [user,model] (./.agents/skills/telegram-notify) - Send a Telegram notification with a task summary
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   |   /google-drive-reader [user,model] (./.agents/skills/google-drive-reader) - Read Google Docs from personal Drive, extract URLs and conclusions
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   |   /skill-analytics [user,model] (./.agents/skills/skill-analytics) - Analyze skill usage patterns and generate an interactive HTML dashboard
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   |   /sync-rules [user,model] (./.agents/skills/sync-rules) - Sync rules from global AI agent configs into the workspace
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   |   /textual-tui-guide [user,model] (./.agents/skills/textual-tui-guide) - Build rich terminal UIs with Python Textual — layouts, widgets, modals, styling
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   |   /project-bootstrap [user,model] (./.agents/skills/project-bootstrap) - Initialize project docs — AGENTS.md, HANDOFF.md, CHANGELOG.md, PITFALLS.md
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   |   /pitfall-check [user,model] (./.agents/skills/pitfall-check) - Search PITFALLS.md and git log for known issues before starting work
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   |   /youtube-search [user,model] (./.agents/skills/youtube-search) - Search YouTube for technical videos, tutorials, and talks on a topic
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   |   /session-history [user,model] (./.agents/skills/session-history) - Query past Devin CLI conversations from the local session database
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   |   /act-runner [user,model] (./.agents/skills/act-runner) - Run GitHub Actions workflows locally with act and podman
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   |   /duckduckgo-search [user,model] (./.agents/skills/duckduckgo-search) - Search DuckDuckGo and return results as structured text
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   |   /github-search [user,model] (./.agents/skills/github-search) - Search GitHub for repositories, prior art, and implementation inspiration
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   |   /recall-rules [user,model] (./.agents/skills/recall-rules) - Re-read global rules and thinking framework to realign mid-session
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   |   /example [user,model] (./.agents/skills/example) - Reference example. Echoes back a formatted lab-notebook-style status message. Shows how to write a SKILL.md with frontmatter, allowed-tools, and argument handling.
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   |   /send-email [user,model] (./.agents/skills/send-email) - Send an email to someone using the Resend API
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   |   /youtube-wisdom [user,model] (./.agents/skills/youtube-wisdom) - Extract key knowledge from a YouTube video transcript
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   |   /web-scraper [user,model] (./.agents/skills/web-scraper) - Fetch a web page and extract its main content as clean readable text
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   |   /check [user,model] (./.agents/skills/check) - Mid-session course correction — stop, review rules, and realign
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   |   devin-for-terminal [model] (~/.local/share/devin/cli/_versions/2026.5.6-12/share/devin) - Look up Devin CLI documentation (skills, extensibility, configuration, commands, models, troubleshooting)
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   |   /declarative-repo-setup [model,user] () - Generate and verify a working environment.yaml (Devin snapshot-setup blueprint) for a repo
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | QB1_LIST_EXIT=0
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | QB1_SKILL_COUNT=0
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   |   /telegram-notify [user,model] (./.agents/skills/telegram-notify) - Send a Telegram notification with a task summary
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | QB1_TELEGRAM=YES
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   |   /github-search [user,model] (./.agents/skills/github-search) - Search GitHub for repositories, prior art, and implementation inspiration
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | QB1_GITHUB_SEARCH=YES
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | QB1=FAIL (no skills found post-retirement)
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | === Q-B1.2 END ===
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   ✅  Success - Main Q-B1.2 — devin skills list AFTER .devin/skills/ removed; verify skills still found via .agents/
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ] ⭐ Run Main Final cleanup
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   🐳  docker exec cmd=[bash --noprofile --norc -e -o pipefail /var/run/act/workflow/13] user= workdir=
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   | Removed marketplace `dgxsparklabs-marketplace`.
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ]   ✅  Success - Main Final cleanup
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ] Cleaning up container for job mirror-retirement
+[Verify — Mirror Retirement (Q-A1, Q-A3, Q-B1)/mirror-retirement  ] 🏁  Job succeeded
+
+level=info msg=️📣 A newer version of 'act' is available - consider ugrading to 0.2.88.
+level=error msg=🚨 This version of 'act' is vulnerable to CVE-2026-34041 and CVE-2026-34042 - please upgrade to 0.2.86 or later.
