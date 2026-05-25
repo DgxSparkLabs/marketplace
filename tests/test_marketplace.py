@@ -1068,6 +1068,101 @@ class TestGeminiAgentsMirror(unittest.TestCase):
                         f"agents/{name}/agents/{agent_md.name}",
                     )
 
+    def test_gemini_agents_tools_is_yaml_array(self):
+        """Emitted Gemini sub-agent frontmatter must have ``tools`` as a YAML array.
+
+        Per geminicli.com/docs/core/subagents/ (2026-05-25), the Gemini
+        sub-agent loader requires the ``tools`` field as an array. Our
+        canonical Claude source uses a comma-separated string; without
+        per-platform conversion the file is silently skipped by Gemini's
+        /agents discovery (docs/research/qa-bug-fixes-2026-05/RESEARCH.md
+        Bug 2, QA 2026-05-25).
+        """
+        gemini = next(p for p in PLATFORMS.values() if isinstance(p, GeminiPlatform))
+        agents_dir = gemini.mirror_directory / "agents"
+        if not agents_dir.exists():
+            self.skipTest(".gemini/agents/ does not exist")
+        files = sorted(agents_dir.glob("*.md"))
+        self.assertGreater(len(files), 0, ".gemini/agents/ has no .md files")
+        for md_path in files:
+            with self.subTest(agent=md_path.name):
+                text = md_path.read_text(encoding="utf-8")
+                self.assertTrue(
+                    text.startswith("---\n"),
+                    f"{md_path.name}: missing YAML frontmatter opener",
+                )
+                end = text.find("\n---", 4)
+                self.assertGreater(end, 0, f"{md_path.name}: frontmatter unterminated")
+                fm = text[4:end]
+                # If the source agent declared any tools, the emitted file
+                # must render them as a YAML array (one ``  - <tool>`` line
+                # per tool), never as the Claude-style scalar "tools: a, b, c".
+                lines = fm.splitlines()
+                tools_line_idx = next(
+                    (i for i, ln in enumerate(lines) if ln.strip().startswith("tools:")),
+                    None,
+                )
+                if tools_line_idx is None:
+                    continue  # tools field absent: legal per Gemini docs
+                tools_value = lines[tools_line_idx].split(":", 1)[1].strip()
+                self.assertEqual(
+                    tools_value, "",
+                    f"{md_path.name}: 'tools:' must be followed by a YAML "
+                    f"array on subsequent lines (got inline scalar "
+                    f"{tools_value!r}); Gemini /agents will skip the file",
+                )
+                # At least one '  - <tool>' line should follow.
+                array_items = [
+                    ln for ln in lines[tools_line_idx + 1:]
+                    if ln.startswith("  - ")
+                ]
+                self.assertGreater(
+                    len(array_items), 0,
+                    f"{md_path.name}: 'tools:' present but no '  - <tool>' "
+                    f"array items follow",
+                )
+
+
+class TestMdToGeminiMdConverter(unittest.TestCase):
+    """Unit tests for scripts/converters/md_to_gemini_md.py."""
+
+    SAMPLE = (
+        "---\n"
+        "name: notebook-reviewer\n"
+        "description: Reviews a lab notebook entry as a skeptical peer reviewer.\n"
+        "tools: Read, Grep, Glob\n"
+        "---\n"
+        "\n"
+        "You are a peer reviewer for laboratory notebook entries.\n"
+    )
+
+    def setUp(self):
+        from converters.md_to_gemini_md import claude_agent_md_to_gemini_md  # noqa: E402
+        self.convert = claude_agent_md_to_gemini_md
+
+    def test_tools_emitted_as_yaml_array(self):
+        out = self.convert(self.SAMPLE)
+        self.assertIn("tools:\n  - Read\n  - Grep\n  - Glob\n", out)
+        self.assertNotIn("tools: Read, Grep, Glob", out)
+
+    def test_required_fields_preserved(self):
+        out = self.convert(self.SAMPLE)
+        self.assertIn("name: notebook-reviewer", out)
+        self.assertIn(
+            "description: Reviews a lab notebook entry as a skeptical peer reviewer.",
+            out,
+        )
+        self.assertIn("You are a peer reviewer", out)
+
+    def test_missing_frontmatter_raises(self):
+        with self.assertRaises(ValueError):
+            self.convert("no frontmatter here")
+
+    def test_missing_required_name_raises(self):
+        bad = "---\ndescription: x\n---\nbody"
+        with self.assertRaises(ValueError):
+            self.convert(bad)
+
 
 class TestGeminiHooksMirror(unittest.TestCase):
     """Gemini hooks at .gemini/hooks/hooks.json (Unit 3 / A9).

@@ -217,12 +217,25 @@ class GeminiPlatform:
                 ignore=_COPY_IGNORE,
             )
         elif isinstance(construct, AgentConstruct):
+            # Convert each Claude-style agent .md to Gemini sub-agent shape:
+            # the `tools` frontmatter must be a YAML array, not the comma-
+            # separated scalar Claude uses, or Gemini's /agents discovery
+            # silently skips the file. See
+            # docs/research/qa-bug-fixes-2026-05/RESEARCH.md Bug 2
+            # (QA 2026-05-25).
+            from converters.md_to_gemini_md import claude_agent_md_to_gemini_md
+
             agents_dir = self.mirror_directory / "agents"
             agents_dir.mkdir(parents=True, exist_ok=True)
             src_agents = construct.source_directory / name / "agents"
             if src_agents.exists():
                 for agent_md in sorted(src_agents.glob("*.md")):
-                    shutil.copy(agent_md, agents_dir / agent_md.name)
+                    gemini_text = claude_agent_md_to_gemini_md(
+                        agent_md.read_text(encoding="utf-8")
+                    )
+                    (agents_dir / agent_md.name).write_text(
+                        gemini_text, encoding="utf-8", newline=""
+                    )
         elif isinstance(construct, HookConstruct):
             # TODO: with multiple hook plugins, this last-writer-wins overwrite.
             # Add merge semantics (concatenate hooks arrays) when a second hook
