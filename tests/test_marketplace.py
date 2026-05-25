@@ -921,6 +921,12 @@ class TestWindsurfHooksMirror(unittest.TestCase):
     Gemini). Single hook plugin today; multi-plugin merge deferred.
     """
 
+    # Claude-style event names (PascalCase) that Windsurf does NOT understand.
+    CLAUDE_EVENT_NAMES = frozenset({
+        "UserPromptSubmit", "PreToolUse", "PostToolUse", "Notification",
+        "Stop", "SubagentStop", "SessionStart", "SessionEnd", "PreCompact",
+    })
+
     def test_windsurf_hooks_json_exists(self):
         windsurf = next(p for p in PLATFORMS.values() if isinstance(p, WindsurfPlatform))
         hooks_json = windsurf.mirror_directory / "hooks.json"
@@ -930,6 +936,98 @@ class TestWindsurfHooksMirror(unittest.TestCase):
             "hooks", data,
             ".windsurf/hooks.json must contain top-level 'hooks' key",
         )
+
+    def test_windsurf_hooks_use_snake_case_event_names(self):
+        """No Claude-style PascalCase event names may appear in .windsurf/hooks.json.
+
+        Windsurf uses snake_case events (pre_user_prompt, pre_tool_use, etc.)
+        per docs.windsurf.com/windsurf/cascade/hooks (2026-05-25). Claude
+        event names load silently but never fire
+        (docs/research/qa-bug-fixes-2026-05/RESEARCH.md sanity-check #5,
+        QA 2026-05-25).
+        """
+        windsurf = next(p for p in PLATFORMS.values() if isinstance(p, WindsurfPlatform))
+        hooks_json = windsurf.mirror_directory / "hooks.json"
+        if not hooks_json.exists():
+            self.skipTest(".windsurf/hooks.json does not exist")
+        data = json.loads(hooks_json.read_text(encoding="utf-8"))
+        event_keys = set((data.get("hooks") or {}).keys())
+        leaked = event_keys & self.CLAUDE_EVENT_NAMES
+        self.assertFalse(
+            leaked,
+            f".windsurf/hooks.json contains Claude-style event names {leaked}; "
+            f"Windsurf requires snake_case events (pre_user_prompt, etc.) and "
+            f"the file's hooks will never fire as-is",
+        )
+        # Conversely every event key must be lowercase snake_case
+        # (Windsurf docs enumerate only snake_case events).
+        for key in event_keys:
+            with self.subTest(event=key):
+                self.assertRegex(
+                    key, r"^[a-z][a-z_]*$",
+                    f"Windsurf event '{key}' is not snake_case",
+                )
+
+    def test_windsurf_hook_entries_are_flat(self):
+        """Each Windsurf hook entry must be a flat dict, not Claude's nested ``{"hooks": [...]}``.
+
+        Per docs.windsurf.com/windsurf/cascade/hooks (2026-05-25): the shape
+        is ``{"hooks": {<event>: [{"command": "..."}]}}`` — no inner ``hooks``
+        key. Claude's doubly-nested shape lands as opaque junk to Windsurf's
+        parser.
+        """
+        windsurf = next(p for p in PLATFORMS.values() if isinstance(p, WindsurfPlatform))
+        hooks_json = windsurf.mirror_directory / "hooks.json"
+        if not hooks_json.exists():
+            self.skipTest(".windsurf/hooks.json does not exist")
+        data = json.loads(hooks_json.read_text(encoding="utf-8"))
+        for event, entries in (data.get("hooks") or {}).items():
+            for i, entry in enumerate(entries):
+                with self.subTest(event=event, idx=i):
+                    self.assertIsInstance(entry, dict, f"{event}[{i}] not a dict")
+                    self.assertNotIn(
+                        "hooks", entry,
+                        f"{event}[{i}] has Claude-style nested 'hooks' key; "
+                        f"Windsurf requires flat entries with command/powershell",
+                    )
+                    self.assertTrue(
+                        "command" in entry or "powershell" in entry,
+                        f"{event}[{i}] missing required command/powershell",
+                    )
+
+
+class TestHooksToWindsurfConverter(unittest.TestCase):
+    """Unit tests for scripts/converters/hooks_to_windsurf.py."""
+
+    SAMPLE = (
+        '{"description": "x",'
+        '"hooks": {"UserPromptSubmit": [{"hooks": ['
+        '{"type": "command", "command": "echo hi"}'
+        ']}]}}'
+    )
+
+    def setUp(self):
+        from converters.hooks_to_windsurf import claude_hooks_to_windsurf_hooks  # noqa: E402
+        self.convert = claude_hooks_to_windsurf_hooks
+
+    def test_event_renamed_and_flattened(self):
+        out = json.loads(self.convert(self.SAMPLE))
+        self.assertEqual(
+            out, {"hooks": {"pre_user_prompt": [{"command": "echo hi"}]}}
+        )
+
+    def test_unknown_event_dropped(self):
+        src = '{"hooks": {"Stop": [{"hooks": [{"type": "command", "command": "x"}]}]}}'
+        out = json.loads(self.convert(src))
+        self.assertEqual(out, {"hooks": {}})
+
+    def test_no_claude_keys_leak(self):
+        out = self.convert(self.SAMPLE)
+        for forbidden in ("UserPromptSubmit", '"type":', "description"):
+            self.assertNotIn(
+                forbidden, out,
+                f"Windsurf output must not retain '{forbidden}'",
+            )
 
 
 # ─── TestCodexAgentsMirror / TestMdToTomlConverter ───────────────────────────

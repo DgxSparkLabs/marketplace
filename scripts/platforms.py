@@ -382,10 +382,23 @@ class WindsurfPlatform:
             # Add merge semantics (concatenate hooks arrays) when a second hook
             # plugin lands. Windsurf reads hooks.json directly at .windsurf/
             # root (no hooks/ subdir, unlike Gemini).
+            #
+            # Convert from Claude shape: event names (UserPromptSubmit etc.)
+            # and the doubly-nested ``hooks.<event>[].hooks[]`` structure
+            # must be translated to Windsurf snake_case events
+            # (pre_user_prompt etc.) and the flat ``hooks.<event>[]`` shape
+            # per docs.windsurf.com/windsurf/cascade/hooks (fetched
+            # 2026-05-25). Without this, the file loads but no hook fires
+            # (docs/research/qa-bug-fixes-2026-05/RESEARCH.md sanity-check
+            # #5, QA 2026-05-25).
+            from converters.hooks_to_windsurf import claude_hooks_to_windsurf_hooks
+
             self.mirror_directory.mkdir(parents=True, exist_ok=True)
-            shutil.copy(
-                construct.source_directory / name / "hooks" / "hooks.json",
-                self.mirror_directory / "hooks.json",
+            src = construct.source_directory / name / "hooks" / "hooks.json"
+            (self.mirror_directory / "hooks.json").write_text(
+                claude_hooks_to_windsurf_hooks(src.read_text(encoding="utf-8")),
+                encoding="utf-8",
+                newline="",
             )
 
     def build_plugin_json(self, construct: Construct, name: str) -> dict:
