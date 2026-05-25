@@ -811,7 +811,7 @@ Windsurf reads from the filesystem only — no install command, no marketplace r
 ### Per-construct verification
 
 #### Skill — `skill-example` (read via `.agents/skills/`)
-- [ ] **Hands-on invocation**: in Windsurf, open Cascade and type `@skill-example` (or just `@telegram`).
+- [ ] **Hands-on invocation**: in Windsurf, open Cascade and type `@skill-example`.
 - [ ] **Expected**: Cascade recognizes the `@skill-X` syntax and uses the skill — auto-discovered from `.agents/skills/example/SKILL.md` per `docs/PLATFORMS.md` Windsurf "Discovery paths".
 - [ ] **Alternative hands-on**: ask Cascade "list the skills you have available" — `example` should appear.
 
