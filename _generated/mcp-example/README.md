@@ -6,7 +6,23 @@ Reference plugin for the **MCP server** (Model Context Protocol) construct type.
 
 Registers an MCP server named `example-fetch` that wraps `mcp-server-fetch` (the official fetch MCP, installed on demand via `uvx`). Once the plugin is enabled, the fetch tools become available in every session.
 
-Install:
+## Prerequisites
+
+This example launches the MCP server with **`uvx mcp-server-fetch`**, so the host must have **[`uv`](https://github.com/astral-sh/uv)** installed and on `PATH`. Without it, Claude reports `plugin:mcp-example:example-fetch: uvx mcp-server-fetch - ✗ Failed to connect` after install.
+
+Install `uv` once (any platform):
+
+```bash
+curl -LsSf https://astral.sh/uv/install.sh | sh        # macOS / Linux
+powershell -c "irm https://astral.sh/uv/install.ps1 | iex"   # Windows PowerShell
+```
+
+After install, `uvx` becomes available — `uvx mcp-server-fetch` then downloads and runs the official fetch MCP on first invocation (no global Python install needed).
+
+This is consistent with the marketplace's existing tooling baseline: `uv` is already required to run the generator (`scripts/generate_manifest.py` uses PEP 723 inline metadata).
+
+## Install
+
 ```
 /plugin install example-mcp@dgxsparklabs-marketplace
 ```
