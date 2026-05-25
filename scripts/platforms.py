@@ -239,12 +239,28 @@ class GeminiPlatform:
         elif isinstance(construct, HookConstruct):
             # TODO: with multiple hook plugins, this last-writer-wins overwrite.
             # Add merge semantics (concatenate hooks arrays) when a second hook
-            # plugin lands. Single plugin today, so direct copy is sufficient.
+            # plugin lands. Single plugin today, so direct emit is sufficient.
+            #
+            # Convert from Claude shape: event names (UserPromptSubmit etc.)
+            # are renamed via CLAUDE_TO_GEMINI_EVENTS (BeforeModel etc.) per
+            # geminicli.com/docs/hooks/reference/ (fetched 2026-05-25). The
+            # nested ``hooks.<event>[].hooks[]`` shape is structurally
+            # identical to Gemini's (verified against the working
+            # sandipchitale/hooklog extension —
+            # docs/research/qa-bug-fixes-2026-05/logs/hooklog-hooks.json)
+            # so only the event-name vocabulary is rewritten. Without
+            # this conversion Gemini's parser silently ignores the file
+            # (docs/research/qa-bug-fixes-2026-05/RESEARCH.md Q2, QA
+            # 2026-05-25).
+            from converters.hooks_to_gemini import claude_hooks_to_gemini_hooks
+
             hooks_dir = self.mirror_directory / "hooks"
             hooks_dir.mkdir(parents=True, exist_ok=True)
-            shutil.copy(
-                construct.source_directory / name / "hooks" / "hooks.json",
-                hooks_dir / "hooks.json",
+            src = construct.source_directory / name / "hooks" / "hooks.json"
+            (hooks_dir / "hooks.json").write_text(
+                claude_hooks_to_gemini_hooks(src.read_text(encoding="utf-8")),
+                encoding="utf-8",
+                newline="",
             )
 
     def build_plugin_json(self, construct: Construct, name: str) -> dict:
