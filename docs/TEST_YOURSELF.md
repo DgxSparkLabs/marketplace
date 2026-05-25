@@ -269,7 +269,7 @@ Each test installs ONE plugin of the construct type, then invokes it. Per-constr
 - [ ] **Install**: `claude plugin install rule-example@dgxsparklabs-marketplace --scope project`
 - [ ] **Activate** (Claude has no native rule install slot yet, per `docs/PLATFORMS.md` Claude "Known gaps"): `bash ~/.claude/plugins/cache/dgxsparklabs-marketplace/rule-example/<version>/activate.sh`
 - [ ] **Hands-on invocation**: start a `claude` session in the project and ask "what rules are currently active?" or attempt an action the rule should constrain.
-- [ ] **Expected**: Claude's response reflects the rule's guidance (e.g., the blast-radius rule should make Claude qualify its plans with explicit blast-radius framing). Note: the slot is "manual activation" so a missed activation step is a likely failure mode — flag if `activate.sh` doesn't exist.
+- [ ] **Expected**: Claude's response reflects the rule's guidance (e.g., the example rule should make Claude qualify its plans with explicit example framing). Note: the slot is "manual activation" so a missed activation step is a likely failure mode — flag if `activate.sh` doesn't exist.
 
 #### Sub-agent — `agent-example`
 - [ ] **Install**: `claude plugin install agent-example@dgxsparklabs-marketplace --scope project`
@@ -657,7 +657,7 @@ Native install:
 ##### Rule — `rule-example`
 - [ ] **Install**: `/add-plugin rule-example@https://github.com/DgxSparkLabs/marketplace`
 - [ ] **Hands-on invocation**: open the Cursor chat panel and ask "what rules are currently in effect?", or attempt an action the rule constrains.
-- [ ] **Expected**: Cursor's reply reflects the rule's framing (the blast-radius rule should make Cursor qualify plans with explicit blast-radius consideration). Rule is read from `.cursor/rules/blast-radius.md` (the `CursorPlatform.emit` Rule branch copies `formats/cursor.md` → `.cursor/rules/<name>.md`).
+- [ ] **Expected**: Cursor's reply reflects the rule's framing (the example rule should make Cursor qualify plans with explicit example consideration). Rule is read from `.cursor/rules/example.md` (the `CursorPlatform.emit` Rule branch copies `formats/cursor.md` → `.cursor/rules/<name>.md`).
 
 ##### Sub-agent — `agent-example`
 - [ ] **Install**: `/add-plugin agent-example@https://github.com/DgxSparkLabs/marketplace`
@@ -732,7 +732,7 @@ agents install mcp-example --scope project
 
 ##### Rule — `rule-example`
 - [ ] **Hands-on invocation**: with the CLI in the scratch dir, ask the agent for an action the rule should affect.
-- [ ] **Expected**: rule from `.cursor/rules/blast-radius.md` is in effect — the agent's response reflects the rule's framing.
+- [ ] **Expected**: rule from `.cursor/rules/example.md` is in effect — the agent's response reflects the rule's framing.
 
 ##### Sub-agent — `agent-example`
 - [ ] **Hands-on invocation**: in the CLI, dispatch the sub-agent (the CLI's mechanism for invoking workspace agents — refer to `agent --help` for the exact slash form, or use `agent agent <name>` if that subcommand exists).
@@ -816,9 +816,9 @@ Windsurf reads from the filesystem only — no install command, no marketplace r
 - [ ] **Alternative hands-on**: ask Cascade "list the skills you have available" — `telegram-notify` should appear.
 
 #### Rule — `rule-example`
-- [ ] **Hands-on invocation**: ask Cascade for an action the rule should affect (e.g., a refactor where blast-radius reasoning would change the recommendation).
-- [ ] **Expected**: Cascade's reply reflects the rule's framing. Rule discovered from `.windsurf/rules/blast-radius.md` (with the required `trigger:` frontmatter — `always_on` for `blast-radius` per the source `rule.md`).
-- [ ] **Diagnostic**: confirm `.windsurf/rules/blast-radius.md` exists in the workspace.
+- [ ] **Hands-on invocation**: ask Cascade for an action the rule should affect (e.g., a refactor where example reasoning would change the recommendation).
+- [ ] **Expected**: Cascade's reply reflects the rule's framing. Rule discovered from `.windsurf/rules/example.md` (with the required `trigger:` frontmatter — `always_on` for `example` per the source `rule.md`).
+- [ ] **Diagnostic**: confirm `.windsurf/rules/example.md` exists in the workspace.
 
 #### Hook — `hook-example`
 - [ ] **Hands-on invocation**: trigger the hook's bound Cascade event (per `hooks/example/hooks/hooks.json`'s event subscription).
@@ -904,9 +904,9 @@ git clone --branch fix/platform-emission-bugs https://github.com/DgxSparkLabs/ma
 
 #### Rule — `rule-example` (read via `.windsurf/rules/`, `.cursor/rules/`)
 - [ ] **Hands-on invocation**: `devin rules list`
-- [ ] **Expected**: rules listed with provider tags (`Cursor`, `Windsurf`, `Standard`) per `docs/PLATFORMS.md` Devin "Discovery commands". `blast-radius` appears tagged with both `Cursor` and `Windsurf` (it's mirrored to both `.cursor/rules/blast-radius.md` and `.windsurf/rules/blast-radius.md`).
+- [ ] **Expected**: rules listed with provider tags (`Cursor`, `Windsurf`, `Standard`) per `docs/PLATFORMS.md` Devin "Discovery commands". `example` appears tagged with both `Cursor` and `Windsurf` (it's mirrored to both `.cursor/rules/example.md` and `.windsurf/rules/example.md`).
 - [ ] **Diagnostic**: `devin rules paths` lists `.windsurf/rules/*.md`, `.cursorrules`, `.cursor/rules/*.md`.
-- [ ] **Hands-on (show)**: `devin rules show blast-radius` — prints the rule body.
+- [ ] **Hands-on (show)**: `devin rules show example` — prints the rule body.
 
 #### MCP — Devin-managed (no marketplace-emitted Devin MCP config)
 - [ ] **Hands-on invocation**: `devin mcp list`
@@ -1046,11 +1046,11 @@ For every supported construct, install and verify the on-disk landing path. The 
 - [ ] **Project install (strict `.agents/` only)**: `agents install rule-example --scope project --agents-only`
 - [ ] **Verify**:
   ```bash
-  test -f .agents/rules/blast-radius.md && echo "agents YES"   # expected: agents YES
-  test -f .cursor/rules/blast-radius.md && echo "cursor YES"   # expected: NOTHING (no output) — --agents-only blocks per-platform spray
-  test -f .windsurf/rules/blast-radius.md && echo "windsurf YES"   # expected: NOTHING
+  test -f .agents/rules/example.md && echo "agents YES"   # expected: agents YES
+  test -f .cursor/rules/example.md && echo "cursor YES"   # expected: NOTHING (no output) — --agents-only blocks per-platform spray
+  test -f .windsurf/rules/example.md && echo "windsurf YES"   # expected: NOTHING
   ```
-- [ ] **Hands-on**: the `.agents/rules/blast-radius.md` is forward-looking per `docs/PLATFORMS.md` "Per-platform manifest paths" + `docs/ARCHITECTURE.md` AgentsPlatform notes — no platform reads it natively today, but emission must be correct.
+- [ ] **Hands-on**: the `.agents/rules/example.md` is forward-looking per `docs/PLATFORMS.md` "Per-platform manifest paths" + `docs/ARCHITECTURE.md` AgentsPlatform notes — no platform reads it natively today, but emission must be correct.
 
 #### Sub-agent — `agent-example`
 - [ ] **Project install**: `agents install agent-example --scope project`
@@ -1123,8 +1123,8 @@ For every supported construct, install and verify the on-disk landing path. The 
 - [ ] **Install**: `agents install rule-example --scope user`
 - [ ] **Verify**:
   ```bash
-  test -f "$HOME/.agents/rules/blast-radius.md" && echo "user YES"     # expected: user YES
-  test -f "./.agents/rules/blast-radius.md" && echo "project YES"      # expected: NOTHING (user scope writes ONLY to ~/.agents/)
+  test -f "$HOME/.agents/rules/example.md" && echo "user YES"     # expected: user YES
+  test -f "./.agents/rules/example.md" && echo "project YES"      # expected: NOTHING (user scope writes ONLY to ~/.agents/)
   ```
 
 #### `--scope user` + `--agents-only` for sub-agent
