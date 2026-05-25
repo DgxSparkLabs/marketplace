@@ -32,10 +32,12 @@ Initial coverage (the three constructs implicated by the 2026-05-25 QA):
     - Cursor SkillConstruct      → .cursor-plugin/plugin.json
     - Gemini AgentConstruct      → .gemini/agents/<n>.md frontmatter
     - Windsurf HookConstruct     → .windsurf/hooks.json
+    - Cursor HookConstruct       → .cursor/hooks.json
+    - Gemini HookConstruct       → .gemini/hooks/hooks.json
 
 Expand schemas as new per-platform emissions land. Each new emission
-category we add (Codex agents, Gemini hooks, Cursor commands, ...)
-gets a schema test added here.
+category we add (Codex agents, Cursor commands, ...) gets a schema
+test added here.
 
 No third-party deps (the repo convention — see scripts/utils.py:22).
 A tiny in-file validator (~30 lines) covers the JSON Schema subset we
@@ -203,6 +205,113 @@ WINDSURF_HOOKS_SCHEMA = {
 }
 
 
+# Cursor HookConstruct file.
+# Source: cursor.com/docs/agent/hooks (fetched 2026-05-25)
+# +     : docs/research/qa-bug-fixes-2026-05/RESEARCH.md (Q1, empirical
+#         verification round)
+_CURSOR_HOOK_ENTRY_SCHEMA = {
+    "type": "object",
+    "required": ["command"],
+    "properties": {
+        "command": {"type": "string"},
+        "matcher": {"type": "string"},
+        "timeout": {"type": "number"},
+        "loop_limit": {"type": "number"},
+        "failClosed": {"type": "boolean"},
+    },
+    "additionalProperties": False,
+}
+
+CURSOR_HOOKS_SCHEMA = {
+    "type": "object",
+    "required": ["version", "hooks"],
+    "properties": {
+        # Cursor's parser silently ignores the file without `version: 1`
+        # (verified against community plugins ralph-loop + continual-learning).
+        "version": {"type": "number"},
+        "hooks": {
+            "type": "object",
+            # Only camelCase event keys per Cursor docs. Top-level
+            # PascalCase Claude event names (UserPromptSubmit, ...) get
+            # rejected by patternProperties + additionalProperties=False.
+            "patternProperties": {
+                "^[a-z][a-zA-Z]*$": {
+                    "type": "array",
+                    "items": _CURSOR_HOOK_ENTRY_SCHEMA,
+                },
+            },
+            "additionalProperties": False,
+        },
+    },
+    "additionalProperties": False,
+}
+
+
+# Gemini HookConstruct file.
+# Source: geminicli.com/docs/hooks/reference/ (fetched 2026-05-25) plus
+# the working sandipchitale/hooklog extension (logs/hooklog-hooks.json).
+# +     : docs/research/qa-bug-fixes-2026-05/RESEARCH.md (Q2)
+#
+# Gemini's hook-file shape is structurally identical to Claude's
+# (`hooks.<event>[].hooks[].{type, command}` — nested twice). Only the
+# event-name vocabulary differs: Gemini uses its own PascalCase set
+# (BeforeModel, AfterModel, BeforeTool, ...). The schema below enforces
+# the vocabulary via an enum of valid Gemini event names.
+
+_GEMINI_INNER_HOOK_SCHEMA = {
+    "type": "object",
+    "properties": {
+        "type": {"type": "string"},
+        "command": {"type": "string"},
+        "name": {"type": "string"},
+    },
+    "additionalProperties": True,  # other inner fields documented per-plugin
+}
+
+_GEMINI_OUTER_HOOK_SCHEMA = {
+    "type": "object",
+    "properties": {
+        "matcher": {"type": "string"},
+        "hooks": {"type": "array", "items": _GEMINI_INNER_HOOK_SCHEMA},
+    },
+    "additionalProperties": True,
+}
+
+# Gemini events per the docs + hooklog working extension. Keep the
+# allowlist here so a Claude leak (e.g. UserPromptSubmit) trips the
+# enum check rather than silently passing.
+GEMINI_HOOK_EVENT_NAMES = (
+    "SessionStart", "SessionEnd",
+    "BeforeModel", "AfterModel",
+    "BeforeAgent", "AfterAgent",
+    "BeforeTool", "AfterTool", "BeforeToolSelection",
+    "PreCompress", "Notification",
+)
+
+GEMINI_HOOKS_SCHEMA = {
+    "type": "object",
+    "required": ["hooks"],
+    "properties": {
+        "description": {"type": "string"},
+        "hooks": {
+            "type": "object",
+            # The patternProperties regex matches any PascalCase name —
+            # the test_no_claude_event_names_anywhere test below catches
+            # specific Claude leaks (UserPromptSubmit etc.) with a
+            # human-readable message naming the leaked event.
+            "patternProperties": {
+                "^[A-Z][a-zA-Z]+$": {
+                    "type": "array",
+                    "items": _GEMINI_OUTER_HOOK_SCHEMA,
+                },
+            },
+            "additionalProperties": False,
+        },
+    },
+    "additionalProperties": True,
+}
+
+
 # ─── helpers for fixture lookup ──────────────────────────────────────────────
 
 def _gemini_agent_frontmatter(md_path: Path) -> dict:
@@ -338,6 +447,120 @@ class TestWindsurfHooksSchema(unittest.TestCase):
         self.assertFalse(
             leaked,
             f"Claude event names leaked into .windsurf/hooks.json: {leaked}",
+        )
+
+
+class TestCursorHooksSchema(unittest.TestCase):
+    """Emitted .cursor/hooks.json must satisfy CURSOR_HOOKS_SCHEMA."""
+
+    def test_cursor_hooks_schema_fitness(self):
+        path = REPO_ROOT / ".cursor" / "hooks.json"
+        if not path.exists():
+            self.skipTest(".cursor/hooks.json does not exist")
+        data = json.loads(path.read_text(encoding="utf-8"))
+        errors = validate_schema(data, CURSOR_HOOKS_SCHEMA)
+        self.assertEqual(
+            errors, [],
+            ".cursor/hooks.json schema violations:\n  " + "\n  ".join(errors),
+        )
+
+    def test_cursor_hooks_has_version_field(self):
+        """Cursor's parser silently ignores hooks.json without `version: 1`.
+
+        Verified against three working community plugins:
+          - cursor/plugins/continual-learning  (logs/cl-hooks.json)
+          - cursor/plugins/ralph-loop          (logs/ralph-hooks.json)
+          - prisma/cursor-plugin               (logs/prisma-root-hooks.json)
+        """
+        path = REPO_ROOT / ".cursor" / "hooks.json"
+        if not path.exists():
+            self.skipTest(".cursor/hooks.json does not exist")
+        data = json.loads(path.read_text(encoding="utf-8"))
+        self.assertEqual(
+            data.get("version"), 1,
+            ".cursor/hooks.json missing required `version: 1` top-level field "
+            "(Cursor's parser ignores the file otherwise — see "
+            "docs/research/qa-bug-fixes-2026-05/RESEARCH.md Q1).",
+        )
+
+    def test_no_claude_event_names_in_cursor_hooks(self):
+        """Negative check: no Claude PascalCase event name may appear as a key.
+
+        Backstop for ``additionalProperties: False`` (so test failures name
+        the exact key that leaked, not a generic "additional property").
+        """
+        path = REPO_ROOT / ".cursor" / "hooks.json"
+        if not path.exists():
+            self.skipTest(".cursor/hooks.json does not exist")
+        data = json.loads(path.read_text(encoding="utf-8"))
+        claude_events = {
+            "UserPromptSubmit", "PreToolUse", "PostToolUse",
+            "Notification", "Stop", "SubagentStop",
+            "SessionStart", "SessionEnd", "PreCompact",
+        }
+        leaked = set((data.get("hooks") or {}).keys()) & claude_events
+        self.assertFalse(
+            leaked,
+            f"Claude event names leaked into .cursor/hooks.json: {leaked}",
+        )
+
+
+class TestGeminiHooksSchema(unittest.TestCase):
+    """Emitted .gemini/hooks/hooks.json must satisfy GEMINI_HOOKS_SCHEMA."""
+
+    def test_gemini_hooks_schema_fitness(self):
+        path = REPO_ROOT / ".gemini" / "hooks" / "hooks.json"
+        if not path.exists():
+            self.skipTest(".gemini/hooks/hooks.json does not exist")
+        data = json.loads(path.read_text(encoding="utf-8"))
+        errors = validate_schema(data, GEMINI_HOOKS_SCHEMA)
+        self.assertEqual(
+            errors, [],
+            ".gemini/hooks/hooks.json schema violations:\n  "
+            + "\n  ".join(errors),
+        )
+
+    def test_gemini_event_names_are_in_documented_vocabulary(self):
+        """Every event key must be a documented Gemini event name.
+
+        Gemini's vocabulary is small + closed (per
+        geminicli.com/docs/hooks/reference/ + the hooklog working
+        extension). Any unknown PascalCase key (e.g. a Claude
+        `UserPromptSubmit` leak) is a bug.
+        """
+        path = REPO_ROOT / ".gemini" / "hooks" / "hooks.json"
+        if not path.exists():
+            self.skipTest(".gemini/hooks/hooks.json does not exist")
+        data = json.loads(path.read_text(encoding="utf-8"))
+        keys = set((data.get("hooks") or {}).keys())
+        unknown = keys - set(GEMINI_HOOK_EVENT_NAMES)
+        self.assertFalse(
+            unknown,
+            f"Unknown event names in .gemini/hooks/hooks.json: {unknown} "
+            f"(documented Gemini events: {GEMINI_HOOK_EVENT_NAMES})",
+        )
+
+    def test_no_claude_event_names_in_gemini_hooks(self):
+        """Negative check: no Claude PascalCase event name leaks through.
+
+        Some Claude names (SessionStart, SessionEnd, Notification, PreCompact)
+        DO appear in Gemini's vocabulary verbatim — those are allowed. But
+        the Claude-only names (UserPromptSubmit, PreToolUse, PostToolUse,
+        Stop, SubagentStop) must not leak.
+        """
+        path = REPO_ROOT / ".gemini" / "hooks" / "hooks.json"
+        if not path.exists():
+            self.skipTest(".gemini/hooks/hooks.json does not exist")
+        data = json.loads(path.read_text(encoding="utf-8"))
+        claude_only_events = {
+            "UserPromptSubmit", "PreToolUse", "PostToolUse",
+            "Stop", "SubagentStop",
+        }
+        leaked = set((data.get("hooks") or {}).keys()) & claude_only_events
+        self.assertFalse(
+            leaked,
+            f"Claude-only event names leaked into .gemini/hooks/hooks.json: "
+            f"{leaked}",
         )
 
 
