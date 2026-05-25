@@ -47,3 +47,22 @@ jobs:
           claude plugin uninstall command-example --scope project || true
           claude plugin prune --scope project -y || true
           claude plugin marketplace remove dgxsparklabs-marketplace || true
+
+  cursor-emission:
+    # Filesystem assertion: Cursor's per-plugin manifest for command-example
+    # must include the "commands" pointer field (Cursor 2.4+ schema).
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v4
+        with:
+          version: "latest"
+      - name: Regenerate manifests
+        run: uv run scripts/generate_manifest.py
+      - name: Assert .cursor-plugin/plugin.json for command-example includes 'commands' field
+        run: |
+          python3 -c "
+          import json, sys
+          d = json.load(open('_generated/command-example/.cursor-plugin/plugin.json'))
+          sys.exit(0 if 'commands' in d else 1)
+          "

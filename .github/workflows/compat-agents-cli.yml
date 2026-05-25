@@ -1,0 +1,82 @@
+name: Compat — agents CLI shim
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main, "feat/**", "refactor/**"]
+  workflow_dispatch:
+
+concurrency:
+  group: '${{ github.workflow }}-${{ github.ref }}'
+  cancel-in-progress: true
+
+jobs:
+  posix:
+    # Smoke test the install.sh one-liner end-to-end. The installer clones the
+    # marketplace at AGENTS_REF, drops the wrapper into ~/.local/bin/agents,
+    # then we drive a project-scope install/uninstall round-trip in a tmpdir.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Ensure Python 3.11+
+        run: python3 -c "import sys; assert sys.version_info >= (3, 11)"
+
+      - name: Install agents CLI via install.sh
+        env:
+          # Use the PR head ref (forks fall back to main) so the installer
+          # pulls the branch under test, not whatever happens to be on main.
+          AGENTS_REF: ${{ github.head_ref || github.ref_name }}
+        run: |
+          bash install.sh || (echo "install.sh failed" >&2; exit 1)
+          echo "$HOME/.local/bin" >> $GITHUB_PATH
+
+      - name: Assert agents --version exits 0
+        run: agents --version
+
+      - name: Round-trip install/uninstall skill-example (project scope)
+        run: |
+          WORKDIR=$(mktemp -d)
+          pushd "$WORKDIR"
+          agents install skill-example --scope project
+          test -f .agents/skills/example/SKILL.md \
+            || (echo "expected .agents/skills/example/SKILL.md after install" >&2; exit 1)
+          agents uninstall skill-example --scope project
+          test ! -e .agents/skills/example \
+            || (echo "expected .agents/skills/example/ removed after uninstall" >&2; exit 1)
+          popd
+
+      - name: Round-trip install rule-example with --agents-only
+        run: |
+          WORKDIR=$(mktemp -d)
+          pushd "$WORKDIR"
+          agents install rule-example --scope project --agents-only
+          test -f .agents/rules/example.md
+          test ! -e .cursor/rules/example.md \
+            || (echo "--agents-only should NOT spray to .cursor/" >&2; exit 1)
+          popd
+
+  windows:
+    # Wave-2 promotion target. Currently advisory: install.ps1 is
+    # cross-version compatible (PowerShell 5.1 / 7+) but full end-to-end
+    # invocation in CI needs the wrapper on PATH which Windows runners
+    # configure differently than POSIX. Promote to required after a
+    # clean run.
+    runs-on: windows-latest
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install agents CLI via install.ps1
+        shell: pwsh
+        env:
+          AGENTS_REF: ${{ github.head_ref || github.ref_name }}
+        run: |
+          ./install.ps1
+          Write-Host "Installed wrapper at $env:LOCALAPPDATA\agents\bin\agents.ps1"
+
+      - name: Assert wrapper produces version output
+        shell: pwsh
+        run: |
+          & "$env:LOCALAPPDATA\agents\bin\agents.ps1" --version
