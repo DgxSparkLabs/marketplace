@@ -137,12 +137,12 @@ The `--rm` flag in the one-shot form auto-removes the container when the command
 
 ### Three install sources: choose remote-main, remote-branch, or local-clone
 
-This doc was originally written assuming "install from `DgxSparkLabs/marketplace` on default branch." That works fine for smoke-testing a released marketplace, but it is **useless for pre-merge PR verification** — `main` doesn't yet have the fixes the PR introduces. To make this guide usable for testing PRs (the canonical example throughout this doc is PR #5 = `fix/platform-emission-bugs`), every per-platform section now documents THREE install sources where the platform supports them.
+This doc was originally written assuming "install from `DgxSparkLabs/marketplace` on default branch." That works fine for smoke-testing a released marketplace, but it is **useless for pre-merge PR verification** — `main` doesn't yet have the fixes the PR introduces. To make this guide usable for testing PRs (the canonical example throughout this doc is PR #5 = `main`), every per-platform section now documents THREE install sources where the platform supports them.
 
 | Mode | What it tests | When to use |
 |---|---|---|
 | Remote `main` | The state of `main` on GitHub | Smoke-test of released marketplace |
-| Remote branch ref | A specific branch on GitHub (e.g., `fix/platform-emission-bugs`) | Pre-merge PR verification — needs the platform's `--ref` flag |
+| Remote branch ref | A specific branch on GitHub (e.g., `main`) | Pre-merge PR verification — needs the platform's `--ref` flag |
 | Local clone | The exact bytes in your working tree | Most reliable for unmerged PRs, hands-on debugging |
 
 Platform-by-platform support:
@@ -163,9 +163,9 @@ Platform-by-platform support:
 - **partial** — the platform has SOME branch-ref capability but it's either undocumented (Cursor `/add-plugin`) or absent from the CLI surface (Claude — clone-first is the workaround).
 - **n/a** — the platform has no marketplace registration step at all; it reads from the workspace filesystem, so "branch selection" is "which branch you cloned."
 
-**Canonical example branch throughout this doc**: `fix/platform-emission-bugs` (PR #5). Where you see that branch ref below, substitute your PR's branch when testing a different change.
+**Canonical example branch throughout this doc**: `main` (PR #5). Where you see that branch ref below, substitute your PR's branch when testing a different change.
 
-**Docker setup pattern when testing a PR branch**: every per-platform Docker setup below has been updated to clone the PR branch into `/workspace/marketplace` inside the container, so the install commands further down can point at the local clone OR the remote branch. To test against `main` instead, omit `--branch fix/platform-emission-bugs` from the `git clone` call (or use `--branch main`).
+**Docker setup pattern when testing a PR branch**: every per-platform Docker setup below has been updated to clone the PR branch into `/workspace/marketplace` inside the container, so the install commands further down can point at the local clone OR the remote branch. To test against `main` instead, omit `--branch main` from the `git clone` call (or use `--branch main`).
 
 ### Repository state
 
@@ -215,10 +215,10 @@ npm install -g @anthropic-ai/claude-code
 claude --version
 
 # Clone the branch you want to test. For PR #5 verification, use the PR branch:
-git clone --branch fix/platform-emission-bugs https://github.com/DgxSparkLabs/marketplace.git /workspace/marketplace
+git clone --branch main https://github.com/DgxSparkLabs/marketplace.git /workspace/marketplace
 cd /workspace/marketplace
 
-# (To test against main instead: replace --branch fix/platform-emission-bugs with --branch main, or omit --branch.)
+# (To test against main instead: replace --branch main with --branch main, or omit --branch.)
 ```
 
 ### Setup option B: Native
@@ -436,7 +436,7 @@ npm install -g @openai/codex
 codex --version
 
 # Clone the PR branch for testing PR #5:
-git clone --branch fix/platform-emission-bugs https://github.com/DgxSparkLabs/marketplace.git /workspace/marketplace
+git clone --branch main https://github.com/DgxSparkLabs/marketplace.git /workspace/marketplace
 cd /workspace/marketplace
 
 # (To test against main instead: --branch main or omit --branch.)
@@ -466,7 +466,7 @@ Marketplace registration and `codex plugin list` are auth-free; `codex plugin ad
     ```
   - **Remote PR branch** (recommended remote path — `--ref` is verified working per `docs/PLATFORMS.md` Codex "From GitHub (specific branch)" and `docs/archive/phase-5-cross-platform-install/VERIFICATION_2026-05/empirical_act_verification.md` C3):
     ```bash
-    codex plugin marketplace add DgxSparkLabs/marketplace --ref fix/platform-emission-bugs
+    codex plugin marketplace add DgxSparkLabs/marketplace --ref main
     ```
   - **Local clone** (most reliable — tests exactly the bytes at `/workspace/marketplace`):
     ```bash
@@ -527,7 +527,7 @@ Marketplace registration and `codex plugin list` are auth-free; `codex plugin ad
 #### Rule (no native install, file-discovery only) — `rule-example`
 - [ ] **Setup**: this is N/A as a Codex-native install path. Codex reads rules from `AGENTS.md`, `.cursor/rules/*.md`, `.windsurf/rules/*.md` natively. Verify by opening Codex inside the workspace you cloned in setup:
   ```bash
-  cd /workspace/marketplace   # already on fix/platform-emission-bugs from setup
+  cd /workspace/marketplace   # already on main from setup
   codex
   > what rules currently apply to your behavior?
   ```
@@ -574,7 +574,7 @@ npm install -g @google/gemini-cli
 gemini --version
 
 # Clone the PR branch for testing PR #5:
-git clone --branch fix/platform-emission-bugs https://github.com/DgxSparkLabs/marketplace.git /workspace/marketplace
+git clone --branch main https://github.com/DgxSparkLabs/marketplace.git /workspace/marketplace
 cd /workspace/marketplace
 
 # (To test against main instead: --branch main or omit --branch.)
@@ -602,7 +602,7 @@ gemini auth login        # Google OAuth; needs browser
     ```
   - **Remote PR branch** (recommended remote path — `--ref` is verified working per `docs/PLATFORMS.md` Gemini "From GitHub (specific branch)"; CI uses this same pattern via `compat-extension.yml`):
     ```bash
-    echo "y" | gemini extensions install https://github.com/DgxSparkLabs/marketplace --ref fix/platform-emission-bugs --consent
+    echo "y" | gemini extensions install https://github.com/DgxSparkLabs/marketplace --ref main --consent
     ```
   - **Local clone** (most reliable — tests exactly the bytes at `/workspace/marketplace`):
     ```bash
@@ -694,19 +694,19 @@ Native install:
 - [ ] **Path A — In-editor `/add-plugin` (remote)**:
   - Open any test repo in Cursor (a scratch dir is fine)
   - **Remote `main`**: in Cursor's chat panel, run `/add-plugin <plugin-name>@https://github.com/DgxSparkLabs/marketplace` — see per-construct tests below.
-  - **Remote PR branch (UNTESTED)**: the form `/add-plugin <plugin-name>@https://github.com/DgxSparkLabs/marketplace?ref=fix/platform-emission-bugs` MAY work but is not documented in Cursor's published docs and not verified in this repo's evidence. If you can confirm or refute it, please report — see the open-questions section at the bottom of this doc.
+  - **Remote PR branch (UNTESTED)**: the form `/add-plugin <plugin-name>@https://github.com/DgxSparkLabs/marketplace?ref=main` MAY work but is not documented in Cursor's published docs and not verified in this repo's evidence. If you can confirm or refute it, please report — see the open-questions section at the bottom of this doc.
   - **❗ Do NOT use the naked-URL form** (`/add-plugin https://github.com/DgxSparkLabs/marketplace`). It sends Cursor's chat agent into a research spiral — it goes off investigating the repo instead of installing. The `<plugin-name>@<url>` form goes straight to the install UI without involving the chat agent.
 
 - [ ] **Path B — Dashboard team-marketplace import** (admin path; verify once):
   - Visit `cursor.com/dashboard` → Settings → Plugins → Import
   - **Remote `main`**: paste `https://github.com/DgxSparkLabs/marketplace` and save
-  - **Remote PR branch**: the Dashboard UI exposes a branch selector — pick `fix/platform-emission-bugs` (per `docs/PLATFORMS.md` Cursor "From GitHub (specific branch)": "Branch selection happens in the dashboard").
+  - **Remote PR branch**: the Dashboard UI exposes a branch selector — pick `main` (per `docs/PLATFORMS.md` Cursor "From GitHub (specific branch)": "Branch selection happens in the dashboard").
   - **Expected**: marketplace appears in the team marketplace list, all Cursor-supported plugins enumerated.
 
 - [ ] **Path C — Local clone** (recommended for PR #5 verification):
   - On the host (Cursor IDE is GUI, so Docker doesn't apply), clone the PR branch:
     ```powershell
-    git clone --branch fix/platform-emission-bugs https://github.com/DgxSparkLabs/marketplace.git C:\Users\devic\source\marketplace-pr5
+    git clone --branch main https://github.com/DgxSparkLabs/marketplace.git C:\Users\devic\source\marketplace-pr5
     ```
   - Open `C:\Users\devic\source\marketplace-pr5` in Cursor (File → Open Folder).
   - Cursor picks up `.cursor/rules/*.md`, `.cursor/agents/*.md`, `.cursor/hooks.json`, `.cursor/mcp.json`, and per-plugin `.cursor-plugin/plugin.json` files from the opened workspace. This is the path that exercises THIS PR's hook + skill-manifest fixes most directly — no marketplace registration needed; Cursor reads workspace files natively.
@@ -775,7 +775,7 @@ irm 'https://cursor.com/install?win32=true' | iex
 agent --version    # expected: e.g., 2026.05.20-2b5dd59
 
 # For PR #5 verification, clone the PR branch and cd into it:
-git clone --branch fix/platform-emission-bugs https://github.com/DgxSparkLabs/marketplace.git /workspace/marketplace
+git clone --branch main https://github.com/DgxSparkLabs/marketplace.git /workspace/marketplace
 cd /workspace/marketplace
 ```
 
@@ -862,7 +862,7 @@ Windsurf reads from the filesystem only — no install command, no marketplace r
 
 1. **Clone the PR branch** (recommended for PR #5 verification — this is what tests THIS PR's hook fixes at `.windsurf/hooks.json`):
    ```bash
-   git clone --branch fix/platform-emission-bugs https://github.com/DgxSparkLabs/marketplace.git C:\Users\devic\source\marketplace-pr5
+   git clone --branch main https://github.com/DgxSparkLabs/marketplace.git C:\Users\devic\source\marketplace-pr5
    ```
    Open the clone in Windsurf (File → Open Folder).
 
@@ -930,7 +930,7 @@ export PATH="$HOME/.local/bin:$PATH"
 devin --version
 
 # Clone the PR branch for testing PR #5:
-git clone --branch fix/platform-emission-bugs https://github.com/DgxSparkLabs/marketplace.git /workspace/marketplace
+git clone --branch main https://github.com/DgxSparkLabs/marketplace.git /workspace/marketplace
 cd /workspace/marketplace
 
 # (To test against main instead: --branch main or omit --branch.)
@@ -961,8 +961,8 @@ cd /workspace/marketplace && pwd
 
 For native setup (WSL/Git Bash), clone the branch you want to test:
 ```bash
-git clone --branch fix/platform-emission-bugs https://github.com/DgxSparkLabs/marketplace.git ~/marketplace-pr5 && cd ~/marketplace-pr5
-# Or: omit --branch fix/platform-emission-bugs to clone main for a smoke test.
+git clone --branch main https://github.com/DgxSparkLabs/marketplace.git ~/marketplace-pr5 && cd ~/marketplace-pr5
+# Or: omit --branch main to clone main for a smoke test.
 ```
 
 ### Per-construct verification
@@ -1025,13 +1025,13 @@ Then install the `agents` CLI. Pick ONE of the four paths below:
 curl -fsSL https://raw.githubusercontent.com/DgxSparkLabs/marketplace/main/install.sh | bash
 
 # Path 2 — Remote PR branch via curl URL path segment (fetches install.sh from the branch):
-curl -fsSL https://raw.githubusercontent.com/DgxSparkLabs/marketplace/fix/platform-emission-bugs/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/DgxSparkLabs/marketplace/main/install.sh | bash
 
 # Path 3 — Remote PR branch via AGENTS_REF env var (install.sh from main, but clones the marketplace from the branch — see install.sh: `REF="${AGENTS_REF:-main}"`):
-AGENTS_REF=fix/platform-emission-bugs curl -fsSL https://raw.githubusercontent.com/DgxSparkLabs/marketplace/main/install.sh | bash
+AGENTS_REF=main curl -fsSL https://raw.githubusercontent.com/DgxSparkLabs/marketplace/main/install.sh | bash
 
 # Path 4 — Local clone (most reliable — tests exactly the bytes at /workspace/marketplace):
-git clone --branch fix/platform-emission-bugs https://github.com/DgxSparkLabs/marketplace.git /workspace/marketplace
+git clone --branch main https://github.com/DgxSparkLabs/marketplace.git /workspace/marketplace
 cd /workspace/marketplace && bash install.sh
 ```
 
@@ -1057,11 +1057,11 @@ agents --version
 irm https://raw.githubusercontent.com/DgxSparkLabs/marketplace/main/install.ps1 | iex
 
 # Path 2 — Remote PR branch via AGENTS_REF env var:
-$env:AGENTS_REF = 'fix/platform-emission-bugs'
+$env:AGENTS_REF = 'main'
 irm https://raw.githubusercontent.com/DgxSparkLabs/marketplace/main/install.ps1 | iex
 
 # Path 3 — Local clone (most reliable):
-git clone --branch fix/platform-emission-bugs https://github.com/DgxSparkLabs/marketplace.git C:\Users\devic\source\marketplace-pr5
+git clone --branch main https://github.com/DgxSparkLabs/marketplace.git C:\Users\devic\source\marketplace-pr5
 Set-Location C:\Users\devic\source\marketplace-pr5
 powershell -ExecutionPolicy Bypass -File .\install.ps1
 
@@ -1283,7 +1283,7 @@ docker ps -a | Select-String "qa-"
 # expected: no output
 ```
 
-**Note on in-container clones**: if you used the `git clone --branch fix/platform-emission-bugs ... /workspace/marketplace` step inside the containers, those clones live entirely inside each container's writable layer. `docker rm -f` removes the container AND its writable layer in one shot — no separate cleanup step needed for the clones. (Confirm with `docker ps -a` after teardown — nothing labelled `qa-*` should remain, and the clones go with them.)
+**Note on in-container clones**: if you used the `git clone --branch main ... /workspace/marketplace` step inside the containers, those clones live entirely inside each container's writable layer. `docker rm -f` removes the container AND its writable layer in one shot — no separate cleanup step needed for the clones. (Confirm with `docker ps -a` after teardown — nothing labelled `qa-*` should remain, and the clones go with them.)
 
 Native platforms (Cursor IDE / Windsurf IDE / native CLI installs) — uninstall via their respective uninstall flows or simply leave installed if you use them day-to-day. If you made native local clones (e.g., `C:\Users\devic\source\marketplace-pr5` for Cursor IDE or Windsurf), delete those directories when you're done:
 
@@ -1311,7 +1311,7 @@ If you'd prefer, file findings as GitHub issues against `DgxSparkLabs/marketplac
 
 ## Quick reference table
 
-Assumes `/workspace/marketplace` is the clone path (Docker setups in each platform's section produce this). For the local-install column, "clone first" means the `git clone --branch fix/platform-emission-bugs ... /workspace/marketplace` step has already run.
+Assumes `/workspace/marketplace` is the clone path (Docker setups in each platform's section produce this). For the local-install column, "clone first" means the `git clone --branch main ... /workspace/marketplace` step has already run.
 
 | Platform | Native install | Docker base image | Local install command (from `/workspace/marketplace`) | New emissions this refactor |
 |---|---|---|---|---|
@@ -1329,13 +1329,13 @@ Remote-branch quick reference (where supported):
 | Platform | Remote-branch install command |
 |---|---|
 | Claude Code | not supported — use local clone |
-| Codex | `codex plugin marketplace add DgxSparkLabs/marketplace --ref fix/platform-emission-bugs` |
-| Gemini | `echo "y" \| gemini extensions install https://github.com/DgxSparkLabs/marketplace --ref fix/platform-emission-bugs --consent` |
+| Codex | `codex plugin marketplace add DgxSparkLabs/marketplace --ref main` |
+| Gemini | `echo "y" \| gemini extensions install https://github.com/DgxSparkLabs/marketplace --ref main --consent` |
 | Cursor IDE | Dashboard branch picker (UI); `/add-plugin <name>@<url>?ref=<branch>` form untested |
 | Cursor CLI | n/a — clone the branch and open |
 | Windsurf | n/a — clone the branch and open |
 | Devin | n/a — clone the branch and open |
-| `agents` CLI | `AGENTS_REF=fix/platform-emission-bugs curl -fsSL https://raw.githubusercontent.com/DgxSparkLabs/marketplace/main/install.sh \| bash` |
+| `agents` CLI | `AGENTS_REF=main curl -fsSL https://raw.githubusercontent.com/DgxSparkLabs/marketplace/main/install.sh \| bash` |
 
 ---
 
@@ -1406,7 +1406,7 @@ These are cells in the matrix marked TEST but where no clean hands-on verificati
 - **Cursor CLI agent / command / hook dispatch** — `agent --help` (per `logs/CU3.txt`) lists `mcp`, `models`, `generate-rule`, but no plugin-construct subcommand.
 - **Windsurf hook trigger** — no CLI for introspection; verification is "observe Cascade-triggered side effect."
 - **`agents` CLI per-platform spray default behavior** — the per-construct project-scope tests assume the CLI's default mode sprays to `.cursor/`, `.windsurf/`, etc. alongside `.agents/`. The exact spray policy per construct type isn't fully documented; verify empirically.
-- **Cursor `/add-plugin` with `?ref=<branch>` query parameter** — undocumented in Cursor's published docs; not verified in this repo's evidence. If you try `/add-plugin <name>@https://github.com/DgxSparkLabs/marketplace?ref=fix/platform-emission-bugs` in Cursor and observe whether it installs from the branch or silently falls back to default, report your finding. The Dashboard team-marketplace import flow has a separate branch-selector UI per `docs/PLATFORMS.md` Cursor "From GitHub (specific branch)" — that path is the verified one.
+- **Cursor `/add-plugin` with `?ref=<branch>` query parameter** — undocumented in Cursor's published docs; not verified in this repo's evidence. If you try `/add-plugin <name>@https://github.com/DgxSparkLabs/marketplace?ref=main` in Cursor and observe whether it installs from the branch or silently falls back to default, report your finding. The Dashboard team-marketplace import flow has a separate branch-selector UI per `docs/PLATFORMS.md` Cursor "From GitHub (specific branch)" — that path is the verified one.
 
 These gaps suggest the next research pass should focus on:
 1. Per-platform enumeration commands for each construct type (especially Cursor command/hook/MCP listing, Codex hooks listing, Gemini hooks listing).
