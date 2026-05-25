@@ -1,12 +1,54 @@
 {
-  "description": "Reference example hook. Prepends a timestamp marker to every user prompt so Claude sees session context.",
+  "description": "Reference example hook covering session-lifecycle, per-turn, and tool-lifecycle Claude events. Each hook writes a per-event sentinel line to /tmp/hook-fired-<event>.log so operators can verify firing with `tail /tmp/hook-fired-*.log` (the UserPromptSubmit hook also injects a context line into the prompt as before).",
   "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "printf '%s sessionStart fired\\n' \"$(date -u +%FT%TZ)\" >> /tmp/hook-fired-sessionstart.log"
+          }
+        ]
+      }
+    ],
     "BeforeModel": [
       {
         "hooks": [
           {
             "type": "command",
-            "command": "printf '[Lab Notebook context: timestamp=%s]\\n' \"$(date -u +%FT%TZ)\""
+            "command": "ts=\"$(date -u +%FT%TZ)\"; printf '[Lab Notebook context: timestamp=%s]\\n' \"$ts\"; printf '%s userPromptSubmit fired\\n' \"$ts\" >> /tmp/hook-fired-userpromptsubmit.log"
+          }
+        ]
+      }
+    ],
+    "BeforeTool": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "printf '%s preToolUse %s\\n' \"$(date -u +%FT%TZ)\" \"${CLAUDE_TOOL_NAME:-unknown}\" >> /tmp/hook-fired-pretooluse.log"
+          }
+        ]
+      }
+    ],
+    "AfterTool": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "printf '%s postToolUse %s\\n' \"$(date -u +%FT%TZ)\" \"${CLAUDE_TOOL_NAME:-unknown}\" >> /tmp/hook-fired-posttooluse.log"
+          }
+        ]
+      }
+    ],
+    "SessionEnd": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "printf '%s sessionEnd fired\\n' \"$(date -u +%FT%TZ)\" >> /tmp/hook-fired-sessionend.log"
           }
         ]
       }

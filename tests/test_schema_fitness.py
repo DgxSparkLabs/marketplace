@@ -382,6 +382,75 @@ CLAUDE_MONITORS_SCHEMA = {
 }
 
 
+# Claude Hooks standalone file.
+# Source: code.claude.com/docs/en/plugins-reference#hooks (fetched
+# 2026-05-26). The canonical shape is::
+#
+#   {"hooks": {"<Event>": [{"matcher"?: "...", "hooks": [{"type": "command",
+#    "command": "..."}]}]}}
+#
+# Event keys are PascalCase Claude event names; each entry's inner hook
+# must declare a 'type' (command|http|mcp_tool|prompt|agent) and the
+# type-specific payload field (here 'command' for command hooks).
+# +     : docs/research/claude-qa-2026-05-26/RESEARCH.md (F5)
+_CLAUDE_HOOK_LEAF_SCHEMA = {
+    "type": "object",
+    "required": ["type", "command"],
+    "properties": {
+        "type": {
+            "type": "string",
+            "enum": ["command", "http", "mcp_tool", "prompt", "agent"],
+        },
+        "command": {"type": "string"},
+    },
+    "additionalProperties": True,
+}
+
+_CLAUDE_HOOK_OUTER_SCHEMA = {
+    "type": "object",
+    "required": ["hooks"],
+    "properties": {
+        "matcher": {"type": "string"},
+        "hooks": {"type": "array", "items": _CLAUDE_HOOK_LEAF_SCHEMA},
+    },
+    "additionalProperties": True,
+}
+
+CLAUDE_HOOKS_FILE_SCHEMA = {
+    "type": "object",
+    "required": ["hooks"],
+    "properties": {
+        "description": {"type": "string"},
+        "hooks": {
+            "type": "object",
+            "patternProperties": {
+                "^[A-Z][a-zA-Z]+$": {
+                    "type": "array",
+                    "items": _CLAUDE_HOOK_OUTER_SCHEMA,
+                },
+            },
+            "additionalProperties": False,
+        },
+    },
+    "additionalProperties": True,
+}
+
+
+# The hook-example MUST demonstrate every event in this list so an
+# operator can verify firing across session lifecycle, per-turn, and
+# tool lifecycle. Subset per docs/research/claude-qa-2026-05-26/RESEARCH.md
+# F5 recommended coverage table — categorical breadth without
+# exhaustive listing of all 29 documented events.
+CLAUDE_REQUIRED_HOOK_EVENTS = (
+    "SessionStart",
+    "UserPromptSubmit",
+    "PreToolUse",
+    "PostToolUse",
+    "Stop",
+    "SessionEnd",
+)
+
+
 # ─── helpers for fixture lookup ──────────────────────────────────────────────
 
 def _gemini_agent_frontmatter(md_path: Path) -> dict:
@@ -715,6 +784,45 @@ class TestClaudeMonitorsSchema(unittest.TestCase):
                     f"{fixture.relative_to(REPO_ROOT)}: schema violations:\n  "
                     + "\n  ".join(errors),
                 )
+
+
+class TestClaudeHooksFileSchema(unittest.TestCase):
+    """Claude hooks.json must satisfy CLAUDE_HOOKS_FILE_SCHEMA and the
+    reference example must enumerate every required Claude hook event per
+    docs/research/claude-qa-2026-05-26/RESEARCH.md F5."""
+
+    def test_hooks_file_schema_fitness(self):
+        hook = next(c for c in CONSTRUCTS.values() if isinstance(c, HookConstruct))
+        for name in scan_source_dir(hook.source_directory):
+            fixture = hook.source_directory / name / "hooks" / "hooks.json"
+            with self.subTest(name=name):
+                if not fixture.exists():
+                    self.skipTest(f"{fixture} not present")
+                data = json.loads(fixture.read_text(encoding="utf-8"))
+                errors = validate_schema(data, CLAUDE_HOOKS_FILE_SCHEMA)
+                self.assertEqual(
+                    errors, [],
+                    f"{fixture.relative_to(REPO_ROOT)}: schema violations:\n  "
+                    + "\n  ".join(errors),
+                )
+
+    def test_hook_example_covers_required_events(self):
+        """The reference example MUST demonstrate every event in
+        CLAUDE_REQUIRED_HOOK_EVENTS so operators can verify firing for each
+        major hook type (session lifecycle, per-turn, tool lifecycle)."""
+        hook = next(c for c in CONSTRUCTS.values() if isinstance(c, HookConstruct))
+        fixture = hook.source_directory / "example" / "hooks" / "hooks.json"
+        if not fixture.exists():
+            self.skipTest(f"{fixture} not present")
+        data = json.loads(fixture.read_text(encoding="utf-8"))
+        present = set((data.get("hooks") or {}).keys())
+        missing = set(CLAUDE_REQUIRED_HOOK_EVENTS) - present
+        self.assertFalse(
+            missing,
+            f"hook-example missing required Claude events {missing}; "
+            "see docs/research/claude-qa-2026-05-26/RESEARCH.md F5 for the "
+            "documented Claude hook type list",
+        )
 
 
 class TestValidatorSelfCheck(unittest.TestCase):
