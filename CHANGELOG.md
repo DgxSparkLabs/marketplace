@@ -1,5 +1,29 @@
 # Changelog
 
+## 2026-05-26 — Hermetic Claude QA via stub server
+
+The four interactive-auth cells (F4 / F5 / F7 / F9) previously required a human-driven Claude session to verify. Empirical research (`docs/research/claude-headless-qa/RESEARCH.md`) confirmed that Claude Code accepts a custom `ANTHROPIC_BASE_URL` pointing at a local stub server returning Anthropic-shape responses — no remote auth check at startup, no version validation, no licensing phone-home. This PR lands the stub as a canonical test fixture and wires it into CI for automated F5 / F7 / F9 verification on every PR.
+
+### Added
+
+- `tests/fixtures/claude-stub/stub.py` — ~110-line Flask stub returning Anthropic-shape `/v1/messages` responses (both JSON and SSE), plus `/v1/messages/count_tokens` and `/v1/models`. Configurable via `STUB_HOST` / `STUB_PORT` / `STUB_LOG` env vars; clean `SIGTERM` / `SIGINT` handlers so CI can stop it deterministically.
+- `tests/fixtures/claude-stub/stub_body_dumper.py` — variant that additionally writes every captured request body to `/tmp/stub-bodies.log` (override with `STUB_BODIES_LOG`) so callers can grep for `system[]` content (used by F9) or resolved slash-command bodies (used by F7).
+- `tests/fixtures/claude-stub/README.md` — quick-start, env-var reference, and pointers to the originating research dossier and consuming CI workflow.
+- `.github/workflows/compat-headless-claude.yml` — new CI workflow that boots both stubs on ports 8088 / 8089, installs `hook-example` + `command-example` + `output-style-example` against the marketplace, and asserts: (F5) UserPromptSubmit / SessionStart / Stop / SessionEnd sentinel files exist and are non-empty after one `claude --print`; (F7) the namespaced `command-example:example-command` slash form reaches the captured request body; (F9) `lab-notebook-voice.md` markers `Lab Notebook Voice` and `Next:` round-trip verbatim into the request `system[]` field via `--append-system-prompt`. Starts as `continue-on-error: true` per the project's promote-after-green pattern.
+- `docs/TEST_YOURSELF.md` Platform 1 — new "Hermetic Claude session (no auth required)" subsection under Setup, plus per-validation "Hermetic verification" sub-steps for 5a, 5b, 5e, 5f (full), 5c, 5d, 7b, 7c (partial — flagged honestly), 7a (full via body-dumper grep), and 9 (full via `--append-system-prompt` + body-dumper grep).
+
+### Known limitations
+
+- **F4 (theme visual distinctness)** still requires interactive verification — TTY paint is not observable from API requests. The interactive step in `docs/TEST_YOURSELF.md` is preserved unchanged.
+- **F5c / F5d (PreToolUse / PostToolUse)** are not asserted in CI because the default stub returns text-only responses; firing these hooks requires the stub to emit a `tool_use` content block. Documented as a hermetic-partial in the per-validation cell with an explicit upgrade path (extend the stub).
+- **F7b / F7c (agent + MCP tool namespacing)** are similarly hermetic-partial — `/agents` is TUI-only and `mcp__*` tool names appear only after a `tool_use` block. F7a's positive result is strong evidence the same namespacing infrastructure works for these surfaces.
+
+### Why this matters
+
+Removes the manual interactive-auth verification cycle for 3 of the 4 deferred cells. Every future PR gets automatic regression detection on hook firing, slash command resolution, and output-style emission. Cuts ongoing QA friction from ~5 min per round to 0 min per round and converts three currently-operator-dependent gates into mechanically enforceable ones.
+
+---
+
 ## 2026-05-26 — Claude verified-working state + user guide + QA validation expansion
 
 Hands-on Docker QA on 2026-05-25 surfaced 6 example-plugin bugs and 3 investigation gaps in Claude support. All resolved in this PR; Claude now passes `claude plugin validate ./` with zero warnings, and the expanded Claude section of `docs/TEST_YOURSELF.md` has 16 hands-on validations covering every previously-non-obvious behavior. The new `docs/USER_GUIDE.md` consolidates plugin/extension management for all 6 platforms + the `agents` CLI into one user-facing reference.

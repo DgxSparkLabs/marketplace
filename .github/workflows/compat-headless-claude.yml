@@ -1,0 +1,190 @@
+name: Compat — Headless Claude (stub-driven F5/F7/F9)
+
+# Hermetic verification of three deferred QA cells using a local
+# Flask stub at tests/fixtures/claude-stub/. Removes the manual
+# interactive-auth verification cycle for F5 (hook firing), F7
+# (slash command resolution), and F9 (output-style application).
+# F4 (theme visual distinctness) is intentionally not covered here —
+# it's a TTY paint operation with no observable in the request stream.
+#
+# Promotion plan: starts with continue-on-error: true so the first
+# green run on main earns the operator's trust before this gate
+# becomes required. Flip to continue-on-error: false once a few
+# clean runs land.
+#
+# Origin: docs/research/claude-headless-qa/RESEARCH.md confirmed the
+# feasibility; tests/fixtures/claude-stub/README.md documents the
+# stub surface and env vars.
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main, "feat/**", "claude/**"]
+  workflow_dispatch:
+
+concurrency:
+  group: '${{ github.workflow }}-${{ github.ref }}'
+  cancel-in-progress: true
+
+jobs:
+  hermetic-claude:
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: astral-sh/setup-uv@v4
+        with:
+          version: "latest"
+
+      - name: Regenerate manifests from sources
+        run: uv run scripts/generate_manifest.py
+
+      - uses: ./.github/actions/setup-claude
+        id: claude
+
+      - name: Install stub dependency (Flask)
+        run: |
+          python3 -m pip install --user flask
+          python3 -c "import flask; print('flask', flask.__version__)"
+
+      - name: Start stub server (port 8088, JSON-shape)
+        # Plain stub is enough for F5 sentinel checks. F7/F9 use the
+        # body-dumper variant started in the next step on port 8089.
+        run: |
+          nohup python3 tests/fixtures/claude-stub/stub.py > /tmp/stub-8088.log 2>&1 &
+          echo $! > /tmp/stub-8088.pid
+          # Wait for the bind to succeed before continuing.
+          for i in $(seq 1 20); do
+            if curl -sS http://127.0.0.1:8088/v1/models >/dev/null; then
+              echo "stub-8088 ready after ${i}*0.2s"
+              break
+            fi
+            sleep 0.2
+          done
+          curl -sS http://127.0.0.1:8088/v1/models | head -c 200
+
+      - name: Start body-dumper stub (port 8089)
+        run: |
+          nohup python3 tests/fixtures/claude-stub/stub_body_dumper.py > /tmp/stub-8089.log 2>&1 &
+          echo $! > /tmp/stub-8089.pid
+          for i in $(seq 1 20); do
+            if curl -sS http://127.0.0.1:8089/v1/models >/dev/null; then
+              echo "stub-8089 ready after ${i}*0.2s"
+              break
+            fi
+            sleep 0.2
+          done
+          curl -sS http://127.0.0.1:8089/v1/models | head -c 200
+
+      - name: Register marketplace + install hook-example + command-example + output-style-example
+        run: |
+          claude plugin marketplace add ./
+          claude plugin marketplace list | grep -F "dgxsparklabs-marketplace"
+          claude plugin install hook-example@dgxsparklabs-marketplace --scope project
+          claude plugin install command-example@dgxsparklabs-marketplace --scope project
+          claude plugin install output-style-example@dgxsparklabs-marketplace --scope project
+          claude plugin list
+
+      - name: F5 hermetic — UserPromptSubmit + SessionStart + Stop + SessionEnd hooks fire
+        env:
+          ANTHROPIC_BASE_URL: http://127.0.0.1:8088
+          ANTHROPIC_AUTH_TOKEN: stub
+          API_TIMEOUT_MS: '20000'
+        run: |
+          rm -f /tmp/hook-fired-*.log
+          echo "hello stub" | claude --print
+          # All four session/turn hooks must have fired after a single
+          # --print invocation. PreToolUse/PostToolUse are not asserted
+          # because the default stub returns text-only (no tool_use).
+          failed=0
+          for evt in userpromptsubmit sessionstart stop sessionend; do
+            f="/tmp/hook-fired-${evt}.log"
+            if [ -s "$f" ]; then
+              echo "OK $evt fired:"
+              cat "$f"
+            else
+              echo "FAIL $evt sentinel missing or empty ($f)"
+              failed=1
+            fi
+          done
+          exit $failed
+
+      - name: F7 hermetic — namespaced slash command body reaches request
+        env:
+          ANTHROPIC_BASE_URL: http://127.0.0.1:8089
+          ANTHROPIC_AUTH_TOKEN: stub
+          API_TIMEOUT_MS: '20000'
+        run: |
+          : > /tmp/stub-bodies.log
+          # Use printf so the slash form is sent as the prompt verbatim
+          # rather than interpreted by the shell.
+          printf '%s\n' "/command-example:example-command" | claude --print
+          if grep -F "command-example:example-command" /tmp/stub-bodies.log >/dev/null; then
+            echo "OK F7 — namespaced slash reached request body"
+            grep -F "command-example:example-command" /tmp/stub-bodies.log | head -3
+          else
+            echo "FAIL F7 — namespaced slash not found in /tmp/stub-bodies.log"
+            echo "--- bodies log (first 4KB) ---"
+            head -c 4096 /tmp/stub-bodies.log
+            exit 1
+          fi
+
+      - name: F9 hermetic — output-style content reaches system[] verbatim
+        env:
+          ANTHROPIC_BASE_URL: http://127.0.0.1:8089
+          ANTHROPIC_AUTH_TOKEN: stub
+          API_TIMEOUT_MS: '20000'
+        run: |
+          : > /tmp/stub-bodies.log
+          style_file="output-styles/example/output-styles/lab-notebook-voice.md"
+          test -f "$style_file" || { echo "missing $style_file"; exit 1; }
+          claude --print \
+            --append-system-prompt "$(cat "$style_file")" \
+            "explain F9"
+          # Two markers from the style file body that should round-trip
+          # verbatim into the captured request body's system field.
+          failed=0
+          for marker in "Lab Notebook Voice" "Next:"; do
+            if grep -F "$marker" /tmp/stub-bodies.log >/dev/null; then
+              echo "OK F9 marker present: $marker"
+            else
+              echo "FAIL F9 marker missing: $marker"
+              failed=1
+            fi
+          done
+          if [ "$failed" -ne 0 ]; then
+            echo "--- bodies log (first 4KB) ---"
+            head -c 4096 /tmp/stub-bodies.log
+          fi
+          exit $failed
+
+      - name: Stop stub servers
+        if: always()
+        run: |
+          for pidfile in /tmp/stub-8088.pid /tmp/stub-8089.pid; do
+            if [ -f "$pidfile" ]; then
+              kill "$(cat "$pidfile")" 2>/dev/null || true
+            fi
+          done
+
+      - name: Dump stub access logs on failure
+        if: failure()
+        run: |
+          echo "=== /tmp/stub-8088.log ==="
+          cat /tmp/stub-8088.log 2>/dev/null || true
+          echo "=== /tmp/stub-8089.log ==="
+          cat /tmp/stub-8089.log 2>/dev/null || true
+          echo "=== /tmp/stub-server.log ==="
+          cat /tmp/stub-server.log 2>/dev/null || true
+          echo "=== /tmp/stub-bodies.log (first 8KB) ==="
+          head -c 8192 /tmp/stub-bodies.log 2>/dev/null || true
+
+      - name: Cleanup marketplace
+        if: always()
+        run: |
+          claude plugin uninstall hook-example --scope project || true
+          claude plugin uninstall command-example --scope project || true
+          claude plugin uninstall output-style-example --scope project || true
+          claude plugin marketplace remove dgxsparklabs-marketplace || true
