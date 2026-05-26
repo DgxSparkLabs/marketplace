@@ -1,6 +1,0 @@
-{
-  "name": "skill-session-wrapup",
-  "version": "1.0.0",
-  "description": "End-of-session audit \u2014 check docs, commits, and readiness for the next agent",
-  "skills": "./skills/"
-}

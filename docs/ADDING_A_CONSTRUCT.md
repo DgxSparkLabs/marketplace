@@ -57,6 +57,42 @@ The marketplace supports 10 plugin construct types. The contribution workflow is
 
 7. **Commit** with a conventional commit message. No AI co-author attribution (`rules/no-ai-credit/`).
 
+## Naming convention for slash command invocations
+
+Three distinct layers participate in every install command and every slash invocation. Understanding which layer owns which segment of a name prevents the awkward duplication that the `2026-05-26` minimal-stable-state refactor cleaned up.
+
+### The three layers
+
+| Layer            | Owner                          | Example                          | Where it appears                                    |
+|------------------|--------------------------------|----------------------------------|-----------------------------------------------------|
+| **Marketplace**  | `MARKETPLACE.toml` `name` field| `dgxsparklabs-marketplace`       | The `@<marketplace>` suffix in install commands     |
+| **Plugin**       | Source dir + construct prefix  | `command-example`                | The `<plugin-name>` half of slash namespacing       |
+| **Component**    | File inside the plugin         | `hello` (from `commands/hello.md`)| The `<component>` half after the `:`               |
+
+Put together, the install command is `/plugin install <plugin>@<marketplace>` and the invocation is `/<plugin>:<component>`. For the reference example: install is `/plugin install command-example@dgxsparklabs-marketplace`; invocation is `/command-example:hello`.
+
+Per [code.claude.com/docs/en/plugins](https://code.claude.com/docs/en/plugins) (fetched 2026-05-26): *"Plugin skills are always namespaced (like `/my-first-plugin:hello`) to prevent conflicts when multiple plugins have skills with the same name."* There is no flatten mechanism — the only lever is the plugin name. The component half is always derived from the file name (commands, output styles, themes) or the frontmatter `name` field (skills, agents).
+
+### The duplication pitfall
+
+If the component file's name repeats the plugin's prefix, the invocation reads twice:
+
+| Plugin            | Component file              | Invocation                                | Verdict           |
+|-------------------|-----------------------------|-------------------------------------------|-------------------|
+| `command-example` | `commands/example-command.md` | `/command-example:example-command`      | Awkward — `example`/`command` appear twice |
+| `command-example` | `commands/hello.md`         | `/command-example:hello`                  | Clean              |
+| `skill-telegram-notify` | `SKILL.md` `name: telegram-notify` | `/skill-telegram-notify:telegram-notify` | Awkward     |
+| `skill-telegram-notify` | `SKILL.md` `name: notify`         | `/skill-telegram-notify:notify`        | Clean              |
+
+The duplication is invisible at the source-directory level (each layer's name is fine in isolation) and only surfaces in the rendered slash form. Read it aloud as a sanity check.
+
+### Rule of thumb
+
+1. Do not repeat words across the plugin name and the component file name.
+2. Pick short, generic names for examples (`hello`, `voice`, `ping`).
+3. If the invocation reads awkwardly, rename one of the two — usually the component is easier to rename than the plugin.
+4. The MCP example is a special case: its tool name (`example-fetch`) is fixed by the external `mcp-server-fetch` package and cannot be renamed. The plugin name itself can be changed if the redundancy bothers you.
+
 ## Adding a new bundle
 
 Bundles are declared in `catalog.toml`. Each bundle is a dep-only plugin that installs a curated set of other plugins.

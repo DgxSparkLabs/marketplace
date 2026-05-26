@@ -1,6 +1,0 @@
-{
-  "name": "skill-github-repo-setup",
-  "version": "1.0.0",
-  "description": "Create a GitHub repo with CI, branch protection, and naming rules",
-  "skills": "./"
-}

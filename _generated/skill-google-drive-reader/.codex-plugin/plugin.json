@@ -1,6 +1,0 @@
-{
-  "name": "skill-google-drive-reader",
-  "version": "1.0.0",
-  "description": "Read Google Docs from personal Drive, extract URLs and conclusions",
-  "skills": "./skills/"
-}

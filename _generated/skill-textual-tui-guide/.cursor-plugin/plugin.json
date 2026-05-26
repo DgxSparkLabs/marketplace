@@ -1,6 +1,0 @@
-{
-  "name": "skill-textual-tui-guide",
-  "version": "1.0.0",
-  "description": "Build rich terminal UIs with Python Textual \u2014 layouts, widgets, modals, styling",
-  "skills": "./"
-}

@@ -2,6 +2,8 @@
 
 > **First file to read on re-entry:** [`docs/RESUME_HERE.md`](./docs/RESUME_HERE.md) — 90-second orientation. This document is the longer state tracker; complements RESUME_HERE rather than duplicating it.
 
+> **2026-05-26 minimal-stable-state transition.** The marketplace was reduced to 10 reference plugins (one per construct type) + 1 cross-construct examples bundle + 8 catch-all bundles = **19 plugin entries** (was 81). The 26 production skills and 21 production rules that previously shipped were **archived, not deleted**, into `docs/archive/skills-pre-stable-2026-05-26/` and `docs/archive/rules-pre-stable-2026-05-26/`. Source preserved via `git mv` so every commit history is intact. Real content returns one plugin at a time after each is verified across every platform. See `CHANGELOG.md` for the full transition rationale.
+
 **Last updated:** 2026-05-24, after PR #1 merged to main (cross-platform native install compliance).
 **Branch state:** `main` at `bfb476d` (PR #1 merge commit). All 11 CI workflows green on main. Feature branch `feat/claude-plugin-compliance` preserved per user direction.
 **Active cleanup branch:** `docs/post-merge-cleanup` (audit-trail commits + footnote drops + this HANDOFF refresh). PR follow-up pending.
@@ -20,16 +22,15 @@ A **genuinely multi-platform plugin marketplace** for AI coding agents. Installs
 - **Windsurf IDE** — `git clone` + open (Cascade auto-discovers `.windsurf/rules/` AND `.agents/skills/`)
 - **Devin CLI** — `git clone` + `devin skills list` (auto-discovers `.devin/skills/` AND `.agents/skills/`)
 
-Current inventory:
+Current inventory (post 2026-05-26 minimal-stable-state):
 
-- **26 skills** (`skills/<name>/`) + `skills/example/`
-- **21 rules** (`rules/<name>/`) + `rules/example/`
+- **1 example skill** (`skills/example/`) — 26 production skills archived under `docs/archive/skills-pre-stable-2026-05-26/`
+- **1 example rule** (`rules/example/`) — 21 production rules archived under `docs/archive/rules-pre-stable-2026-05-26/`
 - **`commands/`, `agents/`, `hooks/`, `mcp-servers/`, `lsp-servers/`, `monitors/`, `output-styles/`, `themes/`** — each has `example/`
-- **81 plugin entries** in `.claude-plugin/marketplace.json` (and platform-equivalents)
-- **27 skill entries** in `.agents/skills/` mirror (cross-platform skill convergence dir)
-- **49 plugin entries** in `.cursor-plugin/marketplace.json` (Cursor's supported subset: rules + skills)
-- **250+ research sources** in `research/`
-- **52 tests** in `tests/test_marketplace.py` (was 34 pre-Phase-5; +18 added by Phase 5)
+- **19 plugin entries** in `.claude-plugin/marketplace.json` (was 81): 9 Claude-supported individuals + 1 catalog bundle (`bundle-examples`) + 9 catch-alls (rule has no catch-all per F8 — 8 visible)
+- **1 skill entry** in `.agents/skills/` (was 27)
+- **7 plugin entries** in `.cursor-plugin/marketplace.json` (was 49): rules + skills + agent + command + hook + mcp (Cursor's supported subset)
+- **99+ tests** across `tests/test_marketplace.py` + `tests/test_schema_fitness.py`
 
 ---
 
@@ -127,8 +128,8 @@ marketplace/
 ├── README.md                           Per-platform install + GitHub-Direct Install Support matrix
 ├── HANDOFF.md                          This file
 ├── gemini-extension.json               Root-level for `gemini extensions install <github-url>` (Phase 4.5)
-├── .claude-plugin/marketplace.json     Claude marketplace manifest (81 plugins)
-├── .cursor-plugin/marketplace.json     Cursor team-marketplace manifest (49 plugins; Phase 6)
+├── .claude-plugin/marketplace.json     Claude marketplace manifest (19 plugins post 2026-05-26; was 81 pre-archive)
+├── .cursor-plugin/marketplace.json     Cursor team-marketplace manifest (6 plugins post 2026-05-26; was 49 pre-archive; Phase 6)
 ├── .agents/skills/<name>/              Cross-platform skill mirror (Windsurf+Cursor+Devin; Phase 1.5 of Phase 5)
 ├── skills/<name>/                      Sources + skills/example/
 ├── rules/<name>/                       Sources + rules/example/

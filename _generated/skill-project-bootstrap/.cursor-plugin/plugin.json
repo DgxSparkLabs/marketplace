@@ -1,6 +1,0 @@
-{
-  "name": "skill-project-bootstrap",
-  "version": "1.0.0",
-  "description": "Initialize project docs \u2014 AGENTS.md, HANDOFF.md, CHANGELOG.md, PITFALLS.md",
-  "skills": "./"
-}

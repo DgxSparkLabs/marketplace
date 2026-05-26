@@ -1,6 +1,0 @@
-{
-  "name": "skill-gemini-chat",
-  "version": "1.0.0",
-  "description": "Interactive multi-turn chat with Google Gemini",
-  "skills": "./"
-}

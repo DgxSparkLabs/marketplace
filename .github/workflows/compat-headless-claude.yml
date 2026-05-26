@@ -120,10 +120,10 @@ jobs:
           : > /tmp/stub-bodies.log
           # Use printf so the slash form is sent as the prompt verbatim
           # rather than interpreted by the shell.
-          printf '%s\n' "/command-example:example-command" | claude --print
-          if grep -F "command-example:example-command" /tmp/stub-bodies.log >/dev/null; then
+          printf '%s\n' "/command-example:hello" | claude --print
+          if grep -F "command-example:hello" /tmp/stub-bodies.log >/dev/null; then
             echo "OK F7 — namespaced slash reached request body"
-            grep -F "command-example:example-command" /tmp/stub-bodies.log | head -3
+            grep -F "command-example:hello" /tmp/stub-bodies.log | head -3
           else
             echo "FAIL F7 — namespaced slash not found in /tmp/stub-bodies.log"
             echo "--- bodies log (first 4KB) ---"

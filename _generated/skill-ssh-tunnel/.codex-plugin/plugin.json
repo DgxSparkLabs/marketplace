@@ -1,6 +1,0 @@
-{
-  "name": "skill-ssh-tunnel",
-  "version": "1.0.0",
-  "description": "Set up SSH port forwarding tunnels (local, remote, SOCKS proxy)",
-  "skills": "./skills/"
-}

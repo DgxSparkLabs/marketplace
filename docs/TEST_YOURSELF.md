@@ -407,7 +407,7 @@ This arc fixed 6 example-plugin bugs and retired Claude rule emission. The hands
 - [ ] **Post-install-uv expected**: `/plugin` shows `plugin:mcp-example:example-fetch: uvx mcp-server-fetch - ✓ Connected`. The fix is the README documenting this prereq (see `mcp-servers/example/README.md`).
 
 #### Claude validation 7a — skill slash command namespacing (F7)
-- [ ] **Hermetic verification** (use `stub_body_dumper.py` so request bodies are captured): with `command-example` installed and the body-dumper stub running on port 8089 (set `ANTHROPIC_BASE_URL=http://127.0.0.1:8089`), run `echo "/command-example:example-command" | claude --print` then `grep -F "/command-example:example-command" /tmp/stub-bodies.log`.
+- [ ] **Hermetic verification** (use `stub_body_dumper.py` so request bodies are captured): with `command-example` installed and the body-dumper stub running on port 8089 (set `ANTHROPIC_BASE_URL=http://127.0.0.1:8089`), run `echo "/command-example:hello" | claude --print` then `grep -F "/command-example:hello" /tmp/stub-bodies.log`.
 - [ ] **Expected (hermetic)**: grep matches — the namespaced slash form reaches the request body, proving Claude resolved it client-side. (The skill-example body lives under the same namespacing convention.)
 - [ ] **Action (interactive)**: with `skill-example` installed, type `/` in Claude and read the autocomplete dropdown entry.
 - [ ] **Expected**: the entry resolves to `/skill-example:example-skill` (the UI may show a shorter label, but the actual invocation is the namespaced form). Per `code.claude.com/docs/en/plugins` (2026-05-26): *"Plugin skills are always namespaced (like `/my-first-plugin:hello`) to prevent conflicts..."*

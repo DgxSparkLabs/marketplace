@@ -1,6 +1,0 @@
-{
-  "name": "skill-act-runner",
-  "version": "1.0.0",
-  "description": "Run GitHub Actions workflows locally with act and podman",
-  "skills": "./"
-}
