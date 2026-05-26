@@ -1,0 +1,12 @@
+=== Step 1: marketplace add ===
+Adding marketplace…✔ Successfully added marketplace: dgxsparklabs-marketplace (declared in user settings)
+
+=== Step 2: marketplace list ===
+Configured marketplaces:
+
+  ❯ dgxsparklabs-marketplace
+    Source: Directory (/workspace/marketplace)
+
+
+=== Step 3: plugin list ===
+No plugins installed. Use `claude plugin install` to install a plugin.

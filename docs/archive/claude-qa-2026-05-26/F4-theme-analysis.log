@@ -1,0 +1,27 @@
+Top-level keys: ['base', 'name', 'overrides']
+Required present (per Claude themes doc): True
+Required missing: []
+Extra fields (ignored per spec): []
+
+name: 'Lab Notebook'
+base: 'light' <-- doc-valid presets: dark, light
+overrides type: dict
+
+Overrides + hex values:
+  background   = #fdf6e3   validHex=True
+  foreground   = #586e75   validHex=True
+  claude       = #268bd2   validHex=True
+  error        = #dc322f   validHex=True
+  success      = #859900   validHex=True
+  warning      = #cb4b16   validHex=True
+
+=== Distinctiveness vs assumed dark defaults (no Claude default JSON on disk; defaults are typical terminal-dark approximations) ===
+  background   example=#fdf6e3  approxDarkDefault=#1e1e1e  rgbDistance=367.7  -> DISTINCT
+  foreground   example=#586e75  approxDarkDefault=#cccccc  rgbDistance=172.8  -> DISTINCT
+  claude       example=#268bd2  approxDarkDefault=#cc7832  rgbDistance=231.3  -> DISTINCT
+  error        example=#dc322f  approxDarkDefault=#f44747  rgbDistance=39.9  -> near-default
+  success      example=#859900  approxDarkDefault=#73c991  rgbDistance=153.8  -> DISTINCT
+  warning      example=#cb4b16  approxDarkDefault=#ffa500  rgbDistance=106.2  -> DISTINCT
+
+Note: Claude defaults are NOT shipped on disk as JSON. The binary is a packed JS bundle; theme presets are embedded.
+Distance is computed against typical terminal dark-mode palette colors as a sanity check that the example is NOT the same.

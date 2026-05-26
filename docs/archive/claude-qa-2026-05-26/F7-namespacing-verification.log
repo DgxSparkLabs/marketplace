@@ -1,0 +1,58 @@
+=== Plugin name fields per construct ===
+[skill-example] plugin.json name = "skill-example"
+[command-example] plugin.json name = "command-example"
+[agent-example] plugin.json name = "agent-example"
+[mcp-example] plugin.json name = "mcp-example"
+[hook-example] plugin.json name = "hook-example"
+
+=== Per-construct content files ===
+--- skill-example: SKILL.md frontmatter (name field) ---
+---
+name: example-skill
+description: Reference example. Echoes back a formatted lab-notebook-style status message. Shows how to write a SKILL.md with frontmatter, allowed-tools, and argument handling.
+argument-hint: "[topic]"
+allowed-tools:
+  - Bash
+  - Read
+---
+
+--- command-example: commands/example-command.md ---
+example-command.md
+---
+description: Reference example slash command. Prints a formatted lab-notebook header.
+---
+
+--- agent-example: agents/notebook-reviewer.md ---
+notebook-reviewer.md
+---
+name: notebook-reviewer
+description: Reviews a lab notebook entry as a skeptical peer reviewer. Use when the user has drafted a notebook entry and wants a critical second opinion before publishing.
+tools: Read, Grep, Glob
+---
+
+--- mcp-example: mcp-config.json mcpServers keys ---
+[
+  "example-fetch"
+]
+
+=== Validations ===
+--- claude plugin validate _generated/skill-example/ ---
+Validating plugin manifest: /workspace/marketplace/_generated/skill-example/.claude-plugin/plugin.json
+
+✔ Validation passed
+--- claude plugin validate _generated/command-example/ ---
+Validating plugin manifest: /workspace/marketplace/_generated/command-example/.claude-plugin/plugin.json
+
+✔ Validation passed
+--- claude plugin validate _generated/agent-example/ ---
+Validating plugin manifest: /workspace/marketplace/_generated/agent-example/.claude-plugin/plugin.json
+
+✔ Validation passed
+--- claude plugin validate _generated/mcp-example/ ---
+Validating plugin manifest: /workspace/marketplace/_generated/mcp-example/.claude-plugin/plugin.json
+
+✔ Validation passed
+--- claude plugin validate _generated/hook-example/ ---
+Validating plugin manifest: /workspace/marketplace/_generated/hook-example/.claude-plugin/plugin.json
+
+✔ Validation passed

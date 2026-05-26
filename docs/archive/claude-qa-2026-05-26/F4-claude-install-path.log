@@ -1,0 +1,14 @@
+=== Locate the claude-code package on disk ===
+/usr/local/bin/claude
+lrwxrwxrwx 1 root root 60 May 25 20:31 /usr/local/bin/claude -> ../lib/node_modules/@anthropic-ai/claude-code/bin/claude.exe
+---
+/usr/local/lib/node_modules/@anthropic-ai/claude-code/bin/claude.exe
+---
+/usr/local/lib/node_modules/@anthropic-ai/claude-code/package.json
+/usr/local/lib/node_modules/@anthropic-ai/claude-code/node_modules/@anthropic-ai/claude-code-linux-x64/package.json
+---
+/usr/local/lib/node_modules/@anthropic-ai
+/usr/local/lib/node_modules/@anthropic-ai/claude-code
+/usr/local/lib/node_modules/@anthropic-ai/claude-code/node_modules
+/usr/local/lib/node_modules/@anthropic-ai/claude-code/node_modules/@anthropic-ai
+/usr/local/lib/node_modules/@anthropic-ai/claude-code/bin

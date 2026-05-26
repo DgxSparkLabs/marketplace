@@ -1,0 +1,109 @@
+---
+title: Roadmap
+last-updated: 2026-05-26
+purpose: operator-syncable task list for sequenced platform QA + post-stable real-content re-add
+status: live
+---
+
+# Roadmap
+
+> The sequenced task list an operator can sync against. **Live document** — update as arcs land, decisions are made, or new tasks surface.
+
+## TL;DR — where we are
+
+- **Done:** PRs #3–#9 landed. Marketplace reduced to 10 example plugins (19 entries). Claude verified clean (9/9 hermetic findings PASS, F4 deferred). Hermetic Claude CI runs on every PR.
+- **Now:** Next platform's QA cycle. Recommended start: **Cursor IDE** (biggest emission surface delta).
+- **Sequencing constraint:** all 6 platforms must verify clean on the minimal example set before any real skill or rule returns from `docs/archive/`.
+
+## Status legend
+
+- `[DONE]` — landed; artifact verifiable in git
+- `[NEXT]` — ready to start; no upstream blocker
+- `[BLOCKED]` — upstream task must complete first
+- `[DECIDE]` — needs operator decision before work begins
+- `[BACKLOG]` — known work, not yet sequenced
+- `[ONGOING]` — durable maintenance thread
+
+---
+
+## Recently completed
+
+| # | Task | Artifact |
+|---|---|---|
+| 1 | `[DONE]` Doc consolidation: 45 docs → hub-and-spoke masters | PR #3 |
+| 2 | `[DONE]` Platform-feature-routing refactor + `agents` CLI shim | PR #4 |
+| 3 | `[DONE]` Cross-platform emission bug fixes (6 example plugins) | PR #5 |
+| 4 | `[DONE]` Claude QA + `docs/USER_GUIDE.md` | PR #6 |
+| 5 | `[DONE]` `TEST_YOURSELF.md` branch-staleness fix | PR #7 |
+| 6 | `[DONE]` Hermetic Claude stub + CI workflow (F5/F7/F9 auto-verify) | PR #8 |
+| 7 | `[DONE]` Minimal-stable transition: archive 26 skills + 21 rules; entries 81 → 19 | PR #9 @ `1237ec4` |
+
+## Active arc — per-platform QA cycles on minimal-stable set
+
+Each platform must pass its `docs/TEST_YOURSELF.md` cells on the 10 example plugins. Same depth as the Claude QA arc: find bugs, fix via PR, document Known Issues, defer interactive-only cells.
+
+| # | Task | Status | Blocker | Done when |
+|---|---|---|---|---|
+| 8 | Claude Code QA cycle | `[DONE]` | — | 9/9 hermetic PASS, F4 deferred |
+| 9 | **Cursor IDE QA cycle** | `[NEXT]` | — | `compat-cursor-ide` cells pass; bugs landed |
+| 10 | Cursor CLI QA cycle | `[BLOCKED]` | #9 | `.agents/` + cursor-agent skills work |
+| 11 | Gemini CLI QA cycle | `[BLOCKED]` | #10 | Extensions install + hook conversion verified |
+| 12 | Windsurf IDE QA cycle | `[BLOCKED]` | #11 | Cascade discovers `.windsurf/rules/` + `.agents/skills/` |
+| 13 | Devin QA cycle | `[BLOCKED]` | #12 | `.devin/skills/` + `.agents/skills/` discovery |
+| 14 | `agents` CLI shim QA cycle | `[BLOCKED]` | #13 | Install / uninstall / list / info / scope flags |
+
+## Deferred Claude QA item
+
+| # | Task | Status | Done when |
+|---|---|---|---|
+| 15 | F4 visual theme — interactive verification | `[DECIDE]` | Manual screenshot + Known Issues update |
+
+## Post-platform-cycle — re-add real content one-by-one
+
+| # | Task | Status | Blocker | Done when |
+|---|---|---|---|---|
+| 16 | Pick first real skill from `docs/archive/skills-pre-stable-*/`; re-add + cross-platform verify | `[BLOCKED]` | #9–14 green | Works on all 6 platforms, no regressions |
+| 17 | Continue re-adding real skills | `[BLOCKED]` | #16 | All 26 either restored or explicitly retired |
+| 18 | Re-add real rules (Claude-deprecated; verify on Cursor/Codex/Gemini/Windsurf/Devin) | `[BLOCKED]` | #17 (or parallel) | All 21 either restored or explicitly retired |
+
+## Infrastructure follow-ups
+
+| # | Task | Status | Done when |
+|---|---|---|---|
+| 19 | Promote `compat-headless-claude` from advisory → required CI gate | `[NEXT]` | `continue-on-error: false` in workflow file |
+| 20 | Schema-fitness coverage for newly-emitted construct types | `[BACKLOG]` | Hooks/MCP/sub-agents covered on emitting platforms |
+| 21 | Extend hermetic stub to Codex/Gemini/Cursor (if feasible) | `[BACKLOG]` | Each platform has unauth CI verification path |
+
+## Housekeeping — pre-existing untracked state
+
+| # | Task | Status | Disposition |
+|---|---|---|---|
+| 22 | `Untitled.md` at repo root | `[DONE]` | Resolved — file no longer on disk |
+| 23 | `docs/PLAN_DI_REFACTOR.md` (empty stub) | `[DONE]` | Deleted 2026-05-26 — canonical at `docs/archive/di-refactor/` |
+| 24 | `docs/research/claude-headless-qa/` | `[DONE]` | Moved to `docs/archive/claude-headless-qa-2026-05-26/` |
+| 25 | `docs/research/claude-qa-2026-05-26/` | `[DONE]` | Moved to `docs/archive/claude-qa-2026-05-26/` |
+| 26 | `docs/research/research/` (107 files, 2 MB canonical research stash) | `[DONE]` | Added to `.gitignore` — preserved on disk, not version-controlled |
+| 27 | Create `STATE.md` | `[DONE]` | Created 2026-05-26 per CLAUDE.md bootstrap trigger |
+
+## Naming / cosmetic decisions
+
+| # | Task | Status | Notes |
+|---|---|---|---|
+| 28 | `mcp-example` plugin → `mcp-fetch`? | `[DECIDE]` | Subagent left this open from PR #9 |
+| 29 | `skill-example` `name:` field — keep `/example-skill` or shorten to `/example`? | `[DECIDE]` | Touches doc/test refs; future refactor |
+
+## Durable methodology threads
+
+| # | Task | Status | Notes |
+|---|---|---|---|
+| 30 | Update compaction prompt to reflect PR #9 minimal-stable | `[BACKLOG]` | 2-line edit if saving the prompt durably |
+| 31 | Obsidian vault conventions on new docs (wiki-links, frontmatter, kebab-case) | `[ONGOING]` | Per-doc when authored |
+| 32 | Maintain `PITFALLS.md` on bug-fix arcs | `[ONGOING]` | Add entry after each non-obvious bug fix |
+
+---
+
+## Recommended next concrete action
+
+After the housekeeping decisions in #24–#26 land, start **#9 — Cursor IDE QA cycle**. It has the biggest newly-emitted construct surface (sub-agents, commands, hooks, MCP) and is most likely to surface real bugs in the minimal example set.
+
+If the operator wants the smallest possible next step instead: **#19 — promote hermetic-claude CI** (single line, single PR, locks in the safety net we now have).

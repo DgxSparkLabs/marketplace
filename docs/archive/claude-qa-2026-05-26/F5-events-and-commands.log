@@ -1,0 +1,15 @@
+=== Hook events present ===
+PostToolUse
+PreToolUse
+SessionEnd
+SessionStart
+Stop
+UserPromptSubmit
+
+=== Hook commands per event ===
+SessionStart: printf '%s sessionStart fired\n' "$(date -u +%FT%TZ)" >> /tmp/hook-fired-sessionstart.log
+UserPromptSubmit: ts="$(date -u +%FT%TZ)"; printf '[Lab Notebook context: timestamp=%s]\n' "$ts"; printf '%s userPromptSubmit fired\n' "$ts" >> /tmp/hook-fired-userpromptsubmit.log
+PreToolUse: printf '%s preToolUse %s\n' "$(date -u +%FT%TZ)" "${CLAUDE_TOOL_NAME:-unknown}" >> /tmp/hook-fired-pretooluse.log
+PostToolUse: printf '%s postToolUse %s\n' "$(date -u +%FT%TZ)" "${CLAUDE_TOOL_NAME:-unknown}" >> /tmp/hook-fired-posttooluse.log
+Stop: printf '%s stop fired\n' "$(date -u +%FT%TZ)" >> /tmp/hook-fired-stop.log
+SessionEnd: printf '%s sessionEnd fired\n' "$(date -u +%FT%TZ)" >> /tmp/hook-fired-sessionend.log

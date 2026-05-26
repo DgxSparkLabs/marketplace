@@ -15,6 +15,12 @@ research/batch*_results.md
 research/fetch_notebooks.py
 research/scrape_*.md
 research/scraped_*.md
+
+# Local canonical research stash (107 files, 2 MB).
+# See AGENTS.md "Research Directory" rules. Files preserved on disk
+# but not version-controlled to keep repo lean. Promote individual
+# files to docs/ if/when they become load-bearing for a contributor.
+docs/research/research/
 results.json
 text_*.json
 test.log
