@@ -89,8 +89,10 @@ Each platform must pass its `docs/TEST_YOURSELF.md` cells on the 10 example plug
 
 | # | Task | Status | Notes |
 |---|---|---|---|
-| 28 | `mcp-example` plugin → `mcp-fetch`? | `[DECIDE]` | Subagent left this open from PR #9 |
+| 28 | `mcp-example` plugin alignment (three-name mismatch) | `[DONE]` | PR #10 — marketplace + plugin.json + server key all align as `mcp-example`/`example` family |
 | 29 | `skill-example` `name:` field — keep `/example-skill` or shorten to `/example`? | `[DECIDE]` | Touches doc/test refs; future refactor |
+| 33 | **Systemic name-chain mismatch across 9 example plugins** | `[DECIDE]` | Discovered while writing the Claude construct reference card (PR #10). Every example plugin except `mcp-example` has marketplace name = `<construct>-example` but `plugin.json` `name` = `example-<construct>`. So operator types `skill-example` to install and sees `example-skill` in `/plugins`. Apply the mcp-example alignment pattern to: skill, agent, command, hook, lsp, monitor, output-style, theme. |
+| 34 | Extend per-construct reference cards to remaining 5 platforms in `docs/TEST_YOURSELF.md` | `[BACKLOG]` | Claude section now has exact-strings-to-type + expected-output card (PR #10). Cursor IDE / Cursor CLI / Gemini / Windsurf / Devin / agents CLI sections still terse — apply same depth as part of each platform's QA cycle (#9–#14). |
 
 ## Durable methodology threads
 
