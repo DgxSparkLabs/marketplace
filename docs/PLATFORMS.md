@@ -79,7 +79,7 @@ Verified PASS in [[archive/phase-5-cross-platform-install/VERIFICATION_2026-05/e
 | `claude plugin marketplace list` | All registered marketplaces | After registration: `❯ dgxsparklabs-marketplace / Source: Directory (/mnt/c/Users/devic/source/marketplace)` (from `logs/CL1.txt`) |
 | `claude plugin list` | Installed plugins, with version + scope + enable state | `❯ skill-example@dgxsparklabs-marketplace / Version: 1.0.0 / Scope: project / Status: ✔ enabled` (from `logs/CL3.txt`) |
 | `claude plugin list --json` | Same, machine-readable | JSON: `{"installed": [...], "available": [...]}` — exit 0 even with no installs |
-| `claude plugin list --json --available` | Installed + every available plugin across registered marketplaces | All 81 entries from this marketplace appear |
+| `claude plugin list --json --available` | Installed + every available plugin across registered marketplaces | All entries from this marketplace appear (19 as of 2026-05-26 minimal-stable-state; was 81 before the archive) |
 | `claude plugin details <name>` | Component inventory + projected token cost for one plugin | Text table; missing-plugin response: `Plugin "..." not found.` |
 | `claude plugin validate <path>` | Plugin manifest correctness | `✔ Validation passed` (or `with warnings`); enforces kebab-case names for Claude.ai sync |
 

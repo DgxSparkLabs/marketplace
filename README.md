@@ -2,6 +2,8 @@
 
 A multi-platform marketplace of agent skills, rules, and other constructs. Install natively on Claude Code, Codex, and Gemini with one-command GitHub fetches; import directly from GitHub into Cursor's team marketplace (IDE); or clone-and-open on Windsurf and Devin. Every construct lives in one source directory and the generator emits platform-native manifests (`.claude-plugin/`, `.codex-plugin/`, `.cursor-plugin/`) plus a shared `.agents/skills/` mirror that Windsurf, Cursor, and Devin all read natively.
 
+> **2026-05-26 minimal-stable-state.** The marketplace currently ships **10 reference plugins (one per construct type) + 1 cross-construct examples bundle + 8 catch-all bundles = 19 plugin entries**. The 26 production skills and 21 production rules that previously shipped have been archived under `docs/archive/skills-pre-stable-2026-05-26/` and `docs/archive/rules-pre-stable-2026-05-26/`. Real content is re-added one plugin at a time after each is verified across every platform. See `CHANGELOG.md` for the full transition note.
+
 ## Table of Contents
 
 - [GitHub-Direct Install Support](#github-direct-install-support)
@@ -41,11 +43,12 @@ Pick your platform, copy the block, and you're running. For end-to-end managemen
 # In a Claude Code session — register the marketplace, then install what you want
 # Install + list both work end-to-end (verified: CL1/CL2/CL3 PASS)
 /plugin marketplace add DgxSparkLabs/marketplace
+# One of every construct type — useful for studying every reference plugin
+/plugin install bundle-examples@dgxsparklabs-marketplace
+# Or a single example plugin:
+/plugin install skill-example@dgxsparklabs-marketplace
+# Or every plugin of one construct type (currently one each — see minimal-stable-state note above):
 /plugin install bundle-skill-all@dgxsparklabs-marketplace
-# Or a single skill:
-/plugin install skill-telegram-notify@dgxsparklabs-marketplace
-# Or a rule bundle:
-/plugin install bundle-quality-rules@dgxsparklabs-marketplace
 ```
 
 ### Codex
@@ -58,7 +61,7 @@ codex plugin marketplace add DgxSparkLabs/marketplace
 codex plugin list
 
 # Install a specific plugin
-codex plugin add skill-telegram-notify@dgxsparklabs-marketplace
+codex plugin add skill-example@dgxsparklabs-marketplace
 ```
 
 ### Gemini
@@ -151,10 +154,12 @@ The CLI supports all `.agents/` constructs (skill, rule, agent, hook, mcp, comma
 
 ## Construct Types Available
 
+Every construct type currently ships exactly one reference plugin (the `example/` source dir). Production skills and rules were archived 2026-05-26 — see the minimal-stable-state note above and `CHANGELOG.md`.
+
 | Type | Prefix | Description | Count |
 |------|--------|-------------|-------|
-| [skill](skills/) | `skill-` | Slash-command invoked on demand | 27 |
-| [rule](rules/) | `rule-` | Always-on context loaded every session | 22 |
+| [skill](skills/) | `skill-` | Slash-command invoked on demand | 1 (example) |
+| [rule](rules/) | `rule-` | Always-on context loaded every session | 1 (example) |
 | [command](commands/) | `command-` | Structured agent command definitions | 1 (example) |
 | [agent](agents/) | `agent-` | Autonomous agent configuration | 1 (example) |
 | [hook](hooks/) | `hook-` | Event-triggered automation | 1 (example) |
@@ -176,40 +181,26 @@ These examples show Claude Code's `/plugin install` slash-command syntax (most e
 
 ```bash
 # Claude Code — install by prefixed name
-/plugin install skill-telegram-notify@dgxsparklabs-marketplace
-/plugin install skill-duckduckgo-search@dgxsparklabs-marketplace
-/plugin install rule-blast-radius@dgxsparklabs-marketplace
-/plugin install rule-no-ai-credit@dgxsparklabs-marketplace
+/plugin install skill-example@dgxsparklabs-marketplace
+/plugin install command-example@dgxsparklabs-marketplace
+/plugin install hook-example@dgxsparklabs-marketplace
 /plugin install mcp-example@dgxsparklabs-marketplace
 ```
 
 ### Domain bundles — related items grouped
 
-```bash
-# Skill domain bundles
-/plugin install bundle-communication-skills@dgxsparklabs-marketplace
-/plugin install bundle-search-research-skills@dgxsparklabs-marketplace
-/plugin install bundle-devops-skills@dgxsparklabs-marketplace
-/plugin install bundle-session-management-skills@dgxsparklabs-marketplace
-/plugin install bundle-project-scaffolding-skills@dgxsparklabs-marketplace
-/plugin install bundle-code-analysis-skills@dgxsparklabs-marketplace
-/plugin install bundle-meta-tooling-skills@dgxsparklabs-marketplace
-/plugin install bundle-ai-services-skills@dgxsparklabs-marketplace
-
-# Rule domain bundles
-/plugin install bundle-quality-rules@dgxsparklabs-marketplace
-/plugin install bundle-workflow-rules@dgxsparklabs-marketplace
-/plugin install bundle-documentation-rules@dgxsparklabs-marketplace
-/plugin install bundle-environment-rules@dgxsparklabs-marketplace
-/plugin install bundle-notifications-rules@dgxsparklabs-marketplace
-```
+> **2026-05-26 minimal-stable-state.** The 8 skill domain bundles and 5 rule domain bundles that previously lived here were removed alongside the source archive (see CHANGELOG). They will be re-introduced one at a time as production skills and rules return to the marketplace. The cross-construct `bundle-examples` is still available for studying every construct type from a single install.
 
 ### Catch-all bundles — everything of one type
 
 ```bash
-# Install every skill, or every rule, in a single command
+# Each catch-all currently installs the one example for its construct type.
+# As production plugins return, each catch-all grows to match.
 /plugin install bundle-skill-all@dgxsparklabs-marketplace
-/plugin install bundle-rule-all@dgxsparklabs-marketplace
+/plugin install bundle-command-all@dgxsparklabs-marketplace
+# (Catch-alls exist for every Claude-supported construct: skill, command,
+# agent, hook, mcp, lsp, monitor, output-style, theme. There is no
+# bundle-rule-all — rules are not a Claude plugin component per F8.)
 ```
 
 ### Cross-construct examples bundle — study all 10 construct types
@@ -392,7 +383,7 @@ git clone https://github.com/DgxSparkLabs/marketplace
 # Invoke any skill via @skill-name in Cascade chat
 ```
 
-**Skills story post-Phase-1:** The generator now emits `.agents/skills/<name>/SKILL.md` for all 27 skills via `AgentsPlatform`. Windsurf Cascade picks these up automatically — all 27 skills are visible where previously they were not.
+**Skills story:** The generator emits `.agents/skills/<name>/SKILL.md` for every skill via `AgentsPlatform`. Windsurf Cascade picks these up automatically. As of 2026-05-26 the marketplace ships one example skill; production skills return one at a time from `docs/archive/skills-pre-stable-2026-05-26/` as each is re-verified.
 
 **Limitations:** No headless CLI. No install command.
 
@@ -425,7 +416,7 @@ devin skills paths
 devin rules paths
 ```
 
-**Notable behavior:** Devin reads `.cursor/rules/` and `.windsurf/rules/` natively — it sees all 22 of our rules automatically from those mirror directories. Skills come from both `.devin/skills/` and `.agents/skills/`; the `.agents/skills/` path is the cross-platform convergence point shared with Windsurf and Cursor. `devin auth login` says "Log in to Windsurf" — Devin is built on Windsurf/Codeium infrastructure.
+**Notable behavior:** Devin reads `.cursor/rules/` and `.windsurf/rules/` natively — every rule emitted to those mirror directories is auto-discovered (the marketplace currently ships the one example rule). Skills come from both `.devin/skills/` and `.agents/skills/`; the `.agents/skills/` path is the cross-platform convergence point shared with Windsurf and Cursor. `devin auth login` says "Log in to Windsurf" — Devin is built on Windsurf/Codeium infrastructure.
 
 ---
 

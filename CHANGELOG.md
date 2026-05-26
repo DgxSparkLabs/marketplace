@@ -1,5 +1,50 @@
 # Changelog
 
+## 2026-05-26 — Minimal-stable-state: archive non-example content + rename example-command
+
+The marketplace grew to 81 plugin entries (26 production skills + 21 production rules + 10 example plugins of each construct type + their bundles). At that scale every QA cycle, every bug investigation, and every cross-platform validation traversed the full set. The decision was to initialise a stable system at the minimum and re-add production content one plugin at a time as each is re-verified across every platform.
+
+### Archived
+
+- **26 non-example skills** (`skills/<name>/`) moved to `docs/archive/skills-pre-stable-2026-05-26/<name>/` via `git mv` (history preserved). Affected skills: act-runner, check, code-health-audit, duckduckgo-search, expose-port, gemini-chat, github-repo-setup, github-search, google-drive-reader, motivation, pitfall-check, project-bootstrap, recall-rules, send-email, session-history, session-wrapup, skill-analytics, skill-creator, ssh-tunnel, structured-handoff, sync-rules, telegram-notify, textual-tui-guide, web-scraper, youtube-search, youtube-wisdom. `skills/example/` retained.
+- **21 non-example rules** (`rules/<name>/`) moved to `docs/archive/rules-pre-stable-2026-05-26/<name>/` via `git mv`. Affected rules: autonomous-persistence, blast-radius, code-hygiene, continuous-improvement, document-lifecycle, document-progress, improve-the-process, no-ai-credit, output-discipline, pitfalls-discipline, prior-art, python-uv, readable-docs, revert-on-failure, session-resilience, simplicity-bar, stay-motivated, task-formation, telegram-on-complete, verification-ladder, verify-your-work. `rules/example/` retained.
+
+### Removed from `catalog.toml`
+
+- **8 skill domain bundles** (every member archived, bundle would have zero live members): `bundle.search-research-skills`, `bundle.communication-skills`, `bundle.devops-skills`, `bundle.session-management-skills`, `bundle.project-scaffolding-skills`, `bundle.code-analysis-skills`, `bundle.meta-tooling-skills`, `bundle.ai-services-skills`.
+- **5 rule domain bundles** (same reason): `bundle.quality-rules`, `bundle.workflow-rules`, `bundle.documentation-rules`, `bundle.environment-rules`, `bundle.notifications-rules`.
+- **Kept**: `bundle.examples` (one-of-each-construct, useful for studying every reference plugin from a single install) and every `bundle-<prefix>-all` catch-all (code-generated; auto-shrinks to match the new layout).
+
+### Renamed
+
+- **`commands/example/commands/example-command.md` → `commands/example/commands/hello.md`**. The slash invocation read `/command-example:example-command` — the component file's name redundantly repeated the plugin's prefix. New invocation: `/command-example:hello`, matching the canonical convention quoted in Anthropic's plugin docs (`/my-first-plugin:hello`). Other example component files were audited; none had analogous duplication (`agents/example/agents/notebook-reviewer.md`, `output-styles/example/output-styles/lab-notebook-voice.md`, `themes/example/themes/lab-notebook.json` all use generic content names; `mcp-servers/example` retains the external `example-fetch` tool name per `mcp-server-fetch`).
+
+### Documented
+
+- **`docs/ADDING_A_CONSTRUCT.md`** — new section "Naming convention for slash command invocations" between the per-construct steps and the bundle reference. Documents the three layers (marketplace name, plugin name, component name), the duplication pitfall with a four-row example table, and the rule-of-thumb checklist (don't repeat words across plugin + component, pick short generic names for examples, read the invocation aloud as a sanity check). The MCP example exception (external tool name) is called out explicitly.
+
+### Plugin count delta
+
+- **`.claude-plugin/marketplace.json`**: 81 → 19 entries (10 individuals + 1 catalog bundle + 8 catch-alls; rule has no catch-all per F8).
+- **`.cursor-plugin/marketplace.json`**: 49 → 6 entries (one for each of: skill, rule, agent, command, hook, mcp).
+- **`.agents/skills/`**: 27 → 1 entry.
+- **`.cursor/rules/`, `.windsurf/rules/`, `.agents/rules/`**: 22 → 1 entry each.
+- **`_generated/`**: 81 dirs → 19 dirs.
+
+### Cross-platform impact
+
+The generator iterates `scan_source_dir(<construct>)` for every platform's `emit()`. Archiving the sources means each platform's mirror tree (`.cursor/rules/`, `.windsurf/rules/`, `.agents/rules/`, `.agents/skills/`) auto-shrinks to match — no special-case handling for "rule source archived" was needed. Cursor, Windsurf, Codex, Gemini, and Devin all see only the example rule + example skill until production content returns.
+
+### Why this matters
+
+Per the user's direct words: *"really, really hard to follow all the too many skills that we have. We are just trying to initialize a stable system. So after we have a stable system, we will add all the necessary things back one by one."* The 81-entry surface area made every QA cycle, every bug investigation, and every refactor harder than it needed to be. Reducing to 19 entries (10 examples + 1 cross-construct bundle + 8 catch-alls) creates a known-minimum that every test, every doc, and every future change can be reasoned about cleanly. Source preserved via `git mv` so production content can return one plugin at a time as each is verified across every platform.
+
+### Tests
+
+`tests/test_marketplace.py` 78/78 ok; `tests/test_schema_fitness.py` 21/21 ok; `uv run scripts/generate_manifest.py --check` clean. Tests use `scan_source_dir()` to compute expected plugin counts so they auto-adjusted to the new layout — no test edits required.
+
+---
+
 ## 2026-05-26 — Hermetic Claude QA via stub server
 
 The four interactive-auth cells (F4 / F5 / F7 / F9) previously required a human-driven Claude session to verify. Empirical research (`docs/research/claude-headless-qa/RESEARCH.md`) confirmed that Claude Code accepts a custom `ANTHROPIC_BASE_URL` pointing at a local stub server returning Anthropic-shape responses — no remote auth check at startup, no version validation, no licensing phone-home. This PR lands the stub as a canonical test fixture and wires it into CI for automated F5 / F7 / F9 verification on every PR.
