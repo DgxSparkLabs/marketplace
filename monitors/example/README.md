@@ -1,14 +1,14 @@
-# example-monitor
+# monitor-example
 
 Reference plugin for the **monitor** construct type. Copy this directory to scaffold your own.
 
 ## What it does
 
-Registers a background monitor named `example-disk` that runs `df -h .` every 5 minutes. The monitor output becomes available as context Claude can query.
+Registers a background monitor named `disk-usage` that runs `df -h .` at session start. The monitor output becomes available as context Claude can query.
 
 Install:
 ```
-/plugin install example-monitor@dgxsparklabs-marketplace
+/plugin install monitor-example@dgxsparklabs-marketplace
 ```
 
 > Monitors are an experimental construct in Claude Code. The plugin.json field is `experimental.monitors`, reflecting that the API may change.
@@ -16,7 +16,7 @@ Install:
 ## File-by-file walkthrough
 
 ```
-example-monitor/
+monitor-example/
 ├── .claude-plugin/plugin.json         ← manifest with "experimental.monitors": "./monitors/monitors.json"
 ├── monitors/
 │   └── monitors.json                  ← monitor definitions
@@ -39,7 +39,7 @@ For one-shot inspection, a skill or command is simpler.
 
 ## To make your own monitor from this template
 
-1. `cp -r examples/example-monitor monitors/my-monitor`
+1. `cp -r monitors/example monitors/my-monitor`
 2. Edit `.claude-plugin/plugin.json` and `monitors/monitors.json`.
 3. Pick a sensible interval — too frequent wastes resources, too rare misses events.
 4. `uv run scripts/generate_manifest.py` and commit.

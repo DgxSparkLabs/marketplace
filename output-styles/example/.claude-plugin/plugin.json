@@ -1,5 +1,5 @@
 {
-  "name": "example-output-style",
+  "name": "output-style-example",
   "displayName": "Example Output Style",
   "description": "Reference template for an output style plugin — copy to scaffold your own.",
   "version": "1.0.0",
@@ -7,7 +7,7 @@
     "name": "DgxSparkLabs",
     "url": "https://github.com/DgxSparkLabs"
   },
-  "homepage": "https://github.com/DgxSparkLabs/marketplace/tree/main/examples/example-output-style",
+  "homepage": "https://github.com/DgxSparkLabs/marketplace/tree/main/output-styles/example",
   "repository": "https://github.com/DgxSparkLabs/marketplace",
   "license": "MIT",
   "keywords": ["example", "output-style", "system-prompt", "tutorial", "template"],

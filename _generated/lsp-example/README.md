@@ -1,4 +1,4 @@
-# example-lsp
+# lsp-example
 
 Reference plugin for the **LSP server** (Language Server Protocol) construct type. Copy this directory to scaffold your own.
 
@@ -8,7 +8,7 @@ Registers an LSP server for markdown files using [marksman](https://github.com/a
 
 Install:
 ```
-/plugin install example-lsp@dgxsparklabs-marketplace
+/plugin install lsp-example@dgxsparklabs-marketplace
 ```
 
 Prerequisite: marksman must be installed on the system (`brew install marksman` or download from the project's releases). This plugin only registers the server — it does not install it.
@@ -16,7 +16,7 @@ Prerequisite: marksman must be installed on the system (`brew install marksman` 
 ## File-by-file walkthrough
 
 ```
-example-lsp/
+lsp-example/
 ├── .claude-plugin/plugin.json     ← manifest with "lspServers": "./lsp-config.json"
 ├── lsp-config.json                ← server definitions
 └── README.md
@@ -43,7 +43,7 @@ For pure prose or scripting work where type info adds no value, skip LSP and rel
 
 ## To make your own LSP plugin from this template
 
-1. `cp -r examples/example-lsp lsp-servers/my-lsp`
+1. `cp -r lsp-servers/example lsp-servers/my-lsp`
 2. Edit `.claude-plugin/plugin.json` and `lsp-config.json`.
 3. Pick the LSP server for your language (typescript-language-server, pyright, gopls, rust-analyzer, etc.).
 4. List the file extensions that should trigger the server.

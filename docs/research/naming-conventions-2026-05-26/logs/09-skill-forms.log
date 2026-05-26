@@ -1,0 +1,15 @@
+=== try various forms on skill ===
+--- /skill-example ---
+Unknown command: /skill-example
+--- /skill-example:example-skill ---
+OK stub.
+--- /example-skill ---
+OK stub.
+--- /example-skill:skill-example ---
+Unknown command: /example-skill:skill-example
+--- /skill-example:skill ---
+Unknown command: /skill-example:skill
+
+=== bodies grep for skill/example forms ===
+/skill-example
+/skill-example:example-skill

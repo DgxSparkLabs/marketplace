@@ -1,5 +1,63 @@
 # Changelog
 
+## 2026-05-26 — Scheme B+ naming alignment across all example plugins
+
+Empirical Docker research (`docs/research/naming-conventions-2026-05-26/`) revealed that:
+
+1. The `docs/TEST_YOURSELF.md` reference card was wrong about what Claude displays — the generator already rewrites `plugin.json` `name` from `example-<construct>` to `<construct>-example` during emission, so `/plugins` always shows `<construct>-example`, never `example-<construct>`.
+2. The actual awkward slash form was narrowly `/skill-example:example-skill` (doubled "example") and the monitor component `example-disk` — everything else was already clean.
+3. Source-vs-marketplace name mismatch leaks via `claude plugin tag` against the source path (`logs/17-tag-checks.log:2-19`), so alignment still matters for the release-tag workflow even though it doesn't reach `/plugins` listings.
+4. Anthropic's idiom (1715 community + 203 official plugins surveyed) is 89% single semantic names, ~3% construct prefix. No `<construct>-example` pattern in their corpus.
+
+Applied **Scheme B+**: align source `plugin.json` `name` field to marketplace name (`<construct>-example`) for all 9 misaligned plugins, AND rename two redundant component names.
+
+### Source changes (Scheme B portion — 9 plugins)
+
+Every example plugin now has `plugin.json` `name` matching the marketplace entry:
+
+- `skills/example/.claude-plugin/plugin.json`: `example-skill` → `skill-example`
+- `agents/example/.claude-plugin/plugin.json`: `example-agent` → `agent-example`
+- `commands/example/.claude-plugin/plugin.json`: `example-command` → `command-example`
+- `hooks/example/.claude-plugin/plugin.json`: `example-hook` → `hook-example`
+- `lsp-servers/example/.claude-plugin/plugin.json`: `example-lsp` → `lsp-example`
+- `monitors/example/.claude-plugin/plugin.json`: `example-monitor` → `monitor-example`
+- `output-styles/example/.claude-plugin/plugin.json`: `example-output-style` → `output-style-example`
+- `themes/example/.claude-plugin/plugin.json`: `example-theme` → `theme-example`
+- `rules/example/.claude-plugin/plugin.json`: `example-rule` → `rule-example`
+- (`mcp-servers/example/.claude-plugin/plugin.json` was aligned in commit `4d4818b`.)
+
+Each `plugin.json` also had its `homepage` field updated from the obsolete `examples/example-<construct>` GitHub path to the current `<construct>/example/` layout.
+
+### Component renames (Scheme B+ portion — 2 files)
+
+- `skills/example/SKILL.md`: frontmatter `name: example-skill` → `name: lab-notebook`. Slash invocation changes from `/skill-example:example-skill` (doubled) to `/skill-example:lab-notebook` (proven via `docs/research/naming-conventions-2026-05-26/logs/18-rename-proof.log:2-3`). Flat form `/lab-notebook` also resolves.
+- `monitors/example/monitors/monitors.json`: monitor `name: "example-disk"` → `"disk-usage"`. Eliminates the redundant "example" prefix on a config artifact.
+
+### Documentation corrections
+
+- **`docs/TEST_YOURSELF.md`** — Claude construct reference card and all 9 per-construct cells corrected to use the empirically-verified strings. Previous "After install, /plugins shows" column claimed `example-<construct>` (false); now correctly shows `<construct>-example@dgxsparklabs-marketplace` per the empirical capture in `logs/04-plugin-list.log`. Skill cell now uses `/skill-example:lab-notebook`. Added enable-after-install steps for every construct per `logs/06-enable-qualified.log` finding.
+- **`docs/USER_GUIDE.md`** — slash command namespacing table updated with current example slash forms.
+- **Source READMEs** — `skills/example/README.md`, `agents/example/README.md`, `hooks/example/README.md`, `lsp-servers/example/README.md`, `monitors/example/README.md`, `output-styles/example/README.md`, `themes/example/README.md`, `rules/example/README.md`, `commands/example/README.md`, and `rules/example/activate.sh` updated to reflect the new `name` fields and current source dir paths (`<construct>/example/` not `examples/example-<construct>`).
+- **`scripts/validate-gemini-local.sh`** — `hooks migrate` argument updated to current path `hooks/example/hooks/hooks.json`.
+
+### Regenerated
+
+`uv run scripts/generate_manifest.py` re-emitted all `_generated/<plugin>-example/` outputs and per-platform mirror dirs with the new `plugin.json` `name` values. Tests still pass: 78 marketplace + 21 schema-fitness = 99 green.
+
+### Operator-visible deltas
+
+For each construct (using skill as the canonical example; pattern identical across others):
+
+| Surface | Before | After |
+|---|---|---|
+| Install command | `claude plugin install skill-example@dgxsparklabs-marketplace` | unchanged |
+| `/plugins` row | `skill-example@dgxsparklabs-marketplace` (already correct) | unchanged |
+| Slash invocation | `/skill-example:example-skill` (doubled "example") | `/skill-example:lab-notebook` ✓ |
+| Flat form (skills only) | `/example-skill` | `/lab-notebook` ✓ |
+| `claude plugin tag skills/example/` | `example-skill--v1.0.0` (mismatch) | `skill-example--v1.0.0` ✓ |
+
+---
+
 ## 2026-05-26 — Housekeeping: untracked-state cleanup + mcp-example name alignment
 
 Two threads landed together to take the working tree back to a clean state and fix a three-name mismatch in the MCP example plugin.

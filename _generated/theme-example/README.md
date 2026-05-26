@@ -1,4 +1,4 @@
-# example-theme
+# theme-example
 
 Reference plugin for the **theme** construct type. Copy this directory to scaffold your own.
 
@@ -8,7 +8,7 @@ Ships a UI theme named `Lab Notebook` with a muted, paper-toned palette (Solariz
 
 Install:
 ```
-/plugin install example-theme@dgxsparklabs-marketplace
+/plugin install theme-example@dgxsparklabs-marketplace
 ```
 
 > Themes are an experimental construct. The plugin.json field is `experimental.themes`, reflecting that the API may change.
@@ -16,7 +16,7 @@ Install:
 ## File-by-file walkthrough
 
 ```
-example-theme/
+theme-example/
 ├── .claude-plugin/plugin.json     ← manifest with "experimental.themes": "./themes"
 ├── themes/
 │   └── lab-notebook.json          ← the theme itself
@@ -36,7 +36,7 @@ For personal taste tweaks, the built-in `/theme` picker and config file is usual
 
 ## To make your own theme from this template
 
-1. `cp -r examples/example-theme themes/my-theme`
+1. `cp -r themes/example themes/my-theme`
 2. Edit `.claude-plugin/plugin.json` and the theme JSON.
 3. Test in Claude Code — check contrast and readability in your terminal.
 4. `uv run scripts/generate_manifest.py` and commit.

@@ -74,7 +74,7 @@ echo ""
 
 # --- Hook migration check ---
 echo "==> [hook] Run gemini hooks migrate dry-run against our hooks.json..."
-if gemini hooks migrate examples/example-hook/hooks/hooks.json --dry-run 2>&1; then
+if gemini hooks migrate hooks/example/hooks/hooks.json --dry-run 2>&1; then
   echo "    PASS: gemini hooks migrate dry-run succeeded"
 else
   echo "    FAIL: gemini hooks migrate dry-run failed"

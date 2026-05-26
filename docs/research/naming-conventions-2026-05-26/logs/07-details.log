@@ -1,0 +1,192 @@
+==========================================
+CONSTRUCT=skill  MARKETPLACE_NAME=skill-example  PLUGINJSON_NAME=example-skill
+--- details skill-example (marketplace name) ---
+skill-example 1.0.0
+  Reference example. Echoes back a formatted lab-notebook-style status message. Shows how to write a SKILL.md with frontmatter, allowed-tools, and argument handling.
+  Source: skill-example@dgxsparklabs-marketplace
+
+Component inventory
+  Skills (1)  example-skill
+  Agents (0)
+  Hooks (0)
+  MCP servers (0)
+  LSP servers (0)
+
+Projected token cost
+  Always-on:   ~48 tok   added to every session
+
+Per-component (rounded)
+  component      always-on  on-invoke
+  example-skill        ~50       ~180
+
+  On-invoke cost is paid each time a skill or agent fires.
+  Token counts are estimates and may differ from actual usage.
+--- details example-skill (plugin.json name) ---
+Plugin "example-skill" not found. Run `claude plugin list` to see installed plugins, or pass --plugin-dir <path> to load one from disk.
+==========================================
+CONSTRUCT=agent  MARKETPLACE_NAME=agent-example  PLUGINJSON_NAME=example-agent
+--- details agent-example (marketplace name) ---
+agent-example 1.0.0
+  Reviews a lab notebook entry as a skeptical peer reviewer. Use when the user has drafted a notebook entry and wants a critical second opinion before publishing.
+  Source: agent-example@dgxsparklabs-marketplace
+
+Component inventory
+  Skills (0)
+  Agents (1)  notebook-reviewer
+  Hooks (0)
+  MCP servers (0)
+  LSP servers (0)
+
+Projected token cost
+  Always-on:   ~45 tok   added to every session
+
+Per-component (rounded)
+  component          always-on  on-invoke
+  notebook-reviewer        ~50       ~220
+
+  On-invoke cost is paid each time a skill or agent fires.
+  Token counts are estimates and may differ from actual usage.
+--- details example-agent (plugin.json name) ---
+Plugin "example-agent" not found. Run `claude plugin list` to see installed plugins, or pass --plugin-dir <path> to load one from disk.
+==========================================
+CONSTRUCT=command  MARKETPLACE_NAME=command-example  PLUGINJSON_NAME=example-command
+--- details command-example (marketplace name) ---
+command-example 1.0.0
+  Reference example slash command. Prints a formatted lab-notebook header.
+  Source: command-example@dgxsparklabs-marketplace
+
+Component inventory
+  Skills (1)  hello
+  Agents (0)
+  Hooks (0)
+  MCP servers (0)
+  LSP servers (0)
+
+Projected token cost
+  Always-on:   ~24 tok   added to every session
+
+Per-component (rounded)
+  component  always-on  on-invoke
+  hello            ~20        ~70
+
+  On-invoke cost is paid each time a skill or agent fires.
+  Token counts are estimates and may differ from actual usage.
+--- details example-command (plugin.json name) ---
+Plugin "example-command" not found. Run `claude plugin list` to see installed plugins, or pass --plugin-dir <path> to load one from disk.
+==========================================
+CONSTRUCT=hook  MARKETPLACE_NAME=hook-example  PLUGINJSON_NAME=example-hook
+--- details hook-example (marketplace name) ---
+hook-example 1.0.0
+  Reference example hook covering session-lifecycle, per-turn, and tool-lifecycle Claude events. Each hook writes a per-event sentinel line to /tmp/hook-fired-<event>.log so operators can verify firing with `tail /tmp/hook-fired-*.log` (the UserPromptSubmit hook also injects a context line into the prompt as before).
+  Source: hook-example@dgxsparklabs-marketplace
+
+Component inventory
+  Skills (0)
+  Agents (0)
+  Hooks (6)  SessionStart, UserPromptSubmit, PreToolUse, PostToolUse, Stop, SessionEnd  (harness-only — no model context cost)
+  MCP servers (0)
+  LSP servers (0)
+
+Projected token cost
+  Always-on:   ~0 tok   added to every session
+--- details example-hook (plugin.json name) ---
+Plugin "example-hook" not found. Run `claude plugin list` to see installed plugins, or pass --plugin-dir <path> to load one from disk.
+==========================================
+CONSTRUCT=mcp  MARKETPLACE_NAME=mcp-example  PLUGINJSON_NAME=mcp-example
+--- details mcp-example (marketplace name) ---
+mcp-example 1.0.0
+  Reference template for an MCP server plugin — copy to scaffold your own.
+  Source: mcp-example@dgxsparklabs-marketplace
+
+Component inventory
+  Skills (0)
+  Agents (0)
+  Hooks (0)
+  MCP servers (0)
+  LSP servers (0)
+
+Projected token cost
+  Always-on:   ~0 tok   added to every session
+--- details mcp-example (plugin.json name) ---
+mcp-example 1.0.0
+  Reference template for an MCP server plugin — copy to scaffold your own.
+  Source: mcp-example@dgxsparklabs-marketplace
+
+Component inventory
+  Skills (0)
+  Agents (0)
+  Hooks (0)
+  MCP servers (0)
+  LSP servers (0)
+==========================================
+CONSTRUCT=lsp  MARKETPLACE_NAME=lsp-example  PLUGINJSON_NAME=example-lsp
+--- details lsp-example (marketplace name) ---
+lsp-example 1.0.0
+  Reference template for an LSP server plugin — copy to scaffold your own.
+  Source: lsp-example@dgxsparklabs-marketplace
+
+Component inventory
+  Skills (0)
+  Agents (0)
+  Hooks (0)
+  MCP servers (0)
+  LSP servers (0)
+
+Projected token cost
+  Always-on:   ~0 tok   added to every session
+--- details example-lsp (plugin.json name) ---
+Plugin "example-lsp" not found. Run `claude plugin list` to see installed plugins, or pass --plugin-dir <path> to load one from disk.
+==========================================
+CONSTRUCT=monitor  MARKETPLACE_NAME=monitor-example  PLUGINJSON_NAME=example-monitor
+--- details monitor-example (marketplace name) ---
+monitor-example 1.0.0
+  Reference template for a background monitor plugin — copy to scaffold your own.
+  Source: monitor-example@dgxsparklabs-marketplace
+
+Component inventory
+  Skills (0)
+  Agents (0)
+  Hooks (0)
+  MCP servers (0)
+  LSP servers (0)
+
+Projected token cost
+  Always-on:   ~0 tok   added to every session
+--- details example-monitor (plugin.json name) ---
+Plugin "example-monitor" not found. Run `claude plugin list` to see installed plugins, or pass --plugin-dir <path> to load one from disk.
+==========================================
+CONSTRUCT=output-style  MARKETPLACE_NAME=output-style-example  PLUGINJSON_NAME=example-output-style
+--- details output-style-example (marketplace name) ---
+output-style-example 1.0.0
+  Reference template for an output style plugin — copy to scaffold your own.
+  Source: output-style-example@dgxsparklabs-marketplace
+
+Component inventory
+  Skills (0)
+  Agents (0)
+  Hooks (0)
+  MCP servers (0)
+  LSP servers (0)
+
+Projected token cost
+  Always-on:   ~0 tok   added to every session
+--- details example-output-style (plugin.json name) ---
+Plugin "example-output-style" not found. Run `claude plugin list` to see installed plugins, or pass --plugin-dir <path> to load one from disk.
+==========================================
+CONSTRUCT=theme  MARKETPLACE_NAME=theme-example  PLUGINJSON_NAME=example-theme
+--- details theme-example (marketplace name) ---
+theme-example 1.0.0
+  Reference template for a theme plugin (experimental) — copy to scaffold your own.
+  Source: theme-example@dgxsparklabs-marketplace
+
+Component inventory
+  Skills (0)
+  Agents (0)
+  Hooks (0)
+  MCP servers (0)
+  LSP servers (0)
+
+Projected token cost
+  Always-on:   ~0 tok   added to every session
+--- details example-theme (plugin.json name) ---
+Plugin "example-theme" not found. Run `claude plugin list` to see installed plugins, or pass --plugin-dir <path> to load one from disk.

@@ -11,10 +11,11 @@
 
 ## Last action taken
 
-Opened PR #10: https://github.com/DgxSparkLabs/marketplace/pull/10 — three-commit bundle:
+PR #10: https://github.com/DgxSparkLabs/marketplace/pull/10 — now five-commit bundle:
 - `3717127` housekeeping + roadmap + STATE.md + research dir archive moves + .gitignore
 - `4d4818b` mcp-example name alignment (three-name mismatch → single `mcp-example`/`example` family)
-- (pending commit) Claude construct reference card in `docs/TEST_YOURSELF.md` — exact strings to type per construct + expected output strings. Also discovered systemic name-chain mismatch across 9 example plugins (only mcp aligned, others still flipped); added as roadmap follow-up #33.
+- `767b37b` Claude construct reference card in `docs/TEST_YOURSELF.md`
+- (pending commit) Empirical Docker naming research at `docs/research/naming-conventions-2026-05-26/` + Scheme B+ migration: 9 source `plugin.json` `name` fields aligned to marketplace name + SKILL.md `name:` renamed to `lab-notebook` + monitor `example-disk` renamed to `disk-usage` + corrections to TEST_YOURSELF.md (the reference card had empirically-wrong "/plugins shows" data) + USER_GUIDE.md + 8 source READMEs.
 
 Tests passing locally: 78 marketplace + 21 schema-fitness = 99 green. Drift clean.
 

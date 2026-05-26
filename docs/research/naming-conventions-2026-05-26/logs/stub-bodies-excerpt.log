@@ -1,0 +1,8 @@
+=== EXCERPT: skill registry entries in system prompt (post-rename) ===
+skill-example:lab-notebook: Reference example. Echoes back a formatted lab-notebook-style status message. Shows how to write a SKILL.md with frontmatter, allowed-tools, and argument handling.
+
+=== EXCERPT: resolved command-name elements ===
+<command-name>/skill-example:lab-notebook</command-name>
+
+=== EXCERPT: command-args ===
+<command-args>weather</command-args>

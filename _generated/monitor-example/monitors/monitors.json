@@ -1,6 +1,6 @@
 [
   {
-    "name": "example-disk",
+    "name": "disk-usage",
     "command": "df -h . | tail -n +2",
     "description": "Report current disk usage once at session start."
   }

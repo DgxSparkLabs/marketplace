@@ -1,5 +1,5 @@
 ---
-name: example-skill
+name: lab-notebook
 description: Reference example. Echoes back a formatted lab-notebook-style status message. Shows how to write a SKILL.md with frontmatter, allowed-tools, and argument handling.
 argument-hint: "[topic]"
 allowed-tools:

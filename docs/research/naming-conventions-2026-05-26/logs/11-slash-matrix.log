@@ -1,0 +1,37 @@
+============== Tests against installed plugins ==============
+------ INPUT: /skill-example:example-skill weather ------
+OK stub.
+    bodies registry mentions:
+agent-example:notebook-reviewer
+command-example:hello
+plugin:skill
+skill-example:example-skill
+------ INPUT: /example-skill:example-skill weather ------
+Unknown command: /example-skill:example-skill
+    bodies registry mentions:
+------ INPUT: /example-skill weather ------
+OK stub.
+    bodies registry mentions:
+agent-example:notebook-reviewer
+command-example:hello
+plugin:skill
+skill-example:example-skill
+------ INPUT: /skill-example weather ------
+Unknown command: /skill-example
+    bodies registry mentions:
+------ INPUT: /command-example:hello ------
+OK stub.
+    bodies registry mentions:
+agent-example:notebook-reviewer
+command-example:hello
+plugin:skill
+skill-example:example-skill
+------ INPUT: /example-command:hello ------
+Unknown command: /example-command:hello
+    bodies registry mentions:
+------ INPUT: /example-command ------
+Unknown command: /example-command
+    bodies registry mentions:
+------ INPUT: /command-example ------
+Unknown command: /command-example
+    bodies registry mentions:

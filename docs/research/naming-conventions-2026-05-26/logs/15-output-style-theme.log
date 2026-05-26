@@ -1,0 +1,12 @@
+=== /output-style Lab Notebook Voice ===
+Unknown command: /output-style
+
+=== /theme Lab Notebook ===
+/theme isn't available in this environment.
+
+=== Listing output styles via help ===
+
+=== settings.local.json after ===
+settings.json
+worktrees
+cat: /tmp/workspace/.claude/settings.local.json: No such file or directory

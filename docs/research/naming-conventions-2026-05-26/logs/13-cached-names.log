@@ -1,0 +1,43 @@
+=== ALL cached .claude-plugin/plugin.json name fields ===
+/root/.claude/plugins/cache/dgxsparklabs-marketplace/agent-example/1.0.0/.claude-plugin/plugin.json -> name=agent-example
+/root/.claude/plugins/cache/dgxsparklabs-marketplace/command-example/1.0.0/.claude-plugin/plugin.json -> name=command-example
+/root/.claude/plugins/cache/dgxsparklabs-marketplace/hook-example/1.0.0/.claude-plugin/plugin.json -> name=hook-example
+/root/.claude/plugins/cache/dgxsparklabs-marketplace/lsp-example/1.0.0/.claude-plugin/plugin.json -> name=lsp-example
+/root/.claude/plugins/cache/dgxsparklabs-marketplace/mcp-example/1.0.0/.claude-plugin/plugin.json -> name=mcp-example
+/root/.claude/plugins/cache/dgxsparklabs-marketplace/monitor-example/1.0.0/.claude-plugin/plugin.json -> name=monitor-example
+/root/.claude/plugins/cache/dgxsparklabs-marketplace/output-style-example/1.0.0/.claude-plugin/plugin.json -> name=output-style-example
+/root/.claude/plugins/cache/dgxsparklabs-marketplace/skill-example/1.0.0/.claude-plugin/plugin.json -> name=skill-example
+/root/.claude/plugins/cache/dgxsparklabs-marketplace/theme-example/1.0.0/.claude-plugin/plugin.json -> name=theme-example
+
+=== _generated/<x>/.claude-plugin/plugin.json name fields ===
+/tmp/workspace/_generated/agent-example/.claude-plugin/plugin.json                         -> name=agent-example
+/tmp/workspace/_generated/bundle-agent-all/.claude-plugin/plugin.json                      -> name=bundle-agent-all
+/tmp/workspace/_generated/bundle-command-all/.claude-plugin/plugin.json                    -> name=bundle-command-all
+/tmp/workspace/_generated/bundle-examples/.claude-plugin/plugin.json                       -> name=bundle-examples
+/tmp/workspace/_generated/bundle-hook-all/.claude-plugin/plugin.json                       -> name=bundle-hook-all
+/tmp/workspace/_generated/bundle-lsp-all/.claude-plugin/plugin.json                        -> name=bundle-lsp-all
+/tmp/workspace/_generated/bundle-mcp-all/.claude-plugin/plugin.json                        -> name=bundle-mcp-all
+/tmp/workspace/_generated/bundle-monitor-all/.claude-plugin/plugin.json                    -> name=bundle-monitor-all
+/tmp/workspace/_generated/bundle-output-style-all/.claude-plugin/plugin.json               -> name=bundle-output-style-all
+/tmp/workspace/_generated/bundle-skill-all/.claude-plugin/plugin.json                      -> name=bundle-skill-all
+/tmp/workspace/_generated/bundle-theme-all/.claude-plugin/plugin.json                      -> name=bundle-theme-all
+/tmp/workspace/_generated/command-example/.claude-plugin/plugin.json                       -> name=command-example
+/tmp/workspace/_generated/hook-example/.claude-plugin/plugin.json                          -> name=hook-example
+/tmp/workspace/_generated/lsp-example/.claude-plugin/plugin.json                           -> name=lsp-example
+/tmp/workspace/_generated/mcp-example/.claude-plugin/plugin.json                           -> name=mcp-example
+/tmp/workspace/_generated/monitor-example/.claude-plugin/plugin.json                       -> name=monitor-example
+/tmp/workspace/_generated/output-style-example/.claude-plugin/plugin.json                  -> name=output-style-example
+/tmp/workspace/_generated/skill-example/.claude-plugin/plugin.json                         -> name=skill-example
+/tmp/workspace/_generated/theme-example/.claude-plugin/plugin.json                         -> name=theme-example
+
+=== source <construct>/example/.claude-plugin/plugin.json name fields ===
+/tmp/workspace/agents/example/.claude-plugin/plugin.json                                   -> name=example-agent
+/tmp/workspace/commands/example/.claude-plugin/plugin.json                                 -> name=example-command
+/tmp/workspace/hooks/example/.claude-plugin/plugin.json                                    -> name=example-hook
+/tmp/workspace/lsp-servers/example/.claude-plugin/plugin.json                              -> name=example-lsp
+/tmp/workspace/mcp-servers/example/.claude-plugin/plugin.json                              -> name=mcp-example
+/tmp/workspace/monitors/example/.claude-plugin/plugin.json                                 -> name=example-monitor
+/tmp/workspace/output-styles/example/.claude-plugin/plugin.json                            -> name=example-output-style
+/tmp/workspace/rules/example/.claude-plugin/plugin.json                                    -> name=example-rule
+/tmp/workspace/skills/example/.claude-plugin/plugin.json                                   -> name=example-skill
+/tmp/workspace/themes/example/.claude-plugin/plugin.json                                   -> name=example-theme

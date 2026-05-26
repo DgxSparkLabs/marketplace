@@ -458,12 +458,12 @@ Per [code.claude.com/docs/en/plugins](https://code.claude.com/docs/en/plugins) (
 
 | Construct | Invocation form | Source |
 |---|---|---|
-| Skill | `/<plugin-name>:<skill-name>` (e.g., `/skill-example:example-skill`) | plugins.md, skills.md |
-| Command | `/<plugin-name>:<file-stem>` | skills.md ("Custom commands have been merged into skills") |
-| Agent (sub-agent) | `<plugin-name>:<agent-name>` (no `/` — appears in `/agents` UI) | plugins-reference.md |
-| MCP tool | `mcp__<plugin-name>__<tool-name>` (hook-matcher form) OR `plugin:<plugin-name>:<tool>` (CLI display form) | hooks.md, plugins-reference.md |
+| Skill | `/<plugin-name>:<skill-name>` (e.g., `/skill-example:lab-notebook`) | plugins.md, skills.md |
+| Command | `/<plugin-name>:<file-stem>` (e.g., `/command-example:hello`) | skills.md ("Custom commands have been merged into skills") |
+| Agent (sub-agent) | `<plugin-name>:<agent-name>` (no `/` — appears in `/agents` UI; e.g., `agent-example:notebook-reviewer`) | plugins-reference.md |
+| MCP tool | `mcp__<plugin-name>__<server-key>__<tool>` (hook-matcher form) OR `plugin:<plugin-name>:<server-key>` (CLI display form) | hooks.md, plugins-reference.md |
 
-A common operator confusion: typing `/` in Claude shows skill entries that look "flat" (e.g., `example-skill`) — the autocomplete UI elides the namespace prefix, but the **resolved** invocation is always `/skill-example:example-skill`. This is UI sugar, not a flatten feature.
+A common operator confusion: typing `/` in Claude shows skill entries that look "flat" (e.g., bare `/lab-notebook`) — the flat form also resolves per `code.claude.com/docs/en/skills`, but the **canonical** invocation is always the namespaced form `/skill-example:lab-notebook`.
 
 For **bundles**, namespacing follows each contained plugin's own name. Installing `bundle-skill-all` does not introduce a `bundle-skill-all:*` namespace — the contained skills appear under their own plugin namespaces (e.g., `/skill-act-runner:act-runner`).
 

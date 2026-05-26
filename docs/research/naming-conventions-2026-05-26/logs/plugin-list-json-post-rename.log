@@ -1,0 +1,12 @@
+[
+  {
+    "id": "skill-example@dgxsparklabs-marketplace",
+    "version": "1.0.0",
+    "scope": "project",
+    "enabled": true,
+    "installPath": "/root/.claude/plugins/cache/dgxsparklabs-marketplace/skill-example/1.0.0",
+    "installedAt": "2026-05-26T12:37:41.619Z",
+    "lastUpdated": "2026-05-26T12:37:41.619Z",
+    "projectPath": "/tmp/workspace"
+  }
+]

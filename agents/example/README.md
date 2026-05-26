@@ -1,4 +1,4 @@
-# example-agent
+# agent-example
 
 Reference plugin for the **agent** (sub-agent) construct type. Copy this directory to scaffold your own.
 
@@ -8,13 +8,13 @@ Ships an agent named `notebook-reviewer` with a skeptical-peer-reviewer system p
 
 Install:
 ```
-/plugin install example-agent@dgxsparklabs-marketplace
+/plugin install agent-example@dgxsparklabs-marketplace
 ```
 
 ## File-by-file walkthrough
 
 ```
-example-agent/
+agent-example/
 ├── .claude-plugin/plugin.json    ← minimal manifest (no "agents" field needed)
 ├── agents/
 │   └── notebook-reviewer.md      ← agent definition (filename = agent name)
@@ -33,7 +33,7 @@ The `agents/<name>.md` file uses YAML frontmatter for metadata (name, descriptio
 
 ## To make your own agent from this template
 
-1. `cp -r examples/example-agent agents/my-agent`
+1. `cp -r agents/example agents/my-agent`
 2. Rename, edit `.claude-plugin/plugin.json` and the `agents/*.md` file.
 3. `uv run scripts/generate_manifest.py` and commit.
 

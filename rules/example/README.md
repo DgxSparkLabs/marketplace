@@ -1,4 +1,4 @@
-# example-rule
+# rule-example
 
 A working reference plugin demonstrating the **rule** construct type. Copy this directory and modify to scaffold your own rule plugin.
 

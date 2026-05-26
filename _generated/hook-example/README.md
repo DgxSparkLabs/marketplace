@@ -1,4 +1,4 @@
-# example-hook
+# hook-example
 
 Reference plugin for the **hook** construct type. Copy this directory to scaffold your own.
 
@@ -8,7 +8,7 @@ Installs a `UserPromptSubmit` hook that prepends a timestamp marker to every pro
 
 Install:
 ```
-/plugin install example-hook@dgxsparklabs-marketplace
+/plugin install hook-example@dgxsparklabs-marketplace
 ```
 
 After install, every prompt you type gets a `[Lab Notebook context: timestamp=...]` line prepended invisibly.
@@ -16,7 +16,7 @@ After install, every prompt you type gets a `[Lab Notebook context: timestamp=..
 ## File-by-file walkthrough
 
 ```
-example-hook/
+hook-example/
 ├── .claude-plugin/plugin.json    ← minimal manifest (no "hooks" field needed)
 ├── hooks/
 │   └── hooks.json                ← hook configuration (auto-discovered)
@@ -48,7 +48,7 @@ Hooks are for **side-effecting at lifecycle moments** (log, enforce, inject cont
 
 ## To make your own hook from this template
 
-1. `cp -r examples/example-hook hooks/my-hook`
+1. `cp -r hooks/example hooks/my-hook`
 2. Edit `.claude-plugin/plugin.json` and `hooks/hooks.json`.
 3. Test the shell command standalone first — if it fails or hangs, the hook will too.
 4. `uv run scripts/generate_manifest.py` and commit.

@@ -1,5 +1,5 @@
 {
-  "name": "example-skill",
+  "name": "skill-example",
   "displayName": "Example Skill",
   "description": "Reference template for a Claude Code skill plugin — copy this directory to scaffold your own.",
   "version": "1.0.0",
@@ -7,7 +7,7 @@
     "name": "DgxSparkLabs",
     "url": "https://github.com/DgxSparkLabs"
   },
-  "homepage": "https://github.com/DgxSparkLabs/marketplace/tree/main/examples/example-skill",
+  "homepage": "https://github.com/DgxSparkLabs/marketplace/tree/main/skills/example",
   "repository": "https://github.com/DgxSparkLabs/marketplace",
   "license": "MIT",
   "keywords": ["example", "skill", "tutorial", "reference", "template"],

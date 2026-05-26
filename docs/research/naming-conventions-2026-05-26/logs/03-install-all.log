@@ -1,0 +1,22 @@
+=== INSTALL skill-example ===
+Installing plugin "skill-example@dgxsparklabs-marketplace"...✔ Successfully installed plugin: skill-example@dgxsparklabs-marketplace (scope: project)
+=== INSTALL agent-example ===
+Installing plugin "agent-example@dgxsparklabs-marketplace"...✔ Successfully installed plugin: agent-example@dgxsparklabs-marketplace (scope: project)
+=== INSTALL command-example ===
+Installing plugin "command-example@dgxsparklabs-marketplace"...✔ Successfully installed plugin: command-example@dgxsparklabs-marketplace (scope: project)
+=== INSTALL hook-example ===
+Installing plugin "hook-example@dgxsparklabs-marketplace"...✔ Successfully installed plugin: hook-example@dgxsparklabs-marketplace (scope: project)
+=== INSTALL mcp-example ===
+Installing plugin "mcp-example@dgxsparklabs-marketplace"...✔ Successfully installed plugin: mcp-example@dgxsparklabs-marketplace (scope: project)
+=== INSTALL lsp-example ===
+Installing plugin "lsp-example@dgxsparklabs-marketplace"...✔ Successfully installed plugin: lsp-example@dgxsparklabs-marketplace (scope: project)
+=== INSTALL monitor-example ===
+Installing plugin "monitor-example@dgxsparklabs-marketplace"...✔ Successfully installed plugin: monitor-example@dgxsparklabs-marketplace (scope: project)
+=== INSTALL output-style-example ===
+Installing plugin "output-style-example@dgxsparklabs-marketplace"...✔ Successfully installed plugin: output-style-example@dgxsparklabs-marketplace (scope: project)
+=== INSTALL theme-example ===
+Installing plugin "theme-example@dgxsparklabs-marketplace"...✔ Successfully installed plugin: theme-example@dgxsparklabs-marketplace (scope: project)
+=== INSTALL rule-example ===
+Installing plugin "rule-example@dgxsparklabs-marketplace"...✘ Failed to install plugin "rule-example@dgxsparklabs-marketplace": Plugin "rule-example" not found in marketplace "dgxsparklabs-marketplace". Your local copy may be out of date — try `claude plugin marketplace update dgxsparklabs-marketplace`.
+
+(install error for rule-example)

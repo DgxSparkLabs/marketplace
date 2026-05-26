@@ -1,0 +1,27 @@
+--- enable skill-example ---
+✘ Failed to enable plugin "skill-example": Plugin "skill-example" not found in any editable settings scope. Use plugin@marketplace format.
+(enable error for skill-example)
+--- enable agent-example ---
+✘ Failed to enable plugin "agent-example": Plugin "agent-example" not found in any editable settings scope. Use plugin@marketplace format.
+(enable error for agent-example)
+--- enable command-example ---
+✘ Failed to enable plugin "command-example": Plugin "command-example" not found in any editable settings scope. Use plugin@marketplace format.
+(enable error for command-example)
+--- enable hook-example ---
+✘ Failed to enable plugin "hook-example": Plugin "hook-example" not found in any editable settings scope. Use plugin@marketplace format.
+(enable error for hook-example)
+--- enable mcp-example ---
+✘ Failed to enable plugin "mcp-example": Plugin "mcp-example" not found in any editable settings scope. Use plugin@marketplace format.
+(enable error for mcp-example)
+--- enable lsp-example ---
+✘ Failed to enable plugin "lsp-example": Plugin "lsp-example" not found in any editable settings scope. Use plugin@marketplace format.
+(enable error for lsp-example)
+--- enable monitor-example ---
+✘ Failed to enable plugin "monitor-example": Plugin "monitor-example" not found in any editable settings scope. Use plugin@marketplace format.
+(enable error for monitor-example)
+--- enable output-style-example ---
+✘ Failed to enable plugin "output-style-example": Plugin "output-style-example" not found in any editable settings scope. Use plugin@marketplace format.
+(enable error for output-style-example)
+--- enable theme-example ---
+✘ Failed to enable plugin "theme-example": Plugin "theme-example" not found in any editable settings scope. Use plugin@marketplace format.
+(enable error for theme-example)

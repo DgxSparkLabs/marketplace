@@ -1,5 +1,5 @@
 {
-  "name": "example-agent",
+  "name": "agent-example",
   "displayName": "Example Agent",
   "description": "Reference template for a sub-agent plugin — copy to scaffold your own.",
   "version": "1.0.0",
@@ -7,7 +7,7 @@
     "name": "DgxSparkLabs",
     "url": "https://github.com/DgxSparkLabs"
   },
-  "homepage": "https://github.com/DgxSparkLabs/marketplace/tree/main/examples/example-agent",
+  "homepage": "https://github.com/DgxSparkLabs/marketplace/tree/main/agents/example",
   "repository": "https://github.com/DgxSparkLabs/marketplace",
   "license": "MIT",
   "keywords": ["example", "agent", "sub-agent", "tutorial", "template"]

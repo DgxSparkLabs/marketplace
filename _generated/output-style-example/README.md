@@ -1,4 +1,4 @@
-# example-output-style
+# output-style-example
 
 Reference plugin for the **output style** construct type. Copy this directory to scaffold your own.
 
@@ -8,7 +8,7 @@ Ships an output style named `Lab Notebook Voice` that, when selected, makes Clau
 
 Install:
 ```
-/plugin install example-output-style@dgxsparklabs-marketplace
+/plugin install output-style-example@dgxsparklabs-marketplace
 ```
 
 Then in Claude Code, switch to the style via `/output-style Lab Notebook Voice` (or similar — depends on UI).
@@ -16,7 +16,7 @@ Then in Claude Code, switch to the style via `/output-style Lab Notebook Voice` 
 ## File-by-file walkthrough
 
 ```
-example-output-style/
+output-style-example/
 ├── .claude-plugin/plugin.json         ← manifest with "outputStyles": "./output-styles"
 ├── output-styles/
 │   └── lab-notebook-voice.md          ← the style itself
@@ -44,7 +44,7 @@ For project-specific conventions, a CLAUDE.md or rule is usually a better fit. F
 
 ## To make your own output style from this template
 
-1. `cp -r examples/example-output-style output-styles/my-style`
+1. `cp -r output-styles/example output-styles/my-style`
 2. Edit `.claude-plugin/plugin.json` and the style markdown file.
 3. Decide: user-selectable (no `force-for-plugin`) or auto-applied (`force-for-plugin: true`)?
 4. `uv run scripts/generate_manifest.py` and commit.

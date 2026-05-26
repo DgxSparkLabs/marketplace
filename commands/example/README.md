@@ -61,5 +61,5 @@ When in doubt, start as a command. Promote to a skill if you find yourself needi
 ## Related
 
 - Slash command docs: see Claude Code official documentation
-- Other example plugins: `examples/example-*`
+- Other example plugins: `<construct>/example/` (each construct dir has an `example/`)
 - Skill vs. command decision guide: `docs/CONSTRUCT_TYPES.md`
