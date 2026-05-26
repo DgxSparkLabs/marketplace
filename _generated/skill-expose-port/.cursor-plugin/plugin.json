@@ -1,6 +1,0 @@
-{
-  "name": "skill-expose-port",
-  "version": "1.0.0",
-  "description": "Expose a local port via HTTPS (localhost.run) or TCP (bore)",
-  "skills": "./"
-}

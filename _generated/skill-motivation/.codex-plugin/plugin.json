@@ -1,6 +1,0 @@
-{
-  "name": "skill-motivation",
-  "version": "1.0.0",
-  "description": "Completeness checker \u2014 report what's actually unfinished before stopping",
-  "skills": "./skills/"
-}

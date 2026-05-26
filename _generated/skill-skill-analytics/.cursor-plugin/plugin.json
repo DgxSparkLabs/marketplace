@@ -1,6 +1,0 @@
-{
-  "name": "skill-skill-analytics",
-  "version": "1.0.0",
-  "description": "Analyze skill usage patterns and generate an interactive HTML dashboard",
-  "skills": "./"
-}

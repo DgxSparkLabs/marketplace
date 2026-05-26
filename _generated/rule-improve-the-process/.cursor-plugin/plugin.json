@@ -1,5 +1,0 @@
-{
-  "name": "rule-improve-the-process",
-  "version": "1.0.0",
-  "description": "Rule: improve-the-process. On Cursor/Windsurf this surfaces as a workspace rule; on Claude Code, copy rules/improve-the-process/rule.md into ~/.claude/rules/ (or .claude/rules/ for project scope) per code.claude.com/docs/en/memory#organize-rules-with-claude-rules."
-}

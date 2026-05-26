@@ -1,6 +1,0 @@
-{
-  "name": "skill-send-email",
-  "version": "1.0.0",
-  "description": "Send an email to someone using the Resend API",
-  "skills": "./"
-}

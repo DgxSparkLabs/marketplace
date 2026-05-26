@@ -1,6 +1,0 @@
-{
-  "name": "skill-pitfall-check",
-  "version": "1.0.0",
-  "description": "Search PITFALLS.md and git log for known issues before starting work",
-  "skills": "./skills/"
-}

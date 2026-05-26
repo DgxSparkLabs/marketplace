@@ -1,37 +1,39 @@
-# example-command
+# command-example
 
 A working reference plugin demonstrating the **command** construct type. Copy this directory and modify to scaffold your own slash command plugin.
 
 ## What it does
 
-When the user types `/example-command`, Claude runs the prompt in `commands/example-command.md` and prints a markdown block tagged as a fresh lab notebook page.
+When the user types `/command-example:hello`, Claude runs the prompt in `commands/hello.md` and prints a markdown block tagged as a fresh lab notebook page.
 
 Install:
 ```
-/plugin install example-command@dgxsparklabs-marketplace
+/plugin install command-example@dgxsparklabs-marketplace
 ```
 
-Invoke:
+Invoke (Claude namespaces every slash command as `/<plugin-name>:<component-name>`):
 ```
-/example-command
+/command-example:hello
 ```
+
+See `docs/ADDING_A_CONSTRUCT.md` "Naming convention for slash command invocations" for why the component file is named `hello` rather than `example-command` — the latter doubled the `command-example` plugin prefix and produced the awkward `/command-example:example-command`.
 
 ## File-by-file walkthrough
 
 ```
-example-command/
+command-example/
 ├── .claude-plugin/
 │   └── plugin.json                 ← plugin manifest
 ├── commands/
-│   └── example-command.md          ← the command itself (filename = command name)
+│   └── hello.md                    ← the command itself (filename = command name)
 └── README.md                       ← human-facing tutorial (you are here)
 ```
 
 ### `.claude-plugin/plugin.json`
 
-Notable field: `"commands": ["./commands"]`. This tells Claude Code where the command markdown files live within the plugin. The directory name and the command filenames together determine what the user types — `commands/example-command.md` becomes `/example-command`.
+Notable field: `"commands": ["./commands"]`. This tells Claude Code where the command markdown files live within the plugin. The directory name and the command filenames together determine what the user types — `commands/hello.md` becomes `/command-example:hello`.
 
-### `commands/example-command.md`
+### `commands/hello.md`
 
 The command file is markdown with optional YAML frontmatter:
 
@@ -49,8 +51,8 @@ When in doubt, start as a command. Promote to a skill if you find yourself needi
 
 ## To make your own command from this template
 
-1. Copy this directory: `cp -r examples/example-command commands/my-command`
-2. Rename the directory and the command file inside `commands/` to your command name (kebab-case). The filename becomes the slash-command name.
+1. Copy this directory: `cp -r commands/example commands/<your-name>`
+2. Rename the file(s) inside `commands/` to your command name (kebab-case). The filename becomes the component half of the namespaced invocation (`/command-<your-name>:<filename>`). Pick a short generic name that does not repeat the plugin prefix.
 3. Edit `.claude-plugin/plugin.json` — update `name`, `description`, `homepage`.
 4. Edit the command markdown file with your command's behavior.
 5. Run `uv run scripts/generate_manifest.py` to refresh manifests.

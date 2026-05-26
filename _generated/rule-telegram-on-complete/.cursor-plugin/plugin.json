@@ -1,5 +1,0 @@
-{
-  "name": "rule-telegram-on-complete",
-  "version": "1.0.0",
-  "description": "Rule: telegram-on-complete. On Cursor/Windsurf this surfaces as a workspace rule; on Claude Code, copy rules/telegram-on-complete/rule.md into ~/.claude/rules/ (or .claude/rules/ for project scope) per code.claude.com/docs/en/memory#organize-rules-with-claude-rules."
-}

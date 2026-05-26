@@ -1,5 +1,0 @@
-{
-  "name": "rule-revert-on-failure",
-  "version": "1.0.0",
-  "description": "Rule: revert-on-failure. On Cursor/Windsurf this surfaces as a workspace rule; on Claude Code, copy rules/revert-on-failure/rule.md into ~/.claude/rules/ (or .claude/rules/ for project scope) per code.claude.com/docs/en/memory#organize-rules-with-claude-rules."
-}

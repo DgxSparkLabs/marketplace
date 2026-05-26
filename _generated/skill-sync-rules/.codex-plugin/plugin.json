@@ -1,6 +1,0 @@
-{
-  "name": "skill-sync-rules",
-  "version": "1.0.0",
-  "description": "Sync rules from global AI agent configs into the workspace",
-  "skills": "./skills/"
-}
