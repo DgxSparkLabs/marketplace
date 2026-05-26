@@ -11,11 +11,15 @@
 
 ## Last action taken
 
-PR #10: https://github.com/DgxSparkLabs/marketplace/pull/10 — now five-commit bundle:
+Built `.devcontainer/` for operator QA + marketplace dev: Claude CLI (official Anthropic feature), Node 20, Python 3.12, uv (via curl), Flask, git, gh. Forwards ports 8088/8089 for the hermetic stub. Persists Claude auth across rebuilds via named docker volume scoped to `${devcontainerId}`. Added Setup Option A: Dev Container at the top of `docs/TEST_YOURSELF.md` Claude section.
+
+PR #10: https://github.com/DgxSparkLabs/marketplace/pull/10 — now six-commit bundle:
 - `3717127` housekeeping + roadmap + STATE.md + research dir archive moves + .gitignore
-- `4d4818b` mcp-example name alignment (three-name mismatch → single `mcp-example`/`example` family)
-- `767b37b` Claude construct reference card in `docs/TEST_YOURSELF.md`
-- (pending commit) Empirical Docker naming research at `docs/research/naming-conventions-2026-05-26/` + Scheme B+ migration: 9 source `plugin.json` `name` fields aligned to marketplace name + SKILL.md `name:` renamed to `lab-notebook` + monitor `example-disk` renamed to `disk-usage` + corrections to TEST_YOURSELF.md (the reference card had empirically-wrong "/plugins shows" data) + USER_GUIDE.md + 8 source READMEs.
+- `4d4818b` mcp-example name alignment
+- `767b37b` Claude construct reference card (initial — empirically corrected later)
+- `a8c74af` Scheme B+ naming alignment across 10 example plugins + reference card empirical corrections
+- `dbdac07` 11-issue Claude section audit fix
+- (pending commit) dev container
 
 Tests passing locally: 78 marketplace + 21 schema-fitness = 99 green. Drift clean.
 

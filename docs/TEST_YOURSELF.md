@@ -204,7 +204,22 @@ Throughout the per-construct tests below, these plugin names are used as the sta
 
 **What we're verifying**: marketplace registration + per-construct install for the **9 construct types** Claude supports (`ClaudeCodePlatform.supports` per `docs/PLATFORMS.md` Claude "What constructs it supports" — `RuleConstruct` was removed 2026-05-26 because rules are not a Claude plugin component per `code.claude.com/docs/en/plugins-reference#plugin-components-reference`). This is also the verification surface for the 2026-05-26 Claude QA fixes (marketplace description, LSP / monitor / theme / hook example fixes, `uv` prereq doc, rule emission retirement) — see the validation list below.
 
-### Setup option A: Docker (hermetic)
+### Setup option A: Dev Container (recommended)
+
+The repo ships `.devcontainer/` with everything pre-wired — Claude CLI, Node 20, Python 3.12, `uv`, Flask (for the hermetic stub), `git`, `gh`, plus VS Code extensions. See `.devcontainer/README.md` for the full inventory.
+
+```text
+1. Install Docker Desktop + the VS Code "Dev Containers" extension.
+2. Open the repo in VS Code -> "Reopen in Container" when prompted.
+3. First build runs .devcontainer/post-create.sh and prints what's installed + next steps.
+4. Open a terminal inside VS Code (Ctrl+`). Run `claude` to sign in.
+```
+
+Forwarded ports: 8088 (F5 sentinel stub) and 8089 (F7/F9 body-dumper stub). Claude config persists across rebuilds via a named docker volume scoped to this repo's container ID.
+
+### Setup option B: Docker (manual, hermetic)
+
+Use this when you want a one-off container without the dev container's VS Code integration — e.g., scripting the QA pass in CI or testing on a host without VS Code.
 
 ```powershell
 docker run -it --name qa-claude node:20 bash
@@ -223,7 +238,7 @@ cd /workspace/marketplace
 # (To test a specific PR branch instead: git clone --branch <branch-name> ...)
 ```
 
-### Setup option B: Native
+### Setup option C: Native
 
 ```powershell
 npm install -g @anthropic-ai/claude-code

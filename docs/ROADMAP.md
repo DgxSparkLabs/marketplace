@@ -73,6 +73,8 @@ Each platform must pass its `docs/TEST_YOURSELF.md` cells on the 10 example plug
 | 19 | Promote `compat-headless-claude` from advisory → required CI gate | `[NEXT]` | `continue-on-error: false` in workflow file |
 | 20 | Schema-fitness coverage for newly-emitted construct types | `[BACKLOG]` | Hooks/MCP/sub-agents covered on emitting platforms |
 | 21 | Extend hermetic stub to Codex/Gemini/Cursor (if feasible) | `[BACKLOG]` | Each platform has unauth CI verification path |
+| 35 | Dev container for operator QA + marketplace dev | `[DONE]` | `.devcontainer/` configured with Claude CLI, Node 20, uv, Python+Flask, gh; ports 8088/8089 forwarded; Claude config persisted via named volume |
+| 36 | Sibling dev containers for Codex/Gemini/Cursor (as their QA arcs land) | `[BACKLOG]` | Each platform CLI in a feature-flagged or sibling `.devcontainer/<platform>/` config |
 
 ## Housekeeping — pre-existing untracked state
 
