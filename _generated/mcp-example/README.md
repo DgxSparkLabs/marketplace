@@ -1,14 +1,14 @@
-# example-mcp
+# mcp-example
 
 Reference plugin for the **MCP server** (Model Context Protocol) construct type. Copy this directory to scaffold your own.
 
 ## What it does
 
-Registers an MCP server named `example-fetch` that wraps `mcp-server-fetch` (the official fetch MCP, installed on demand via `uvx`). Once the plugin is enabled, the fetch tools become available in every session.
+Registers an MCP server named `example` that wraps `mcp-server-fetch` (the official fetch MCP, installed on demand via `uvx`). Once the plugin is enabled, the fetch tools become available in every session.
 
 ## Prerequisites
 
-This example launches the MCP server with **`uvx mcp-server-fetch`**, so the host must have **[`uv`](https://github.com/astral-sh/uv)** installed and on `PATH`. Without it, Claude reports `plugin:mcp-example:example-fetch: uvx mcp-server-fetch - ✗ Failed to connect` after install.
+This example launches the MCP server with **`uvx mcp-server-fetch`**, so the host must have **[`uv`](https://github.com/astral-sh/uv)** installed and on `PATH`. Without it, Claude reports `plugin:mcp-example:example: uvx mcp-server-fetch - ✗ Failed to connect` after install.
 
 Install `uv` once (any platform):
 
@@ -24,15 +24,15 @@ This is consistent with the marketplace's existing tooling baseline: `uv` is alr
 ## Install
 
 ```
-/plugin install example-mcp@dgxsparklabs-marketplace
+/plugin install mcp-example@dgxsparklabs-marketplace
 ```
 
-After install, MCP tools like `mcp__example-fetch__fetch` become available.
+After install, MCP tools like `mcp__mcp-example__example__fetch` become available.
 
 ## File-by-file walkthrough
 
 ```
-example-mcp/
+mcp-example/
 ├── .claude-plugin/plugin.json     ← manifest with "mcpServers": "./mcp-config.json"
 ├── mcp-config.json                ← server definitions
 └── README.md
@@ -59,7 +59,7 @@ For simple one-off tools, a skill calling a script is lighter weight.
 
 ## To make your own MCP plugin from this template
 
-1. `cp -r examples/example-mcp mcp-servers/my-mcp`
+1. `cp -r mcp-servers/example mcp-servers/my-mcp`
 2. Edit `.claude-plugin/plugin.json` and `mcp-config.json`.
 3. If wrapping an existing MCP server, just change `command` and `args`. If writing one, point `command` to your server script.
 4. Test the server standalone first (`uvx your-server`) to confirm it speaks MCP correctly.

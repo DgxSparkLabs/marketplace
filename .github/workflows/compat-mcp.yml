@@ -67,12 +67,12 @@ jobs:
       - name: Add example MCP server to Devin
         # Devin has no marketplace concept — MCP servers are added individually
         working-directory: ${{ github.workspace }}
-        run: devin mcp add example-fetch -- uvx mcp-server-fetch
+        run: devin mcp add example -- uvx mcp-server-fetch
 
       - name: Assert MCP server appears in Devin's list
         # Match mode: grep -i substring (case-insensitive per decision #15)
         working-directory: ${{ github.workspace }}
-        run: devin mcp list | grep -i "example-fetch"
+        run: devin mcp list | grep -i "example"
 
   codex:
     # Required per Wave 4 (2026-05-22): org-level block confirmed lifted via 3 consecutive
@@ -99,15 +99,15 @@ jobs:
         run: codex mcp list
 
       - name: Add example MCP server to Codex
-        run: codex mcp add example-fetch -- uvx mcp-server-fetch
+        run: codex mcp add example -- uvx mcp-server-fetch
 
       - name: Assert MCP server appears in Codex list
         # Match mode: grep substring — catalog row: codex mcp list shows each registered MCP
-        run: codex mcp list | grep -F "example-fetch"
+        run: codex mcp list | grep -F "example"
 
       - name: Assert codex mcp get returns valid output
         # Match mode: exit-code-only — catalog row: codex mcp get <name> --json exit 0 if exists
-        run: codex mcp get example-fetch --json
+        run: codex mcp get example --json
 
   gemini:
     # Required per Wave 4 (2026-05-22): org-level block confirmed lifted via 3 consecutive
@@ -134,15 +134,15 @@ jobs:
         run: gemini mcp list
 
       - name: Add example MCP server to Gemini
-        run: gemini mcp add example-fetch uvx mcp-server-fetch
+        run: gemini mcp add example uvx mcp-server-fetch
 
       - name: Assert MCP server appears in Gemini list
         # Match mode: grep substring — catalog row: gemini mcp list shows each server (stderr redirect required: gemini mcp list writes all output to stderr)
-        run: gemini mcp list 2>&1 | grep -F "example-fetch"
+        run: gemini mcp list 2>&1 | grep -F "example"
 
       - name: Cleanup
         if: always()
-        run: gemini mcp remove example-fetch || true
+        run: gemini mcp remove example || true
 
   cursor-emission:
     # Filesystem assertion: Cursor's per-plugin manifest for mcp-example

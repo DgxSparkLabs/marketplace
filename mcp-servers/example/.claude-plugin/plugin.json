@@ -1,5 +1,5 @@
 {
-  "name": "example-mcp",
+  "name": "mcp-example",
   "displayName": "Example MCP Server",
   "description": "Reference template for an MCP server plugin — copy to scaffold your own.",
   "version": "1.0.0",

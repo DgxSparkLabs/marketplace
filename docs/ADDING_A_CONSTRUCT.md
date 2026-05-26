@@ -91,7 +91,7 @@ The duplication is invisible at the source-directory level (each layer's name is
 1. Do not repeat words across the plugin name and the component file name.
 2. Pick short, generic names for examples (`hello`, `voice`, `ping`).
 3. If the invocation reads awkwardly, rename one of the two — usually the component is easier to rename than the plugin.
-4. The MCP example is a special case: its tool name (`example-fetch`) is fixed by the external `mcp-server-fetch` package and cannot be renamed. The plugin name itself can be changed if the redundancy bothers you.
+4. MCP plugins have an extra layer: the server key inside `mcp-config.json` (our choice) becomes the second namespace segment in the resulting `mcp__<plugin>__<server>__<tool>` invocation. Align it with the plugin name family — e.g., `mcp-example` plugin → server key `example` → tool `mcp__mcp-example__example__fetch`. The underlying npm tool name (`mcp-server-fetch`) is fixed by the external package but only appears in `args`, never in the invocation.
 
 ## Adding a new bundle
 

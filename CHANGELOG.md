@@ -1,5 +1,39 @@
 # Changelog
 
+## 2026-05-26 — Housekeeping: untracked-state cleanup + mcp-example name alignment
+
+Two threads landed together to take the working tree back to a clean state and fix a three-name mismatch in the MCP example plugin.
+
+### Added
+
+- **`docs/ROADMAP.md`** — operator-syncable task list of sequenced platform QA cycles (Cursor IDE → Cursor CLI → Gemini → Windsurf → Devin → agents CLI), post-cycle real-content re-add plan, infrastructure follow-ups, and durable methodology threads.
+- **`STATE.md`** — live within-session state file per the CLAUDE.md three-file memory model (`STATE.md` + `HANDOFF.md` + `PITFALLS.md`).
+
+### Renamed (mcp-example name alignment)
+
+Before: marketplace listed `mcp-example`, `plugin.json` declared `example-mcp`, `mcp-config.json` declared server key `example-fetch` — three different names for one plugin chain, visible in different Claude surfaces.
+
+After: aligned all three to the `mcp-example` family. `plugin.json` `name` → `mcp-example`; `mcp-config.json` server key → `example`. User invocations now read `mcp__mcp-example__example__fetch` and `plugin:mcp-example:example` consistently.
+
+- **`mcp-servers/example/.claude-plugin/plugin.json`**: `name: example-mcp` → `name: mcp-example`.
+- **`mcp-servers/example/mcp-config.json`**: server key `example-fetch` → `example`.
+- **`mcp-servers/example/README.md`** — updated tool-name references and the install command (`/plugin install mcp-example@dgxsparklabs-marketplace`).
+- **`.github/workflows/compat-mcp.yml`** + **`scripts/validate-codex-local.sh`** + **`scripts/validate-gemini-local.sh`** — updated CI/local validation to register and list the server under its new name.
+- **`docs/TEST_YOURSELF.md`**, **`docs/PLATFORMS.md`**, **`docs/ADDING_A_CONSTRUCT.md`** — updated references and added a corrected MCP-naming paragraph to the construct convention section.
+
+### Housekeeping (untracked-state resolution)
+
+- **`docs/PLAN_DI_REFACTOR.md`** (empty stub at docs root) — deleted; canonical 1549-line plan lives at `docs/archive/di-refactor/PLAN_DI_REFACTOR.md`.
+- **`docs/research/claude-headless-qa/`** → moved to **`docs/archive/claude-headless-qa-2026-05-26/`** (settled artifacts of PR #8 hermetic Claude stub work).
+- **`docs/research/claude-qa-2026-05-26/`** → moved to **`docs/archive/claude-qa-2026-05-26/`** (settled artifacts of PR #6 Claude QA work).
+- **`docs/research/research/`** — 107-file, 2 MB canonical research stash added to `.gitignore`; files preserved on disk but not version-controlled. See AGENTS.md "Research Directory" rules.
+
+### Regenerated
+
+`uv run scripts/generate_manifest.py` re-emitted the `mcp-example` plugin contents across all `_generated/mcp-example/` and per-platform mirror dirs to pick up the new `name` and server key.
+
+---
+
 ## 2026-05-26 — Minimal-stable-state: archive non-example content + rename example-command
 
 The marketplace grew to 81 plugin entries (26 production skills + 21 production rules + 10 example plugins of each construct type + their bundles). At that scale every QA cycle, every bug investigation, and every cross-platform validation traversed the full set. The decision was to initialise a stable system at the minimum and re-add production content one plugin at a time as each is re-verified across every platform.
@@ -17,7 +51,7 @@ The marketplace grew to 81 plugin entries (26 production skills + 21 production 
 
 ### Renamed
 
-- **`commands/example/commands/example-command.md` → `commands/example/commands/hello.md`**. The slash invocation read `/command-example:example-command` — the component file's name redundantly repeated the plugin's prefix. New invocation: `/command-example:hello`, matching the canonical convention quoted in Anthropic's plugin docs (`/my-first-plugin:hello`). Other example component files were audited; none had analogous duplication (`agents/example/agents/notebook-reviewer.md`, `output-styles/example/output-styles/lab-notebook-voice.md`, `themes/example/themes/lab-notebook.json` all use generic content names; `mcp-servers/example` retains the external `example-fetch` tool name per `mcp-server-fetch`).
+- **`commands/example/commands/example-command.md` → `commands/example/commands/hello.md`**. The slash invocation read `/command-example:example-command` — the component file's name redundantly repeated the plugin's prefix. New invocation: `/command-example:hello`, matching the canonical convention quoted in Anthropic's plugin docs (`/my-first-plugin:hello`). Other example component files were audited; none had analogous duplication (`agents/example/agents/notebook-reviewer.md`, `output-styles/example/output-styles/lab-notebook-voice.md`, `themes/example/themes/lab-notebook.json` all use generic content names). `mcp-servers/example` had a three-name mismatch (`example-mcp` / `mcp-example` / `example-fetch`) which was resolved separately on the same day — see the housekeeping entry above.
 
 ### Documented
 

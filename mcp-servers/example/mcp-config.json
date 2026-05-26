@@ -1,6 +1,6 @@
 {
   "mcpServers": {
-    "example-fetch": {
+    "example": {
       "command": "uvx",
       "args": ["mcp-server-fetch"]
     }

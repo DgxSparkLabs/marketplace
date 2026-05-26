@@ -59,15 +59,15 @@ echo "==> [mcp] Verify gemini mcp list returns exit 0 (baseline)..."
 gemini mcp list 2>&1
 echo ""
 
-echo "==> [mcp] Add example-fetch MCP server..."
-gemini mcp add example-fetch uvx mcp-server-fetch 2>&1
+echo "==> [mcp] Add example MCP server..."
+gemini mcp add example uvx mcp-server-fetch 2>&1
 echo ""
 
-echo "==> [mcp] Assert example-fetch appears in mcp list..."
-if gemini mcp list 2>&1 | grep -F "example-fetch" >/dev/null; then
-  echo "    PASS: example-fetch found in gemini mcp list"
+echo "==> [mcp] Assert example appears in mcp list..."
+if gemini mcp list 2>&1 | grep -F "example" >/dev/null; then
+  echo "    PASS: example found in gemini mcp list"
 else
-  echo "    FAIL: example-fetch not found in gemini mcp list"
+  echo "    FAIL: example not found in gemini mcp list"
   exit 1
 fi
 echo ""
@@ -90,7 +90,7 @@ echo ""
 # --- Cleanup ---
 echo "==> Cleaning up..."
 gemini skills uninstall telegram-notify 2>&1 || true
-gemini mcp remove example-fetch 2>&1 || true
+gemini mcp remove example 2>&1 || true
 echo ""
 
 echo "All Gemini local validation checks passed."

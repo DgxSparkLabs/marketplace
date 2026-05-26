@@ -247,7 +247,7 @@ Reads `_generated/<plugin>/.codex-plugin/plugin.json` (emitted by generator Phas
 |---|---|
 | `compat-marketplace-add.yml` (codex job) | `codex plugin marketplace add ./` exits 0; `cat ~/.codex/config.toml \| grep -F dgxsparklabs-marketplace` matches; `codex plugin list \| grep -F "skill-example@dgxsparklabs-marketplace"` matches; `codex plugin add skill-example@dgxsparklabs-marketplace` exits 0 |
 | `compat-skill.yml` (codex job) | Registers marketplace from local path; asserts entry appears in `~/.codex/config.toml` |
-| `compat-mcp.yml` (codex job) | `codex mcp list` baseline exits 0; `codex mcp add example-fetch -- uvx mcp-server-fetch` succeeds; `codex mcp list \| grep -F example-fetch` matches; `codex mcp get example-fetch --json` exits 0 |
+| `compat-mcp.yml` (codex job) | `codex mcp list` baseline exits 0; `codex mcp add example -- uvx mcp-server-fetch` succeeds; `codex mcp list \| grep -F example` matches; `codex mcp get example --json` exits 0 |
 
 All Codex jobs run with `continue-on-error: false` (promoted from advisory to required after Wave 4 verification that the GitHub Actions org-level block on `@openai/codex` was lifted).
 
@@ -344,7 +344,7 @@ Not applicable — Gemini installs the whole marketplace as a single extension. 
 | `compat-extension.yml` (gemini job) | `gemini extensions list` baseline exits 0; `gemini extensions validate ./.gemini/` exits 0; local install via `echo "y" \| gemini extensions install ./.gemini/ --consent` succeeds; `gemini extensions list 2>&1 \| grep -F dgxsparklabs` matches |
 | `compat-extension.yml` (gemini-github-url-install job) | Installs from `https://github.com/DgxSparkLabs/marketplace --ref <current-branch> --consent`; asserts the extension appears in `extensions list` |
 | `compat-skill.yml` (gemini job) | `echo "y" \| gemini skills install ./_generated/skill-telegram-notify`; `gemini skills list --all \| grep -F telegram-notify` matches |
-| `compat-mcp.yml` (gemini job) | `gemini mcp list` baseline exits 0; `gemini mcp add example-fetch uvx mcp-server-fetch` succeeds; `gemini mcp list 2>&1 \| grep -F example-fetch` matches |
+| `compat-mcp.yml` (gemini job) | `gemini mcp list` baseline exits 0; `gemini mcp add example uvx mcp-server-fetch` succeeds; `gemini mcp list 2>&1 \| grep -F example` matches |
 
 ### Known gaps
 
@@ -668,7 +668,7 @@ Cursor rules:    .cursorrules, .cursor/rules/*.md
 | Workflow | What it asserts |
 |---|---|
 | `compat-skill.yml` (devin job) | `devin skills list \| grep -i telegram` matches (case-insensitive; Devin reads `.devin/skills/` mirror present after generator runs) |
-| `compat-mcp.yml` (devin job) | `devin mcp list` baseline exits 0; `devin mcp add example-fetch -- uvx mcp-server-fetch` succeeds; `devin mcp list \| grep -i example-fetch` matches |
+| `compat-mcp.yml` (devin job) | `devin mcp list` baseline exits 0; `devin mcp add example -- uvx mcp-server-fetch` succeeds; `devin mcp list \| grep -i example` matches |
 
 Devin jobs install the CLI via the composite action `./.github/actions/setup-devin` (which wraps the installer with `|| true` to tolerate the non-TTY exit code).
 

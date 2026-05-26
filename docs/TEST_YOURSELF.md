@@ -402,9 +402,9 @@ This arc fixed 6 example-plugin bugs and retired Claude rule emission. The hands
 
 #### Claude validation 6 — mcp-example uv prerequisite (F6)
 - [ ] **Action**: on a fresh host (no `uv` installed): `claude plugin install mcp-example@dgxsparklabs-marketplace --scope project`, then in a `claude` session try a tool that hits the example MCP. Check `/plugin` Errors tab.
-- [ ] **Pre-install-uv expected**: error in `/plugin` Errors tab — `plugin:mcp-example:example-fetch: uvx mcp-server-fetch - ✗ Failed to connect` (because `uvx` is not on PATH).
+- [ ] **Pre-install-uv expected**: error in `/plugin` Errors tab — `plugin:mcp-example:example: uvx mcp-server-fetch - ✗ Failed to connect` (because `uvx` is not on PATH).
 - [ ] **Then install uv**: `curl -LsSf https://astral.sh/uv/install.sh | sh` (POSIX) or `powershell -c "irm https://astral.sh/uv/install.ps1 | iex"` (Windows). Restart the session.
-- [ ] **Post-install-uv expected**: `/plugin` shows `plugin:mcp-example:example-fetch: uvx mcp-server-fetch - ✓ Connected`. The fix is the README documenting this prereq (see `mcp-servers/example/README.md`).
+- [ ] **Post-install-uv expected**: `/plugin` shows `plugin:mcp-example:example: uvx mcp-server-fetch - ✓ Connected`. The fix is the README documenting this prereq (see `mcp-servers/example/README.md`).
 
 #### Claude validation 7a — skill slash command namespacing (F7)
 - [ ] **Hermetic verification** (use `stub_body_dumper.py` so request bodies are captured): with `command-example` installed and the body-dumper stub running on port 8089 (set `ANTHROPIC_BASE_URL=http://127.0.0.1:8089`), run `echo "/command-example:hello" | claude --print` then `grep -F "/command-example:hello" /tmp/stub-bodies.log`.
@@ -420,7 +420,7 @@ This arc fixed 6 example-plugin bugs and retired Claude rule emission. The hands
 #### Claude validation 7c — MCP tool namespacing (F7)
 - [ ] **Hermetic verification (partial)**: same as 7b — `mcp__*` tool names only appear once Claude returns a `tool_use` block; the default stub doesn't. Future work to extend the stub. Use the interactive step.
 - [ ] **Action (interactive)**: with `mcp-example` installed, ask Claude to fetch a URL. Watch the tool name in `claude --debug` output.
-- [ ] **Expected**: tool name appears as `mcp__mcp-example__example-fetch` (the hook-matcher form) or `plugin:mcp-example:example-fetch` (the CLI display form). Both are documented per `code.claude.com/docs/en/hooks` and `code.claude.com/docs/en/plugins-reference`.
+- [ ] **Expected**: tool name appears as `mcp__mcp-example__example` (the hook-matcher form) or `plugin:mcp-example:example` (the CLI display form). Both are documented per `code.claude.com/docs/en/hooks` and `code.claude.com/docs/en/plugins-reference`.
 
 #### Claude validation 8 — rule deprecation (F8)
 - [ ] **Action**: run `claude plugin list --available --json | jq '.available | map(.name) | map(select(startswith("rule-"))) | length'` (or any equivalent count).
@@ -1029,7 +1029,7 @@ git clone --branch main https://github.com/DgxSparkLabs/marketplace.git ~/market
 #### MCP — Devin-managed (no marketplace-emitted Devin MCP config)
 - [ ] **Hands-on invocation**: `devin mcp list`
 - [ ] **Expected**: empty-state `No MCP servers configured` (or any MCPs you've manually added). The marketplace does not emit a Devin-native MCP config today; this test is "Devin's MCP surface still works alongside our marketplace clone."
-- [ ] **Optional**: `devin mcp add example-fetch -- uvx mcp-server-fetch && devin mcp list | grep -i example-fetch`
+- [ ] **Optional**: `devin mcp add example -- uvx mcp-server-fetch && devin mcp list | grep -i example`
 - [ ] **Expected**: manual add + grep both succeed.
 
 ### Specifically for THIS refactor
