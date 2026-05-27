@@ -31,6 +31,7 @@ from utils import (
     _marketplace_author,
     _marketplace_name,
     _marketplace_version,
+    _read_source_plugin_description,
     write_plugin_json,
 )
 
@@ -62,33 +63,31 @@ class Construct(Protocol):
 def _base_plugin_shape(construct: Construct, name: str) -> dict:
     """Common plugin.json fields shared by all construct types.
 
-    The ``name`` field built here is the **Claude slash-namespace prefix**
-    (NOT the marketplace install identifier — that's separate, see below).
-    It is composed as ``<brand>-<construct.category>`` (e.g.
-    ``dgxsparklabs-skill`` for any skill plugin), so every skill plugin
-    shares one namespace and slash invocations become
-    ``/dgxsparklabs-skill:<frontmatter-name>``. ``<brand>`` is derived from
+    The ``name`` field is the **Claude plugin identifier** — unique per
+    plugin, composed as ``<brand>-<construct.prefix>-<source-dir-name>``
+    (e.g. ``dgxsparklabs-skill-example``). ``<brand>`` is derived from
     ``MARKETPLACE.toml`` ``name`` by stripping the trailing ``-marketplace``
-    suffix. The construct categories themselves are class attributes
-    (``SkillConstruct.category == "skill"`` at line 76, etc.).
+    suffix. Slash invocations follow the same pattern
+    ``/<brand>-<construct.prefix>-<plugin>:<component>`` —
+    e.g. ``/dgxsparklabs-skill-example:notebook``.
 
     The marketplace-entry name (what the operator types at install:
-    ``claude plugin install skill-notify@dgxsparklabs-marketplace``) is
-    composed separately by ``_make_marketplace_entry`` in
-    ``scripts/generate_manifest.py`` from ``plugin_dir.name`` (which is
-    ``<construct.prefix>-<source-dir-name>``, kept unique per plugin).
-    The two names intentionally differ — install address is per-plugin
-    and unique, slash namespace is per-construct and shared. See
-    ``docs/research/shared-namespace-2026-05-27/RESEARCH.md`` for the
-    empirical evidence that Claude routes slash by plugin.json ``name``
-    AND accepts multiple plugins sharing one ``name``, and
-    ``docs/ADDING_A_CONSTRUCT.md`` § "Trace each fragment to its source"
-    for the byte-by-byte walked example.
+    ``claude plugin install skill-example@dgxsparklabs-marketplace``) is
+    a separate, unprefixed identifier composed by ``_make_marketplace_entry``
+    in ``scripts/generate_manifest.py`` from ``plugin_dir.name``
+    (``<construct.prefix>-<source-dir-name>``).
+
+    History: an earlier attempt (Path A, ``d641f92``, 2026-05-27) used a
+    shared ``<brand>-<construct.category>`` here so multiple plugins of one
+    construct shared a slash namespace; ``claude plugin details`` then
+    collapsed to a single first-installed-wins view of the components.
+    Path A was reverted on 2026-05-28 per
+    ``docs/research/multi-instance-claude-only-2026-05-27/PLAN.md``.
     """
     mp_name = _marketplace_name()
     brand = mp_name.removesuffix("-marketplace") if mp_name.endswith("-marketplace") else mp_name
     return {
-        "name": f"{brand}-{construct.category}",
+        "name": f"{brand}-{construct.prefix}-{name}",
         "version": _marketplace_version(),
         "author": _marketplace_author(),
     }
@@ -97,33 +96,65 @@ def _base_plugin_shape(construct: Construct, name: str) -> dict:
 # ─── Construct implementations ────────────────────────────────────────────────
 
 class SkillConstruct:
-    # `prefix` controls the INSTALL-time name (marketplace.json plugins[].name).
-    # For a directory at skills/notify/, the install name is f"{prefix}-{dir}" =
-    # "skill-notify". The operator types this in `claude plugin install skill-notify@...`.
+    # `prefix` controls both the INSTALL-time marketplace name
+    # (e.g. `skill-example` in `claude plugin install skill-example@...`)
+    # and the plugin.json `name` (composed in `_base_plugin_shape` as
+    # `<brand>-<prefix>-<source-dir>`, e.g. `dgxsparklabs-skill-example`).
+    # The slash form is `/dgxsparklabs-skill-example:<frontmatter-name>`.
     #
-    # `category` controls the SLASH-namespace name (plugin.json `name` field).
-    # All skill plugins share `category = "skill"` so they share the brand-prefixed
-    # slash namespace `dgxsparklabs-skill` (composed in _base_plugin_shape). The
-    # operator types this in `/dgxsparklabs-skill:<frontmatter-name>`.
-    #
-    # See docs/ADDING_A_CONSTRUCT.md § "Trace each fragment to its source" for
-    # how these two fragments combine with MARKETPLACE.toml + scan_source_dir
-    # to form both `claude plugin install skill-notify@dgxsparklabs-marketplace`
-    # AND `/dgxsparklabs-skill:notify` from the same source dir.
+    # Two source layouts are supported per plugin (build_plugin_json picks):
+    #   1. Solo:  skills/<plugin>/SKILL.md                       → skills: ["./"]
+    #   2. Multi: skills/<plugin>/skills/<a>/SKILL.md
+    #             skills/<plugin>/skills/<b>/SKILL.md  ...        → skills: ["./skills/"]
+    # The plugin-level description for the multi layout is operator-authored
+    # at skills/<plugin>/.claude-plugin/plugin.json (read by
+    # _read_source_plugin_description), since there's no single SKILL.md to
+    # pull it from.
     prefix = "skill"
     source_directory = REPO_ROOT / "skills"
     category = "skill"
 
     def build_plugin_json(self, name: str) -> dict:
         base = _base_plugin_shape(self, name)
-        fm = _frontmatter(self.source_directory / name / "SKILL.md")
-        base["description"] = fm.get("description", name)
-        base["skills"] = ["./"]
+        src = self.source_directory / name
+        root_skill = src / "SKILL.md"
+        skills_subdir = src / "skills"
+
+        has_root = root_skill.exists()
+        has_subdir = skills_subdir.is_dir() and any(
+            (d / "SKILL.md").exists()
+            for d in skills_subdir.iterdir()
+            if d.is_dir()
+        )
+
+        if has_root and has_subdir:
+            raise ValueError(
+                f"Source plugin {src} contains BOTH a root SKILL.md AND a "
+                f"skills/ subdir with skill children. Pick one layout: either "
+                f"move the root SKILL.md into skills/<name>/ or remove the "
+                f"skills/ subdir."
+            )
+        if not has_root and not has_subdir:
+            raise ValueError(
+                f"Source plugin {src} contains neither a root SKILL.md "
+                f"(single-skill layout) nor a skills/<name>/SKILL.md subdir "
+                f"(multi-skill layout). Create one or the other."
+            )
+
+        # Description comes from the plugin-level .claude-plugin/plugin.json
+        # — operator-authored, separate from any per-skill SKILL.md
+        # frontmatter (which is the slash-autocomplete tooltip, a per-component
+        # concern). One source plugin can ship multiple SKILL.md files
+        # (multi-skill layout); the marketplace listing needs a single
+        # one-liner that scopes to the plugin, not any one skill.
+        base["description"] = _read_source_plugin_description(src, name)
+        base["skills"] = ["./"] if has_root else ["./skills/"]
         base["keywords"] = ["skill", name]
         return base
 
     def emit(self, name: str, target_dir: Path) -> None:
-        # Copy entire source tree (SKILL.md, scripts/, references/, etc.)
+        # Copy entire source tree (SKILL.md or skills/<n>/SKILL.md, plus
+        # any scripts/ references/ etc.)
         shutil.copytree(
             self.source_directory / name,
             target_dir,

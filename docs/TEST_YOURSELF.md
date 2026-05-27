@@ -9,6 +9,14 @@ status: live
 
 A step-by-step verification guide for an operator to confirm the DgxSparkLabs marketplace works end-to-end on each of the six supported platforms plus the cross-platform `agents` CLI. Each section is independent — work through all of them, or pick the platforms you actually use.
 
+> **2026-05-28 multi-instance scope.** Skills can now ship as a **multi-skill plugin** (one `<plugin>/skills/<skill>/SKILL.md` per skill — canonical example `skills/example/` with `notebook` + `status`) or a **solo plugin** (one `<plugin>/SKILL.md` at plugin root — canonical example `skills/example-single/` with `hello`). The Claude verification cells below cover BOTH layouts:
+>
+> - `/dgxsparklabs-skill-example:notebook` — first skill in the multi-skill plugin
+> - `/dgxsparklabs-skill-example:status` — second skill in the same plugin
+> - `/dgxsparklabs-skill-example-single:hello` — the only skill in the solo plugin
+>
+> Non-Claude per-construct cells (Cursor IDE, Cursor CLI, Codex, Gemini, Windsurf, Devin, `.agents/` shim) are still written for the solo layout only — multi-skill source layouts are **unverified outside Claude** as of 2026-05-28. See ROADMAP #37-#42 for the per-platform follow-ups.
+
 This is a hand-holding document. If something below looks obvious, that's intentional — the goal is that someone who has never touched these tools can follow it without guessing.
 
 **Round-2 expansion (2026-05-25)**: this revision was expanded from "a handful of exemplary cells" to **a full construct × platform grid**. Every construct type that a platform supports is exercised by a hands-on test. The 🐛 / ✅ callouts from the 2026-05-25 QA pass are preserved.
@@ -330,7 +338,8 @@ This table is the cheat sheet for the per-construct cells below. The install com
 
 | Construct      | Type to install                                                                | After install, `/plugins` shows               | Type to invoke                                                | Expected behavior on invoke                              |
 |---             |---                                                                             |---                                            |---                                                            |---                                                       |
-| skill          | `claude plugin install skill-example@dgxsparklabs-marketplace --scope project` | `skill-example@dgxsparklabs-marketplace`       | `/dgxsparklabs-skill:lab-notebook [topic]` (or bare `/lab-notebook`) | Skill body renders a lab-notebook-style status block for the topic. |
+| skill (multi)  | `claude plugin install skill-example@dgxsparklabs-marketplace --scope project` | `skill-example@dgxsparklabs-marketplace`       | `/dgxsparklabs-skill-example:notebook [topic]` (or `/dgxsparklabs-skill-example:status`; bare flat forms `/notebook` / `/status` also resolve) | `notebook` renders a lab-notebook status block; `status` runs `df -h .` + UTC timestamp. |
+| skill (solo)   | `claude plugin install skill-example-single@dgxsparklabs-marketplace --scope project` | `skill-example-single@dgxsparklabs-marketplace` | `/dgxsparklabs-skill-example-single:hello` (or bare `/hello`) | Prints a minimal greeting plus a UTC timestamp. |
 | rule           | N/A — not a Claude plugin component as of 2026-05-26                            | (no entry)                                    | rule applies passively (no slash)                              | See Claude validation 8.                                  |
 | sub-agent      | `claude plugin install agent-example@dgxsparklabs-marketplace --scope project` | `agent-example@dgxsparklabs-marketplace`       | `/agents` then select `dgxsparklabs-agent:notebook-reviewer`   | Sub-agent dispatched as a skeptical peer reviewer of a lab notebook entry. |
 | command        | `claude plugin install command-example@dgxsparklabs-marketplace --scope project` | `command-example@dgxsparklabs-marketplace`   | `/dgxsparklabs-command:hello`                                  | Prints a formatted lab-notebook header for today's UTC date. |

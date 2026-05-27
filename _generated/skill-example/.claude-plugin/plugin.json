@@ -1,13 +1,13 @@
 {
-  "name": "dgxsparklabs-skill",
+  "name": "dgxsparklabs-skill-example",
   "version": "1.0.0",
   "author": {
     "name": "DgxSparkLabs",
     "url": "https://github.com/DgxSparkLabs"
   },
-  "description": "Reference example. Echoes back a formatted lab-notebook-style status message. Shows how to write a SKILL.md with frontmatter, allowed-tools, and argument handling.",
+  "description": "Two reference skills demonstrating the multi-skill plugin layout.",
   "skills": [
-    "./"
+    "./skills/"
   ],
   "keywords": [
     "skill",

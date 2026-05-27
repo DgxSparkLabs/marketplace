@@ -1,6 +1,60 @@
 # Changelog
 
-## 2026-05-27 — Brand-prefixed shared slash namespace (Path A)
+## 2026-05-28 — Skills: multi-instance-capable plugin layout (Claude-only); revert Path A; pause cross-platform verification
+
+Two changes shipped in one commit on PR #10:
+
+1. **Reverted Path A's shared slash namespace** (the prior 2026-05-27 entry). Per-plugin `plugin.json` `name` fields are now unique-per-plugin in the shape `<brand>-<construct.prefix>-<source-dir-name>` — e.g. `dgxsparklabs-skill-example`, `dgxsparklabs-skill-example-single`. Path A's `<brand>-<construct.category>` shape (which collapsed multiple plugins of one construct into one slash namespace) was abandoned because `claude plugin details <shared-namespace>` could only surface the first-installed plugin's components. With the revert, `claude plugin details dgxsparklabs-skill-example` lists both `notebook` and `status`; `claude plugin details dgxsparklabs-skill-example-single` lists `hello`.
+
+2. **Added multi-instance-capable layout for skill plugins.** `SkillConstruct.build_plugin_json` now detects two source layouts per plugin: **solo** (one `SKILL.md` at plugin root → `skills: ["./"]`) and **multi** (one or more `skills/<skill>/SKILL.md` under a `skills/` subdir → `skills: ["./skills/"]`). Source plugins with both layouts (or neither) raise `ValueError` from the generator. The two canonical examples both ship: `skills/example/` (multi, two skills `notebook` + `status`) and `skills/example-single/` (solo, one skill `hello`). Slash forms: `/dgxsparklabs-skill-example:notebook`, `/dgxsparklabs-skill-example:status`, `/dgxsparklabs-skill-example-single:hello`. Marketplace plugin count: **11** (was 10 — the second skill source added one individual entry).
+
+### What's verified
+
+**Claude path only.** All three slash invocations resolve via the hermetic Claude stub (`tests/fixtures/claude-stub/`). `claude plugin details dgxsparklabs-skill-example` lists both `notebook` AND `status` (Path A's first-installed-wins collapse is gone). `claude plugin details dgxsparklabs-skill-example-single` lists `hello`. The 79 marketplace tests + 21 schema-fitness tests are green.
+
+### What's paused (non-Claude verification)
+
+The five non-Claude platforms (Cursor IDE, Codex, Gemini, Windsurf, Devin) and the `.agents/` cross-platform shim **continue to emit** but their behavior under multi-skill source layouts is **explicitly unverified** as of 2026-05-28. Source-code NOTE comments tag each non-Claude `emit()` / `build_plugin_json` Skill branch with "multi-instance source layout UNVERIFIED — see ROADMAP #37-#42." Existing solo-layout behavior is unchanged on those platforms — only the new multi-skill source layout is unverified.
+
+### Where the follow-up is tracked
+
+- Platform QA cycles: **ROADMAP #9 (Cursor IDE) → #14 (`.agents/` shim)** — each platform's empirical verification round.
+- Multi-instance fixes per platform: **ROADMAP #37 (Cursor IDE) → #42 (`.agents/` shim)** — blocked on the matching QA cycle. Each follow-up is a localized edit to one Platform class's `emit()` or `build_plugin_json`, not a generator redesign.
+
+### Source changes
+
+- `scripts/constructs.py`: `_base_plugin_shape` flipped from `f"{brand}-{construct.category}"` to `f"{brand}-{construct.prefix}-{name}"`. `SkillConstruct.build_plugin_json` gained a layout-detection branch that picks between `skills: ["./"]` (solo) and `skills: ["./skills/"]` (multi), and reads the plugin-level description via the new `_read_source_plugin_description` helper. Both-layouts-present or neither-layout-present raise `ValueError`.
+- `scripts/utils.py`: new `_read_source_plugin_description(src_plugin_dir, fallback)` helper reads the operator-authored description from `<src>/.claude-plugin/plugin.json`. Distinct from per-skill SKILL.md frontmatter descriptions (which are slash-autocomplete tooltips, a per-component concern).
+- `scripts/platforms.py`: six NOTE comments tagging non-Claude Skill paths as multi-instance-unverified (CursorPlatform.build_plugin_json, CodexPlatform.build_plugin_json, GeminiPlatform.emit, WindsurfPlatform.emit, DevinPlatform.emit, AgentsPlatform.emit). No code changes — comments only.
+- `skills/example/`: reorganized to multi-skill layout. Deleted the old root `SKILL.md` (with `name: lab-notebook`); created `skills/notebook/SKILL.md` (the lab-notebook body, frontmatter `name: notebook`) and `skills/status/SKILL.md` (new ~20 lines running `df -h .` + UTC timestamp). Created `.claude-plugin/plugin.json` with operator-authored plugin-level description. Rewrote `README.md`.
+- `skills/example-single/`: NEW plugin demonstrating the solo layout. Three files: `.claude-plugin/plugin.json`, `SKILL.md` (`name: hello`), `README.md`.
+- `catalog.toml`: `bundle.examples` adds `skill:example-single` member.
+- `tests/test_marketplace.py`: renamed + updated `test_individual_plugin_name_is_unique_brand_namespace` (was `test_individual_plugin_name_is_brand_namespace` under Path A); new `test_skill_plugin_layouts` (asserts both `["./skills/"]` and `["./"]` shapes); new `test_mcp_server_keys_unique_across_plugins` (cross-plugin MCP server-key collision check); marketplace-count formula updated (10 + 1 = 11); `test_agents_skills_mirror_exists` and `test_gemini_skills_mirror_and_extension_manifest` relaxed to tolerate the nested multi-skill mirror path (the source bytes still reach the mirror; downstream discovery semantics are what's deferred). 79 marketplace tests pass (was 77; +2 for the new tests).
+- `docs/ROADMAP.md`: items #37-#42 (added in the prior session-prep commit `5ae8619`) cover per-platform multi-instance verification follow-ups, each `[BLOCKED]` on the matching platform QA cycle in #9-#14.
+- Doc cascade: `README.md`, `docs/ADDING_A_CONSTRUCT.md`, `docs/TEST_YOURSELF.md`, `docs/USER_GUIDE.md`, `docs/PLATFORMS.md`, `docs/CONSTRUCT_TYPES.md`, `docs/RESUME_HERE.md`, and the two skill `README.md` files updated to reflect the new model and the Claude-only verification scope.
+
+### Operator UX impact (none for installs)
+
+```
+claude plugin install skill-example@dgxsparklabs-marketplace --scope project
+claude plugin enable  skill-example@dgxsparklabs-marketplace
+claude plugin install skill-example-single@dgxsparklabs-marketplace --scope project
+claude plugin enable  skill-example-single@dgxsparklabs-marketplace
+```
+
+Inside a Claude session:
+
+```
+/dgxsparklabs-skill-example:notebook
+/dgxsparklabs-skill-example:status
+/dgxsparklabs-skill-example-single:hello
+```
+
+Bare flat forms `/notebook`, `/status`, `/hello` also resolve.
+
+---
+
+## 2026-05-27 — Brand-prefixed shared slash namespace (Path A) — REVERTED 2026-05-28
 
 Migrated the Claude slash-invocation namespace from per-plugin (`/skill-example:lab-notebook`) to **shared brand-prefix per construct** (`/dgxsparklabs-skill:lab-notebook`). All skill plugins now share one slash namespace; all command plugins share another; etc. Install commands stay per-plugin-unique.
 

@@ -2,11 +2,19 @@
 
 A Claude Code plugin can ship ten distinct **construct types**. This marketplace ships individual plugins, domain bundles, and reference examples for every one. For the contribution workflow, see [`ADDING_A_CONSTRUCT.md`](./ADDING_A_CONSTRUCT.md).
 
+## Multi-instance capability (skill only as of 2026-05-28)
+
+The skill construct is **multi-instance-capable per plugin**: one source plugin can ship multiple skills via the layout `skills/<plugin>/skills/<skill-A>/SKILL.md` + `<skill-B>/SKILL.md` etc. The single-skill layout (`skills/<plugin>/SKILL.md` at plugin root) remains supported for solo plugins.
+
+The other dir-scan constructs (command, agent, output-style, theme) also support multi-instance per Claude's plugin spec — Claude reads each as a directory glob and discovers every `.md` underneath — but our generator stays single-instance per plugin for those today. The capability is **available** if needed; the marketplace doesn't currently exercise it.
+
+Cross-platform note: the multi-skill layout is **verified on Claude only** as of 2026-05-28. The other five platforms + the `.agents/` shim are unverified for multi-skill source layouts — see ROADMAP #37-#42 and the NOTE comments in `scripts/platforms.py`.
+
 ## The ten construct types
 
 | Construct    | What it is | Source dir | Example dir | Plugin name prefix |
 |--------------|-----------|------------|-------------|-------------------|
-| **skill**    | On-demand domain expertise. Invoked by user (`/skill-name`) or auto-invoked by Claude when the description matches. | `skills/` | `skills/example/` | `skill-` |
+| **skill**    | On-demand domain expertise. Invoked by user (`/skill-name`) or auto-invoked by Claude when the description matches. **Multi-instance-capable** per plugin (see note below). | `skills/` | `skills/example/` (multi) + `skills/example-single/` (solo) | `skill-` |
 | **rule**     | Always-on behavioral guideline injected into every session via `.claude/rules/`. Requires a manual `activate.sh` symlink step after install (Claude Code limitation). | `rules/` | `rules/example/` | `rule-` |
 | **command**  | A custom slash command. Lighter-weight than a skill — single markdown file, user-invoked only. | `commands/` | `commands/example/` | `command-` |
 | **agent**    | A sub-agent persona with its own system prompt and scoped tool access. | `agents/` | `agents/example/` | `agent-` |

@@ -2,6 +2,139 @@
 
 The marketplace supports 10 plugin construct types. The contribution workflow is identical for each — copy the example, edit the content, add to a bundle, regenerate, test, commit.
 
+## Quick start — three patterns, pick one
+
+### Pattern 1 — solo skill (or command, agent, etc.)
+
+For a one-off skill that doesn't belong with thematic siblings.
+
+```bash
+mkdir -p skills/my-thing/.claude-plugin
+
+cat > skills/my-thing/.claude-plugin/plugin.json <<'EOF'
+{
+  "name": "dgxsparklabs-skill-my-thing",
+  "description": "One-line description for the marketplace listing."
+}
+EOF
+
+cat > skills/my-thing/SKILL.md <<'EOF'
+---
+name: do-the-thing
+description: One-line tooltip shown in the slash autocomplete dropdown.
+allowed-tools: [Bash, Read]
+---
+Body of the skill prompt. Use $ARGUMENTS for the user's input.
+EOF
+
+uv run scripts/generate_manifest.py
+uv run tests/test_marketplace.py
+```
+
+Slash form: `/dgxsparklabs-skill-my-thing:do-the-thing`. Bare flat form: `/do-the-thing`.
+
+Canonical reference: [`skills/example-single/`](../skills/example-single/).
+
+### Pattern 2 — multi-instance plugin
+
+For multiple skills under one theme. One install brings all of them.
+
+```bash
+mkdir -p skills/git-helpers/{.claude-plugin,skills/{quick-commit,branch-summary,safe-rebase}}
+
+cat > skills/git-helpers/.claude-plugin/plugin.json <<'EOF'
+{
+  "name": "dgxsparklabs-skill-git-helpers",
+  "description": "Three skills for fast, safe git workflows."
+}
+EOF
+
+cat > skills/git-helpers/skills/quick-commit/SKILL.md <<'EOF'
+---
+name: quick-commit
+description: Stage modified files and commit with a one-line message.
+allowed-tools: [Bash]
+---
+Read git status, compose a conventional commit message, stage, commit.
+EOF
+# ... repeat for branch-summary and safe-rebase
+
+uv run scripts/generate_manifest.py
+```
+
+Plugin name is the **category** (`git-helpers`); each child skill name is an **action** (`quick-commit`, `branch-summary`, `safe-rebase`). Slash forms: `/dgxsparklabs-skill-git-helpers:quick-commit`, etc.
+
+Canonical reference: [`skills/example/`](../skills/example/) (two skills: `notebook`, `status`).
+
+### Pattern 3 — catalog bundle
+
+For grouping plugins of DIFFERENT construct types. Bundles are dep-only: no source dir, just a `catalog.toml` entry.
+
+```bash
+cat >> catalog.toml <<'EOF'
+
+[bundle.onboarding-pack]
+description = "Skill, hook, and rule a new contributor should install first."
+members = [
+  "skill:welcome-tour",
+  "hook:new-prompt-helper",
+  "rule:onboarding-guidance",
+]
+EOF
+
+uv run scripts/generate_manifest.py
+```
+
+Plugin name: `bundle-onboarding-pack`. Install with one command — Claude auto-installs all member plugins as dependencies.
+
+Canonical reference: `[bundle.examples]` in [`catalog.toml`](../catalog.toml).
+
+### Decision tree
+
+```
+Are you grouping multiple ACTIONS of one construct type under a theme?
+  └─ YES → Pattern 2 (multi-instance plugin)
+
+Are you grouping plugins across DIFFERENT construct types?
+  └─ YES → Pattern 3 (catalog bundle)
+
+Otherwise:
+  └─ Pattern 1 (solo plugin)
+```
+
+### Naming rules
+
+1. **Plugin directory name** (`my-thing` in Pattern 1) = kebab-case, semantic, describes the CATEGORY. The brand prefix `dgxsparklabs-skill-` is added automatically by the generator — do not include it in the directory name.
+2. **Component name** in frontmatter (`do-the-thing`) = kebab-case verb or noun describing the SPECIFIC ACTION. Don't repeat the plugin name (avoid `/skill-git-helpers:git-commit`; use `:commit`).
+3. **Don't typo the brand prefix.** It is always `<MARKETPLACE.toml name without -marketplace>-<construct.prefix>-<your-plugin>`. Copy from any existing plugin's `.claude-plugin/plugin.json` if you're unsure — if you typo the brand prefix in the source-side plugin.json, the generator will silently override it (the `name` field is computed), but the description will be the only thing read from your file, so a typo in `name` is harmless. The slash form is derived from the GENERATED plugin.json, not the source-side file.
+
+### Two description fields, two destinations
+
+Two distinct concerns, two distinct files. Don't confuse them:
+
+| Field | File | Shown in |
+|---|---|---|
+| Plugin-level `description` | `<plugin>/.claude-plugin/plugin.json` | Marketplace listing (`claude plugin list --available`) |
+| Per-component `description` | `SKILL.md` (or `<cmd>.md`, `<agent>.md`) frontmatter | Claude's slash-autocomplete tooltip |
+
+For Pattern 2 (multi-skill), the plugin-level description summarizes the theme; each per-skill description is the specific action.
+
+For Pattern 1 (solo), it can feel redundant — write a short plugin-level description for the marketplace listing, and a longer per-skill description for the autocomplete tooltip.
+
+### Test + commit
+
+```bash
+uv run scripts/generate_manifest.py
+uv run tests/test_marketplace.py
+uv run tests/test_schema_fitness.py
+
+git add . && git commit -m "feat(skill-<plugin>): <one-line>"
+```
+
+Never include AI co-author attribution in commit messages (see [`rules/no-ai-credit/`](../rules/no-ai-credit/)).
+
+---
+
 ## Per-construct quick reference
 
 | Construct    | Source folder     | Example template          | Description source       |
@@ -61,13 +194,13 @@ The marketplace supports 10 plugin construct types. The contribution workflow is
 
 Three distinct layers participate in every install command and every slash invocation. **Each layer is owned by a different file, and that's the only thing controlling that segment of the name.**
 
-### The three layers — using `skill-example` / `lab-notebook` as the walked example
+### The three layers — using `skill-example` / `notebook` as the walked example
 
-| Layer | Owner | How `skill-example` was made | How `lab-notebook` was made |
+| Layer | Owner | How `skill-example` was made | How `notebook` was made |
 |---|---|---|---|
 | **Marketplace name** | `MARKETPLACE.toml` `name = "dgxsparklabs-marketplace"` | — (this is the suffix `@dgxsparklabs-marketplace`, fixed for the whole repo) | — |
-| **Plugin name** | The generator builds it as `<construct-prefix>-<source-dir-name>` | Construct prefix `skill` (defined in `scripts/constructs.py:SkillConstruct.prefix`) + source dir name `example` (from `skills/example/`). Yields `skill-example`. The generator overwrites the source `plugin.json` `name` field at emission so the cached plugin.json always matches. | — |
-| **Component name** | The construct's content file | — | Skill `name:` field in `skills/example/SKILL.md` frontmatter. Operator-controlled — write whatever kebab-case word you want. For agents it's the frontmatter `name:` in `agents/<name>.md`; for commands it's the bare filename (e.g., `hello.md` → component `hello`); for MCP it's the server key in `mcp-config.json`. |
+| **Plugin name** | The generator builds it as `<construct.prefix>-<source-dir-name>` | Construct prefix `skill` (defined in `scripts/constructs.py:SkillConstruct.prefix`) + source dir name `example` (from `skills/example/`). Yields `skill-example`. | — |
+| **Component name** | The construct's content file | — | Skill `name:` field in `skills/example/skills/notebook/SKILL.md` frontmatter. Operator-controlled — write whatever kebab-case word you want. For agents it's the frontmatter `name:` in `agents/<name>.md`; for commands it's the bare filename (e.g., `hello.md` → component `hello`); for MCP it's the server key in `mcp-config.json`. |
 
 So when you run:
 
@@ -78,90 +211,95 @@ claude plugin install skill-example@dgxsparklabs-marketplace
 The CLI looks up `skill-example` in the marketplace's `plugins[]` array, finds the source, installs it. Then in a Claude session:
 
 ```text
-/skill-example:lab-notebook weather
+/dgxsparklabs-skill-example:notebook weather
 ```
 
-`skill-example` resolves to the plugin's namespace (set by the generator from the source dir + prefix); `lab-notebook` resolves to the component (set by the SKILL.md frontmatter); `weather` is `$ARGUMENTS`.
+`dgxsparklabs-skill-example` resolves to the plugin's unique slash namespace (set by the generator from `<brand>-<construct.prefix>-<source-dir>`); `notebook` resolves to the component (set by the SKILL.md frontmatter); `weather` is `$ARGUMENTS`.
 
 ### What this means when you add a new skill
 
 You control TWO of the three layers:
-- **Plugin name** is implicitly chosen when you pick the directory name. If you create `skills/foo-bar/`, the plugin will be `skill-foo-bar`. To rename later, rename the directory.
-- **Component name** is explicit in the file. For a skill, set `name:` in SKILL.md frontmatter. Pick something short and semantic — don't repeat the directory name (avoid `/skill-foo-bar:foo-bar` doubled forms).
+- **Plugin name** is implicitly chosen when you pick the directory name. If you create `skills/foo-bar/`, the plugin will be `skill-foo-bar` at install time and `/dgxsparklabs-skill-foo-bar:<component>` at slash time. To rename later, rename the directory.
+- **Component name** is explicit in the file. For a skill, set `name:` in SKILL.md frontmatter. Pick something short and semantic — don't repeat the directory name (avoid `/dgxsparklabs-skill-foo-bar:foo-bar` doubled forms).
 
 Then run `uv run scripts/generate_manifest.py` and Claude can see it.
 
-Per [code.claude.com/docs/en/plugins](https://code.claude.com/docs/en/plugins) (fetched 2026-05-26): *"Plugin skills are always namespaced (like `/my-first-plugin:hello`) to prevent conflicts when multiple plugins have skills with the same name."* There is no flatten mechanism — the only lever is the plugin name (i.e., the directory name).
+Per [code.claude.com/docs/en/plugins](https://code.claude.com/docs/en/plugins) (fetched 2026-05-26): *"Plugin skills are always namespaced (like `/my-first-plugin:hello`) to prevent conflicts when multiple plugins have skills with the same name."* There is no flatten mechanism that drops the namespace — Claude rewrites the bare flat form `/hello` to the qualified form internally.
 
-### Trace each fragment to its source — `claude plugin install skill-notify@dgxsparklabs-marketplace` byte by byte
+### Trace each fragment to its source — `claude plugin install skill-example@dgxsparklabs-marketplace` byte by byte
 
-The walked example: you've created `skills/notify/` with `SKILL.md` frontmatter `name: notify`. After `uv run scripts/generate_manifest.py`, the install command above works and the invocation becomes `/dgxsparklabs-skill:notify`. Every visible fragment maps to exactly one file:line below. `Ctrl+click` (or `git grep`) to follow.
+The walked example: the marketplace already ships `skills/example/` as a multi-skill plugin (with `skills/notebook/SKILL.md` and `skills/status/SKILL.md` underneath). After `uv run scripts/generate_manifest.py`, the install command above works and the invocations become `/dgxsparklabs-skill-example:notebook` and `/dgxsparklabs-skill-example:status`. Every visible fragment maps to exactly one file:line below. `Ctrl+click` (or `git grep`) to follow.
 
-**Important architectural point**: as of 2026-05-27 the **install-time name** (`skill-notify` in the install command) and the **slash-namespace name** (`dgxsparklabs-skill` in the invocation) are two separate fields. Multiple plugins of the same construct share one slash namespace so all skill invocations group under `/dgxsparklabs-skill:`. See `docs/research/shared-namespace-2026-05-27/RESEARCH.md` for the empirical evidence that Claude accepts this. Install commands stay per-plugin-unique because each plugin still owns its own `marketplace.json` entry.
+**Architectural note** (post-2026-05-28): the **install-time name** (`skill-example` in the install command) and the **slash-namespace name** (`dgxsparklabs-skill-example` in the invocation) are two separate fields, but both incorporate the source-directory name and are unique per plugin. An earlier short-lived experiment ("Path A", `d641f92`, 2026-05-27) collapsed multiple plugins of one construct into a shared slash namespace `/dgxsparklabs-skill:` — that was reverted on 2026-05-28 because `claude plugin details` could only show one plugin's components under the shared name. See [`docs/research/multi-instance-claude-only-2026-05-27/PLAN.md`](research/multi-instance-claude-only-2026-05-27/PLAN.md) for the revert rationale.
 
-| Fragment | Defined at (file:line) | What that line does |
+| Fragment | Defined at | What it does |
 |---|---|---|
-| `skill-` (the **install** construct prefix) | [`scripts/constructs.py:73`](../scripts/constructs.py) — `prefix = "skill"` inside `class SkillConstruct` | Literal string. Used by the generator to build the `_generated/<plugin>/` directory name and the marketplace.json `plugins[].name` entry. Other 9 prefixes at lines 113 (rule), 150 (command), 179 (agent), 209 (hook), 237 (mcp), 264 (lsp), 288 (monitor), 314 (output-style), 338 (theme). |
-| `notify` (the directory name) | Filesystem — `skills/notify/` is the directory you created. Discovered by [`scripts/utils.py:33-41`](../scripts/utils.py) `scan_source_dir`. | Any kebab-case subdir of `skills/` becomes a candidate plugin. No central registry. |
-| `skill-notify` (install-time plugin name) | Composed at [`scripts/generate_manifest.py:138`](../scripts/generate_manifest.py) — `plugin_dir = GENERATED / f"{construct.prefix}-{name}"`. The directory NAME is what `_make_marketplace_entry` at [`scripts/generate_manifest.py:55-77`](../scripts/generate_manifest.py) reads via `plugin_dir.name` to populate `marketplace.json` `plugins[].name`. | One f-string. The on-disk dir `_generated/skill-notify/` and the marketplace entry `name` are guaranteed to match. |
-| `@` (separator) | Claude CLI convention — not defined in this repo. Per [code.claude.com/docs/en/plugins](https://code.claude.com/docs/en/plugins). | Splits `<plugin>@<marketplace>` at install time. |
-| `dgxsparklabs-marketplace` (marketplace identity) | [`MARKETPLACE.toml:12`](../MARKETPLACE.toml) — `name = "dgxsparklabs-marketplace"`. Read by [`scripts/utils.py:98-110`](../scripts/utils.py) `_marketplace_name()`. Written into `.claude-plugin/marketplace.json` top-level `"name"` field at [`scripts/generate_manifest.py:69-82`](../scripts/generate_manifest.py) inside `_write_marketplace_json`. | Single source of truth. Renaming the marketplace is one-line edit. |
-| `dgxsparklabs-` (the **slash** brand prefix) | Derived in [`scripts/constructs.py:61-93`](../scripts/constructs.py) `_base_plugin_shape` — `mp_name.removesuffix("-marketplace")` strips the trailing `-marketplace` from MARKETPLACE.toml's `name` to produce `dgxsparklabs`. | One line. To re-brand a fork, change MARKETPLACE.toml line 12 and the brand prefix follows automatically. |
-| `skill` (the **slash** construct category) | [`scripts/constructs.py:76`](../scripts/constructs.py) — `category = "skill"` inside `class SkillConstruct`. The other 9 categories are at lines 116 (rule), 152 (command), 181 (agent), 212 (hook), 240 (mcp), 266 (lsp), 291 (monitor), 317 (output-style), 341 (theme). | Class attribute. `_base_plugin_shape` reads `construct.category` and produces `f"{brand}-{construct.category}"`. |
-| `dgxsparklabs-skill` (the slash-namespace prefix) | Composed at [`scripts/constructs.py:91`](../scripts/constructs.py) — `"name": f"{brand}-{construct.category}"` inside `_base_plugin_shape`. Written into `_generated/<plugin>/.claude-plugin/plugin.json` `"name"` by `SkillConstruct.emit` at [`scripts/constructs.py:99-108`](../scripts/constructs.py). | **All skill plugins share this name.** Claude treats them as one namespace with multiple skill contributors. Empirically validated at `docs/research/shared-namespace-2026-05-27/`. |
+| `skill-` (the **install** construct prefix) | `scripts/constructs.py` — `prefix = "skill"` inside `class SkillConstruct` | Literal string. Used by the generator to build the `_generated/<plugin>/` directory name and the marketplace.json `plugins[].name` entry. Each of the 10 construct classes has its own `prefix` attribute. |
+| `example` (the directory name) | Filesystem — `skills/example/` is the directory. Discovered by `scripts/utils.py` `scan_source_dir`. | Any kebab-case subdir of `skills/` becomes a candidate plugin. No central registry. |
+| `skill-example` (install-time plugin name) | Composed in `scripts/generate_manifest.py` — `plugin_dir = GENERATED / f"{construct.prefix}-{name}"`. The directory NAME is what `_make_marketplace_entry` reads via `plugin_dir.name` to populate `marketplace.json` `plugins[].name`. | One f-string. The on-disk dir `_generated/skill-example/` and the marketplace entry `name` are guaranteed to match. |
+| `@` (separator) | Claude CLI convention. Per [code.claude.com/docs/en/plugins](https://code.claude.com/docs/en/plugins). | Splits `<plugin>@<marketplace>` at install time. |
+| `dgxsparklabs-marketplace` (marketplace identity) | `MARKETPLACE.toml` `name = "dgxsparklabs-marketplace"`. Read by `_marketplace_name()` in `scripts/utils.py`. Written into `.claude-plugin/marketplace.json` top-level `"name"` field. | Single source of truth. Renaming the marketplace is one-line edit. |
+| `dgxsparklabs-` (the **slash** brand prefix) | Derived in `scripts/constructs.py` `_base_plugin_shape` — `mp_name.removesuffix("-marketplace")` strips the trailing `-marketplace` from MARKETPLACE.toml's `name` to produce `dgxsparklabs`. | One line. To re-brand a fork, change MARKETPLACE.toml and the brand prefix follows automatically. |
+| `dgxsparklabs-skill-example` (the unique plugin slash namespace) | Composed at `scripts/constructs.py` `_base_plugin_shape` — `"name": f"{brand}-{construct.prefix}-{name}"`. Written into `_generated/skill-example/.claude-plugin/plugin.json` `"name"` field by `SkillConstruct.emit`. | **One name per plugin** — unique. `claude plugin details dgxsparklabs-skill-example` resolves to this single plugin and lists all of its components. |
 | `:` (separator) | Claude convention. Per [code.claude.com/docs/en/plugins](https://code.claude.com/docs/en/plugins): *"Plugin skills are always namespaced (like `/my-first-plugin:hello`)."* | Splits `<plugin-json-name>:<skill-name>` at slash-resolution time. |
-| The `name:` field in `skills/notify/SKILL.md` frontmatter (becomes the slash component `notify`) | Written **directly by you** at `skills/notify/SKILL.md` line 2 — e.g., `name: notify`. The generator does NOT touch this field; `SkillConstruct.emit` at [`scripts/constructs.py:99-108`](../scripts/constructs.py) copies the whole SKILL.md verbatim via `shutil.copytree`. At install time Claude reads the cached `SKILL.md` and uses the frontmatter `name:` value as the slash component half. | Operator-owned, no generator round-trip. To change `/dgxsparklabs-skill:notify` → `/dgxsparklabs-skill:status`, edit one line in the source SKILL.md and re-run the generator. |
+| `notebook` / `status` (the slash component) | The `name:` field in `skills/example/skills/notebook/SKILL.md` (and `.../status/SKILL.md`) frontmatter — operator-written. `SkillConstruct.emit` copies the SKILL.md files verbatim via `shutil.copytree`. At install time Claude reads each cached SKILL.md and uses the frontmatter `name:` value as the slash component. | Operator-owned, no generator round-trip. To rename `/dgxsparklabs-skill-example:notebook` → `/dgxsparklabs-skill-example:journal`, edit one line in the source SKILL.md and re-run the generator. |
 
 ### How the same fragments end up in three separate files
 
 ```
 After `uv run scripts/generate_manifest.py` finishes:
 
-  MARKETPLACE.toml:12                              "dgxsparklabs-marketplace"  ← edited by hand
+  MARKETPLACE.toml                                 "dgxsparklabs-marketplace"  ← edited by hand
                               │
-                              ▼  read by _marketplace_name() at scripts/utils.py:98-110
+                              ▼  read by _marketplace_name() in scripts/utils.py
                               │
         ┌─────────────────────┴─────────────────────┐
         │ used as marketplace identity              │ stripped of "-marketplace" for brand
         ▼                                           ▼
   .claude-plugin/marketplace.json              "dgxsparklabs" (the brand prefix)
     "name": "dgxsparklabs-marketplace"               │
-    "plugins": [                                     │ + construct.category ("skill")
+    "plugins": [                                     │ + construct.prefix ("skill") + source-dir-name ("example")
       {                                              ▼
-        "name": "skill-notify",                "dgxsparklabs-skill"
-        "source": "./_generated/skill-notify", (slash namespace prefix)
+        "name": "skill-example",               "dgxsparklabs-skill-example"
+        "source": "./_generated/skill-example",(slash namespace — unique per plugin)
         "category": "skill",                         │
         "description": "...",                        ▼
-        ...                                  _generated/skill-notify/.claude-plugin/plugin.json
-      }                                        "name": "dgxsparklabs-skill"
-    ]                                          (Claude's runtime slash namespace)
-                                                     │
+        ...                                  _generated/skill-example/.claude-plugin/plugin.json
+      },                                       "name": "dgxsparklabs-skill-example"
+      { "name": "skill-example-single", ... }, "skills": ["./skills/"]
+      ...
+    ]                                                │
                                                      ▼
-                                             _generated/skill-notify/SKILL.md
+                                             _generated/skill-example/skills/notebook/SKILL.md
                                                ---
-                                               name: notify    ← YOU wrote this in skills/notify/SKILL.md:2
+                                               name: notebook   ← YOU wrote this in skills/example/skills/notebook/SKILL.md:2
+                                               description: ...
+                                               ---
+                                             _generated/skill-example/skills/status/SKILL.md
+                                               ---
+                                               name: status     ← second skill in the same plugin (multi-skill layout)
                                                description: ...
                                                ---
 ```
 
-When you run `claude plugin install skill-notify@dgxsparklabs-marketplace`:
+When you run `claude plugin install skill-example@dgxsparklabs-marketplace`:
 
-1. CLI splits on `@` — left side `skill-notify` is the plugin name, right side `dgxsparklabs-marketplace` is the marketplace identity.
+1. CLI splits on `@` — left side `skill-example` is the plugin name, right side `dgxsparklabs-marketplace` is the marketplace identity.
 2. CLI looks up `dgxsparklabs-marketplace` in registered marketplaces (from `claude plugin marketplace add`); finds the path to this repo's `.claude-plugin/marketplace.json`.
-3. CLI finds the entry where `plugins[].name == "skill-notify"` and reads `source` (`./_generated/skill-notify`).
-4. CLI copies `_generated/skill-notify/` to `~/.claude/plugins/cache/dgxsparklabs-marketplace/skill-notify/<version>/`.
-5. After `claude plugin enable skill-notify@dgxsparklabs-marketplace`, the cached `plugin.json` `name: dgxsparklabs-skill` registers as the slash namespace and the SKILL.md frontmatter `name: notify` registers as a component under it.
-6. `/dgxsparklabs-skill:notify` at the prompt resolves to that skill. The bare flat form `/notify` also resolves (Claude internally rewrites to the qualified form).
+3. CLI finds the entry where `plugins[].name == "skill-example"` and reads `source` (`./_generated/skill-example`).
+4. CLI copies `_generated/skill-example/` to `~/.claude/plugins/cache/dgxsparklabs-marketplace/skill-example/<version>/`.
+5. After `claude plugin enable skill-example@dgxsparklabs-marketplace`, the cached `plugin.json` `name: dgxsparklabs-skill-example` registers as the plugin's slash namespace; both SKILL.md files register as components under it (`notebook` and `status`).
+6. `/dgxsparklabs-skill-example:notebook` and `/dgxsparklabs-skill-example:status` at the prompt both resolve. The bare flat forms `/notebook` and `/status` also resolve (Claude internally rewrites to the qualified form).
 
 If any link in this chain breaks, the symptom changes deterministically:
 
 | Broken link | Symptom |
 |---|---|
-| `skills/notify/` directory missing | `claude plugin install` errors `Plugin "skill-notify" not found in marketplace` |
-| SKILL.md frontmatter `name:` missing or malformed | install succeeds; `/dgxsparklabs-skill:notify` returns `Unknown command` |
+| `skills/example/` directory missing | `claude plugin install` errors `Plugin "skill-example" not found in marketplace` |
+| SKILL.md frontmatter `name:` missing or malformed | install succeeds; `/dgxsparklabs-skill-example:notebook` returns `Unknown command` |
 | `MARKETPLACE.toml` `name` field renamed mid-flight | `@dgxsparklabs-marketplace` references break AND the brand prefix changes for every plugin |
-| `_generated/skill-notify/` deleted (generator not re-run after source edit) | install succeeds against stale source; behavior reflects the prior content |
-| Two installed plugins share `plugin.json name: dgxsparklabs-skill` (by design) | Both work; `/dgxsparklabs-skill:<componentA>` and `:<componentB>` both resolve. `claude plugin details dgxsparklabs-skill` resolves to the first-installed plugin only (known degradation) — recover via `claude plugin list` and inspect `_generated/<plugin>/.claude-plugin/plugin.json` directly. |
+| `_generated/skill-example/` deleted (generator not re-run after source edit) | install succeeds against stale source; behavior reflects the prior content |
+| Source plugin BOTH has root SKILL.md AND `skills/<x>/SKILL.md` subdirs | Generator raises `ValueError` from `SkillConstruct.build_plugin_json` — pick one layout |
 
 ### The duplication pitfall
 

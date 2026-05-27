@@ -47,6 +47,28 @@ def _load_plugin_json(path: Path) -> dict:
     return json.loads(path.read_text(encoding="utf-8"))
 
 
+def _read_source_plugin_description(src_plugin_dir: Path, fallback: str) -> str:
+    """Read the plugin-level description from ``<src>/.claude-plugin/plugin.json``.
+
+    This is the marketplace-listing one-liner, distinct from per-component
+    descriptions (which live in each SKILL.md frontmatter for skills, or
+    each agent .md frontmatter for sub-agents, etc.). Skills under the
+    multi-skill layout have no single SKILL.md to pull a description from,
+    so the operator authors it at the plugin level.
+
+    Falls back to ``fallback`` (typically the plugin directory name) if the
+    source plugin.json is missing, unparseable, or has no ``description``.
+    """
+    src_pj_path = src_plugin_dir / ".claude-plugin" / "plugin.json"
+    if not src_pj_path.exists():
+        return fallback
+    try:
+        data = json.loads(src_pj_path.read_text(encoding="utf-8"))
+    except json.JSONDecodeError:
+        return fallback
+    return data.get("description", fallback)
+
+
 def _frontmatter(path: Path) -> dict:
     """Parse YAML frontmatter (key: value lines) from a markdown file.
 

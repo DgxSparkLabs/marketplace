@@ -36,6 +36,7 @@
 description = "Reference examples — install to study every construct type"
 members = [
   "skill:example",
+  "skill:example-single",
   "rule:example",
   "command:example",
   "agent:example",

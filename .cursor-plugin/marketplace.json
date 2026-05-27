@@ -25,6 +25,10 @@
     {
       "name": "skill-example",
       "source": "./_generated/skill-example"
+    },
+    {
+      "name": "skill-example-single",
+      "source": "./_generated/skill-example-single"
     }
   ]
 }

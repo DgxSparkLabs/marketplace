@@ -1,70 +1,77 @@
 # skill-example
 
-A working reference plugin demonstrating the **skill** construct type. Copy this directory and modify to scaffold your own skill plugin.
+A working reference plugin demonstrating the **multi-skill layout** for the skill construct. One plugin ships two skills side-by-side: `notebook` and `status`. Copy this directory and modify to scaffold your own multi-skill plugin.
 
 ## What it does
 
-When invoked as `/skill-example:lab-notebook <topic>` (or the bare flat form `/lab-notebook <topic>`), it prints a short markdown block tagged as a lab notebook status update.
+After install + enable, the plugin exposes two slash commands:
 
-Install:
+| Slash form | What it does |
+|---|---|
+| `/dgxsparklabs-skill-example:notebook <topic>` | Prints a short markdown block tagged as a lab-notebook status update |
+| `/dgxsparklabs-skill-example:status` | Prints `df -h .` for the current directory plus a UTC timestamp |
+
+The bare flat forms `/notebook` and `/status` also resolve.
+
+## Install
+
 ```
-/plugin install skill-example@dgxsparklabs-marketplace
+claude plugin install skill-example@dgxsparklabs-marketplace --scope project
+claude plugin enable  skill-example@dgxsparklabs-marketplace
 ```
 
-Enable (plugins land disabled on install):
-```
-/plugin enable skill-example@dgxsparklabs-marketplace
-```
-
-Invoke:
-```
-/skill-example:lab-notebook onboarding
-```
+Install and enable are SEPARATE steps. If you skip enable, Claude reports "Plugin not found in any editable settings scope."
 
 ## File-by-file walkthrough
 
 ```
 skills/example/
 ├── .claude-plugin/
-│   └── plugin.json    ← plugin manifest (Claude Code reads this); name: skill-example
-├── SKILL.md           ← the skill itself (Claude reads this when invoked); name: lab-notebook
-└── README.md          ← human-facing tutorial (you are here)
+│   └── plugin.json          ← plugin manifest; name "dgxsparklabs-skill-example", marketplace description
+├── skills/
+│   ├── notebook/SKILL.md    ← the "notebook" skill; frontmatter name: notebook
+│   └── status/SKILL.md      ← the "status" skill;   frontmatter name: status
+└── README.md                ← you are here
 ```
 
 ### `.claude-plugin/plugin.json`
 
-Required for the plugin to be installable via `/plugin install`. Key fields:
+Operator-authored. The generator reads:
 
-- `name` — the plugin's marketplace + invocation namespace. Set to `skill-example` so it matches the marketplace.json entry. Must be kebab-case.
-- `version` — semantic version. Bump when shipping changes.
-- `skills: ["./"]` — tells Claude Code that the SKILL.md lives in the same directory as the plugin manifest. For a skill in a subdirectory, use `["./skills"]` or specific paths.
-- `author` must be an object `{ "name": "...", "url": "..." }`, not a string.
+- `name` — plugin identifier; must be `dgxsparklabs-skill-example` (kebab-case, `<brand>-<construct.prefix>-<plugin-dir-name>`). Don't typo the brand prefix; copy from any other plugin's plugin.json.
+- `description` — the marketplace-listing one-liner shown in `claude plugin list --available`.
 
-### `SKILL.md`
+The generator overwrites `version` and `author` from `MARKETPLACE.toml`; you can omit those locally.
 
-The actual skill. The YAML frontmatter declares metadata Claude Code uses to surface the skill in slash-command completions and to scope its tool access:
+### `skills/<skill>/SKILL.md`
 
-- `name: lab-notebook` — what appears as the suffix in the slash invocation `/skill-example:lab-notebook`. Pick a short semantic word (not the plugin name) to avoid awkward doubled forms like `/skill-example:example-skill`.
-- `description` — what users see when typing `/`.
+One SKILL.md per skill, each in its own subdir. The directory name (`notebook`, `status`) does NOT have to match the frontmatter `name:` — but having them match keeps things readable.
+
+Per-skill frontmatter:
+
+- `name` — slash-component suffix. `/dgxsparklabs-skill-example:notebook` ← this `notebook`.
+- `description` — slash-autocomplete tooltip (distinct from the plugin-level description above).
 - `argument-hint` — placeholder text shown after the command name.
-- `allowed-tools` — restricts which tools the skill can call. Be minimal — only list what the skill genuinely needs. Lists `Bash` (for the timestamp) and `Read` (just because most skills end up reading files; remove if yours doesn't).
+- `allowed-tools` — restricts which tools the skill can call. Be minimal.
 
-The body (everything after the closing `---`) is the prompt Claude sees when the skill fires. Use imperatives: "Compose a block...", "Print it..."
+The body (everything after the closing `---`) is the prompt Claude runs when the skill fires.
 
-`$ARGUMENTS` is substituted with everything the user typed after the slash command.
+## To make your own multi-skill plugin from this template
 
-## To make your own skill from this template
-
-1. Copy this directory: `cp -r skills/example skills/my-skill`
-2. Rename `my-skill` to whatever you want (kebab-case).
-3. Edit `.claude-plugin/plugin.json` — update `name` (to `skill-<your-name>` for marketplace alignment), `description`, `homepage`, `keywords`.
-4. Edit `SKILL.md` — update frontmatter `name:` to a short semantic word (the slash invocation suffix). Replace the body with your skill's content. See `docs/ADDING_A_CONSTRUCT.md` for the naming convention and full conventions.
-5. Add your skill name to a domain in `catalog.toml` under `[skill_domain.<domain>]`.
-6. Run `uv run scripts/generate_manifest.py` to refresh manifests.
+1. Copy this directory: `cp -r skills/example skills/<your-plugin>`
+2. Edit `.claude-plugin/plugin.json` — replace `dgxsparklabs-skill-example` with `dgxsparklabs-skill-<your-plugin>` and rewrite the description.
+3. Rename / add / delete `skills/<skill>/SKILL.md` files as needed. Each child dir needs its own SKILL.md.
+4. Add your plugin to a `[bundle.*]` member list in `catalog.toml` (or skip — bundles are optional).
+5. `uv run scripts/generate_manifest.py`
+6. `uv run tests/test_marketplace.py`
 7. Commit.
+
+## Solo (single-skill) layout
+
+If your plugin has only one skill, prefer the **solo layout** instead. See `skills/example-single/` for the canonical example. Both layouts coexist in this marketplace; pick by which fits.
 
 ## Related
 
-- Full naming convention (eliminate awkward doubled slash forms): `docs/ADDING_A_CONSTRUCT.md`
+- Full naming convention + the three contributor patterns (solo, multi-instance, bundle): `docs/ADDING_A_CONSTRUCT.md`
 - Other example plugins demonstrating different construct types: `agents/example/`, `commands/example/`, `hooks/example/`, etc.
-- Real skills shipped by this marketplace: `skills/`
+- The single-skill counterpart: `skills/example-single/`

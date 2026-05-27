@@ -8,6 +8,7 @@
   },
   "dependencies": [
     "skill-example",
+    "skill-example-single",
     "command-example",
     "agent-example",
     "hook-example",

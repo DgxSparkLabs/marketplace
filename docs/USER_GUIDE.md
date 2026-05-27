@@ -458,14 +458,15 @@ Per [code.claude.com/docs/en/plugins](https://code.claude.com/docs/en/plugins) (
 
 | Construct | Invocation form | Source |
 |---|---|---|
-| Skill | `/dgxsparklabs-skill:<skill-name>` (e.g., `/dgxsparklabs-skill:lab-notebook`) | plugins.md, skills.md |
-| Command | `/dgxsparklabs-command:<file-stem>` (e.g., `/dgxsparklabs-command:hello`) | skills.md ("Custom commands have been merged into skills") |
-| Agent (sub-agent) | `dgxsparklabs-agent:<agent-name>` (no `/` — appears in `/agents` UI; e.g., `dgxsparklabs-agent:notebook-reviewer`) | plugins-reference.md |
-| MCP tool | `mcp__dgxsparklabs-mcp__<server-key>__<tool>` (hook-matcher form) OR `plugin:dgxsparklabs-mcp:<server-key>` (CLI display form) | hooks.md, plugins-reference.md |
+| Skill (solo) | `/dgxsparklabs-skill-<plugin>:<skill-name>` (e.g., `/dgxsparklabs-skill-example-single:hello`) | plugins.md, skills.md |
+| Skill (multi) | `/dgxsparklabs-skill-<plugin>:<skill-name>` (e.g., `/dgxsparklabs-skill-example:notebook` or `/dgxsparklabs-skill-example:status`) | plugins.md, skills.md |
+| Command | `/dgxsparklabs-command-<plugin>:<file-stem>` (e.g., `/dgxsparklabs-command-example:hello`) | skills.md ("Custom commands have been merged into skills") |
+| Agent (sub-agent) | `dgxsparklabs-agent-<plugin>:<agent-name>` (no `/` — appears in `/agents` UI; e.g., `dgxsparklabs-agent-example:notebook-reviewer`) | plugins-reference.md |
+| MCP tool | `mcp__dgxsparklabs-mcp-<plugin>__<server-key>__<tool>` (hook-matcher form) OR `plugin:dgxsparklabs-mcp-<plugin>:<server-key>` (CLI display form) | hooks.md, plugins-reference.md |
 
-A common operator confusion: typing `/` in Claude shows skill entries that look "flat" (e.g., bare `/lab-notebook`) — the flat form also resolves per `code.claude.com/docs/en/skills`, but the **canonical** invocation is the namespaced form `/dgxsparklabs-skill:lab-notebook`. The brand prefix `dgxsparklabs-skill` is the SAME for every skill plugin in this marketplace — they all share one slash namespace by design (see `docs/research/shared-namespace-2026-05-27/RESEARCH.md`). Per-plugin disambiguation in the install command still uses the unique `skill-<name>` form.
+A common operator confusion: typing `/` in Claude shows skill entries that look "flat" (e.g., bare `/notebook`, `/status`, `/hello`) — the flat form also resolves per `code.claude.com/docs/en/skills`, but the **canonical** invocation is the namespaced form `/dgxsparklabs-skill-<plugin>:<skill>`. The slash namespace is unique per plugin as of 2026-05-28 (an earlier shared-namespace attempt called Path A, `d641f92` on 2026-05-27, was reverted — see `docs/research/multi-instance-claude-only-2026-05-27/PLAN.md`). A single multi-skill plugin like `skill-example` (which ships `notebook` and `status`) groups its skills under one plugin namespace; separate plugins like `skill-example-single` get their own namespace.
 
-For **bundles**, namespacing follows each contained plugin's own name. Installing `bundle-examples` does not introduce a `bundle-examples:*` namespace — the contained plugins appear under their own plugin namespaces (e.g., `/skill-example:lab-notebook`, `/command-example:hello`).
+For **bundles**, namespacing follows each contained plugin's own name. Installing `bundle-examples` does not introduce a `bundle-examples:*` namespace — the contained plugins appear under their own plugin namespaces (e.g., `/dgxsparklabs-skill-example:notebook`, `/dgxsparklabs-command-example:hello`).
 
 Reference: [code.claude.com/docs/en/plugins-reference#plugin-components-reference](https://code.claude.com/docs/en/plugins-reference#plugin-components-reference).
 

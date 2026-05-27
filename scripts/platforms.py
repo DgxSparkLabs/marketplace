@@ -196,6 +196,12 @@ class CodexPlatform:
             "description": _description_from_construct(construct, name),
         }
         if isinstance(construct, SkillConstruct):
+            # NOTE: multi-instance source layout (skills/<skill>/SKILL.md under
+            # plugin) is UNVERIFIED on Codex. The "./skills/" path here is
+            # hardcoded — it assumes the multi-skill layout, but solo-layout
+            # plugins (SKILL.md at plugin root) need "./". Empirical
+            # verification deferred to ROADMAP #38 (gated on the Codex QA cycle,
+            # roadmap #10).
             manifest["skills"] = "./skills/"
         elif isinstance(construct, MCPConstruct):
             manifest["mcpServers"] = "./mcp.json"
@@ -222,6 +228,12 @@ class GeminiPlatform:
 
     def emit(self, construct: Construct, name: str) -> None:
         if isinstance(construct, SkillConstruct):
+            # NOTE: multi-instance source layout (skills/<skill>/SKILL.md under
+            # plugin) is UNVERIFIED on Gemini. shutil.copytree produces a
+            # nested mirror (.gemini/skills/<plugin>/skills/<skill>/SKILL.md)
+            # that Gemini's auto-discovery likely won't recurse into. Per-skill
+            # flattening deferred to ROADMAP #39 (gated on the Gemini QA cycle,
+            # roadmap #11).
             dst = self.mirror_directory / "skills" / name
             shutil.copytree(
                 construct.source_directory / name,
@@ -386,6 +398,12 @@ class CursorPlatform:
             "description": _description_from_construct(construct, name),
         }
         if isinstance(construct, SkillConstruct):
+            # NOTE: multi-instance source layout (skills/<skill>/SKILL.md
+            # under plugin) is UNVERIFIED on Cursor. The "./" path here
+            # assumes the solo layout (SKILL.md at plugin root); multi-skill
+            # plugins need "./skills/", which would require reading the
+            # source plugin.json to pick the right value. Fix deferred to
+            # ROADMAP #37 (gated on the Cursor IDE QA cycle, roadmap #9).
             manifest["skills"] = "./"  # SKILL.md is at plugin root
         elif isinstance(construct, AgentConstruct):
             manifest["agents"] = "./agents/"
@@ -418,6 +436,13 @@ class WindsurfPlatform:
     supports: set[type[Construct]] = {RuleConstruct, HookConstruct}
 
     def emit(self, construct: Construct, name: str) -> None:
+        # NOTE: multi-instance source layout (skills/<skill>/SKILL.md under
+        # plugin) is UNVERIFIED on Windsurf. SkillConstruct isn't in
+        # ``supports`` today (Windsurf reads skills via the .agents/ shim,
+        # see AgentsPlatform); if/when Windsurf grows native skill
+        # discovery, the mirror flattening question (one .windsurf/skills/<skill>/
+        # dir per skill vs one per source plugin) lands here. Deferred to
+        # ROADMAP #40 (gated on the Windsurf QA cycle, roadmap #12).
         if isinstance(construct, RuleConstruct):
             rules_dir = self.mirror_directory / "rules"
             rules_dir.mkdir(parents=True, exist_ok=True)
@@ -473,6 +498,12 @@ class DevinPlatform:
     supports: set[type[Construct]] = {SkillConstruct}
 
     def emit(self, construct: Construct, name: str) -> None:
+        # NOTE: multi-instance source layout (skills/<skill>/SKILL.md under
+        # plugin) is UNVERIFIED on Devin. Devin reads from .agents/skills/
+        # natively (see AgentsPlatform), so the discovery question really
+        # lives there; if Devin grows its own .devin/skills/ mirror again,
+        # per-skill flattening would land here. Deferred to ROADMAP #41
+        # (gated on the Devin QA cycle, roadmap #13).
         # No mirror directory (D-1): Devin reads .agents/skills/ natively.
         return
 
@@ -508,6 +539,16 @@ class AgentsPlatform:
 
     def emit(self, construct: Construct, name: str) -> None:
         if isinstance(construct, SkillConstruct):
+            # NOTE: multi-instance source layout (skills/<skill>/SKILL.md
+            # under plugin) is UNVERIFIED across the three .agents/-reading
+            # platforms (Cursor CLI, Windsurf, Devin). The current
+            # shutil.copytree produces a nested mirror
+            # (.agents/skills/<plugin>/skills/<skill>/SKILL.md) that those
+            # platforms likely won't discover — the spec implies one
+            # SKILL.md per .agents/skills/<x>/ directory. Per-skill mirror
+            # flattening deferred to ROADMAP #42 (highest leverage because
+            # 3 platforms read this path); blockers are the per-platform
+            # QA cycles, roadmap #10/#12/#13/#14.
             target = self.mirror_directory / "skills" / name
             shutil.copytree(
                 construct.source_directory / name,

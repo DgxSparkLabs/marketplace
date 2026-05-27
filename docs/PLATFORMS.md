@@ -8,6 +8,8 @@ status: live
 
 This marketplace targets six AI coding platforms — Claude Code, Codex, Gemini, Cursor, Windsurf, and Devin. Three of them (Claude, Codex, Gemini) support a one-command GitHub install; the other three install via IDE import or `git clone`. A shared `.agents/skills/` directory is read natively by Windsurf, Cursor, and Devin — the only true cross-platform convergence point. For end-user install commands, start with `README.md`. This document is the canonical reference for how each platform installs, how it discovers content, what the CI workflows assert about it, and where the gaps are.
 
+> **2026-05-28 multi-instance scope (non-Claude platforms in active QA cycles).** Skill plugins can now use either a solo layout (`<plugin>/SKILL.md`) or a multi-skill layout (`<plugin>/skills/<skill>/SKILL.md`). The multi-instance source layout is **verified on Claude only** as of 2026-05-28. On the other five platforms (Cursor IDE, Codex, Gemini, Windsurf, Devin) and the `.agents/` cross-platform shim, multi-skill discovery is **unverified — paused until each platform's QA cycle lands**. The generator still emits content to the per-platform mirrors, but the nested `skills/<skill>/SKILL.md` shape may not be discovered by downstream consumers. See ROADMAP #37-#42 for the per-platform follow-up tasks and the NOTE comments in `scripts/platforms.py` for the source-level acknowledgement.
+
 ## How to read these docs
 
 This file is one of three hub docs in the pyramid:

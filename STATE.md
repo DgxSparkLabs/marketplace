@@ -2,50 +2,66 @@
 
 > Live within-session truth. Pair with `HANDOFF.md` (between-sessions) and `PITFALLS.md` (cross-session lessons).
 
-## Session end — 2026-05-27
+## Session end — 2026-05-28
 
-**Branch:** `chore/housekeeping-and-roadmap` (PR #10 open, 12 commits)
+**Branch:** `chore/housekeeping-and-roadmap` (PR #10, 13 commits after this one)
 **Main tip:** `4b00faa` — PR #9 squash-merged
-**Last commit on PR #10:** `3275049` — feat(stub): standalone Dockerized hermetic stub + host bind-mounted logs
-**Working tree:** clean except `.claude/` untracked (operator's local Claude config); new research artifacts staged for commit (see below)
+**Working tree:** clean except `.claude/` untracked (operator's local Claude config)
 
-## What this session produced
+## What this session shipped
 
-Three artifacts in `docs/research/multi-instance-claude-only-2026-05-27/`:
+Implemented the **multi-instance-capable plugins (Claude-only)** refactor — Path D — per [`docs/research/multi-instance-claude-only-2026-05-27/PLAN.md`](docs/research/multi-instance-claude-only-2026-05-27/PLAN.md). One commit on PR #10. Path A (`d641f92`, 2026-05-27) was reverted; Claude `plugin.json` `name` fields are now unique-per-plugin in shape `<brand>-<construct.prefix>-<source-dir>`.
 
-1. **PLAN.md** — complete execution plan for the multi-instance-capable plugins refactor (Claude-only scope, ~440 lines)
-2. **IMPLEMENTOR_PROMPT.md** — self-contained brief for the next session's implementor agent
-3. **OBJECTIVE_CHECKLIST.md** — boolean verification checklist (~40 items, each independently testable)
+### Code changes
 
-Plus updates to `HANDOFF.md` (top-of-file banner pointing to the research artifacts).
+- `scripts/constructs.py` — `_base_plugin_shape` flipped to `f"{brand}-{construct.prefix}-{name}"`. `SkillConstruct.build_plugin_json` gained a layout-detection branch: solo (`SKILL.md` at plugin root → `skills: ["./"]`) or multi (`skills/<skill>/SKILL.md` → `skills: ["./skills/"]`). Both-or-neither layouts raise `ValueError`.
+- `scripts/utils.py` — new `_read_source_plugin_description(src_plugin_dir, fallback)` helper for reading the plugin-level marketplace-listing description.
+- `scripts/platforms.py` — six NOTE comments tagging non-Claude Skill paths as `multi-instance source layout UNVERIFIED` (Cursor, Codex, Gemini, Windsurf, Devin, `.agents/` shim). Code unchanged on those platforms.
 
-## What the next session is set up to do
+### Source content changes
 
-Execute the plan. Specifically: revert Path A (the shared-namespace pattern landed at commit `d641f92`), adopt multi-instance-capable plugins for Claude only, reorganize the example set to two plugins (`skill-example` with 2 skills, `skill-example-single` with 1 skill), add 3 tests, cascade docs across 10 files, add ROADMAP follow-ups #37-#42 for per-platform multi-instance verification. One commit on PR #10.
+- `skills/example/` — reorganized to multi-skill layout. Two skills now: `skills/notebook/SKILL.md` (lab-notebook body from the old root `SKILL.md`) + `skills/status/SKILL.md` (new ~20 lines for `df -h .` + UTC). Plus operator-authored `.claude-plugin/plugin.json`. Rewrote `README.md`.
+- `skills/example-single/` — NEW solo-layout reference plugin. One skill (`name: hello`).
+- `catalog.toml` — `bundle.examples` adds `skill:example-single`.
 
-## Why this work didn't happen in THIS session
+### Test changes (`tests/test_marketplace.py`)
 
-The user explicitly chose to end the session after the planning + review phase. Three rounds of subagent review caught real issues (cross-platform mirror discovery depth, MCP server-key cross-plugin collision, plan contradictions); the plan was rewritten to be implementation-ready. The user's instruction was to prepare everything for the next session and then end this one. Implementation happens fresh tomorrow.
+- Renamed + updated `test_individual_plugin_name_is_unique_brand_namespace` (was `_is_brand_namespace`).
+- New `test_skill_plugin_layouts` — asserts both `["./skills/"]` and `["./"]` shapes from the two canonical examples.
+- New `test_mcp_server_keys_unique_across_plugins` — cross-plugin MCP server-key collision check.
+- Marketplace-count formula updated to `10 + 1 = 11`.
+- `test_agents_skills_mirror_exists` and `test_gemini_skills_mirror_and_extension_manifest` relaxed to accept either solo (`<plugin>/SKILL.md`) or multi (`<plugin>/skills/<x>/SKILL.md`) shape — the bytes-on-disk part of the contract.
 
-## Outside the multi-instance refactor
+### Doc cascade (10 files)
 
-PR #10 already contains 12 commits of substantial work: housekeeping + roadmap creation, mcp-example name alignment, Claude reference card, Scheme B+ naming, dev container, PEP 723 stubs + volume chown, bind-mount Docker setup, fenced code blocks for typed commands, catch-all bundle retirement, naming trace + code crosslinks, brand-namespace Path A (to be reverted next session), Dockerized hermetic stub. All of those stay regardless of the multi-instance refactor.
+`README.md`, `docs/ADDING_A_CONSTRUCT.md`, `docs/TEST_YOURSELF.md`, `docs/USER_GUIDE.md`, `docs/PLATFORMS.md`, `docs/CONSTRUCT_TYPES.md`, `docs/RESUME_HERE.md`, `CHANGELOG.md`, plus the two skill plugin READMEs (`skills/example/README.md` rewritten; `skills/example-single/README.md` new). The pattern is the same in each: drop Path A's shared-namespace language, document the new `<brand>-<prefix>-<plugin>` unique slash form, flag non-Claude paths as multi-instance-unverified, point at ROADMAP #37-#42.
+
+### ROADMAP
+
+Items #37-#42 (per-platform multi-instance verification follow-ups, one per non-Claude platform) were prepped in the prior session-end commit `5ae8619`; no further changes this session.
 
 ## Tests state
 
-Last known green locally: 77 marketplace + 21 schema-fitness = 98 tests passing on commit `3275049`. The next session's implementation must maintain that.
+- `uv run tests/test_marketplace.py` — **79 tests pass** (was 77; +2 for the two new tests).
+- `uv run tests/test_schema_fitness.py` — **21 tests pass**.
+- `uv run scripts/generate_manifest.py --check` — drift-clean.
 
-## What's deferred (still on the roadmap, not blocking PR #10 merge)
+## End-of-implementation marketplace shape
 
-- 6 platform QA cycles (Cursor IDE, Cursor CLI, Gemini, Windsurf, Devin, agents CLI shim) — roadmap items #9-#14
-- 6 multi-instance verification follow-ups (one per non-Claude platform) — roadmap items #37-#42 (added by the next session per the plan)
-- F4 visual theme — interactive verification, operator-only
+- **11 plugin entries** in `.claude-plugin/marketplace.json` (was 10):
+  - 10 individual Claude-supported plugins (one per construct, plus the second skill example)
+  - 1 catalog bundle (`bundle-examples`, now with 11 members including `skill:example-single`)
+- All non-bundle Claude `plugin.json` `name` fields are unique-per-plugin in shape `dgxsparklabs-<construct.prefix>-<plugin>` (e.g. `dgxsparklabs-skill-example`, `dgxsparklabs-command-example`).
+- All slash forms follow `/dgxsparklabs-<construct.prefix>-<plugin>:<component>` — e.g. `/dgxsparklabs-skill-example:notebook`, `/dgxsparklabs-skill-example-single:hello`.
 
-## What the next session should NOT do
+## What's still paused (not blocking PR #10 merge)
 
-- Touch the non-Claude per-platform paths in `scripts/platforms.py` beyond adding NOTE comments
-- Per-skill mirror flattening in `AgentsPlatform.emit` or `GeminiPlatform.emit`
-- Reading source plugin.json in `CursorPlatform.build_plugin_json`
-- Cross-platform empirical Docker verification (deferred to each platform's own QA cycle)
+- 6 platform QA cycles (Cursor IDE, Cursor CLI, Gemini, Windsurf, Devin, `.agents/` shim) — roadmap #9-#14.
+- 6 multi-instance verification follow-ups (one per non-Claude platform) — roadmap #37-#42, each blocked on the matching QA cycle.
+- F4 visual theme — interactive verification, operator-only (#15).
 
-All four are explicitly out of scope per the PLAN.md "What's deferred" section.
+## Critical-rules adherence
+
+- No AI co-author attribution in the commit message (per `rules/no-ai-credit/`).
+- No direct push to `main` — PR #10 only.
+- Stayed within Claude-only scope. Non-Claude per-platform `emit()` / `build_plugin_json` methods got NOTE comments only; no per-skill mirror flattening; no source-plugin.json reading in `CursorPlatform.build_plugin_json`. All deferred per the plan's "What's deferred" section.

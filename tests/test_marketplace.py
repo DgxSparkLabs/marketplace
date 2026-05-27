@@ -43,6 +43,7 @@ from constructs import (
     CONSTRUCTS,
     AgentConstruct,
     HookConstruct,
+    MCPConstruct,
     RuleConstruct,
     SkillConstruct,
     ThemeConstruct,
@@ -169,27 +170,30 @@ class TestGeneratedPlugins(unittest.TestCase):
                         f"Bundle '{bundle.name}' dep '{dep_name}' has no generated plugin",
                     )
 
-    def test_individual_plugin_name_is_brand_namespace(self):
-        """Each individual plugin's ``plugin.json`` ``name`` field is the
-        brand-prefixed shared namespace (``<brand>-<construct.category>``,
-        e.g. ``dgxsparklabs-skill``). Multiple plugins of the same construct
-        intentionally share one ``name`` so their components surface under one
-        slash namespace ``/dgxsparklabs-skill:<frontmatter-name>``. See
-        ``docs/research/shared-namespace-2026-05-27/RESEARCH.md`` for the
-        empirical evidence Claude accepts this.
+    def test_individual_plugin_name_is_unique_brand_namespace(self):
+        """Each plugin's ``_generated/<plugin>/.claude-plugin/plugin.json``
+        ``name`` field is ``<brand>-<construct.prefix>-<source-dir-name>`` —
+        unique per plugin (e.g. ``dgxsparklabs-skill-example``).
 
-        The install-time marketplace entry name (in ``marketplace.json``
-        ``plugins[].name``) is a separate field and IS unique-per-plugin
-        (``<construct.prefix>-<source-dir-name>``, e.g. ``skill-example``);
-        that contract is asserted by
+        The slash form follows the same pattern:
+        ``/dgxsparklabs-skill-example:<frontmatter-name>``.
+
+        The install-time marketplace entry name in ``marketplace.json``
+        ``plugins[].name`` (e.g. ``skill-example``) is a separate, unprefixed
+        identifier; that contract is asserted by
         ``test_marketplace_lists_all_expected_plugins`` below.
+
+        History: an earlier attempt (Path A, ``d641f92``, 2026-05-27) used a
+        shared ``<brand>-<construct.category>`` name so multiple plugins of
+        one construct shared a slash namespace; ``claude plugin details``
+        collapsed components to a single first-installed-wins view. Path A
+        was reverted on 2026-05-28 per
+        ``docs/research/multi-instance-claude-only-2026-05-27/PLAN.md``.
 
         RuleConstruct is excluded per F8 — rules don't get a
         .claude-plugin/plugin.json since they are not a Claude plugin
         component (see ClaudeCodePlatform.supports docstring).
         """
-        # Brand prefix derived the same way as scripts/constructs.py
-        # _base_plugin_shape — from MARKETPLACE.toml, strip "-marketplace".
         from utils import _marketplace_name
         mp_name = _marketplace_name()
         brand = mp_name.removesuffix("-marketplace") if mp_name.endswith("-marketplace") else mp_name
@@ -197,15 +201,75 @@ class TestGeneratedPlugins(unittest.TestCase):
         for construct in CONSTRUCTS.values():
             if type(construct) not in ClaudeCodePlatform.supports:
                 continue
-            expected_name = f"{brand}-{construct.category}"
-            for name in scan_source_dir(construct.source_directory):
-                plugin_path = REPO_ROOT / "_generated" / f"{construct.prefix}-{name}" / ".claude-plugin" / "plugin.json"
-                with self.subTest(construct=construct.prefix, name=name):
+            for source_name in scan_source_dir(construct.source_directory):
+                expected = f"{brand}-{construct.prefix}-{source_name}"
+                plugin_path = REPO_ROOT / "_generated" / f"{construct.prefix}-{source_name}" / ".claude-plugin" / "plugin.json"
+                with self.subTest(construct=construct.prefix, name=source_name):
                     data = json.loads(plugin_path.read_text(encoding="utf-8"))
                     self.assertEqual(
-                        data["name"], expected_name,
-                        f"Plugin name mismatch for {construct.prefix}-{name}: expected shared brand namespace",
+                        data["name"], expected,
+                        f"Plugin name mismatch for {construct.prefix}-{source_name}: "
+                        f"expected unique brand-prefixed namespace",
                     )
+
+    def test_skill_plugin_layouts(self):
+        """Both example skill plugins must emit the correct ``skills`` field.
+
+        - ``skill-example`` is multi-skill: skills/example/skills/notebook/SKILL.md
+          + skills/example/skills/status/SKILL.md → ``skills: ["./skills/"]``.
+        - ``skill-example-single`` is solo: skills/example-single/SKILL.md at
+          plugin root → ``skills: ["./"]``.
+
+        The layout-detection branch in ``SkillConstruct.build_plugin_json``
+        picks between the two by inspecting source filesystem shape; this
+        test pins the externally visible contract.
+        """
+        multi_pj = REPO_ROOT / "_generated" / "skill-example" / ".claude-plugin" / "plugin.json"
+        multi_data = json.loads(multi_pj.read_text(encoding="utf-8"))
+        self.assertEqual(multi_data["skills"], ["./skills/"])
+        self.assertTrue(
+            (REPO_ROOT / "_generated" / "skill-example" / "skills" / "notebook" / "SKILL.md").exists(),
+            "skill-example multi-skill layout: notebook SKILL.md missing under skills/",
+        )
+        self.assertTrue(
+            (REPO_ROOT / "_generated" / "skill-example" / "skills" / "status" / "SKILL.md").exists(),
+            "skill-example multi-skill layout: status SKILL.md missing under skills/",
+        )
+
+        single_pj = REPO_ROOT / "_generated" / "skill-example-single" / ".claude-plugin" / "plugin.json"
+        single_data = json.loads(single_pj.read_text(encoding="utf-8"))
+        self.assertEqual(single_data["skills"], ["./"])
+        self.assertTrue(
+            (REPO_ROOT / "_generated" / "skill-example-single" / "SKILL.md").exists(),
+            "skill-example-single solo layout: SKILL.md missing at plugin root",
+        )
+
+    def test_mcp_server_keys_unique_across_plugins(self):
+        """No two MCP plugins may share a top-level ``mcpServers`` key.
+
+        Two MCP plugins both defining ``mcpServers.fetch`` would surface in
+        Claude as ``mcp__<plugin>__fetch__*`` for both — but Claude's tool
+        list is keyed by the inner name, so one shadows the other in the
+        model's view. Recommended convention: name server keys to include
+        the plugin name (e.g., ``git-helpers-fetch`` instead of bare
+        ``fetch``).
+        """
+        mcp = next(c for c in CONSTRUCTS.values() if isinstance(c, MCPConstruct))
+        seen: dict[str, str] = {}  # key → source plugin name
+        for source_name in scan_source_dir(mcp.source_directory):
+            config_path = mcp.source_directory / source_name / "mcp-config.json"
+            if not config_path.exists():
+                continue
+            data = json.loads(config_path.read_text(encoding="utf-8"))
+            for key in data.get("mcpServers", {}).keys():
+                with self.subTest(server_key=key, plugin=source_name):
+                    self.assertNotIn(
+                        key, seen,
+                        f"MCP server key '{key}' duplicated across plugins: "
+                        f"{seen.get(key, '?')} and {source_name}. Rename one "
+                        f"to incorporate the plugin name.",
+                    )
+                    seen[key] = source_name
 
     def test_rule_plugins_have_no_claude_plugin_manifest(self):
         """Per F8 (RESEARCH.md, 2026-05-26): rules are not a Claude plugin
@@ -279,14 +343,29 @@ class TestPlatformMirrors(unittest.TestCase):
         )
 
     def test_gemini_skills_mirror_and_extension_manifest(self):
-        """Gemini mirror must contain skills and a valid gemini-extension.json."""
+        """Gemini mirror must contain skill content (at any depth) and a
+        valid ``gemini-extension.json``.
+
+        Same multi-instance unverified scope as ``test_agents_skills_mirror_exists``:
+        this test asserts the source bytes reached the mirror, not that
+        Gemini's discovery recursion finds nested ``skills/<skill>/SKILL.md``
+        under multi-skill source layouts. Per-skill mirror flattening is
+        deferred to ROADMAP #39 (gated on the Gemini QA cycle, roadmap #11).
+        See ``GeminiPlatform.emit`` NOTE comment.
+        """
         gemini = PLATFORMS["gemini"]
         skill = next(c for c in CONSTRUCTS.values() if isinstance(c, SkillConstruct))
         for name in scan_source_dir(skill.source_directory):
             with self.subTest(skill=name):
+                plugin_root = gemini.mirror_directory / "skills" / name
+                any_skill_md = (
+                    (plugin_root / "SKILL.md").exists()
+                    or any(plugin_root.rglob("SKILL.md"))
+                )
                 self.assertTrue(
-                    (gemini.mirror_directory / "skills" / name / "SKILL.md").exists(),
-                    f"Gemini mirror missing skills/{name}/SKILL.md",
+                    any_skill_md,
+                    f".gemini/skills/{name}/ contains no SKILL.md (neither "
+                    f"at plugin root nor in any nested skills/<skill>/ subdir)",
                 )
         # Repo-level extension manifest (Phase 4 emission)
         manifest_path = gemini.mirror_directory / "gemini-extension.json"
@@ -514,8 +593,14 @@ class TestConstructRegistry(unittest.TestCase):
 class TestPluginCount(unittest.TestCase):
     """Plugin count formula — integration test.
 
-    Count = claude_individuals + non_rule_catalog_bundles + claude_catchalls.
-    F8 (RESEARCH.md, 2026-05-26) excludes RuleConstruct from the count.
+    Count = ``individuals + catalog_bundles``. F8 (RESEARCH.md, 2026-05-26)
+    excludes RuleConstruct from the individuals count. Per-construct catch-
+    all bundles were retired 2026-05-27.
+
+    Current expected total: ``10 + 1 = 11`` (was 10 before 2026-05-28).
+    The skill construct ships TWO source plugins post-2026-05-28
+    (``skill-example`` multi + ``skill-example-single`` solo) so individuals
+    grew by one. The lone catalog bundle is ``bundle-examples``.
     """
 
     def test_marketplace_count_matches_expected_formula(self):
@@ -532,8 +617,7 @@ class TestPluginCount(unittest.TestCase):
                 for d in b.resolve_dependencies(CONSTRUCTS)
             )
         )
-        # Per-construct catch-all bundles retired 2026-05-27.
-        expected = individuals + catalog_bundles
+        expected = individuals + catalog_bundles  # 10 + 1 = 11 (post-2026-05-28)
         self.assertEqual(
             len(manifest["plugins"]), expected,
             f"Expected {expected} plugins "
@@ -882,16 +966,35 @@ class TestAgentsMirror(unittest.TestCase):
     """
 
     def test_agents_skills_mirror_exists(self):
-        """.agents/skills/<name>/SKILL.md must exist for every source skill."""
+        """For every source skill plugin, at least one ``SKILL.md`` reaches
+        the ``.agents/skills/<plugin>/`` mirror.
+
+        Two source layouts are supported per ``SkillConstruct.build_plugin_json``:
+
+        - Solo: ``.agents/skills/<plugin>/SKILL.md`` (one file at plugin root).
+        - Multi: ``.agents/skills/<plugin>/skills/<skill>/SKILL.md``
+          (one or more files under nested ``skills/`` subdir).
+
+        This test asserts only that the source bytes reached the mirror,
+        not that downstream consumers (Windsurf / Cursor CLI / Devin) can
+        actually discover the multi-skill nested form. Per-platform
+        discovery verification for the multi-skill layout is deferred to
+        ROADMAP #42 (gated on the .agents/-reading platforms' QA cycles
+        #10/#12/#13/#14). See ``AgentsPlatform.emit`` NOTE comment.
+        """
         agents = next(p for p in PLATFORMS.values() if isinstance(p, AgentsPlatform))
         skill = next(c for c in CONSTRUCTS.values() if isinstance(c, SkillConstruct))
         for name in scan_source_dir(skill.source_directory):
             with self.subTest(skill=name):
-                skill_md = agents.mirror_directory / "skills" / name / "SKILL.md"
+                plugin_root = agents.mirror_directory / "skills" / name
+                any_skill_md = (
+                    (plugin_root / "SKILL.md").exists()
+                    or any(plugin_root.rglob("SKILL.md"))
+                )
                 self.assertTrue(
-                    skill_md.exists(),
-                    f".agents/skills/{name}/SKILL.md missing — "
-                    "Windsurf/Cursor/Devin can't discover this skill",
+                    any_skill_md,
+                    f".agents/skills/{name}/ contains no SKILL.md (neither "
+                    f"at plugin root nor in any nested skills/<skill>/ subdir)",
                 )
 
     def test_agents_skills_no_claude_plugin_leak(self):

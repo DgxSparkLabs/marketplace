@@ -1,0 +1,6 @@
+{
+  "name": "skill-example-single",
+  "version": "1.0.0",
+  "description": "One reference skill demonstrating the single-skill plugin layout.",
+  "skills": "./"
+}

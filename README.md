@@ -2,7 +2,7 @@
 
 A multi-platform marketplace of agent skills, rules, and other constructs. Install natively on Claude Code, Codex, and Gemini with one-command GitHub fetches; import directly from GitHub into Cursor's team marketplace (IDE); or clone-and-open on Windsurf and Devin. Every construct lives in one source directory and the generator emits platform-native manifests (`.claude-plugin/`, `.codex-plugin/`, `.cursor-plugin/`) plus a shared `.agents/skills/` mirror that Windsurf, Cursor, and Devin all read natively.
 
-> **2026-05-27 minimal-stable-state.** The marketplace currently ships **9 reference plugins (one per Claude-supported construct type) + 1 cross-construct `bundle-examples` = 10 plugin entries**. The 26 production skills and 21 production rules that previously shipped have been archived under `docs/archive/skills-pre-stable-2026-05-26/` and `docs/archive/rules-pre-stable-2026-05-26/`. Per-construct catch-all bundles (`bundle-skill-all`, …) were retired 2026-05-27 because they doubled the marketplace listing without curation value. Real content is re-added one plugin at a time after each is verified across every platform. See `CHANGELOG.md` for the full transition note.
+> **2026-05-28 minimal-stable-state.** The marketplace currently ships **10 reference plugins (one per Claude-supported construct type, plus a second skill example) + 1 cross-construct `bundle-examples` = 11 plugin entries**. The 26 production skills and 21 production rules that previously shipped have been archived under `docs/archive/skills-pre-stable-2026-05-26/` and `docs/archive/rules-pre-stable-2026-05-26/`. Per-construct catch-all bundles (`bundle-skill-all`, …) were retired 2026-05-27 because they doubled the marketplace listing without curation value. Real content is re-added one plugin at a time after each is verified across every platform. See `CHANGELOG.md` for the full transition note.
 
 ## Table of Contents
 
@@ -39,15 +39,49 @@ Pick your platform, copy the block, and you're running. For end-to-end managemen
 
 ### Claude Code
 
+Register the marketplace and install. The `bundle-examples` plugin auto-installs every reference example (one per construct type, plus the two skill examples):
+
 ```bash
-# In a Claude Code session — register the marketplace, then install what you want
-# Install + list both work end-to-end (verified: CL1/CL2/CL3 PASS)
-/plugin marketplace add DgxSparkLabs/marketplace
-# One of every construct type — useful for studying every reference plugin
-/plugin install bundle-examples@dgxsparklabs-marketplace
-# Or a single example plugin:
-/plugin install skill-example@dgxsparklabs-marketplace
+claude plugin marketplace add DgxSparkLabs/marketplace
+claude plugin install bundle-examples@dgxsparklabs-marketplace --scope project
 ```
+
+Or install one at a time. Install + enable are SEPARATE steps:
+
+```bash
+claude plugin install skill-example@dgxsparklabs-marketplace --scope project
+claude plugin enable  skill-example@dgxsparklabs-marketplace
+```
+
+If you skip enable, Claude says `Plugin not found in any editable settings scope.`
+
+Browse what's installable. Simplest is a grep against the marketplace name:
+
+```bash
+claude plugin list --available | grep dgxsparklabs
+```
+
+For machine-readable filtering use jq against the JSON form:
+
+```bash
+claude plugin list --json --available \
+  | jq --arg mp "dgxsparklabs-marketplace" \
+       '[.. | objects | select(.marketplaceName? == $mp)]'
+```
+
+Invoke. Every plugin's slash form follows `/dgxsparklabs-<construct>-<plugin>:<component>`. The 11 plugin entries currently ship:
+
+| Installed plugin | Slash form | What it does |
+|---|---|---|
+| `skill-example` | `/dgxsparklabs-skill-example:notebook` | Today's lab-notebook header |
+| `skill-example` | `/dgxsparklabs-skill-example:status`   | Disk usage + UTC timestamp |
+| `skill-example-single` | `/dgxsparklabs-skill-example-single:hello` | Minimal greeting |
+| `command-example` | `/dgxsparklabs-command-example:hello` | Formatted lab-notebook entry |
+| `agent-example` | `/agents` → pick `dgxsparklabs-agent-example:notebook-reviewer` | Sub-agent: skeptical peer review |
+| `output-style-example` | `/output-style Lab Notebook Voice` | Switch reply voice |
+| `theme-example` | `/theme Lab Notebook` | Switch terminal colors |
+
+Skills have a flat-form shortcut: just `/notebook`, `/status`, or `/hello` — Claude resolves them through the same namespace. Use the qualified form when autocomplete is ambiguous.
 
 ### Codex
 
@@ -156,7 +190,7 @@ Every construct type currently ships exactly one reference plugin (the `example/
 
 | Type | Prefix | Description | Count |
 |------|--------|-------------|-------|
-| [skill](skills/) | `skill-` | Slash-command invoked on demand | 1 (example) |
+| [skill](skills/) | `skill-` | Slash-command invoked on demand | 2 (`example` multi-skill, `example-single` solo) |
 | [rule](rules/) | `rule-` | Always-on context loaded every session | 1 (example) |
 | [command](commands/) | `command-` | Structured agent command definitions | 1 (example) |
 | [agent](agents/) | `agent-` | Autonomous agent configuration | 1 (example) |
