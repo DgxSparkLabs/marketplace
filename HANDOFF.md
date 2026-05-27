@@ -1,6 +1,15 @@
 # Handoff
 
-> **First file to read on re-entry:** [`docs/RESUME_HERE.md`](./docs/RESUME_HERE.md) — 90-second orientation. This document is the longer state tracker; complements RESUME_HERE rather than duplicating it.
+> **2026-05-27 SESSION END — NEXT SESSION HAS EXECUTION READY.** Three artifacts at [`docs/research/multi-instance-claude-only-2026-05-27/`](./docs/research/multi-instance-claude-only-2026-05-27/) prepare the next session for direct implementation:
+> 1. [`IMPLEMENTOR_PROMPT.md`](./docs/research/multi-instance-claude-only-2026-05-27/IMPLEMENTOR_PROMPT.md) — self-contained brief for a fresh agent to execute cold.
+> 2. [`PLAN.md`](./docs/research/multi-instance-claude-only-2026-05-27/PLAN.md) — full execution plan (~440 lines, ~2 hours of work).
+> 3. [`OBJECTIVE_CHECKLIST.md`](./docs/research/multi-instance-claude-only-2026-05-27/OBJECTIVE_CHECKLIST.md) — boolean verification checklist for every change.
+>
+> **What the next session implements**: revert Path A (shared slash namespace) → adopt multi-instance-capable plugins for Claude only; the 5 non-Claude platforms continue emitting unchanged but their multi-instance correctness is acknowledged-unverified via NOTE comments + ROADMAP follow-ups #37-#42. One commit on the existing PR #10 (currently at 12 commits → 13).
+>
+> **First file to read on re-entry:** [`docs/research/multi-instance-claude-only-2026-05-27/IMPLEMENTOR_PROMPT.md`](./docs/research/multi-instance-claude-only-2026-05-27/IMPLEMENTOR_PROMPT.md). That brief contains everything else you need to read.
+
+> **First file to read on re-entry (general project):** [`docs/RESUME_HERE.md`](./docs/RESUME_HERE.md) — 90-second orientation. This document is the longer state tracker; complements RESUME_HERE rather than duplicating it.
 
 > **2026-05-26 minimal-stable-state transition.** The marketplace was reduced to 10 reference plugins (one per construct type) + 1 cross-construct examples bundle + 8 catch-all bundles = **19 plugin entries** (was 81). The 26 production skills and 21 production rules that previously shipped were **archived, not deleted**, into `docs/archive/skills-pre-stable-2026-05-26/` and `docs/archive/rules-pre-stable-2026-05-26/`. Source preserved via `git mv` so every commit history is intact. Real content returns one plugin at a time after each is verified across every platform. See `CHANGELOG.md` for the full transition rationale.
 

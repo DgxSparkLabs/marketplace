@@ -75,6 +75,12 @@ Each platform must pass its `docs/TEST_YOURSELF.md` cells on the 10 example plug
 | 21 | Extend hermetic stub to Codex/Gemini/Cursor (if feasible) | `[BACKLOG]` | Each platform has unauth CI verification path |
 | 35 | Dev container for operator QA + marketplace dev | `[DONE]` | `.devcontainer/` configured with Claude CLI, Node 20, uv, Python+Flask, gh; ports 8088/8089 forwarded; Claude config persisted via named volume |
 | 36 | Sibling dev containers for Codex/Gemini/Cursor (as their QA arcs land) | `[BACKLOG]` | Each platform CLI in a feature-flagged or sibling `.devcontainer/<platform>/` config |
+| 37 | **Cursor IDE — verify multi-instance source layouts** + fix `CursorPlatform.build_plugin_json` to read source `plugin.json` `skills` field instead of hardcoding `"./"` | `[BLOCKED]` | Blocker: #9 Cursor IDE QA cycle. See `docs/research/multi-instance-claude-only-2026-05-27/PLAN.md` |
+| 38 | **Codex — verify multi-instance source layouts** | `[BLOCKED]` | Blocker: #10 Cursor CLI / Codex QA. May need no code change (manifest hardcodes `"./skills/"` already) but needs empirical verification |
+| 39 | **Gemini — per-skill mirror flattening** in `GeminiPlatform.emit` for multi-instance skill plugins | `[BLOCKED]` | Blocker: #11 Gemini QA. The current `shutil.copytree` produces nested mirrors that Gemini discovery doesn't recurse into |
+| 40 | **Windsurf — per-skill mirror flattening** (via the `.windsurf/skills/` mirror) | `[BLOCKED]` | Blocker: #12 Windsurf QA |
+| 41 | **Devin — per-skill mirror flattening** (via the `.devin/skills/` mirror) | `[BLOCKED]` | Blocker: #13 Devin QA |
+| 42 | **`.agents/` shim — per-skill mirror flattening** in `AgentsPlatform.emit` (consumed by Cursor CLI + Windsurf + Devin via convergence path) | `[BLOCKED]` | Blocker: any of #10/#12/#13/#14. Highest leverage fix because 3 platforms read from `.agents/`. |
 
 ## Housekeeping — pre-existing untracked state
 

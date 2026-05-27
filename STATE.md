@@ -2,63 +2,50 @@
 
 > Live within-session truth. Pair with `HANDOFF.md` (between-sessions) and `PITFALLS.md` (cross-session lessons).
 
-## Right now
+## Session end — 2026-05-27
 
-- **Branch:** `chore/housekeeping-and-roadmap` (PR #10 open, CI pending)
-- **Main tip:** `4b00faa` — PR #9 squash-merged
-- **Working tree:** clean (this STATE.md update is uncommitted on purpose — live file)
-- **Active arc:** **awaiting PR #10 CI** before starting Cursor IDE QA cycle (roadmap item #9)
+**Branch:** `chore/housekeeping-and-roadmap` (PR #10 open, 12 commits)
+**Main tip:** `4b00faa` — PR #9 squash-merged
+**Last commit on PR #10:** `3275049` — feat(stub): standalone Dockerized hermetic stub + host bind-mounted logs
+**Working tree:** clean except `.claude/` untracked (operator's local Claude config); new research artifacts staged for commit (see below)
 
-## Last action taken
+## What this session produced
 
-Added a standalone Docker image for the hermetic stub. New files: `tests/fixtures/claude-stub/Dockerfile` (uv + Flask via PEP 723, default CMD runs the body dumper on 8089). Updated `tests/fixtures/claude-stub/README.md` with a full Docker workflow section showing the two-container composition (stub + qa-claude sharing netns via `--network container:claude-stub`). Captured request bodies stream to `./.stub-logs/stub-bodies.log` on the host via bind mount. `.stub-logs/` added to `.gitignore`. PITFALLS entry added for the Cursor-IDE port-8089 conflict on Windows that breaks Docker Desktop host-side `-p` mapping (primary workflow doesn't need port mapping so unaffected). Empirically smoke-tested: build succeeds, stub serves correctly inside the container, sibling alpine container reaches the stub via shared netns and bodies appear on host log.
+Three artifacts in `docs/research/multi-instance-claude-only-2026-05-27/`:
 
-### Prior commit: Implemented Path A — brand-prefixed shared slash namespace, after two rounds of empirical Docker validation confirmed Claude accepts it. The change decouples install names (still unique per plugin) from slash namespace (now shared per construct):
+1. **PLAN.md** — complete execution plan for the multi-instance-capable plugins refactor (Claude-only scope, ~440 lines)
+2. **IMPLEMENTOR_PROMPT.md** — self-contained brief for the next session's implementor agent
+3. **OBJECTIVE_CHECKLIST.md** — boolean verification checklist (~40 items, each independently testable)
 
-- Install: `claude plugin install skill-example@dgxsparklabs-marketplace` (unchanged)
-- Invoke: `/dgxsparklabs-skill:lab-notebook` (was `/skill-example:lab-notebook`)
+Plus updates to `HANDOFF.md` (top-of-file banner pointing to the research artifacts).
 
-Source changes: two-line edit to `_base_plugin_shape` in `scripts/constructs.py` + two-line edit to `_make_marketplace_entry` in `scripts/generate_manifest.py` + one test rename in `tests/test_marketplace.py`. Doc cascade across `docs/ADDING_A_CONSTRUCT.md`, `docs/TEST_YOURSELF.md`, `docs/USER_GUIDE.md`, `skills/example/SKILL.md` inline comments. CHANGELOG entry added.
+## What the next session is set up to do
 
-**Pre-merge blocker**: operator runs the 6-step TUI tab-completion recipe at `docs/research/shared-namespace-2026-05-27/RESEARCH.md` § Probe C. Resolver-internals trace already shows the candidate set is well-formed; only the TUI render path remains unverified.
+Execute the plan. Specifically: revert Path A (the shared-namespace pattern landed at commit `d641f92`), adopt multi-instance-capable plugins for Claude only, reorganize the example set to two plugins (`skill-example` with 2 skills, `skill-example-single` with 1 skill), add 3 tests, cascade docs across 10 files, add ROADMAP follow-ups #37-#42 for per-platform multi-instance verification. One commit on PR #10.
 
-Tests: 77 marketplace + 21 schema-fitness = 98 green. Drift clean.
+## Why this work didn't happen in THIS session
 
-PR #10 will be at 11 commits after the next push.
+The user explicitly chose to end the session after the planning + review phase. Three rounds of subagent review caught real issues (cross-platform mirror discovery depth, MCP server-key cross-plugin collision, plan contradictions); the plan was rewritten to be implementation-ready. The user's instruction was to prepare everything for the next session and then end this one. Implementation happens fresh tomorrow.
 
-### Five prior operator-feedback adoptions (still in this PR):
+## Outside the multi-instance refactor
 
-1. **Retired per-construct catch-all bundles** (`bundle-skill-all` etc.). Phase 2b loop deleted from `scripts/generate_manifest.py`; reserved-name check in `scripts/bundles.py` removed; tests, catalog, README, HANDOFF, USER_GUIDE, PLATFORMS, ARCHITECTURE, CONSTRUCT_TYPES, ADDING_A_CONSTRUCT, RESUME_HERE all updated. Plugin entry count 19 → **10** (9 individuals + 1 catalog bundle `bundle-examples`).
+PR #10 already contains 12 commits of substantial work: housekeeping + roadmap creation, mcp-example name alignment, Claude reference card, Scheme B+ naming, dev container, PEP 723 stubs + volume chown, bind-mount Docker setup, fenced code blocks for typed commands, catch-all bundle retirement, naming trace + code crosslinks, brand-namespace Path A (to be reverted next session), Dockerized hermetic stub. All of those stay regardless of the multi-instance refactor.
 
-2. **`docs/TEST_YOURSELF.md` Step 3 jq filter.** Operator's `jq --arg mp ... '[.. | objects | select(.marketplaceName? == $mp)]'` pattern replaces the arbitrary `head -50` truncation — filters by marketplace name properly.
+## Tests state
 
-3. **Setup option B Docker now includes Flask + uv install steps.** `curl -LsSf https://astral.sh/uv/install.sh | sh` step added; Flask still self-bootstraps via PEP 723 in the stubs.
+Last known green locally: 77 marketplace + 21 schema-fitness = 98 tests passing on commit `3275049`. The next session's implementation must maintain that.
 
-4. **New `docs/ADDING_A_CONSTRUCT.md` "Where do the names come from?" section.** Walks through the three name layers (marketplace / plugin / component) with `skill-example`/`lab-notebook` as the worked example. Answers the operator's "what command do I need to run when I add a new skill?" — `uv run scripts/generate_manifest.py`. `docs/TEST_YOURSELF.md` links to this near the reference card.
+## What's deferred (still on the roadmap, not blocking PR #10 merge)
 
-5. **Updated CHANGELOG with full retirement note + counts table.**
+- 6 platform QA cycles (Cursor IDE, Cursor CLI, Gemini, Windsurf, Devin, agents CLI shim) — roadmap items #9-#14
+- 6 multi-instance verification follow-ups (one per non-Claude platform) — roadmap items #37-#42 (added by the next session per the plan)
+- F4 visual theme — interactive verification, operator-only
 
-Tests: 77 marketplace + 21 schema-fitness = **98 green** (was 99; the dropped catch-all-reserved-name test is gone). Drift clean.
+## What the next session should NOT do
 
-PR #10: https://github.com/DgxSparkLabs/marketplace/pull/10 — soon 9-commit bundle.
+- Touch the non-Claude per-platform paths in `scripts/platforms.py` beyond adding NOTE comments
+- Per-skill mirror flattening in `AgentsPlatform.emit` or `GeminiPlatform.emit`
+- Reading source plugin.json in `CursorPlatform.build_plugin_json`
+- Cross-platform empirical Docker verification (deferred to each platform's own QA cycle)
 
-## What's next
-
-Per the roadmap (see `docs/ROADMAP.md`):
-
-1. Decide disposition for the three untracked research dirs (`docs/research/research/`, `docs/research/claude-headless-qa/`, `docs/research/claude-qa-2026-05-26/`)
-2. Begin **Cursor IDE QA cycle** on the minimal example set — first platform after Claude in the locked sequencing
-3. Defer `mcp-example` / `skill-example` naming until QA cycles stabilize
-
-## Open decision points (operator-driven)
-
-- F4 visual theme — interactive verification (requires IDE access)
-- `compat-headless-claude` CI advisory → required (needs first green run on main)
-- `mcp-example` plugin rename → `mcp-fetch` (cosmetic)
-- `skill-example` SKILL.md `name:` field — keep `/example-skill` or shorten to `/example`?
-
-## Status
-
-- Tests: 78 marketplace + 21 schema-fitness, last known green on PR #9
-- Drift check: clean
-- Hermetic Claude CI: advisory (PASS on PR #8 + #9 — promotion candidate)
+All four are explicitly out of scope per the PLAN.md "What's deferred" section.
