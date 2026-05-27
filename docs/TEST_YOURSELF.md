@@ -239,15 +239,20 @@ docker run --rm -it --name qa-claude \
   node:20 bash
 ```
 
-The `--rm` flag auto-removes the container on exit. `-w` lands you in the mounted dir. Once inside:
+The `--rm` flag auto-removes the container on exit. `-w` lands you in the mounted dir. Once inside, install the three things `node:20` doesn't ship with:
 
 ```bash
-# Install Claude CLI (the only thing the container is missing)
+# 1. Claude CLI
 npm install -g @anthropic-ai/claude-code
 claude --version
+
+# 2. uv (Python tool for the marketplace generator + the hermetic stub)
+curl -LsSf https://astral.sh/uv/install.sh | sh
+export PATH="$HOME/.local/bin:$PATH"
+uv --version
 ```
 
-That's the entire prep. To test a specific PR branch, check it out on the host (`git checkout <branch>`) before running the `docker run`; the container sees the host's working tree live.
+That's the entire prep. **No separate Flask install** — the hermetic stub uses PEP 723 inline metadata, so `uv run tests/fixtures/claude-stub/stub.py` fetches Flask into an ephemeral env on first invocation. To test a specific PR branch, check it out on the host (`git checkout <branch>`) before running the `docker run`; the container sees the host's working tree live.
 
 ### Setup option C: Native
 
@@ -303,11 +308,13 @@ Use the `claude` CLI directly — these commands are scriptable and work in head
   claude plugin marketplace list
   ```
   **Expected**: `dgxsparklabs-marketplace` appears in the output.
-- [ ] Step 3: enumerate available plugins:
+- [ ] Step 3: enumerate available plugins from this marketplace specifically (filtering by `marketplaceName` avoids dumping every globally-known plugin):
   ```bash
-  claude plugin list --json --available | head -50
+  MARKETPLACE="dgxsparklabs-marketplace"
+  claude plugin list --json --available \
+    | jq --arg mp "$MARKETPLACE" '[.. | objects | select(.marketplaceName? == $mp)]'
   ```
-  **Expected**: JSON output enumerating **19** plugins (10 individuals + 1 cross-construct bundle `bundle-examples` + 8 catch-all bundles; rule has no Claude-side catch-all per F8). If you see more, you're testing a pre-PR-#9 state.
+  **Expected**: JSON array of **10** plugins (9 Claude-supported individuals + 1 cross-construct catalog bundle `bundle-examples`; rule individuals are excluded per F8, and per-construct catch-all bundles were retired 2026-05-27). If you see more, you're testing a pre-PR-#10 state.
 
 - [ ] Step 4 — **enable-after-install gotcha**: empirically (`docs/research/naming-conventions-2026-05-26/logs/06-enable-qualified.log:1-9`), `claude plugin install` lands plugins in the *disabled* scope on first install. After installing any plugin in the per-construct cells below, you MUST run `claude plugin enable <plugin>@dgxsparklabs-marketplace` before invoking. The bare `<plugin>` form (without `@dgxsparklabs-marketplace`) errors with `Plugin "<name>" not found in any editable settings scope. Use plugin@marketplace format.` This is the single most likely cause of "I installed it but nothing happens" — flag it up front.
 
@@ -333,6 +340,8 @@ This table is the cheat sheet for the per-construct cells below. Every row was v
 **After-install enable step**: also flagged in setup Step 4. Every per-construct cell below has its own explicit `Enable` step. Skipping enable is the most common operator confusion.
 
 **Interactive vs headless**: many Claude slash commands require an interactive TTY session and return `Unknown command` or `isn't available in this environment` when invoked via `claude --print` (headless). Cells below flag this per-construct. Specifically: `/mcp`, `/agents`, `/output-style <name>`, `/theme <name>` are all interactive-only — they can be exercised under `claude --print` only via the hermetic stub's request-body inspection, not via direct slash invocation. See `docs/research/naming-conventions-2026-05-26/logs/15-output-style-theme.log:2-7` for the empirical capture.
+
+**Where do the names come from?** If you're staring at `/skill-example:lab-notebook` and wondering which file produced which segment: the plugin name (`skill-example`) is the construct prefix (`skill`) + the source directory name (`example`); the component name (`lab-notebook`) is the SKILL.md frontmatter `name:` field. See [`ADDING_A_CONSTRUCT.md` § "Where do the names come from?"](./ADDING_A_CONSTRUCT.md#where-do-the-names-come-from-read-this-if-any-name-surprises-you) for the full breakdown across all 10 construct types and what command to run after creating a new one.
 
 ### Per-construct verification
 

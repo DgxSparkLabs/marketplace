@@ -53,7 +53,7 @@ scripts/generate_manifest.py — orchestrator; 6 phases:
   Phase 1.5: per-platform per-plugin manifests (supports-gated emission of
              .codex-plugin/plugin.json + .cursor-plugin/plugin.json)
   Phase 2a:  catalog bundles from catalog.toml [bundle.*]
-  Phase 2b:  code-generated catch-alls (bundle-<prefix>-all)
+  Phase 2b:  RETIRED 2026-05-27 — per-construct catch-all bundles removed
   Phase 3:   cross-platform mirrors (platform.emit per supported construct,
              includes .agents/skills/ via AgentsPlatform)
   Phase 4:   Gemini extension manifest at .gemini/gemini-extension.json
@@ -112,9 +112,9 @@ Examples are `example/` (not `example-<construct>/`).
 
 ```
 Individual:     <prefix>-<name>           e.g., skill-telegram-notify
-Catalog bundle: bundle-<bundle-name>      e.g., bundle-communication-skills
-Catch-all:      bundle-<prefix>-all       e.g., bundle-skill-all
+Catalog bundle: bundle-<bundle-name>      e.g., bundle-communication-skills, bundle-examples
 ```
+(Per-construct catch-alls `bundle-<prefix>-all` were retired 2026-05-27.)
 
 ---
 
@@ -143,8 +143,7 @@ Catch-all:      bundle-<prefix>-all       e.g., bundle-skill-all
 | **construct** | One of 10 construct types: skill, rule, command, agent, hook, mcp, lsp, monitor, output-style, theme. |
 | **Construct class** | A class in `scripts/constructs.py` implementing the Construct protocol. |
 | **Platform class** | A class in `scripts/platforms.py` implementing the Platform protocol (which now includes `build_plugin_json` for per-plugin native manifests). |
-| **bundle** | A dep-only plugin declaring dependencies on other plugins. Two kinds: catalog bundles (in `catalog.toml`) and code-generated catch-alls. |
-| **catch-all bundle** | `bundle-<prefix>-all` — code-generated, NOT in catalog.toml. |
+| **bundle** | A dep-only plugin declaring dependencies on other plugins. Declared in `catalog.toml`. Per-construct catch-alls retired 2026-05-27. |
 | **mirror** | An auto-generated directory under `.codex/`, `.gemini/`, `.cursor/`, `.windsurf/`, `.devin/`, or `.agents/` that copies generated content to the layout each platform expects. |
 | **`.agents/` standard** | Cross-platform skill (`.agents/skills/`) and plugin (`.agents/plugins/`) directory convention. Read by Windsurf, Cursor, Devin natively; Codex accepts `.claude-plugin/marketplace.json` as legacy-compatible. |
 | **generator** | `scripts/generate_manifest.py` — 6-phase orchestrator. |
@@ -174,7 +173,7 @@ Catch-all:      bundle-<prefix>-all       e.g., bundle-skill-all
 - **Per-plugin manifest emission unconditional across all platforms** — rejected via decision B2; emission is gated on `platform.supports`.
 - **CI assertions that test only registration without enumeration/install** — caused real defects to go undetected for weeks; new assertions in `compat-marketplace-add.yml` and `compat-extension.yml` close this gap.
 - **`members_from_construct` field in catalog.toml** — removed (DI refactor decision #24).
-- **`[bundle.<prefix>-all]` in catalog.toml** — reserved names; `load_bundles` raises ValueError.
+- **`[bundle.<prefix>-all]` reserved-name check** — retired 2026-05-27 along with the catch-alls themselves; the catalog may now use any name.
 - **`example-<construct>` directory naming** — renamed to `example/` (DI refactor decision #18).
 - **Hardcoding plugin count (e.g., `== 81`)** — test suite uses a computed formula.
 

@@ -191,28 +191,12 @@ def main() -> None:
             _emit_bundle_plugin(bundle.name, description, deps)
         )
 
-    # ── Phase 2b: Code-generated catch-all bundles (decision #23) ─────────────
-    #    For each construct in ClaudeCodePlatform.supports: emit
-    #    bundle-<prefix>-all with deps = every instance. Skip constructs
-    #    not in Claude's supports set (F8 retired rule-all, which referenced
-    #    rule-* plugins that no longer exist on the Claude side) and
-    #    constructs that have no source instances (no empty bundles).
-    for construct in CONSTRUCTS.values():
-        if type(construct) not in claude_supports:
-            continue
-        deps = [
-            f"{construct.prefix}-{n}"
-            for n in scan_source_dir(construct.source_directory)
-        ]
-        if not deps:
-            continue
-        marketplace_entries.append(
-            _emit_bundle_plugin(
-                name=f"{construct.prefix}-all",
-                description=f"Every {construct.prefix} in the marketplace",
-                deps=deps,
-            )
-        )
+    # ── Phase 2b: Code-generated catch-all bundles — RETIRED 2026-05-27 ────────
+    # Previously emitted bundle-<prefix>-all per Claude-supported construct.
+    # Removed because they cluttered the marketplace listing with one bundle per
+    # construct that provided no curation value over the per-construct emission
+    # already done in Phase 1. The cross-construct `bundle-examples` (from
+    # catalog.toml) remains as the one curated multi-member bundle.
 
     # ── Phase 3: Cross-platform mirrors ───────────────────────────────────────
     # Wipe all mirror roots first for a clean slate. Platforms whose

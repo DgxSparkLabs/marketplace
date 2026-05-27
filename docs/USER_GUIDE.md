@@ -450,7 +450,7 @@ Every plugin in this marketplace is named `<prefix>-<instance-name>`:
 | Monitor | `monitor-` | `monitor-example` (Claude-only consumer) |
 | Output style | `output-style-` | `output-style-example` (Claude-only consumer) |
 | Theme | `theme-` | `theme-example` (Claude-only consumer) |
-| Bundle (dep-only) | `bundle-` | `bundle-skill-all`, `bundle-communication-skills` |
+| Bundle (dep-only) | `bundle-` | `bundle-examples`, `bundle-communication-skills` |
 
 ### Slash command namespacing (Claude-specific)
 
@@ -465,7 +465,7 @@ Per [code.claude.com/docs/en/plugins](https://code.claude.com/docs/en/plugins) (
 
 A common operator confusion: typing `/` in Claude shows skill entries that look "flat" (e.g., bare `/lab-notebook`) — the flat form also resolves per `code.claude.com/docs/en/skills`, but the **canonical** invocation is always the namespaced form `/skill-example:lab-notebook`.
 
-For **bundles**, namespacing follows each contained plugin's own name. Installing `bundle-skill-all` does not introduce a `bundle-skill-all:*` namespace — the contained skills appear under their own plugin namespaces (e.g., `/skill-act-runner:act-runner`).
+For **bundles**, namespacing follows each contained plugin's own name. Installing `bundle-examples` does not introduce a `bundle-examples:*` namespace — the contained plugins appear under their own plugin namespaces (e.g., `/skill-example:lab-notebook`, `/command-example:hello`).
 
 Reference: [code.claude.com/docs/en/plugins-reference#plugin-components-reference](https://code.claude.com/docs/en/plugins-reference#plugin-components-reference).
 
@@ -476,12 +476,11 @@ A **bundle** is a dependency-only plugin that installs a curated group. An **ind
 | Bundle kind | How named | Source |
 |---|---|---|
 | Domain bundle (curated) | `bundle-<domain>-<construct-plural>` (e.g., `bundle-communication-skills`) | declared in `catalog.toml` |
-| Catch-all bundle (every plugin of one construct type) | `bundle-<prefix>-all` (e.g., `bundle-skill-all`) | code-generated; not declared in `catalog.toml` |
 | Cross-construct examples bundle | `bundle-examples` | declared in `catalog.toml` — installs one of each construct type for tutorial purposes |
 
 Installing a bundle in Claude auto-installs its dependencies (the install output reports `(+ N dependencies: ...)`). Uninstalling a bundle does NOT auto-remove its dependencies — they orphan until `claude plugin prune --scope <scope> -y`.
 
-**Claude-side bundle cascade after the 2026-05-26 rule deprecation**: bundles whose members are exclusively `rule:` references (`bundle-quality-rules`, `bundle-workflow-rules`, `bundle-documentation-rules`, `bundle-environment-rules`, `bundle-notifications-rules`) and the catch-all `bundle-rule-all` are no longer surfaced in Claude's marketplace listing because their dependencies are no longer valid Claude plugins. They remain available to Cursor / Codex / Gemini / Windsurf where rule plugins are still valid. For Claude users who want the rule content, use the symlink-or-copy approach described in the Claude section above.
+**Per-construct catch-all bundles retired 2026-05-27.** The generator used to emit `bundle-skill-all`, `bundle-agent-all`, …, one per construct type — `bundle-rule-all` was already gone after the 2026-05-26 Claude rule deprecation. They cluttered the marketplace listing without adding curation value (a "bundle of every skill" is just a filtered view of `claude plugin list --available`). To replicate the install-everything-of-one-construct workflow, use the jq filter pattern from `docs/TEST_YOURSELF.md` to enumerate by prefix and pipe to `claude plugin install`.
 
 ## Troubleshooting
 

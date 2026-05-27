@@ -86,7 +86,7 @@ Verified PASS in [[archive/phase-5-cross-platform-install/VERIFICATION_2026-05/e
 ### Per-plugin install
 
 ```bash
-claude plugin install bundle-skill-all@dgxsparklabs-marketplace --scope project
+claude plugin install bundle-examples@dgxsparklabs-marketplace --scope project
 ```
 
 Bundles auto-install their dependencies. The install output reports `(+ N dependencies: ...)`. Uninstalling a bundle does NOT auto-remove its deps — they orphan and persist until `claude plugin prune --scope <scope> -y`.
@@ -120,7 +120,7 @@ cp rules/blast-radius/rule.md ~/.claude/rules/blast-radius.md
 
 The `agents` CLI shim automates the per-marketplace install when targeted at `.agents/rules/` (`agents install rule-blast-radius --scope project --agents-only`), but Claude does not currently auto-discover from `.agents/rules/` — for Claude specifically the symlink-or-copy approach above is canonical. See `docs/USER_GUIDE.md` Claude section for the full operator walkthrough.
 
-**Claude-side bundle cascade**: bundles whose members are exclusively `rule:` references (`bundle-quality-rules`, `bundle-workflow-rules`, `bundle-documentation-rules`, `bundle-environment-rules`, `bundle-notifications-rules`) and the catch-all `bundle-rule-all` are no longer surfaced in Claude's marketplace listing because their dependencies are no longer valid Claude plugins. They remain available to Cursor / Codex / Gemini / Windsurf where rule plugins are still valid.
+**Claude-side bundle cascade**: bundles whose members are exclusively `rule:` references (`bundle-quality-rules`, `bundle-workflow-rules`, `bundle-documentation-rules`, `bundle-environment-rules`, `bundle-notifications-rules`) are no longer surfaced in Claude's marketplace listing because their dependencies are no longer valid Claude plugins. They remain available to Cursor / Codex / Gemini / Windsurf where rule plugins are still valid. (Per-construct catch-all bundles like `bundle-rule-all` were retired entirely 2026-05-27.)
 
 Source `rules/<name>/` directories remain — they still feed Cursor / Windsurf / Codex / Gemini rule emission. Cursor and Codex per-plugin manifests still surface them. Only the Claude-plugin wrapping is gone.
 
@@ -764,8 +764,7 @@ Note all `gemini` list commands need `2>&1` because Gemini writes list output to
 | **platform** | One of 7 emission targets: Claude Code, Codex, Gemini, Cursor, Windsurf, Devin, plus `AgentsPlatform`. Each is a class in `scripts/platforms.py`. |
 | **`supports`** | Per-platform set of construct CLASSES that platform can host. Gates per-plugin manifest emission and mirror generation. See [[ARCHITECTURE#The `supports` gate]]. |
 | **mirror hygiene** | Excluding per-platform manifest dirs (`.claude-plugin`, `.codex-plugin`, `.cursor-plugin`) from `shutil.copytree` so they don't bleed across mirrors. |
-| **bundle** | A dep-only plugin grouping other plugins. Two kinds: catalog bundles (declared in `catalog.toml`) and code-generated catch-alls (`bundle-<prefix>-all`). |
-| **catch-all** | A code-generated bundle named `bundle-<prefix>-all` (e.g., `bundle-skill-all`) installing every plugin of one construct type. NOT declared in `catalog.toml`. |
+| **bundle** | A dep-only plugin grouping other plugins. Declared in `catalog.toml`. Per-construct code-generated catch-alls were retired 2026-05-27. |
 | **`.agents/`** | Cross-platform skill convergence directory at `.agents/skills/<name>/SKILL.md`. Read natively by Windsurf, Cursor, and Devin. |
 | **GitHub-direct install** | A one-command install from a GitHub URL or shortform, without `git clone`. Supported natively by Claude, Codex, and Gemini. |
 

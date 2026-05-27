@@ -27,7 +27,7 @@ Current inventory (post 2026-05-26 minimal-stable-state):
 - **1 example skill** (`skills/example/`) — 26 production skills archived under `docs/archive/skills-pre-stable-2026-05-26/`
 - **1 example rule** (`rules/example/`) — 21 production rules archived under `docs/archive/rules-pre-stable-2026-05-26/`
 - **`commands/`, `agents/`, `hooks/`, `mcp-servers/`, `lsp-servers/`, `monitors/`, `output-styles/`, `themes/`** — each has `example/`
-- **19 plugin entries** in `.claude-plugin/marketplace.json` (was 81): 9 Claude-supported individuals + 1 catalog bundle (`bundle-examples`) + 9 catch-alls (rule has no catch-all per F8 — 8 visible)
+- **10 plugin entries** in `.claude-plugin/marketplace.json` (was 81): 9 Claude-supported individuals + 1 catalog bundle (`bundle-examples`). Per-construct catch-alls retired 2026-05-27.
 - **1 skill entry** in `.agents/skills/` (was 27)
 - **7 plugin entries** in `.cursor-plugin/marketplace.json` (was 49): rules + skills + agent + command + hook + mcp (Cursor's supported subset)
 - **99+ tests** across `tests/test_marketplace.py` + `tests/test_schema_fitness.py`
@@ -186,7 +186,7 @@ marketplace/
 - **Construct classes** (10, in `scripts/constructs.py`) encapsulate per-construct build + emit. New construct = new class + registry entry.
 - **Platform classes** (7, in `scripts/platforms.py`) encapsulate per-platform mirror + `build_plugin_json` + `supports`. New platform = new class + registry entry.
 - **`supports`-gated emission** (Phase 5 / Decision B2): per-platform per-plugin manifests are written only where `type(construct) in platform.supports`. Adding a platform/construct automatically updates manifest emission via the protocol; no special cases.
-- **Bundles**: catalog (`catalog.toml [bundle.*]` → Phase 2a) and code-generated catch-alls (`bundle-<prefix>-all` → Phase 2b; reserved names).
+- **Bundles**: catalog only (`catalog.toml [bundle.*]` → Phase 2a). Per-construct code-generated catch-alls (Phase 2b) retired 2026-05-27 — they cluttered the marketplace listing without curation value.
 - **Rules**: install via `/plugin install` then activate via `activate.sh` symlink. Workaround for Claude Code's lack of native `rules` field. See `docs/RULE_FORMAT.md`.
 - **Multi-platform validation**: 10 compat workflows on push/PR; Phase 5 added enumeration + install assertions for Claude/Codex/Gemini. Verified end-to-end on main at `bfb476d`.
 

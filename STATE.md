@@ -11,11 +11,21 @@
 
 ## Last action taken
 
-Two operator-feedback adoptions:
-1. **Docker Setup option B now uses `-v` bind-mount instead of `git clone`.** Operator's improvement: `docker run --rm -it -v "${PWD}:/workspace/marketplace" -w /workspace/marketplace node:20 bash`. PowerShell-friendly, no clone, no PR-branch dance. Current host branch is what the container tests.
-2. **Per-construct and validation cells now use fenced code blocks for every typed command.** Inline backticks reserved for references to file names / slash forms inside prose; the actual commands the operator runs sit in copy-paste-ready ```bash``` / ```text``` / ```powershell``` blocks. Touches all 9 per-construct cells in the Claude section, all 9 validation cells, the marketplace registration steps, and the Docker setup option.
+Five operator-feedback adoptions in one batch:
 
-PR #10: https://github.com/DgxSparkLabs/marketplace/pull/10 — now 8-commit bundle. Tests passing locally: 78 marketplace + 21 schema-fitness = 99 green. Drift clean.
+1. **Retired per-construct catch-all bundles** (`bundle-skill-all` etc.). Phase 2b loop deleted from `scripts/generate_manifest.py`; reserved-name check in `scripts/bundles.py` removed; tests, catalog, README, HANDOFF, USER_GUIDE, PLATFORMS, ARCHITECTURE, CONSTRUCT_TYPES, ADDING_A_CONSTRUCT, RESUME_HERE all updated. Plugin entry count 19 → **10** (9 individuals + 1 catalog bundle `bundle-examples`).
+
+2. **`docs/TEST_YOURSELF.md` Step 3 jq filter.** Operator's `jq --arg mp ... '[.. | objects | select(.marketplaceName? == $mp)]'` pattern replaces the arbitrary `head -50` truncation — filters by marketplace name properly.
+
+3. **Setup option B Docker now includes Flask + uv install steps.** `curl -LsSf https://astral.sh/uv/install.sh | sh` step added; Flask still self-bootstraps via PEP 723 in the stubs.
+
+4. **New `docs/ADDING_A_CONSTRUCT.md` "Where do the names come from?" section.** Walks through the three name layers (marketplace / plugin / component) with `skill-example`/`lab-notebook` as the worked example. Answers the operator's "what command do I need to run when I add a new skill?" — `uv run scripts/generate_manifest.py`. `docs/TEST_YOURSELF.md` links to this near the reference card.
+
+5. **Updated CHANGELOG with full retirement note + counts table.**
+
+Tests: 77 marketplace + 21 schema-fitness = **98 green** (was 99; the dropped catch-all-reserved-name test is gone). Drift clean.
+
+PR #10: https://github.com/DgxSparkLabs/marketplace/pull/10 — soon 9-commit bundle.
 
 ## What's next
 

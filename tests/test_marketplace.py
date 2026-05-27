@@ -210,51 +210,30 @@ class TestGeneratedPlugins(unittest.TestCase):
                 )
 
 
-# ─── TestCatchAllBundles ──────────────────────────────────────────────────────
+# ─── TestNoStrayCatchAllBundles ───────────────────────────────────────────────
 
-class TestCatchAllBundles(unittest.TestCase):
-    """Code-generated bundle-<prefix>-all bundles — integration tests.
+class TestNoStrayCatchAllBundles(unittest.TestCase):
+    """Per-construct catch-all bundles (bundle-<prefix>-all) were retired
+    2026-05-27. Verify no `_generated/bundle-<prefix>-all/` dir lingers and
+    no marketplace.json entry uses the old reserved name pattern."""
 
-    Catch-alls only exist for constructs in ClaudeCodePlatform.supports
-    (F8 retired bundle-rule-all because rules are not a Claude plugin
-    component — see RESEARCH.md F8, 2026-05-26)."""
-
-    def test_catchall_present_for_each_claude_construct_with_sources(self):
-        """bundle-<prefix>-all must exist iff the construct is in
-        ClaudeCodePlatform.supports AND has at least one source."""
+    def test_no_catchall_dirs_in_generated(self):
         for construct in CONSTRUCTS.values():
-            sources = scan_source_dir(construct.source_directory)
-            catchall_path = REPO_ROOT / "_generated" / f"bundle-{construct.prefix}-all" / ".claude-plugin" / "plugin.json"
+            catchall_path = REPO_ROOT / "_generated" / f"bundle-{construct.prefix}-all"
             with self.subTest(construct=construct.prefix):
-                is_claude_plugin = type(construct) in ClaudeCodePlatform.supports
-                if sources and is_claude_plugin:
-                    self.assertTrue(
-                        catchall_path.exists(),
-                        f"Catch-all missing for {construct.prefix} (sources present: {sources})",
-                    )
-                else:
-                    self.assertFalse(
-                        catchall_path.exists(),
-                        f"Catch-all should be absent for {construct.prefix} "
-                        f"(sources present: {bool(sources)}, "
-                        f"claude_plugin: {is_claude_plugin})",
-                    )
+                self.assertFalse(
+                    catchall_path.exists(),
+                    f"Catch-all dir {catchall_path} should not exist after 2026-05-27 retirement",
+                )
 
-    def test_catchall_deps_match_all_sources(self):
-        """Each catch-all bundle's deps must equal exactly every instance of that construct."""
+    def test_no_catchall_entries_in_marketplace_json(self):
+        manifest = load_marketplace_json()
+        names = {e["name"] for e in manifest["plugins"]}
         for construct in CONSTRUCTS.values():
-            if type(construct) not in ClaudeCodePlatform.supports:
-                continue
-            sources = scan_source_dir(construct.source_directory)
-            if not sources:
-                continue
-            catchall_path = REPO_ROOT / "_generated" / f"bundle-{construct.prefix}-all" / ".claude-plugin" / "plugin.json"
             with self.subTest(construct=construct.prefix):
-                data = json.loads(catchall_path.read_text(encoding="utf-8"))
-                expected = {f"{construct.prefix}-{n}" for n in sources}
-                self.assertEqual(
-                    set(data["dependencies"]), expected,
-                    f"Catch-all for {construct.prefix} has wrong deps",
+                self.assertNotIn(
+                    f"bundle-{construct.prefix}-all", names,
+                    f"marketplace.json must not list bundle-{construct.prefix}-all (retired 2026-05-27)",
                 )
 
 
@@ -421,12 +400,8 @@ class TestMarketplaceJson(unittest.TestCase):
                 continue
             expected.add(f"bundle-{bundle.name}")
 
-        # Code-generated catch-alls (Claude-supported only)
-        for construct in CONSTRUCTS.values():
-            if type(construct) not in ClaudeCodePlatform.supports:
-                continue
-            if scan_source_dir(construct.source_directory):
-                expected.add(f"bundle-{construct.prefix}-all")
+        # Per-construct catch-all bundles were retired 2026-05-27 — only
+        # individuals + catalog bundles remain.
 
         self.assertEqual(actual_names, expected, "marketplace.json plugin set mismatch")
 
@@ -438,21 +413,13 @@ class TestNoOrphanedConstructs(unittest.TestCase):
 
     def test_every_construct_in_at_least_one_bundle(self):
         """Every Claude-supported individual plugin must be reachable via
-        some bundle. Rule-* are excluded post-F8 — see RESEARCH.md F8."""
+        some catalog bundle. Rule-* are excluded post-F8. Per-construct catch-all
+        bundles were retired 2026-05-27, so this now relies entirely on catalog
+        bundles (e.g., bundle.examples) for coverage."""
         all_bundle_deps: set[str] = set()
-        # Catalog bundles
         for bundle in load_bundles(CATALOG, CONSTRUCTS):
             all_bundle_deps.update(bundle.resolve_dependencies(CONSTRUCTS))
-        # Code-generated catch-alls (decision #23) — these include everything
-        # for Claude-supported constructs only (F8 excludes RuleConstruct).
-        for construct in CONSTRUCTS.values():
-            if type(construct) not in ClaudeCodePlatform.supports:
-                continue
-            all_bundle_deps.update(
-                f"{construct.prefix}-{n}"
-                for n in scan_source_dir(construct.source_directory)
-            )
-        # Every Claude-supported instance must be in the union
+        # Every Claude-supported instance must be in some catalog bundle
         for construct in CONSTRUCTS.values():
             if type(construct) not in ClaudeCodePlatform.supports:
                 continue
@@ -461,7 +428,7 @@ class TestNoOrphanedConstructs(unittest.TestCase):
                 with self.subTest(plugin=plugin_name):
                     self.assertIn(
                         plugin_name, all_bundle_deps,
-                        f"{plugin_name} is not in any bundle (catalog or catch-all)",
+                        f"{plugin_name} is not in any catalog bundle",
                     )
 
 
@@ -469,16 +436,6 @@ class TestNoOrphanedConstructs(unittest.TestCase):
 
 class TestBundleValidation(unittest.TestCase):
     """Bundle loader validation — unit tests."""
-
-    def test_bundle_cannot_use_reserved_catchall_name(self):
-        """load_bundles raises ValueError if catalog defines a reserved <prefix>-all name."""
-        import tempfile
-        bad_catalog = "[bundle.skill-all]\nmembers = [\"skill:foo\"]\n"
-        with tempfile.NamedTemporaryFile(mode="w", suffix=".toml", delete=False) as f:
-            f.write(bad_catalog)
-            f.flush()
-            with self.assertRaises(ValueError, msg="Reserved catch-all name should raise ValueError"):
-                load_bundles(Path(f.name), CONSTRUCTS)
 
     def test_bundle_requires_members(self):
         """load_bundles raises ValueError if a bundle has no 'members' field."""
@@ -556,16 +513,12 @@ class TestPluginCount(unittest.TestCase):
                 for d in b.resolve_dependencies(CONSTRUCTS)
             )
         )
-        catchalls = sum(
-            1 for c in CONSTRUCTS.values()
-            if type(c) in ClaudeCodePlatform.supports
-            and scan_source_dir(c.source_directory)
-        )
-        expected = individuals + catalog_bundles + catchalls
+        # Per-construct catch-all bundles retired 2026-05-27.
+        expected = individuals + catalog_bundles
         self.assertEqual(
             len(manifest["plugins"]), expected,
             f"Expected {expected} plugins "
-            f"({individuals} individual + {catalog_bundles} catalog + {catchalls} catch-alls), "
+            f"({individuals} individual + {catalog_bundles} catalog), "
             f"got {len(manifest['plugins'])}",
         )
 

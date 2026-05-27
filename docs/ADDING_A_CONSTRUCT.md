@@ -33,19 +33,19 @@ The marketplace supports 10 plugin construct types. The contribution workflow is
    - **hook**: Update `hooks/hooks.json` with event handlers
    - **mcp/lsp/monitor/output-style/theme**: Update `.claude-plugin/plugin.json` + the construct-specific config file
 
-3. **Add to a bundle in `catalog.toml`** (existing or new):
+3. **Add to a bundle in `catalog.toml`** (existing or new) — required so the test `test_every_construct_in_at_least_one_bundle` stays green:
    ```toml
    [bundle.my-domain-skills]
    description = "My domain skills"
    members = ["skill:my-skill", "skill:existing-skill"]
    ```
-   The plugin also automatically appears in the code-generated `bundle-<prefix>-all` catch-all.
+   (Per-construct catch-all bundles like `bundle-skill-all` were retired 2026-05-27 — the catalog is now the only place that groups plugins.)
 
-4. **Regenerate**:
+4. **Regenerate** — this is the one command that makes Claude (or any other platform) see your new plugin:
    ```bash
    uv run scripts/generate_manifest.py
    ```
-   This creates `_generated/<prefix>-<your-name>/`, adds the entry to `.claude-plugin/marketplace.json`, and updates all cross-platform mirrors.
+   It walks `skills/`, `agents/`, ... finds your new dir, builds the per-plugin manifest, adds the entry to `.claude-plugin/marketplace.json`, and updates every cross-platform mirror. Without this step, your new skill is invisible to `claude plugin list --available` even after committing.
 
 5. **Test**:
    ```bash
@@ -57,21 +57,41 @@ The marketplace supports 10 plugin construct types. The contribution workflow is
 
 7. **Commit** with a conventional commit message. No AI co-author attribution (`rules/no-ai-credit/`).
 
-## Naming convention for slash command invocations
+## Where do the names come from? (read this if any name surprises you)
 
-Three distinct layers participate in every install command and every slash invocation. Understanding which layer owns which segment of a name prevents the awkward duplication that the `2026-05-26` minimal-stable-state refactor cleaned up.
+Three distinct layers participate in every install command and every slash invocation. **Each layer is owned by a different file, and that's the only thing controlling that segment of the name.**
 
-### The three layers
+### The three layers — using `skill-example` / `lab-notebook` as the walked example
 
-| Layer            | Owner                          | Example                          | Where it appears                                    |
-|------------------|--------------------------------|----------------------------------|-----------------------------------------------------|
-| **Marketplace**  | `MARKETPLACE.toml` `name` field| `dgxsparklabs-marketplace`       | The `@<marketplace>` suffix in install commands     |
-| **Plugin**       | Source dir + construct prefix  | `command-example`                | The `<plugin-name>` half of slash namespacing       |
-| **Component**    | File inside the plugin         | `hello` (from `commands/hello.md`)| The `<component>` half after the `:`               |
+| Layer | Owner | How `skill-example` was made | How `lab-notebook` was made |
+|---|---|---|---|
+| **Marketplace name** | `MARKETPLACE.toml` `name = "dgxsparklabs-marketplace"` | — (this is the suffix `@dgxsparklabs-marketplace`, fixed for the whole repo) | — |
+| **Plugin name** | The generator builds it as `<construct-prefix>-<source-dir-name>` | Construct prefix `skill` (defined in `scripts/constructs.py:SkillConstruct.prefix`) + source dir name `example` (from `skills/example/`). Yields `skill-example`. The generator overwrites the source `plugin.json` `name` field at emission so the cached plugin.json always matches. | — |
+| **Component name** | The construct's content file | — | Skill `name:` field in `skills/example/SKILL.md` frontmatter. Operator-controlled — write whatever kebab-case word you want. For agents it's the frontmatter `name:` in `agents/<name>.md`; for commands it's the bare filename (e.g., `hello.md` → component `hello`); for MCP it's the server key in `mcp-config.json`. |
 
-Put together, the install command is `/plugin install <plugin>@<marketplace>` and the invocation is `/<plugin>:<component>`. For the reference example: install is `/plugin install command-example@dgxsparklabs-marketplace`; invocation is `/command-example:hello`.
+So when you run:
 
-Per [code.claude.com/docs/en/plugins](https://code.claude.com/docs/en/plugins) (fetched 2026-05-26): *"Plugin skills are always namespaced (like `/my-first-plugin:hello`) to prevent conflicts when multiple plugins have skills with the same name."* There is no flatten mechanism — the only lever is the plugin name. The component half is always derived from the file name (commands, output styles, themes) or the frontmatter `name` field (skills, agents).
+```bash
+claude plugin install skill-example@dgxsparklabs-marketplace
+```
+
+The CLI looks up `skill-example` in the marketplace's `plugins[]` array, finds the source, installs it. Then in a Claude session:
+
+```text
+/skill-example:lab-notebook weather
+```
+
+`skill-example` resolves to the plugin's namespace (set by the generator from the source dir + prefix); `lab-notebook` resolves to the component (set by the SKILL.md frontmatter); `weather` is `$ARGUMENTS`.
+
+### What this means when you add a new skill
+
+You control TWO of the three layers:
+- **Plugin name** is implicitly chosen when you pick the directory name. If you create `skills/foo-bar/`, the plugin will be `skill-foo-bar`. To rename later, rename the directory.
+- **Component name** is explicit in the file. For a skill, set `name:` in SKILL.md frontmatter. Pick something short and semantic — don't repeat the directory name (avoid `/skill-foo-bar:foo-bar` doubled forms).
+
+Then run `uv run scripts/generate_manifest.py` and Claude can see it.
+
+Per [code.claude.com/docs/en/plugins](https://code.claude.com/docs/en/plugins) (fetched 2026-05-26): *"Plugin skills are always namespaced (like `/my-first-plugin:hello`) to prevent conflicts when multiple plugins have skills with the same name."* There is no flatten mechanism — the only lever is the plugin name (i.e., the directory name).
 
 ### The duplication pitfall
 
@@ -109,7 +129,7 @@ members = [
 
 Plugin name: `bundle-my-domain-skills@dgxsparklabs-marketplace`.
 
-**Reserved names**: `<prefix>-all` (e.g., `skill-all`, `rule-all`) are code-generated catch-all bundles and cannot be declared in `catalog.toml`. The generator owns these names.
+(Per-construct catch-all bundles like `bundle-skill-all` were retired 2026-05-27. The catalog may now use any name including the old `<prefix>-all` form if you want it back for a specific construct.)
 
 ## Install path after merge
 
@@ -119,9 +139,6 @@ Plugin name: `bundle-my-domain-skills@dgxsparklabs-marketplace`.
 
 # Via a domain bundle
 /plugin install bundle-<domain>-skills@dgxsparklabs-marketplace
-
-# Via the catch-all (install everything of one construct type)
-/plugin install bundle-<prefix>-all@dgxsparklabs-marketplace
 ```
 
 **Rules are not a Claude plugin component** (per `code.claude.com/docs/en/plugins-reference#plugin-components-reference`, 2026-05-26). For Claude, install rules into the memory subsystem by symlinking or copying into `.claude/rules/`:

@@ -2,7 +2,7 @@
 
 A multi-platform marketplace of agent skills, rules, and other constructs. Install natively on Claude Code, Codex, and Gemini with one-command GitHub fetches; import directly from GitHub into Cursor's team marketplace (IDE); or clone-and-open on Windsurf and Devin. Every construct lives in one source directory and the generator emits platform-native manifests (`.claude-plugin/`, `.codex-plugin/`, `.cursor-plugin/`) plus a shared `.agents/skills/` mirror that Windsurf, Cursor, and Devin all read natively.
 
-> **2026-05-26 minimal-stable-state.** The marketplace currently ships **10 reference plugins (one per construct type) + 1 cross-construct examples bundle + 8 catch-all bundles = 19 plugin entries**. The 26 production skills and 21 production rules that previously shipped have been archived under `docs/archive/skills-pre-stable-2026-05-26/` and `docs/archive/rules-pre-stable-2026-05-26/`. Real content is re-added one plugin at a time after each is verified across every platform. See `CHANGELOG.md` for the full transition note.
+> **2026-05-27 minimal-stable-state.** The marketplace currently ships **9 reference plugins (one per Claude-supported construct type) + 1 cross-construct `bundle-examples` = 10 plugin entries**. The 26 production skills and 21 production rules that previously shipped have been archived under `docs/archive/skills-pre-stable-2026-05-26/` and `docs/archive/rules-pre-stable-2026-05-26/`. Per-construct catch-all bundles (`bundle-skill-all`, …) were retired 2026-05-27 because they doubled the marketplace listing without curation value. Real content is re-added one plugin at a time after each is verified across every platform. See `CHANGELOG.md` for the full transition note.
 
 ## Table of Contents
 
@@ -11,7 +11,7 @@ A multi-platform marketplace of agent skills, rules, and other constructs. Insta
   - [Claude Code](#claude-code) · [Codex](#codex) · [Gemini](#gemini) · [Cursor](#cursor) · [Windsurf](#windsurf) · [Devin](#devin)
 - [Construct Types Available](#construct-types-available)
 - [Installation Patterns](#installation-patterns)
-  - Individual plugins · Domain bundles · Catch-all bundles · Cross-construct examples bundle
+  - Individual plugins · Domain bundles · Cross-construct examples bundle
 - [Per-Platform Details](#per-platform-details)
   - [Claude Code](#claude-code-1) · [Codex](#codex-1) · [Gemini](#gemini-1) · [Cursor](#cursor-1) · [Windsurf](#windsurf-1) · [Devin](#devin-1)
 - [Repository Structure](#repository-structure)
@@ -47,8 +47,6 @@ Pick your platform, copy the block, and you're running. For end-to-end managemen
 /plugin install bundle-examples@dgxsparklabs-marketplace
 # Or a single example plugin:
 /plugin install skill-example@dgxsparklabs-marketplace
-# Or every plugin of one construct type (currently one each — see minimal-stable-state note above):
-/plugin install bundle-skill-all@dgxsparklabs-marketplace
 ```
 
 ### Codex
@@ -190,18 +188,6 @@ These examples show Claude Code's `/plugin install` slash-command syntax (most e
 ### Domain bundles — related items grouped
 
 > **2026-05-26 minimal-stable-state.** The 8 skill domain bundles and 5 rule domain bundles that previously lived here were removed alongside the source archive (see CHANGELOG). They will be re-introduced one at a time as production skills and rules return to the marketplace. The cross-construct `bundle-examples` is still available for studying every construct type from a single install.
-
-### Catch-all bundles — everything of one type
-
-```bash
-# Each catch-all currently installs the one example for its construct type.
-# As production plugins return, each catch-all grows to match.
-/plugin install bundle-skill-all@dgxsparklabs-marketplace
-/plugin install bundle-command-all@dgxsparklabs-marketplace
-# (Catch-alls exist for every Claude-supported construct: skill, command,
-# agent, hook, mcp, lsp, monitor, output-style, theme. There is no
-# bundle-rule-all — rules are not a Claude plugin component per F8.)
-```
 
 ### Cross-construct examples bundle — study all 10 construct types
 
