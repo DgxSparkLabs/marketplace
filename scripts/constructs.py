@@ -59,7 +59,17 @@ class Construct(Protocol):
 # ─── shared base helper ──────────────────────────────────────────────────────
 
 def _base_plugin_shape(construct: Construct, name: str) -> dict:
-    """Common plugin.json fields shared by all construct types."""
+    """Common plugin.json fields shared by all construct types.
+
+    The ``name`` field built here is the **plugin name** the operator types
+    in ``claude plugin install <name>@dgxsparklabs-marketplace``. It is
+    composed as ``<construct.prefix>-<source-dir-name>`` (e.g.
+    ``skill-notify`` for ``skills/notify/``). The construct prefixes
+    themselves are class attributes on each Construct (SkillConstruct.prefix
+    at line 73, etc.). For the full byte-by-byte trace of every name
+    fragment in an install command, see
+    ``docs/ADDING_A_CONSTRUCT.md`` § "Trace each fragment to its source".
+    """
     return {
         "name": f"{construct.prefix}-{name}",
         "version": _marketplace_version(),
@@ -70,6 +80,11 @@ def _base_plugin_shape(construct: Construct, name: str) -> dict:
 # ─── Construct implementations ────────────────────────────────────────────────
 
 class SkillConstruct:
+    # `prefix` is the first half of the plugin name. For a directory at
+    # skills/notify/, the resulting plugin name is f"{prefix}-{dir}" = "skill-notify".
+    # See docs/ADDING_A_CONSTRUCT.md § "Trace each fragment to its source"
+    # for how this fragment combines with the directory name + MARKETPLACE.toml
+    # to form `claude plugin install skill-notify@dgxsparklabs-marketplace`.
     prefix = "skill"
     source_directory = REPO_ROOT / "skills"
     category = "skill"

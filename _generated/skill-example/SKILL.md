@@ -1,4 +1,8 @@
 ---
+# `name` is the slash-component half of the invocation: `/skill-example:lab-notebook`.
+# This is operator-authored — the generator does NOT modify it. Pick a short
+# semantic word (not the plugin name) to avoid doubled forms like `/skill-example:example-skill`.
+# See docs/ADDING_A_CONSTRUCT.md § "Trace each fragment to its source" for the full chain.
 name: lab-notebook
 description: Reference example. Echoes back a formatted lab-notebook-style status message. Shows how to write a SKILL.md with frontmatter, allowed-tools, and argument handling.
 argument-hint: "[topic]"

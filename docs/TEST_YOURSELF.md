@@ -310,9 +310,13 @@ Use the `claude` CLI directly — these commands are scriptable and work in head
   **Expected**: `dgxsparklabs-marketplace` appears in the output.
 - [ ] Step 3: enumerate available plugins from this marketplace specifically (filtering by `marketplaceName` avoids dumping every globally-known plugin):
   ```bash
-  MARKETPLACE="dgxsparklabs-marketplace"
-  claude plugin list --json --available \
-    | jq --arg mp "$MARKETPLACE" '[.. | objects | select(.marketplaceName? == $mp)]'
+	MARKETPLACE="dgxsparklabs-marketplace"
+	
+	claude plugin list --json --available > /tmp/plugins.json 2>/tmp/claude.err
+	
+	jq --arg mp "$MARKETPLACE" '
+	  [.. | objects | select(.marketplaceName? == $mp)]
+	' /tmp/plugins.json
   ```
   **Expected**: JSON array of **10** plugins (9 Claude-supported individuals + 1 cross-construct catalog bundle `bundle-examples`; rule individuals are excluded per F8, and per-construct catch-all bundles were retired 2026-05-27). If you see more, you're testing a pre-PR-#10 state.
 
@@ -341,7 +345,7 @@ This table is the cheat sheet for the per-construct cells below. Every row was v
 
 **Interactive vs headless**: many Claude slash commands require an interactive TTY session and return `Unknown command` or `isn't available in this environment` when invoked via `claude --print` (headless). Cells below flag this per-construct. Specifically: `/mcp`, `/agents`, `/output-style <name>`, `/theme <name>` are all interactive-only — they can be exercised under `claude --print` only via the hermetic stub's request-body inspection, not via direct slash invocation. See `docs/research/naming-conventions-2026-05-26/logs/15-output-style-theme.log:2-7` for the empirical capture.
 
-**Where do the names come from?** If you're staring at `/skill-example:lab-notebook` and wondering which file produced which segment: the plugin name (`skill-example`) is the construct prefix (`skill`) + the source directory name (`example`); the component name (`lab-notebook`) is the SKILL.md frontmatter `name:` field. See [`ADDING_A_CONSTRUCT.md` § "Where do the names come from?"](./ADDING_A_CONSTRUCT.md#where-do-the-names-come-from-read-this-if-any-name-surprises-you) for the full breakdown across all 10 construct types and what command to run after creating a new one.
+**Where do the names come from?** If you're staring at `/skill-example:lab-notebook` and wondering which file produced which segment: the plugin name (`skill-example`) is the construct prefix (`skill`, [`scripts/constructs.py:73`](../scripts/constructs.py)) + the source directory name (`example`, discovered via [`scripts/utils.py:33-41`](../scripts/utils.py) `scan_source_dir`); the marketplace suffix (`@dgxsparklabs-marketplace`) is [`MARKETPLACE.toml:12`](../MARKETPLACE.toml); the component name (`lab-notebook`) is the SKILL.md frontmatter `name:` field (operator-authored, e.g. `skills/example/SKILL.md` line 2). See [`ADDING_A_CONSTRUCT.md` § "Trace each fragment to its source"](./ADDING_A_CONSTRUCT.md#trace-each-fragment-to-its-source--claude-plugin-install-skill-notifydgxsparklabs-marketplace-byte-by-byte) for the full byte-by-byte breakdown of every fragment in `claude plugin install skill-notify@dgxsparklabs-marketplace`, including a diagram of which generator output file each fragment ends up in.
 
 ### Per-construct verification
 

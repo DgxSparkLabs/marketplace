@@ -96,7 +96,15 @@ def _marketplace_author() -> dict:
 
 
 def _marketplace_name() -> str:
-    """Read the marketplace name from MARKETPLACE.toml."""
+    """Read the marketplace name from MARKETPLACE.toml.
+
+    This is the string after the ``@`` in
+    ``claude plugin install <plugin>@<marketplace>``. Single source of
+    truth at MARKETPLACE.toml line 12. Written into the top-level
+    ``.claude-plugin/marketplace.json`` ``name`` field by
+    ``_write_marketplace_json`` in ``scripts/generate_manifest.py``.
+    See docs/ADDING_A_CONSTRUCT.md § "Trace each fragment to its source".
+    """
     return _load_marketplace_toml()["marketplace"]["name"]
 
 

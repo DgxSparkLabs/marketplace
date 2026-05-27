@@ -93,6 +93,71 @@ Then run `uv run scripts/generate_manifest.py` and Claude can see it.
 
 Per [code.claude.com/docs/en/plugins](https://code.claude.com/docs/en/plugins) (fetched 2026-05-26): *"Plugin skills are always namespaced (like `/my-first-plugin:hello`) to prevent conflicts when multiple plugins have skills with the same name."* There is no flatten mechanism — the only lever is the plugin name (i.e., the directory name).
 
+### Trace each fragment to its source — `claude plugin install skill-notify@dgxsparklabs-marketplace` byte by byte
+
+The walked example: you've created `skills/notify/` with `SKILL.md` frontmatter `name: notify`. After `uv run scripts/generate_manifest.py`, the install command above and the invocation `/skill-notify:notify` both work. Every visible fragment maps to exactly one file:line below. `Ctrl+click` (or `git grep`) to follow.
+
+| Fragment of the install/invocation | Defined at (file:line) | What that line does |
+|---|---|---|
+| `skill-` (the construct prefix) | [`scripts/constructs.py:73`](../scripts/constructs.py) — `prefix = "skill"` inside `class SkillConstruct` | Literal string assigned to the construct class. The other 9 prefixes are at lines 113 (rule), 150 (command), 179 (agent), 209 (hook), 237 (mcp), 264 (lsp), 288 (monitor), 314 (output-style), 338 (theme). |
+| `notify` (the directory name half) | The filesystem — `skills/notify/` is a directory you created in step 1 of the contribution workflow above. The generator discovers it via [`scripts/utils.py:33-41`](../scripts/utils.py) — `scan_source_dir(source_dir)` returns `sorted(d.name for d in source_dir.iterdir() if d.is_dir())`. | Any kebab-case subdirectory of `skills/` becomes the second half of the plugin name. No central registry. |
+| `skill-notify` (the combined plugin name) | Built at [`scripts/constructs.py:64`](../scripts/constructs.py) — `"name": f"{construct.prefix}-{name}"` inside `_base_plugin_shape`. Phase 1 of the generator wires it into the on-disk dir at [`scripts/generate_manifest.py:138`](../scripts/generate_manifest.py) — `plugin_dir = GENERATED / f"{construct.prefix}-{name}"`, then `:142` calls `construct.build_plugin_json(name)` which threads through `_base_plugin_shape`. | One concatenation, two places. The dir name `_generated/skill-notify/` and the `plugin.json` `name` field MUST agree (they do, because both come from the same f-string). |
+| `@` (the separator) | Claude Code's CLI convention — not defined in this repo. Per [code.claude.com/docs/en/plugins](https://code.claude.com/docs/en/plugins) it's the syntax for scoping a plugin reference to a specific marketplace. | Plain string. The CLI parses `<plugin>@<marketplace>` and looks up the marketplace's plugin list. |
+| `dgxsparklabs-marketplace` (the marketplace name) | [`MARKETPLACE.toml:12`](../MARKETPLACE.toml) — `name = "dgxsparklabs-marketplace"`. Read by [`scripts/utils.py:98-100`](../scripts/utils.py) `_marketplace_name()`. Written into `.claude-plugin/marketplace.json` `"name"` field at [`scripts/generate_manifest.py:76`](../scripts/generate_manifest.py) inside `_write_marketplace_json`. | Single source of truth — renaming the marketplace is a single-line edit at `MARKETPLACE.toml:12`. The `display_name` on line 13 is separate UI sugar; the install-time reference uses `name` only. |
+| The `name:` field in `skills/notify/SKILL.md` frontmatter (becomes the slash component `notify`) | Written **directly by you** in `skills/notify/SKILL.md` line 2 — e.g., `name: notify`. The generator does NOT touch this field; `SkillConstruct.emit` at [`scripts/constructs.py:85-94`](../scripts/constructs.py) copies the whole SKILL.md verbatim via `shutil.copytree`. At install time Claude Code reads the cached `SKILL.md` and uses the frontmatter `name:` value as the slash component half. | Operator-owned, no generator round-trip. To change `/skill-notify:notify` → `/skill-notify:status`, edit one line in the source SKILL.md and re-run the generator. |
+
+### How the same fragments end up in three separate files
+
+If you want to see the wiring end-to-end without running the generator, here are the **on-disk files the generator produces** and the line in each where every fragment lands:
+
+```
+After `uv run scripts/generate_manifest.py` finishes:
+
+  MARKETPLACE.toml:12                              "dgxsparklabs-marketplace"  ← edited by hand
+                              │
+                              ▼  read by _marketplace_name() at scripts/utils.py:98-100
+                              │
+  .claude-plugin/marketplace.json
+    "name": "dgxsparklabs-marketplace"             ← top-level marketplace identity
+    "plugins": [
+      {
+        "name": "skill-notify",                    ← entry from Phase 1 (scripts/generate_manifest.py:138-145)
+        "source": "./_generated/skill-notify",
+        "category": "skill",
+        "description": "...",                      ← read from SKILL.md frontmatter (scripts/constructs.py:79-80)
+        ...
+      }
+    ]
+
+  _generated/skill-notify/.claude-plugin/plugin.json
+    "name": "skill-notify"                         ← written by SkillConstruct.emit at scripts/constructs.py:85-94
+                                                     via _base_plugin_shape at scripts/constructs.py:61-67
+
+  _generated/skill-notify/SKILL.md  ← byte-copied from skills/notify/SKILL.md
+    ---
+    name: notify                                   ← OPERATOR-AUTHORED in skills/notify/SKILL.md line 2
+    description: ...
+    ---
+```
+
+When you run `claude plugin install skill-notify@dgxsparklabs-marketplace`:
+
+1. CLI splits on `@` — left side is the plugin name, right side is the marketplace.
+2. CLI looks up `dgxsparklabs-marketplace` in its registered marketplaces (from `claude plugin marketplace add`); finds the path to this repo's `.claude-plugin/marketplace.json`.
+3. CLI finds the entry where `plugins[].name == "skill-notify"` and reads `source` (`./_generated/skill-notify`).
+4. CLI copies `_generated/skill-notify/` to `~/.claude/plugins/cache/dgxsparklabs-marketplace/skill-notify/<version>/`.
+5. After `claude plugin enable skill-notify@dgxsparklabs-marketplace`, the SKILL.md frontmatter `name: notify` becomes a registered skill in Claude's runtime.
+6. `/skill-notify:notify` at the prompt resolves to that skill — `skill-notify` is the cached `plugin.json` `name` (Claude's namespace prefix); `notify` is the SKILL.md frontmatter `name`.
+
+If any link in this chain breaks, the symptom changes deterministically:
+
+| Broken link | Symptom |
+|---|---|
+| `skills/notify/` directory missing | `claude plugin install` errors `Plugin "skill-notify" not found in marketplace` |
+| SKILL.md frontmatter `name:` missing or malformed | install succeeds; `/skill-notify:notify` returns `Unknown command` |
+| `MARKETPLACE.toml` `name` field renamed mid-flight | `@dgxsparklabs-marketplace` references break across all 10 plugin installs at once |
+| `_generated/skill-notify/` deleted (generator not re-run after source edit) | install succeeds against stale source; behavior reflects the prior content |
+
 ### The duplication pitfall
 
 If the component file's name repeats the plugin's prefix, the invocation reads twice:
