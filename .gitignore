@@ -21,6 +21,12 @@ research/scraped_*.md
 # but not version-controlled to keep repo lean. Promote individual
 # files to docs/ if/when they become load-bearing for a contributor.
 docs/research/research/
+
+# Bind-mount target for the Dockerized hermetic stub
+# (tests/fixtures/claude-stub/Dockerfile). Captured request bodies +
+# access logs land here when the operator runs the stub container.
+# Per-machine debug artifacts — never committed.
+.stub-logs/
 results.json
 text_*.json
 test.log

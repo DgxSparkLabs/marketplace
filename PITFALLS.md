@@ -33,6 +33,13 @@ Keep entries 2-4 lines per field. Link to the commit so the next agent can read 
 - **Fix:** Stub files now carry PEP 723 inline metadata declaring `dependencies = ["flask>=3.0"]`. Invoke with `uv run tests/fixtures/claude-stub/stub.py` — uv creates an ephemeral env with Flask pinned to the script's requirement. Matches AGENTS.md "always use uv" rule and eliminates the apt-vs-feature interpreter mismatch class entirely.
 - **Detect:** If a Python script bombs on `ModuleNotFoundError` after an apt install "succeeded", the apt package is for a different interpreter. Run `which python3` and `python3 -c 'import sys; print(sys.path)'` to confirm. Better: add PEP 723 to any script with non-stdlib deps and use `uv run`.
 
+## Dockerized stub: `curl: (52) Empty reply from server` from host when stub is empirically serving
+
+- **Symptom:** `docker run -d --name claude-stub -p 8089:8089 claude-stub` starts cleanly. Flask logs `Running on http://0.0.0.0:8089` inside the container. From host: `curl http://127.0.0.1:8089/...` returns `curl: (52) Empty reply from server`. From inside the container via `docker exec ... python3 urllib`: works fine, returns 200.
+- **Cause:** A non-Docker process on the Windows host is binding `127.0.0.1:8089` and intercepting connections before Docker Desktop's `com.docker.backend` port proxy can route to the container. Observed culprit: Cursor IDE (`Cursor.exe`). Confirm with `netstat -ano | findstr 8089` — if two listeners appear (one `0.0.0.0:8089` owned by `com.docker.backend`, one `127.0.0.1:8089` owned by something else), the something-else is hijacking loopback traffic.
+- **Fix:** The primary stub workflow (qa-claude joins stub's netns via `--network container:claude-stub`) doesn't go through host port forwarding at all and is unaffected. If you specifically need host-side `curl` access, expose the stub on a different host port (e.g. `-p 18089:8089`) and curl that.
+- **Detect:** Any "Empty reply from server" on a port a Docker container should be serving → run `netstat -ano | findstr <port>` (Windows) or `lsof -i :<port>` (POSIX) first. Confirm no other process is squatting before debugging Docker.
+
 ## Dev container: EACCES on /home/vscode/.claude/plugins
 
 - **Symptom:** `claude plugin marketplace add /workspaces/marketplace/` fails with `EACCES: permission denied, mkdir '/home/vscode/.claude/plugins'`.

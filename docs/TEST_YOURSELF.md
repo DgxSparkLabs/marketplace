@@ -288,6 +288,8 @@ export API_TIMEOUT_MS=20000                 # fail fast on stub bugs
 
 Now any `claude` invocation routes through the stub. Each affected validation below has a "Hermetic verification" sub-step you can use in place of the interactive-auth step. The stub's source + per-env-var details live at `tests/fixtures/claude-stub/README.md`. CI runs the same recipe in `.github/workflows/compat-headless-claude.yml`.
 
+> **Alternative: dockerized stub with bind-mounted logs.** If you want captured request bodies on your host filesystem (so you can `grep` them from outside the container), or if you're orchestrating multiple containers, build the stub as its own Docker image and have qa-claude join its network namespace. See `tests/fixtures/claude-stub/README.md` § "Docker workflow" for the two-`docker run` recipe. Trade-off: an extra `docker build` step up front, but the captured bodies stream to `./.stub-logs/stub-bodies.log` on the host where you can `tail -f` them live without ever exec'ing into the container.
+
 ### Marketplace registration
 
 Use the `claude` CLI directly — these commands are scriptable and work in headless containers (the equivalent `/plugin ...` slash commands require the interactive Claude session UI).

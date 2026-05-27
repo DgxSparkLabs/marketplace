@@ -11,7 +11,9 @@
 
 ## Last action taken
 
-Implemented Path A — brand-prefixed shared slash namespace, after two rounds of empirical Docker validation confirmed Claude accepts it. The change decouples install names (still unique per plugin) from slash namespace (now shared per construct):
+Added a standalone Docker image for the hermetic stub. New files: `tests/fixtures/claude-stub/Dockerfile` (uv + Flask via PEP 723, default CMD runs the body dumper on 8089). Updated `tests/fixtures/claude-stub/README.md` with a full Docker workflow section showing the two-container composition (stub + qa-claude sharing netns via `--network container:claude-stub`). Captured request bodies stream to `./.stub-logs/stub-bodies.log` on the host via bind mount. `.stub-logs/` added to `.gitignore`. PITFALLS entry added for the Cursor-IDE port-8089 conflict on Windows that breaks Docker Desktop host-side `-p` mapping (primary workflow doesn't need port mapping so unaffected). Empirically smoke-tested: build succeeds, stub serves correctly inside the container, sibling alpine container reaches the stub via shared netns and bodies appear on host log.
+
+### Prior commit: Implemented Path A — brand-prefixed shared slash namespace, after two rounds of empirical Docker validation confirmed Claude accepts it. The change decouples install names (still unique per plugin) from slash namespace (now shared per construct):
 
 - Install: `claude plugin install skill-example@dgxsparklabs-marketplace` (unchanged)
 - Invoke: `/dgxsparklabs-skill:lab-notebook` (was `/skill-example:lab-notebook`)
