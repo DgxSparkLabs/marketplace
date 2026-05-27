@@ -219,24 +219,35 @@ Forwarded ports: 8088 (F5 sentinel stub) and 8089 (F7/F9 body-dumper stub). Clau
 
 ### Setup option B: Docker (manual, hermetic)
 
-Use this when you want a one-off container without the dev container's VS Code integration — e.g., scripting the QA pass in CI or testing on a host without VS Code.
+Use this when you want a one-off container without the dev container's VS Code integration — e.g., scripting the QA pass or testing on a host without VS Code. The pattern below bind-mounts your current working directory into the container, so whatever branch you have checked out on the host is what the container tests — no `git clone` step needed.
+
+From the marketplace repo root on the host (PowerShell):
 
 ```powershell
-docker run -it --name qa-claude node:20 bash
+docker run --rm -it --name qa-claude `
+  -v "${PWD}:/workspace/marketplace" `
+  -w /workspace/marketplace `
+  node:20 bash
 ```
 
-Inside the container (`node:20` has `git` pre-installed):
+Or POSIX bash:
+
 ```bash
-# Install Claude CLI
+docker run --rm -it --name qa-claude \
+  -v "$PWD:/workspace/marketplace" \
+  -w /workspace/marketplace \
+  node:20 bash
+```
+
+The `--rm` flag auto-removes the container on exit. `-w` lands you in the mounted dir. Once inside:
+
+```bash
+# Install Claude CLI (the only thing the container is missing)
 npm install -g @anthropic-ai/claude-code
 claude --version
-
-# Clone the marketplace (default branch = main).
-git clone https://github.com/DgxSparkLabs/marketplace.git /workspace/marketplace
-cd /workspace/marketplace
-
-# (To test a specific PR branch instead: git clone --branch <branch-name> ...)
 ```
+
+That's the entire prep. To test a specific PR branch, check it out on the host (`git checkout <branch>`) before running the `docker run`; the container sees the host's working tree live.
 
 ### Setup option C: Native
 
@@ -287,10 +298,16 @@ Use the `claude` CLI directly — these commands are scriptable and work in head
     claude plugin marketplace add /workspace/marketplace
     ```
   - **Expected (remote-main and local-clone)**: "Successfully added marketplace 'dgxsparklabs-marketplace'" (or similar).
-- [ ] Step 2: `claude plugin marketplace list`
-  - **Expected**: `dgxsparklabs-marketplace` appears in the registered marketplaces list
-- [ ] Step 3: `claude plugin list --json --available | head -50`
-  - **Expected**: JSON output enumerating **19** plugins (10 individuals + 1 cross-construct bundle `bundle-examples` + 8 catch-all bundles; rule has no Claude-side catch-all per F8). If you see more, you're testing a pre-PR-#9 state.
+- [ ] Step 2: list registered marketplaces:
+  ```bash
+  claude plugin marketplace list
+  ```
+  **Expected**: `dgxsparklabs-marketplace` appears in the output.
+- [ ] Step 3: enumerate available plugins:
+  ```bash
+  claude plugin list --json --available | head -50
+  ```
+  **Expected**: JSON output enumerating **19** plugins (10 individuals + 1 cross-construct bundle `bundle-examples` + 8 catch-all bundles; rule has no Claude-side catch-all per F8). If you see more, you're testing a pre-PR-#9 state.
 
 - [ ] Step 4 — **enable-after-install gotcha**: empirically (`docs/research/naming-conventions-2026-05-26/logs/06-enable-qualified.log:1-9`), `claude plugin install` lands plugins in the *disabled* scope on first install. After installing any plugin in the per-construct cells below, you MUST run `claude plugin enable <plugin>@dgxsparklabs-marketplace` before invoking. The bare `<plugin>` form (without `@dgxsparklabs-marketplace`) errors with `Plugin "<name>" not found in any editable settings scope. Use plugin@marketplace format.` This is the single most likely cause of "I installed it but nothing happens" — flag it up front.
 
@@ -322,38 +339,93 @@ This table is the cheat sheet for the per-construct cells below. Every row was v
 Each test installs ONE plugin of the construct type, then invokes it. Per-construct cleanup is folded into the master cleanup block at the end.
 
 #### Skill — `skill-example`
-- [ ] **Type to install (exactly)**: `claude plugin install skill-example@dgxsparklabs-marketplace --scope project`
-- [ ] **Enable**: `claude plugin enable skill-example@dgxsparklabs-marketplace` (plugins land disabled on install per `docs/research/naming-conventions-2026-05-26/logs/06-enable-qualified.log`).
+
+- [ ] **Install** (run in host shell or container shell):
+  ```bash
+  claude plugin install skill-example@dgxsparklabs-marketplace --scope project
+  ```
+- [ ] **Enable** (plugins land disabled on install per `docs/research/naming-conventions-2026-05-26/logs/06-enable-qualified.log`):
+  ```bash
+  claude plugin enable skill-example@dgxsparklabs-marketplace
+  ```
 - [ ] **Verify in `/plugins`**: row labeled `skill-example@dgxsparklabs-marketplace`, status `✔ enabled`.
-- [ ] **Type to invoke (exactly)**: `/skill-example:lab-notebook weather` — OR the bare flat form `/lab-notebook weather`. Both resolve (`docs/research/naming-conventions-2026-05-26/logs/18-rename-proof.log:2-6`).
+- [ ] **Invoke** (canonical namespaced form; type in an interactive `claude` session):
+  ```text
+  /skill-example:lab-notebook weather
+  ```
+  Or the bare flat form (also resolves per `docs/research/naming-conventions-2026-05-26/logs/18-rename-proof.log:2-6`):
+  ```text
+  /lab-notebook weather
+  ```
 - [ ] **Expected visible output**: a markdown block formatted as a lab-notebook status entry — header with the topic, current UTC timestamp, and the skill's canned body text per `skills/example/SKILL.md`.
 - [ ] **Slash-dropdown check**: typing `/skill-example` triggers autocomplete; you should see `/skill-example:lab-notebook` highlighted with the description from frontmatter: "Reference example. Echoes back a formatted lab-notebook-style status message…"
 - [ ] **Failure signals**: (a) no `skill-example` entry in `/plugins` → install path broken; (b) `/skill-example:lab-notebook` returns "Unknown command" → namespacing broken or skill `name:` field changed; (c) slash resolves but body is empty → SKILL.md frontmatter parse error.
-- [ ] **Diagnostic**: `claude plugin details skill-example` lists `lab-notebook` as a component; `~/.claude/plugins/cache/dgxsparklabs-marketplace/skill-example/<version>/` is populated.
+- [ ] **Diagnostic**:
+  ```bash
+  claude plugin details skill-example
+  ls ~/.claude/plugins/cache/dgxsparklabs-marketplace/skill-example/
+  ```
+  `details` lists `lab-notebook` as a component; the cache dir is populated.
 
 #### Rule — N/A for Claude (retired 2026-05-26)
 
 - [ ] **No Claude plugin install path for rules.** Per `code.claude.com/docs/en/plugins-reference#plugin-components-reference` (fetched 2026-05-26), rules are not a Claude plugin component — they live in Claude's memory subsystem.
-- [ ] **Type to install (manual filesystem)**: `mkdir -p .claude/rules && cp rules/example/rule.md .claude/rules/example.md` (POSIX) or `New-Item -ItemType Directory -Force .claude/rules; Copy-Item rules/example/rule.md .claude/rules/example.md` (PowerShell).
-- [ ] **Verify**: `cat .claude/rules/example.md` matches `rules/example/rule.md`.
-- [ ] **Type to invoke**: rules are passive — no slash command. Start a `claude` session in the project; the rule's guidance becomes part of every system prompt.
+- [ ] **Manual install (filesystem)** — POSIX:
+  ```bash
+  mkdir -p .claude/rules
+  cp rules/example/rule.md .claude/rules/example.md
+  ```
+  PowerShell:
+  ```powershell
+  New-Item -ItemType Directory -Force .claude/rules
+  Copy-Item rules/example/rule.md .claude/rules/example.md
+  ```
+- [ ] **Verify**:
+  ```bash
+  diff rules/example/rule.md .claude/rules/example.md
+  ```
+- [ ] **Invoke**: rules are passive — no slash command. Start a `claude` session in the project; the rule's guidance becomes part of every system prompt.
 - [ ] **Expected observable**: Claude's responses reflect the rule (e.g., the example rule's `When you are not sure, ask for confirmation` directive surfaces as cautious counterquestions in ambiguous cases).
 - [ ] See Claude validation 8 below to confirm no `rule-*` plugins surface in Claude's marketplace listing post-deprecation.
 
 #### Sub-agent — `agent-example`  *(invocation requires interactive Claude session — `/agents` is TUI-only)*
-- [ ] **Type to install (exactly)**: `claude plugin install agent-example@dgxsparklabs-marketplace --scope project`
-- [ ] **Enable**: `claude plugin enable agent-example@dgxsparklabs-marketplace`.
+
+- [ ] **Install**:
+  ```bash
+  claude plugin install agent-example@dgxsparklabs-marketplace --scope project
+  ```
+- [ ] **Enable**:
+  ```bash
+  claude plugin enable agent-example@dgxsparklabs-marketplace
+  ```
 - [ ] **Verify in `/plugins`**: row labeled `agent-example@dgxsparklabs-marketplace`, status `✔ enabled`.
-- [ ] **Type to invoke (interactive only)**: `/agents` in a real `claude` session — TTY picker, no headless equivalent per F7b. In the picker, select `agent-example:notebook-reviewer`.
+- [ ] **Invoke (interactive only)** — TTY picker, no headless equivalent per F7b. In a real `claude` session:
+  ```text
+  /agents
+  ```
+  Then select `agent-example:notebook-reviewer` from the picker.
 - [ ] **Expected (per spec, not empirically captured in PR #10 research)**: `/agents` shows the entry `agent-example:notebook-reviewer` with description "Reviews a lab notebook entry as a skeptical peer reviewer…" After selection, the next user message routes to that sub-agent context, and the reply tone is critical-second-opinion not generic Claude. This is inferred from the namespacing convention; the Docker research did not exercise the TUI picker. Operator should verify and report deviations.
 - [ ] **Failure signals**: (a) no `agent-example` entry in `/plugins` → install path broken; (b) `/agents` picker has no row matching → agent loader broken or frontmatter `name:` mismatch; (c) selection succeeds but response is generic Claude tone → sub-agent context not switching (regression of PR #5 fixes).
-- [ ] **Diagnostic**: `claude plugin details agent-example | grep -F notebook-reviewer` matches.
+- [ ] **Diagnostic**:
+  ```bash
+  claude plugin details agent-example | grep -F notebook-reviewer
+  ```
 
 #### Command — `command-example`
-- [ ] **Type to install (exactly)**: `claude plugin install command-example@dgxsparklabs-marketplace --scope project`
-- [ ] **Enable**: `claude plugin enable command-example@dgxsparklabs-marketplace`.
+
+- [ ] **Install**:
+  ```bash
+  claude plugin install command-example@dgxsparklabs-marketplace --scope project
+  ```
+- [ ] **Enable**:
+  ```bash
+  claude plugin enable command-example@dgxsparklabs-marketplace
+  ```
 - [ ] **Verify in `/plugins`**: row labeled `command-example@dgxsparklabs-marketplace`, status `✔ enabled`.
-- [ ] **Type to invoke (exactly)**: `/command-example:hello`
+- [ ] **Invoke** (in any `claude` session — works in `--print` too):
+  ```text
+  /command-example:hello
+  ```
 - [ ] **Expected visible output**: Claude prints a markdown block in this shape (substituting today's UTC date for `<DATE>`):
   ```markdown
   ## <DATE> — Lab notebook entry
@@ -368,65 +440,162 @@ Each test installs ONE plugin of the construct type, then invokes it. Per-constr
 - [ ] **Failure signals**: (a) no `command-example` entry in `/plugins` → install broken; (b) `/command-example:hello` returns "Unknown command" → the rename from `example-command.md → hello.md` (PR #9) didn't propagate; (c) command runs but output is wrong shape → command file edited locally — re-check against `commands/example/commands/hello.md`.
 
 #### Hook — `hook-example`
-- [ ] **Type to install (exactly)**: `claude plugin install hook-example@dgxsparklabs-marketplace --scope project`
-- [ ] **Enable**: `claude plugin enable hook-example@dgxsparklabs-marketplace`.
+
+- [ ] **Install**:
+  ```bash
+  claude plugin install hook-example@dgxsparklabs-marketplace --scope project
+  ```
+- [ ] **Enable**:
+  ```bash
+  claude plugin enable hook-example@dgxsparklabs-marketplace
+  ```
 - [ ] **Verify in `/plugins`**: row labeled `hook-example@dgxsparklabs-marketplace`, status `✔ enabled`.
-- [ ] **Type to invoke**: hooks are passive — they fire on Claude events. Per `hooks/example/hooks/hooks.json`, six events have hooks: `UserPromptSubmit`, `SessionStart`, `PreToolUse`, `PostToolUse`, `Stop`, `SessionEnd`. Trigger each by:
+- [ ] **Invoke**: hooks are passive — they fire on Claude events. Per `hooks/example/hooks/hooks.json`, six events have hooks: `UserPromptSubmit`, `SessionStart`, `PreToolUse`, `PostToolUse`, `Stop`, `SessionEnd`. Trigger each by:
   - `UserPromptSubmit`: type any prompt and press Enter.
   - `SessionStart`: open a fresh `claude` session.
   - `PreToolUse` / `PostToolUse`: ask Claude to read a file — both fire on the `Read` tool call.
   - `Stop`: send the response that completes a turn.
   - `SessionEnd`: type `/exit` or press `Ctrl+D`.
-- [ ] **Expected visible side-effect**: each event writes a sentinel file. In a separate shell: `ls /tmp/hook-*-fired.log` (POSIX) or `Get-ChildItem $env:TEMP\hook-*-fired.log` (Windows) — once per event triggered.
+- [ ] **Check sentinels** (run in a separate shell) — POSIX:
+  ```bash
+  ls /tmp/hook-*-fired.log
+  ```
+  PowerShell on Windows:
+  ```powershell
+  Get-ChildItem $env:TEMP\hook-*-fired.log
+  ```
+  Expect one file per event triggered.
 - [ ] **Failure signals**: (a) sentinel file missing for a triggered event → that hook didn't fire; (b) sentinel exists but empty → hook ran but didn't write; (c) `UserPromptSubmit` hook silently injects context but operator sees no sentinel → may need to check `claude --debug` per F5 finding (operator-invisible by design).
 - [ ] See Claude validations 5a–5f below for per-event hands-on cells.
 
 #### MCP server — `mcp-example`  *(connection check and tool-call verification both require interactive Claude session)*
-- [ ] **Prerequisite**: `uv` must be installed and on PATH. Without it, install succeeds but the server can't start. Install once via `curl -LsSf https://astral.sh/uv/install.sh | sh` (POSIX) or `powershell -c "irm https://astral.sh/uv/install.ps1 | iex"` (Windows).
-- [ ] **Type to install (exactly)**: `claude plugin install mcp-example@dgxsparklabs-marketplace --scope project`
-- [ ] **Enable**: `claude plugin enable mcp-example@dgxsparklabs-marketplace`.
+
+- [ ] **Prerequisite**: `uv` must be installed and on PATH (the dev container has it; manual setups need to install). POSIX:
+  ```bash
+  curl -LsSf https://astral.sh/uv/install.sh | sh
+  ```
+  PowerShell:
+  ```powershell
+  powershell -c "irm https://astral.sh/uv/install.ps1 | iex"
+  ```
+- [ ] **Install**:
+  ```bash
+  claude plugin install mcp-example@dgxsparklabs-marketplace --scope project
+  ```
+- [ ] **Enable**:
+  ```bash
+  claude plugin enable mcp-example@dgxsparklabs-marketplace
+  ```
 - [ ] **Verify in `/plugins`**: row labeled `mcp-example@dgxsparklabs-marketplace`, status `✔ enabled`.
-- [ ] **Verify in `/mcp` (interactive only)**: run `/mcp` in a real `claude` session — server `example` appears with status `✓ Connected` (assuming `uv` present). If `uv` is missing, you'll see `plugin:mcp-example:example: uvx mcp-server-fetch - ✗ Failed to connect`. `/mcp` is a TUI command; it cannot be exercised under `claude --print`.
-- [ ] **Type to invoke (interactive)**: tools are model-called, not user-typed. Ask Claude: "fetch https://example.com and summarize." Watch the tool name in `claude --debug` output.
+- [ ] **Verify in `/mcp` (interactive only)**: in a real `claude` session type:
+  ```text
+  /mcp
+  ```
+  Server `example` should appear with status `✓ Connected` (assuming `uv` present). If `uv` is missing, you'll see `plugin:mcp-example:example: uvx mcp-server-fetch - ✗ Failed to connect`. `/mcp` is a TUI command; it cannot be exercised under `claude --print`.
+- [ ] **Exercise the tool (interactive)**: tools are model-called, not user-typed. Ask Claude:
+  ```text
+  fetch https://example.com and summarize the contents
+  ```
+  Watch the tool name in `claude --debug` output.
 - [ ] **Expected tool name**: `mcp__mcp-example__example__fetch` (hook-matcher form) or `plugin:mcp-example:example` (CLI display form).
 - [ ] **Failure signals**: (a) `/mcp` shows `✗ Failed to connect` with `uvx mcp-server-fetch` → `uv` not installed; (b) `/mcp` empty → server config not loaded — check `_generated/mcp-example/mcp-config.json` post-install; (c) tool invocation but model says "no fetch tool" → MCP namespace wrong (regression of the 2026-05-26 alignment).
 
 #### LSP server — `lsp-example`
-- [ ] **Type to install (exactly)**: `claude plugin install lsp-example@dgxsparklabs-marketplace --scope project`
-- [ ] **Enable**: `claude plugin enable lsp-example@dgxsparklabs-marketplace`.
+
+- [ ] **Install**:
+  ```bash
+  claude plugin install lsp-example@dgxsparklabs-marketplace --scope project
+  ```
+- [ ] **Enable**:
+  ```bash
+  claude plugin enable lsp-example@dgxsparklabs-marketplace
+  ```
 - [ ] **Verify in `/plugins`**: row labeled `lsp-example@dgxsparklabs-marketplace`, status `✔ enabled`.
 - [ ] **Verify in `/plugin` LSP tab (if available)**: example LSP listed; `lsp-example` plugin contributing.
-- [ ] **Type to invoke**: LSPs auto-attach by file extension per `lsp-config.json`'s `extensionToLanguage` map. Open a file matching one of the configured extensions in Claude.
+- [ ] **Invoke**: LSPs auto-attach by file extension per `lsp-config.json`'s `extensionToLanguage` map. Open a file matching one of the configured extensions in Claude.
 - [ ] **Expected**: LSP-backed features (hover, go-to-definition, completion) work for that language.
 - [ ] **Known limitation**: `lsp-example`'s config points at a placeholder server binary — the example is illustrative for the schema, not a working LSP. To verify end-to-end, copy the example to scaffold a real LSP plugin per `lsp-servers/example/README.md`. Reported as Verification gap.
 
 #### Monitor — `monitor-example`
-- [ ] **Type to install (exactly)**: `claude plugin install monitor-example@dgxsparklabs-marketplace --scope project`
-- [ ] **Enable**: `claude plugin enable monitor-example@dgxsparklabs-marketplace`.
+
+- [ ] **Install**:
+  ```bash
+  claude plugin install monitor-example@dgxsparklabs-marketplace --scope project
+  ```
+- [ ] **Enable**:
+  ```bash
+  claude plugin enable monitor-example@dgxsparklabs-marketplace
+  ```
 - [ ] **Verify in `/plugins`**: row labeled `monitor-example@dgxsparklabs-marketplace`, status `✔ enabled`.
 - [ ] **Verify in `/plugin` Monitors tab (interactive)**: `disk-usage` monitor listed (renamed from `example-disk` on 2026-05-26 per Scheme B+).
-- [ ] **Type to invoke**: monitors are passive — `disk-usage` runs `df -h .` once at session start per `monitors/example/monitors/monitors.json`. Start a fresh `claude` session.
-- [ ] **Expected (per spec, not empirically captured)**: at session start, the model context receives the `df -h .` output as a monitor observation. Visible via `/plugin` Monitors tab or by asking Claude "what's our current disk usage?" The Docker research did not exercise the monitor at session start; this cell describes the expected behavior per the F3 fix and the monitors.json schema, but the operator is the first to verify end-to-end.
+- [ ] **Invoke**: monitors are passive — `disk-usage` runs `df -h .` once at session start per `monitors/example/monitors/monitors.json`. Start a fresh `claude` session.
+- [ ] **Probe the monitor output** (interactive) — ask Claude:
+  ```text
+  what's our current disk usage?
+  ```
+- [ ] **Expected (per spec, not empirically captured)**: at session start, the model context receives the `df -h .` output as a monitor observation. Visible via `/plugin` Monitors tab or via the prompt above. The Docker research did not exercise the monitor at session start; this cell describes the expected behavior per the F3 fix and the monitors.json schema, but the operator is the first to verify end-to-end.
 - [ ] **Failure signals**: (a) no `monitor-example` entry in `/plugins` → install broken; (b) Monitors tab empty → monitor loader broken or monitors.json schema mismatch (regression of F3); (c) monitor name shown as `example-disk` → rename didn't propagate post-regenerate.
 
 #### Output style — `output-style-example`  *(invocation requires interactive Claude session — `/output-style` returns `Unknown command` in `--print`)*
-- [ ] **Type to install (exactly)**: `claude plugin install output-style-example@dgxsparklabs-marketplace --scope project`
-- [ ] **Enable**: `claude plugin enable output-style-example@dgxsparklabs-marketplace`.
+
+- [ ] **Install**:
+  ```bash
+  claude plugin install output-style-example@dgxsparklabs-marketplace --scope project
+  ```
+- [ ] **Enable**:
+  ```bash
+  claude plugin enable output-style-example@dgxsparklabs-marketplace
+  ```
 - [ ] **Verify in `/plugins`**: row labeled `output-style-example@dgxsparklabs-marketplace`, status `✔ enabled`.
-- [ ] **Type to invoke (interactive only)**: in a real `claude` session, type `/output-style Lab Notebook Voice` (the human-readable `name:` from the output-style frontmatter — NOT the plugin name). The slash returns `Unknown command: /output-style` in `claude --print` mode (`docs/research/naming-conventions-2026-05-26/logs/15-output-style-theme.log:2-7`); hermetic verification uses request-body inspection instead — see Claude validation 9.
-- [ ] **Expected immediate confirmation**: Claude responds with a confirmation: "Output style set to: Lab Notebook Voice" (exact wording per Claude version). Issue `/clear` to re-establish the session under the new style.
-- [ ] **Expected behavior change**: subsequent replies use measured, citation-focused prose with lab-notebook section markers (per `output-styles/example/output-styles/lab-notebook-voice.md` spec). Ask "summarize what you just did" — reply should have lab-notebook structure.
-- [ ] **Verify persistence**: `cat .claude/settings.local.json` (POSIX) or `Get-Content .claude/settings.local.json` (Windows) — expect `"outputStyle": "Lab Notebook Voice"` (per `code.claude.com/docs/en/output-styles`, 2026-05-26).
+- [ ] **Invoke (interactive only)** — in a real `claude` session, type:
+  ```text
+  /output-style Lab Notebook Voice
+  ```
+  The argument is the human-readable `name:` from the output-style frontmatter — NOT the plugin name. The slash returns `Unknown command: /output-style` in `claude --print` mode (`docs/research/naming-conventions-2026-05-26/logs/15-output-style-theme.log:2-7`); hermetic verification uses request-body inspection instead — see Claude validation 9.
+- [ ] **Refresh the session**:
+  ```text
+  /clear
+  ```
+- [ ] **Expected immediate confirmation**: Claude responds with a confirmation: "Output style set to: Lab Notebook Voice" (exact wording per Claude version).
+- [ ] **Expected behavior change**: subsequent replies use measured, citation-focused prose with lab-notebook section markers (per `output-styles/example/output-styles/lab-notebook-voice.md` spec). Ask:
+  ```text
+  summarize what you just did
+  ```
+  Reply should have lab-notebook structure.
+- [ ] **Verify persistence** — POSIX:
+  ```bash
+  cat .claude/settings.local.json
+  ```
+  PowerShell:
+  ```powershell
+  Get-Content .claude/settings.local.json
+  ```
+  Expect `"outputStyle": "Lab Notebook Voice"` (per `code.claude.com/docs/en/output-styles`, 2026-05-26).
 - [ ] **Failure signals**: (a) no `output-style-example` entry in `/plugins` → install broken; (b) `/output-style Lab Notebook Voice` returns "Unknown output style" → frontmatter `name:` not exposed to Claude; (c) confirmation appears but settings.local.json unchanged → persistence broken.
 - [ ] See Claude validation 9 below for hermetic verification.
 
 #### Theme — `theme-example`  *(invocation requires interactive Claude session — `/theme` returns `isn't available in this environment` in `--print`)*
-- [ ] **Type to install (exactly)**: `claude plugin install theme-example@dgxsparklabs-marketplace --scope project`
-- [ ] **Enable**: `claude plugin enable theme-example@dgxsparklabs-marketplace`.
+
+- [ ] **Install**:
+  ```bash
+  claude plugin install theme-example@dgxsparklabs-marketplace --scope project
+  ```
+- [ ] **Enable**:
+  ```bash
+  claude plugin enable theme-example@dgxsparklabs-marketplace
+  ```
 - [ ] **Verify in `/plugins`**: row labeled `theme-example@dgxsparklabs-marketplace`, status `✔ enabled`.
-- [ ] **Type to invoke (interactive only)**: in a real `claude` session, type `/theme Lab Notebook` (the `name` from `themes/example/themes/lab-notebook.json` — NOT the plugin name). The slash returns `isn't available in this environment` in `claude --print` mode (`docs/research/naming-conventions-2026-05-26/logs/15-output-style-theme.log:2-7`).
+- [ ] **Invoke (interactive only)** — in a real `claude` session, type:
+  ```text
+  /theme Lab Notebook
+  ```
+  The argument is the `name` from `themes/example/themes/lab-notebook.json` — NOT the plugin name. The slash returns `isn't available in this environment` in `claude --print` mode (`docs/research/naming-conventions-2026-05-26/logs/15-output-style-theme.log:2-7`).
 - [ ] **Expected visible output**: terminal colors flip to the Lab Notebook palette — solarized-light-ish: background `#fdf6e3`, foreground `#586e75`, Claude messages `#268bd2`, errors `#dc322f`. The change is immediate; no `/clear` needed.
-- [ ] **Persistence check (format speculative)**: `cat ~/.claude/settings.json | grep -i theme` should show some persisted theme reference (exact format unverified against PR #10 research; the schema may be `custom:theme-example:lab-notebook` per `code.claude.com/docs/en/plugins-reference#themes` but operator should confirm).
+- [ ] **Persistence check (format speculative)**:
+  ```bash
+  cat ~/.claude/settings.json | grep -i theme
+  ```
+  Should show some persisted theme reference (exact format unverified against PR #10 research; the schema may be `custom:theme-example:lab-notebook` per `code.claude.com/docs/en/plugins-reference#themes` but operator should confirm).
 - [ ] **Failure signals**: (a) no `theme-example` entry in `/plugins` → install broken; (b) `/theme Lab Notebook` returns "Unknown theme" → theme JSON `name` field mismatch; (c) `/theme` succeeds but colors don't change → TTY paint issue (this is F4, the one cell that remains interactive-only — no hermetic verification possible).
 - [ ] **F4 interactive cell**: this is the only Claude QA cell that cannot be verified hermetically — the stub doesn't drive TTY paint. Operator-eyes-on-screen required.
 
@@ -441,81 +610,199 @@ Three landed arcs contributed Claude-side fixes that still need operator verific
 The validations below all remain live for every operator pass. Each is operator-runnable; "do X, observe Y" — no file-existence-only checks.
 
 #### Claude validation 1 — marketplace description (F1)
-- [ ] **Action**: from the marketplace repo root run `claude plugin validate ./` (or `claude plugin validate ./ --strict` if your CLI version supports the flag).
+
+- [ ] **Action** — from the marketplace repo root:
+  ```bash
+  claude plugin validate ./
+  ```
+  (or add `--strict` if your CLI version supports the flag)
 - [ ] **Expected**: exit code 0; output contains `Validation passed`; the previously-seen `description: No marketplace description provided` warning is GONE.
 - [ ] **CI gate**: `.github/workflows/compat-validate.yml` runs this on every PR and fails the build if ANY warning or error appears.
 
 #### Claude validation 2 — lsp-example schema (F2)
-- [ ] **Action**: install `lsp-example` (`claude plugin install lsp-example@dgxsparklabs-marketplace --scope project`), then open or edit a `.md` file in a project with the plugin enabled.
+
+- [ ] **Action**:
+  ```bash
+  claude plugin install lsp-example@dgxsparklabs-marketplace --scope project
+  claude plugin enable lsp-example@dgxsparklabs-marketplace
+  ```
+  Then open or edit a `.md` file in a project with the plugin enabled.
 - [ ] **Expected**: Claude surfaces `marksman` diagnostics (e.g., broken-link or heading warnings) inline; `/plugin` Errors tab shows no LSP errors. Pre-fix the `/plugin` Errors tab would show three validator errors complaining about `lspServers.command`, `lspServers.extensionToLanguage`, and `unrecognized_keys: ["example-markdown"]` (per F2 symptom block).
 
 #### Claude validation 3 — monitor-example shape (F3)
-- [ ] **Action**: install `monitor-example`, start a `claude` session in the project, watch the bottom-status / notification panel during the first 30 seconds.
+
+- [ ] **Action**:
+  ```bash
+  claude plugin install monitor-example@dgxsparklabs-marketplace --scope project
+  claude plugin enable monitor-example@dgxsparklabs-marketplace
+  claude
+  ```
+  Watch the bottom-status / notification panel during the first 30 seconds.
 - [ ] **Expected**: a notification appears with the `df -h .` disk usage summary, sourced from the `disk-usage` monitor (renamed from `example-disk` on 2026-05-26 per Scheme B+). Pre-fix `/plugin` Errors tab would show `Failed to load monitors ... expected array, received object`.
 
 #### Claude validation 4 — theme-example distinctiveness (F4)
-- [ ] **Action**: install `theme-example`, run `/theme`, pick **Lab Notebook**, confirm with Enter.
+
+- [ ] **Action** — install + enable:
+  ```bash
+  claude plugin install theme-example@dgxsparklabs-marketplace --scope project
+  claude plugin enable theme-example@dgxsparklabs-marketplace
+  ```
+  Then in a `claude` session:
+  ```text
+  /theme
+  ```
+  Pick **Lab Notebook**, confirm with Enter.
 - [ ] **Expected**: terminal visibly switches to a light/paper-toned palette (foreground darkens, background lightens). Compare to the default dark theme — the Lab Notebook entry should be obviously distinct.
-- [ ] **Persistence check**: `cat ~/.claude/settings.json | grep theme` shows `custom:theme-example:lab-notebook` (per `code.claude.com/docs/en/plugins-reference#themes`).
+- [ ] **Persistence check**:
+  ```bash
+  cat ~/.claude/settings.json | grep theme
+  ```
+  Should show `custom:theme-example:lab-notebook` per `code.claude.com/docs/en/plugins-reference#themes` (operator confirms exact format — see F4 caveat above).
 
 #### Claude validation 5a — UserPromptSubmit hook firing (F5)
-- [ ] **Hermetic verification** (run the stub session above first): `rm -f /tmp/hook-fired-userpromptsubmit.log && echo "test prompt" | claude --print && test -s /tmp/hook-fired-userpromptsubmit.log`.
+
+- [ ] **Hermetic verification** (run the stub session above first):
+  ```bash
+  rm -f /tmp/hook-fired-userpromptsubmit.log
+  echo "test prompt" | claude --print
+  test -s /tmp/hook-fired-userpromptsubmit.log && echo PASS
+  ```
 - [ ] **Expected (hermetic)**: exit 0; the sentinel file exists and contains a `<UTC-ISO-timestamp> userPromptSubmit fired` line.
-- [ ] **Action (interactive)**: with `hook-example` installed, submit any prompt in a `claude` session. In another terminal: `tail /tmp/hook-fired-userpromptsubmit.log`.
+- [ ] **Interactive**: with `hook-example` installed + enabled, submit any prompt in a `claude` session. In another terminal:
+  ```bash
+  tail /tmp/hook-fired-userpromptsubmit.log
+  ```
 - [ ] **Expected**: a new line in the form `<UTC-ISO-timestamp> userPromptSubmit fired` (the hook command writes the sentinel). The injected `[Lab Notebook context: timestamp=...]` line goes into Claude's prompt context — not visible at the operator terminal by design; `claude --debug` reveals it.
 
 #### Claude validation 5b — SessionStart hook firing (F5)
-- [ ] **Hermetic verification**: `rm -f /tmp/hook-fired-sessionstart.log && echo "x" | claude --print && test -s /tmp/hook-fired-sessionstart.log`.
+
+- [ ] **Hermetic verification**:
+  ```bash
+  rm -f /tmp/hook-fired-sessionstart.log
+  echo "x" | claude --print
+  test -s /tmp/hook-fired-sessionstart.log && echo PASS
+  ```
 - [ ] **Expected (hermetic)**: exit 0; sentinel contains a `sessionStart fired` line. A fresh `claude --print` invocation is a fresh session, so SessionStart always fires.
-- [ ] **Action (interactive)**: restart `claude` in the project (exit + re-enter, or open a new session). In another terminal: `tail /tmp/hook-fired-sessionstart.log`.
+- [ ] **Interactive**: restart `claude` in the project (exit + re-enter, or open a new session). In another terminal:
+  ```bash
+  tail /tmp/hook-fired-sessionstart.log
+  ```
 - [ ] **Expected**: a new line with the session-start timestamp.
 
 #### Claude validation 5c — PreToolUse hook with matcher (F5)
+
 - [ ] **Hermetic verification (partial)**: PreToolUse only fires when Claude returns a `tool_use` content block. The default `stub.py` returns text-only, so this hook does NOT fire under hermetic — extending the stub to emit a canned `Edit` tool_use block is future work. Use the interactive step for now.
-- [ ] **Action (interactive)**: ask Claude to edit any file (e.g., "edit README.md and add a blank line at the bottom"). In another terminal: `tail /tmp/hook-fired-pretooluse.log`.
+- [ ] **Interactive** — ask Claude to edit any file, e.g.:
+  ```text
+  edit README.md and add a blank line at the bottom
+  ```
+  In another terminal:
+  ```bash
+  tail /tmp/hook-fired-pretooluse.log
+  ```
 - [ ] **Expected**: a line like `<UTC-ISO-timestamp> preToolUse Edit` (or `preToolUse Write`). The matcher `Write|Edit` in `hooks.json` gates which tool calls trigger this hook.
 
 #### Claude validation 5d — PostToolUse hook firing (F5)
+
 - [ ] **Hermetic verification (partial)**: same caveat as 5c — needs the stub to return a `tool_use` block. Use the interactive step.
-- [ ] **Action (interactive)**: same edit as 5c. After the tool call completes: `tail /tmp/hook-fired-posttooluse.log`.
+- [ ] **Interactive**: same edit as 5c. After the tool call completes:
+  ```bash
+  tail /tmp/hook-fired-posttooluse.log
+  ```
 - [ ] **Expected**: mirror line right after the PreToolUse entry (`<ts> postToolUse Edit` or `postToolUse Write`).
 
 #### Claude validation 5e — Stop hook firing (F5)
-- [ ] **Hermetic verification**: `rm -f /tmp/hook-fired-stop.log && echo "x" | claude --print && test -s /tmp/hook-fired-stop.log`.
+
+- [ ] **Hermetic verification**:
+  ```bash
+  rm -f /tmp/hook-fired-stop.log
+  echo "x" | claude --print
+  test -s /tmp/hook-fired-stop.log && echo PASS
+  ```
 - [ ] **Expected (hermetic)**: exit 0; sentinel contains a `stop fired` line. Stop fires at the end of every assistant turn, including the single stub turn.
-- [ ] **Action (interactive)**: ask Claude any question and wait for the response to complete. Then: `tail /tmp/hook-fired-stop.log`.
+- [ ] **Interactive**: ask Claude any question and wait for the response to complete. Then:
+  ```bash
+  tail /tmp/hook-fired-stop.log
+  ```
 - [ ] **Expected**: a new line per assistant turn.
 
 #### Claude validation 5f — SessionEnd hook firing (F5)
-- [ ] **Hermetic verification**: `rm -f /tmp/hook-fired-sessionend.log && echo "x" | claude --print && test -s /tmp/hook-fired-sessionend.log`.
+
+- [ ] **Hermetic verification**:
+  ```bash
+  rm -f /tmp/hook-fired-sessionend.log
+  echo "x" | claude --print
+  test -s /tmp/hook-fired-sessionend.log && echo PASS
+  ```
 - [ ] **Expected (hermetic)**: exit 0; sentinel contains a `sessionEnd fired` line. `claude --print` always exits the session after one turn, so SessionEnd fires.
-- [ ] **Action (interactive)**: exit the Claude session (`/exit` or `Ctrl+D`). Then in a separate shell: `tail /tmp/hook-fired-sessionend.log`.
+- [ ] **Interactive**: exit the Claude session (`/exit` or `Ctrl+D`). Then in a separate shell:
+  ```bash
+  tail /tmp/hook-fired-sessionend.log
+  ```
 - [ ] **Expected**: a final line with the session-end timestamp.
 
 #### Claude validation 6 — mcp-example uv prerequisite (F6)
-- [ ] **Action**: on a fresh host (no `uv` installed): `claude plugin install mcp-example@dgxsparklabs-marketplace --scope project`, then in a `claude` session try a tool that hits the example MCP. Check `/plugin` Errors tab.
+
+- [ ] **Action** — on a fresh host (no `uv` installed):
+  ```bash
+  claude plugin install mcp-example@dgxsparklabs-marketplace --scope project
+  claude plugin enable mcp-example@dgxsparklabs-marketplace
+  claude
+  ```
+  Then in the session, ask Claude to fetch a URL. Check `/plugin` Errors tab.
 - [ ] **Pre-install-uv expected**: error in `/plugin` Errors tab — `plugin:mcp-example:example: uvx mcp-server-fetch - ✗ Failed to connect` (because `uvx` is not on PATH).
-- [ ] **Then install uv**: `curl -LsSf https://astral.sh/uv/install.sh | sh` (POSIX) or `powershell -c "irm https://astral.sh/uv/install.ps1 | iex"` (Windows). Restart the session.
+- [ ] **Then install uv** — POSIX:
+  ```bash
+  curl -LsSf https://astral.sh/uv/install.sh | sh
+  ```
+  PowerShell:
+  ```powershell
+  powershell -c "irm https://astral.sh/uv/install.ps1 | iex"
+  ```
+  Restart the Claude session.
 - [ ] **Post-install-uv expected**: `/plugin` shows `plugin:mcp-example:example: uvx mcp-server-fetch - ✓ Connected`. The fix is the README documenting this prereq (see `mcp-servers/example/README.md`).
 
 #### Claude validation 7a — skill slash command namespacing (F7)
-- [ ] **Hermetic verification** (use `stub_body_dumper.py` so request bodies are captured): with `command-example` installed and the body-dumper stub running on port 8089 (set `ANTHROPIC_BASE_URL=http://127.0.0.1:8089`), run `echo "/command-example:hello" | claude --print` then `grep -F "/command-example:hello" /tmp/stub-bodies.log`.
+
+- [ ] **Hermetic verification** — with `command-example` installed + enabled and the body-dumper stub running on port 8089:
+  ```bash
+  export ANTHROPIC_BASE_URL=http://127.0.0.1:8089
+  echo "/command-example:hello" | claude --print
+  grep -F "/command-example:hello" /tmp/stub-bodies.log
+  ```
 - [ ] **Expected (hermetic)**: grep matches — the namespaced slash form reaches the request body, proving Claude resolved it client-side. (The skill-example body lives under the same namespacing convention.)
-- [ ] **Action (interactive)**: with `skill-example` installed, type `/` in Claude and read the autocomplete dropdown entry.
+- [ ] **Interactive**: with `skill-example` installed, in a real `claude` session type:
+  ```text
+  /
+  ```
+  And read the autocomplete dropdown entry.
 - [ ] **Expected**: the entry resolves to `/skill-example:lab-notebook` (the UI may show a shorter label, but the actual invocation is the namespaced form). Per `code.claude.com/docs/en/plugins` (2026-05-26): *"Plugin skills are always namespaced (like `/my-first-plugin:hello`) to prevent conflicts..."* The SKILL.md frontmatter `name:` was changed from `example-skill` to `lab-notebook` on 2026-05-26 per Scheme B+ to eliminate the doubled slash form.
 
 #### Claude validation 7b — agent namespacing (F7)
+
 - [ ] **Hermetic verification (partial)**: `/agents` is an interactive TUI command — there is no headless equivalent. The 7a hermetic check exercises the same client-side resolver code path, so a green 7a is strong evidence the namespacing infrastructure works for agents too. Use the interactive step for the agent-specific surface.
-- [ ] **Action (interactive)**: with `agent-example` installed, run `/agents` in a `claude` session.
+- [ ] **Interactive**: with `agent-example` installed + enabled, in a `claude` session type:
+  ```text
+  /agents
+  ```
 - [ ] **Expected**: the entry appears as `agent-example:notebook-reviewer` (no `/` prefix — the colon-namespaced form is what `/agents` displays).
 
 #### Claude validation 7c — MCP tool namespacing (F7)
+
 - [ ] **Hermetic verification (partial)**: same as 7b — `mcp__*` tool names only appear once Claude returns a `tool_use` block; the default stub doesn't. Future work to extend the stub. Use the interactive step.
-- [ ] **Action (interactive)**: with `mcp-example` installed, ask Claude to fetch a URL. Watch the tool name in `claude --debug` output.
+- [ ] **Interactive**: with `mcp-example` installed + enabled, ask Claude:
+  ```text
+  fetch https://example.com
+  ```
+  Watch the tool name in `claude --debug` output.
 - [ ] **Expected**: tool name appears as `mcp__mcp-example__example` (the hook-matcher form) or `plugin:mcp-example:example` (the CLI display form). Both are documented per `code.claude.com/docs/en/hooks` and `code.claude.com/docs/en/plugins-reference`.
 
 #### Claude validation 8 — rule deprecation (F8)
-- [ ] **Action**: run `claude plugin list --available --json | jq '.available | map(.name) | map(select(startswith("rule-"))) | length'` (or any equivalent count).
+
+- [ ] **Action**:
+  ```bash
+  claude plugin list --available --json | jq '.available | map(.name) | map(select(startswith("rule-"))) | length'
+  ```
 - [ ] **Expected**: `0` — no `rule-*` plugins are surfaced to Claude after the 2026-05-26 deprecation. Additionally, Claude-side bundle cascade: `bundle-quality-rules`, `bundle-workflow-rules`, `bundle-documentation-rules`, `bundle-environment-rules`, `bundle-notifications-rules`, and `bundle-rule-all` are also gone (their dependencies are no longer valid Claude plugins). They remain available to Cursor / Codex / Gemini / Windsurf.
 
 #### Claude validation 9 — output style applied (F9)

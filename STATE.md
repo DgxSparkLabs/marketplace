@@ -11,21 +11,11 @@
 
 ## Last action taken
 
-Fixed two real bugs from operator's first dev container run:
-1. **Flask missing** — `apt-get install python3-flask` in post-create.sh either failed or installed somewhere Python3 didn't find. Replaced with PEP 723 inline metadata in both stub files (`stub.py`, `stub_body_dumper.py`); `uv run` now fetches Flask into an ephemeral env on first invocation. No apt, no pip install, no virtualenv to activate. Matches AGENTS.md "always use uv" rule.
-2. **EACCES on /home/vscode/.claude/plugins** — the named docker volume was mounted root-owned, so `claude plugin marketplace add` couldn't mkdir. Added `sudo chown` in post-create.sh to fix it. Canonical pattern from Anthropic reference container.
+Two operator-feedback adoptions:
+1. **Docker Setup option B now uses `-v` bind-mount instead of `git clone`.** Operator's improvement: `docker run --rm -it -v "${PWD}:/workspace/marketplace" -w /workspace/marketplace node:20 bash`. PowerShell-friendly, no clone, no PR-branch dance. Current host branch is what the container tests.
+2. **Per-construct and validation cells now use fenced code blocks for every typed command.** Inline backticks reserved for references to file names / slash forms inside prose; the actual commands the operator runs sit in copy-paste-ready ```bash``` / ```text``` / ```powershell``` blocks. Touches all 9 per-construct cells in the Claude section, all 9 validation cells, the marketplace registration steps, and the Docker setup option.
 
-Smoke-tested locally: `uv run tests/fixtures/claude-stub/stub.py` resolves Flask (8 packages, 528ms) and starts the server. Tests still pass.
-
-Touched files:
-- `tests/fixtures/claude-stub/stub.py` + `stub_body_dumper.py` — added PEP 723 + uv-run shebang
-- `tests/fixtures/claude-stub/README.md` — quick-start now uses `uv run`
-- `.devcontainer/post-create.sh` — chown for the volume; dropped apt flask
-- `.devcontainer/README.md` — tool table updated
-- `docs/TEST_YOURSELF.md` — hermetic session setup uses `uv run`
-- `.github/workflows/compat-headless-claude.yml` — CI also switched to `uv run`
-
-PR #10: https://github.com/DgxSparkLabs/marketplace/pull/10 — now 7-commit bundle. Tests passing locally: 78 marketplace + 21 schema-fitness = 99 green. Drift clean.
+PR #10: https://github.com/DgxSparkLabs/marketplace/pull/10 — now 8-commit bundle. Tests passing locally: 78 marketplace + 21 schema-fitness = 99 green. Drift clean.
 
 ## What's next
 
