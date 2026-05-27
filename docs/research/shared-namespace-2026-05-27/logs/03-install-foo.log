@@ -1,0 +1,4 @@
+=== Install skill-foo-test ===
+Installing plugin "skill-foo-test@dgxsparklabs-marketplace"...✔ Successfully installed plugin: skill-foo-test@dgxsparklabs-marketplace (scope: project)
+=== Enable skill-foo-test ===
+✘ Failed to enable plugin "skill-foo-test@dgxsparklabs-marketplace": Plugin "skill-foo-test@dgxsparklabs-marketplace" is already enabled

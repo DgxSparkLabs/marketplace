@@ -1,0 +1,12 @@
+=== validate foo-test ===
+Validating plugin manifest: /tmp/workspace/_generated/skill-foo-test/.claude-plugin/plugin.json
+
+✔ Validation passed
+=== validate bar-test ===
+Validating plugin manifest: /tmp/workspace/_generated/skill-bar-test/.claude-plugin/plugin.json
+
+✔ Validation passed
+=== validate the whole marketplace ===
+Validating marketplace manifest: /tmp/workspace/.claude-plugin/marketplace.json
+
+✔ Validation passed

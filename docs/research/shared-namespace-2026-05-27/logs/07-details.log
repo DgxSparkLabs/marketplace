@@ -1,0 +1,25 @@
+=== plugin details skill-foo-test ===
+Plugin "skill-foo-test" not found. Run `claude plugin list` to see installed plugins, or pass --plugin-dir <path> to load one from disk.
+=== plugin details skill-bar-test ===
+Plugin "skill-bar-test" not found. Run `claude plugin list` to see installed plugins, or pass --plugin-dir <path> to load one from disk.
+=== plugin details dgxsparklabs-skill (the shared name) ===
+DgxSparkLabs Skills (dgxsparklabs-skill) 1.0.0
+  Test foo — shared-namespace probe (foo half)
+  Source: skill-foo-test@dgxsparklabs-marketplace
+
+Component inventory
+  Skills (1)  foo
+  Agents (0)
+  Hooks (0)
+  MCP servers (0)
+  LSP servers (0)
+
+Projected token cost
+  Always-on:   ~43 tok   added to every session
+
+Per-component (rounded)
+  component  always-on  on-invoke
+  foo              ~40        ~40
+
+  On-invoke cost is paid each time a skill or agent fires.
+  Token counts are estimates and may differ from actual usage.

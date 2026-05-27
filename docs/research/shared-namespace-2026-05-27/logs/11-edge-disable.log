@@ -1,0 +1,21 @@
+=== Edge case: disable bar, query foo + bar ===
+✔ Successfully disabled plugin: skill-bar-test (scope: project)
+Installed plugins:
+
+  ❯ skill-bar-test@dgxsparklabs-marketplace
+    Version: 1.0.0
+    Scope: project
+    Status: ✘ disabled
+
+  ❯ skill-foo-test@dgxsparklabs-marketplace
+    Version: 1.0.0
+    Scope: project
+    Status: ✔ enabled
+
+--- /dgxsparklabs-skill:foo (foo enabled, bar disabled) ---
+OK stub.
+registry:
+dgxsparklabs-skill:foo: Test foo 
+--- /dgxsparklabs-skill:bar (foo enabled, bar disabled) ---
+Unknown command: /dgxsparklabs-skill:bar
+registry:

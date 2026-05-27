@@ -169,23 +169,42 @@ class TestGeneratedPlugins(unittest.TestCase):
                         f"Bundle '{bundle.name}' dep '{dep_name}' has no generated plugin",
                     )
 
-    def test_individual_plugin_name_matches_prefix_and_source(self):
-        """Each individual plugin's name field must equal <prefix>-<source_name>.
+    def test_individual_plugin_name_is_brand_namespace(self):
+        """Each individual plugin's ``plugin.json`` ``name`` field is the
+        brand-prefixed shared namespace (``<brand>-<construct.category>``,
+        e.g. ``dgxsparklabs-skill``). Multiple plugins of the same construct
+        intentionally share one ``name`` so their components surface under one
+        slash namespace ``/dgxsparklabs-skill:<frontmatter-name>``. See
+        ``docs/research/shared-namespace-2026-05-27/RESEARCH.md`` for the
+        empirical evidence Claude accepts this.
+
+        The install-time marketplace entry name (in ``marketplace.json``
+        ``plugins[].name``) is a separate field and IS unique-per-plugin
+        (``<construct.prefix>-<source-dir-name>``, e.g. ``skill-example``);
+        that contract is asserted by
+        ``test_marketplace_lists_all_expected_plugins`` below.
 
         RuleConstruct is excluded per F8 — rules don't get a
         .claude-plugin/plugin.json since they are not a Claude plugin
         component (see ClaudeCodePlatform.supports docstring).
         """
+        # Brand prefix derived the same way as scripts/constructs.py
+        # _base_plugin_shape — from MARKETPLACE.toml, strip "-marketplace".
+        from utils import _marketplace_name
+        mp_name = _marketplace_name()
+        brand = mp_name.removesuffix("-marketplace") if mp_name.endswith("-marketplace") else mp_name
+
         for construct in CONSTRUCTS.values():
             if type(construct) not in ClaudeCodePlatform.supports:
                 continue
+            expected_name = f"{brand}-{construct.category}"
             for name in scan_source_dir(construct.source_directory):
                 plugin_path = REPO_ROOT / "_generated" / f"{construct.prefix}-{name}" / ".claude-plugin" / "plugin.json"
                 with self.subTest(construct=construct.prefix, name=name):
                     data = json.loads(plugin_path.read_text(encoding="utf-8"))
                     self.assertEqual(
-                        data["name"], f"{construct.prefix}-{name}",
-                        f"Plugin name mismatch for {construct.prefix}-{name}",
+                        data["name"], expected_name,
+                        f"Plugin name mismatch for {construct.prefix}-{name}: expected shared brand namespace",
                     )
 
     def test_rule_plugins_have_no_claude_plugin_manifest(self):

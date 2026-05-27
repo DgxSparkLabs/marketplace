@@ -458,12 +458,12 @@ Per [code.claude.com/docs/en/plugins](https://code.claude.com/docs/en/plugins) (
 
 | Construct | Invocation form | Source |
 |---|---|---|
-| Skill | `/<plugin-name>:<skill-name>` (e.g., `/skill-example:lab-notebook`) | plugins.md, skills.md |
-| Command | `/<plugin-name>:<file-stem>` (e.g., `/command-example:hello`) | skills.md ("Custom commands have been merged into skills") |
-| Agent (sub-agent) | `<plugin-name>:<agent-name>` (no `/` — appears in `/agents` UI; e.g., `agent-example:notebook-reviewer`) | plugins-reference.md |
-| MCP tool | `mcp__<plugin-name>__<server-key>__<tool>` (hook-matcher form) OR `plugin:<plugin-name>:<server-key>` (CLI display form) | hooks.md, plugins-reference.md |
+| Skill | `/dgxsparklabs-skill:<skill-name>` (e.g., `/dgxsparklabs-skill:lab-notebook`) | plugins.md, skills.md |
+| Command | `/dgxsparklabs-command:<file-stem>` (e.g., `/dgxsparklabs-command:hello`) | skills.md ("Custom commands have been merged into skills") |
+| Agent (sub-agent) | `dgxsparklabs-agent:<agent-name>` (no `/` — appears in `/agents` UI; e.g., `dgxsparklabs-agent:notebook-reviewer`) | plugins-reference.md |
+| MCP tool | `mcp__dgxsparklabs-mcp__<server-key>__<tool>` (hook-matcher form) OR `plugin:dgxsparklabs-mcp:<server-key>` (CLI display form) | hooks.md, plugins-reference.md |
 
-A common operator confusion: typing `/` in Claude shows skill entries that look "flat" (e.g., bare `/lab-notebook`) — the flat form also resolves per `code.claude.com/docs/en/skills`, but the **canonical** invocation is always the namespaced form `/skill-example:lab-notebook`.
+A common operator confusion: typing `/` in Claude shows skill entries that look "flat" (e.g., bare `/lab-notebook`) — the flat form also resolves per `code.claude.com/docs/en/skills`, but the **canonical** invocation is the namespaced form `/dgxsparklabs-skill:lab-notebook`. The brand prefix `dgxsparklabs-skill` is the SAME for every skill plugin in this marketplace — they all share one slash namespace by design (see `docs/research/shared-namespace-2026-05-27/RESEARCH.md`). Per-plugin disambiguation in the install command still uses the unique `skill-<name>` form.
 
 For **bundles**, namespacing follows each contained plugin's own name. Installing `bundle-examples` does not introduce a `bundle-examples:*` namespace — the contained plugins appear under their own plugin namespaces (e.g., `/skill-example:lab-notebook`, `/command-example:hello`).
 

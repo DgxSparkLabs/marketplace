@@ -1,0 +1,52 @@
+=== disable a, b, c ===
+✔ Successfully disabled plugin: skill-a-test (scope: project)
+✔ Successfully disabled plugin: skill-b-test (scope: project)
+✔ Successfully disabled plugin: skill-c-test (scope: project)
+
+=== plugin list ===
+Installed plugins:
+
+  ❯ skill-a-test@dgxsparklabs-marketplace
+    Version: 1.0.0
+    Scope: project
+    Status: ✘ disabled
+
+  ❯ skill-b-test@dgxsparklabs-marketplace
+    Version: 1.0.0
+    Scope: project
+    Status: ✘ disabled
+
+  ❯ skill-c-test@dgxsparklabs-marketplace
+    Version: 1.0.0
+    Scope: project
+    Status: ✘ disabled
+
+  ❯ skill-d-test@dgxsparklabs-marketplace
+    Version: 1.0.0
+    Scope: project
+    Status: ✔ enabled
+
+  ❯ skill-e-test@dgxsparklabs-marketplace
+    Version: 1.0.0
+    Scope: project
+    Status: ✔ enabled
+
+
+=== slash probes for all 5 ===
+--- probe: /dgxsparklabs-skill:a ---
+Unknown command: /dgxsparklabs-skill:a
+--- probe: /dgxsparklabs-skill:b ---
+Unknown command: /dgxsparklabs-skill:b
+--- probe: /dgxsparklabs-skill:c ---
+Unknown command: /dgxsparklabs-skill:c
+--- probe: /dgxsparklabs-skill:d ---
+OK stub.
+<command-name>/dgxsparklabs-skill:d</command-name>
+--- probe: /dgxsparklabs-skill:e ---
+OK stub.
+<command-name>/dgxsparklabs-skill:e</command-name>
+
+=== registry block (probe e) ===
+OK stub.
+dgxsparklabs-skill:d: scale probe d
+dgxsparklabs-skill:e: scale probe e

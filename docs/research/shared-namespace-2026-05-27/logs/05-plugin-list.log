@@ -1,0 +1,13 @@
+=== claude plugin list ===
+Installed plugins:
+
+  ❯ skill-bar-test@dgxsparklabs-marketplace
+    Version: 1.0.0
+    Scope: project
+    Status: ✔ enabled
+
+  ❯ skill-foo-test@dgxsparklabs-marketplace
+    Version: 1.0.0
+    Scope: project
+    Status: ✔ enabled
+

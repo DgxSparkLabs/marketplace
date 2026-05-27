@@ -1,0 +1,159 @@
+OK stub.
+2026-05-27T09:26:58.049Z [DEBUG] MDM settings load completed in 16ms
+2026-05-27T09:26:58.320Z [DEBUG] Broken symlink or missing file encountered for settings.json at path: /etc/claude-code/managed-settings.json
+2026-05-27T09:26:58.334Z [DEBUG] Broken symlink or missing file encountered for settings.json at path: /tmp/test/.claude/settings.local.json
+2026-05-27T09:26:58.335Z [DEBUG] CA certs: Config fallback - globalEnv keys: , settingsEnv keys: none
+2026-05-27T09:26:58.338Z [DEBUG] [init] configureGlobalMTLS starting
+2026-05-27T09:26:58.349Z [DEBUG] [init] configureGlobalMTLS complete
+2026-05-27T09:26:58.349Z [DEBUG] [init] configureGlobalAgents starting
+2026-05-27T09:26:58.350Z [DEBUG] CA certs: stores=bundled,system, extraCertsPath=undefined
+2026-05-27T09:26:58.352Z [DEBUG] CA certs: Loaded 145 bundled root certificates
+2026-05-27T09:26:58.429Z [DEBUG] CA certs: Loaded 285 system CA certificates
+2026-05-27T09:26:58.432Z [DEBUG] mTLS: Creating HTTPS agent with custom certificates
+2026-05-27T09:26:58.432Z [DEBUG] [init] configureGlobalAgents complete
+2026-05-27T09:26:58.451Z [DEBUG] Error log sink initialized
+2026-05-27T09:26:58.530Z [DEBUG] [claudeai-mcp] Disabled: API-key auth precedence active
+2026-05-27T09:26:58.531Z [DEBUG] [STARTUP] Loading MCP configs...
+2026-05-27T09:26:58.892Z [DEBUG] Git remote URL: null
+2026-05-27T09:26:58.892Z [DEBUG] No git remote URL found
+2026-05-27T09:26:58.897Z [DEBUG] [STARTUP] Running setup()...
+2026-05-27T09:26:58.926Z [DEBUG] Broken symlink or missing file encountered for settings.json at path: /etc/claude-code/managed-settings.json
+2026-05-27T09:26:58.930Z [DEBUG] Broken symlink or missing file encountered for settings.json at path: /tmp/test/.claude/settings.local.json
+2026-05-27T09:26:58.933Z [DEBUG] Loading skills from: managed=/etc/claude-code/.claude/skills, user=/root/.claude/skills, project=[]
+2026-05-27T09:26:58.940Z [DEBUG] Error log sink initialized
+2026-05-27T09:26:59.017Z [DEBUG] Loaded 5 installed plugins from /root/.claude/plugins/installed_plugins.json
+2026-05-27T09:26:59.020Z [DEBUG] Failed to stat directory /etc/claude-code/.claude/commands: ENOENT: no such file or directory, statx '/etc/claude-code/.claude/commands'
+2026-05-27T09:26:59.020Z [DEBUG] Failed to stat directory /root/.claude/commands: ENOENT: no such file or directory, statx '/root/.claude/commands'
+2026-05-27T09:26:59.022Z [DEBUG] Loaded 0 unique skills (0 unconditional, 0 conditional, managed: 0, user: 0, project: 0, additional: 0, legacy commands: 0)
+2026-05-27T09:26:59.024Z [DEBUG] Failed to stat directory /etc/claude-code/.claude/agents: ENOENT: no such file or directory, statx '/etc/claude-code/.claude/agents'
+2026-05-27T09:26:59.025Z [DEBUG] Failed to stat directory /root/.claude/agents: ENOENT: no such file or directory, statx '/root/.claude/agents'
+2026-05-27T09:26:59.053Z [DEBUG] [STARTUP] setup() completed in 156ms
+2026-05-27T09:26:59.053Z [DEBUG] Cleared CA certificates cache
+2026-05-27T09:26:59.054Z [DEBUG] Cleared mTLS configuration cache
+2026-05-27T09:26:59.054Z [DEBUG] Cleared proxy agent cache
+2026-05-27T09:26:59.054Z [DEBUG] CA certs: stores=bundled,system, extraCertsPath=undefined
+2026-05-27T09:26:59.054Z [DEBUG] CA certs: Loaded 145 bundled root certificates
+2026-05-27T09:26:59.055Z [DEBUG] CA certs: Loaded 285 system CA certificates
+2026-05-27T09:26:59.055Z [DEBUG] mTLS: Creating HTTPS agent with custom certificates
+2026-05-27T09:26:59.057Z [DEBUG] [STARTUP] Loading commands and agents...
+2026-05-27T09:26:59.059Z [DEBUG] [ToolSearch:optimistic] disabled: ANTHROPIC_BASE_URL=http://127.0.0.1:8089 is not a first-party Anthropic host. Set ENABLE_TOOL_SEARCH=true (or auto / auto:N) if your proxy forwards tool_reference blocks.
+2026-05-27T09:26:59.154Z [DEBUG] Found 5 plugins (5 enabled, 0 disabled)
+2026-05-27T09:26:59.156Z [DEBUG] getPluginSkills: Processing 5 enabled plugins
+2026-05-27T09:26:59.156Z [DEBUG] Checking plugin dgxsparklabs-skill: skillsPath=none, skillsPaths=1 paths
+2026-05-27T09:26:59.156Z [DEBUG] Attempting to load skills from plugin dgxsparklabs-skill skillsPaths: /tmp/workspace/_generated/skill-e-test
+2026-05-27T09:26:59.160Z [DEBUG] Loading from skillPath: /tmp/workspace/_generated/skill-e-test for plugin dgxsparklabs-skill
+2026-05-27T09:26:59.161Z [DEBUG] Checking plugin dgxsparklabs-skill: skillsPath=none, skillsPaths=1 paths
+2026-05-27T09:26:59.161Z [DEBUG] Attempting to load skills from plugin dgxsparklabs-skill skillsPaths: /tmp/workspace/_generated/skill-d-test
+2026-05-27T09:26:59.161Z [DEBUG] Loading from skillPath: /tmp/workspace/_generated/skill-d-test for plugin dgxsparklabs-skill
+2026-05-27T09:26:59.162Z [DEBUG] Checking plugin dgxsparklabs-skill: skillsPath=none, skillsPaths=1 paths
+2026-05-27T09:26:59.162Z [DEBUG] Attempting to load skills from plugin dgxsparklabs-skill skillsPaths: /tmp/workspace/_generated/skill-c-test
+2026-05-27T09:26:59.162Z [DEBUG] Loading from skillPath: /tmp/workspace/_generated/skill-c-test for plugin dgxsparklabs-skill
+2026-05-27T09:26:59.162Z [DEBUG] Checking plugin dgxsparklabs-skill: skillsPath=none, skillsPaths=1 paths
+2026-05-27T09:26:59.162Z [DEBUG] Attempting to load skills from plugin dgxsparklabs-skill skillsPaths: /tmp/workspace/_generated/skill-b-test
+2026-05-27T09:26:59.163Z [DEBUG] Loading from skillPath: /tmp/workspace/_generated/skill-b-test for plugin dgxsparklabs-skill
+2026-05-27T09:26:59.165Z [DEBUG] Checking plugin dgxsparklabs-skill: skillsPath=none, skillsPaths=1 paths
+2026-05-27T09:26:59.165Z [DEBUG] Attempting to load skills from plugin dgxsparklabs-skill skillsPaths: /tmp/workspace/_generated/skill-a-test
+2026-05-27T09:26:59.165Z [DEBUG] Loading from skillPath: /tmp/workspace/_generated/skill-a-test for plugin dgxsparklabs-skill
+2026-05-27T09:26:59.166Z [DEBUG] Registered 0 hooks from 5 plugins
+2026-05-27T09:26:59.167Z [DEBUG] Total plugin commands loaded: 0
+2026-05-27T09:26:59.168Z [DEBUG] Total plugin agents loaded: 0
+2026-05-27T09:26:59.178Z [DEBUG] Loaded 1 skills from plugin dgxsparklabs-skill custom path: /tmp/workspace/_generated/skill-e-test
+2026-05-27T09:26:59.179Z [DEBUG] Loaded 1 skills from plugin dgxsparklabs-skill custom path: /tmp/workspace/_generated/skill-d-test
+2026-05-27T09:26:59.179Z [DEBUG] Loaded 1 skills from plugin dgxsparklabs-skill custom path: /tmp/workspace/_generated/skill-c-test
+2026-05-27T09:26:59.180Z [DEBUG] Loaded 1 skills from plugin dgxsparklabs-skill custom path: /tmp/workspace/_generated/skill-b-test
+2026-05-27T09:26:59.184Z [DEBUG] Loaded 1 skills from plugin dgxsparklabs-skill custom path: /tmp/workspace/_generated/skill-a-test
+2026-05-27T09:26:59.184Z [DEBUG] Total plugin skills loaded: 5
+2026-05-27T09:26:59.185Z [DEBUG] getSkills returning: 0 skill dir commands, 5 plugin skills, 14 bundled skills, 0 builtin plugin skills
+2026-05-27T09:26:59.194Z [DEBUG] [STARTUP] Commands and agents loaded in 137ms
+2026-05-27T09:26:59.201Z [DEBUG] [LSP MANAGER] initializeLspServerManager() called
+2026-05-27T09:26:59.201Z [DEBUG] [LSP MANAGER] Created manager instance, state=pending
+2026-05-27T09:26:59.202Z [DEBUG] [LSP MANAGER] Starting async initialization (generation 1)
+2026-05-27T09:26:59.202Z [DEBUG] Starting background startup prefetches
+2026-05-27T09:26:59.203Z [DEBUG] [Bootstrap] Fetching
+2026-05-27T09:26:59.239Z [DEBUG] [STARTUP] MCP configs resolved in 645ms (awaited at +708ms)
+2026-05-27T09:26:59.256Z [DEBUG] All plugins already exist, skipping migration
+2026-05-27T09:26:59.256Z [DEBUG] Cleared CA certificates cache
+2026-05-27T09:26:59.256Z [DEBUG] Cleared mTLS configuration cache
+2026-05-27T09:26:59.256Z [DEBUG] Cleared proxy agent cache
+2026-05-27T09:26:59.257Z [DEBUG] CA certs: stores=bundled,system, extraCertsPath=undefined
+2026-05-27T09:26:59.257Z [DEBUG] CA certs: Loaded 145 bundled root certificates
+2026-05-27T09:26:59.257Z [DEBUG] CA certs: Loaded 285 system CA certificates
+2026-05-27T09:26:59.258Z [DEBUG] mTLS: Creating HTTPS agent with custom certificates
+2026-05-27T09:26:59.259Z [DEBUG] Initialized versioned plugins system with 5 plugins
+2026-05-27T09:26:59.267Z [DEBUG] Fast mode unavailable: Fast mode is not available in the Agent SDK
+2026-05-27T09:26:59.269Z [DEBUG] [MCP] --mcp-config servers running fully async (nonblocking)
+2026-05-27T09:26:59.270Z [DEBUG] [MCP] claude.ai connectors running fully async (nonblocking)
+2026-05-27T09:26:59.279Z [DEBUG] [Perfetto] initializePerfettoTracing called, env value: undefined
+2026-05-27T09:26:59.280Z [DEBUG] [3P telemetry] isTelemetryEnabled=false (CLAUDE_CODE_ENABLE_TELEMETRY=undefined)
+2026-05-27T09:26:59.302Z [DEBUG] [auto-mode] verifyAutoModeGateAccess: enabledState=opt-in disabledBySettings=false model=claude-opus-4-7[1m] modelSupported=true disableFastModeBreakerFires=false carouselAvailable=true canEnterAuto=true
+2026-05-27T09:26:59.384Z [DEBUG] [ScheduledTasks] scheduler start() — enabled=false, hasTasks=false
+2026-05-27T09:26:59.425Z [DEBUG] Tool search disabled: ToolSearchTool is not available (may have been disallowed via disallowedTools).
+2026-05-27T09:26:59.433Z [DEBUG] attribution header x-anthropic-billing-header: cc_version=2.1.152.130; cc_entrypoint=sdk-cli; cch=00000;
+2026-05-27T09:26:59.435Z [DEBUG] Fast mode unavailable: Fast mode is not available in the Agent SDK
+2026-05-27T09:26:59.437Z [DEBUG] Fast mode unavailable: Fast mode is not available in the Agent SDK
+2026-05-27T09:26:59.440Z [DEBUG] [API:request] Creating client, ANTHROPIC_CUSTOM_HEADERS present: false, has Authorization header: false
+2026-05-27T09:26:59.440Z [DEBUG] [API:auth] OAuth token check starting
+2026-05-27T09:26:59.450Z [DEBUG] Total LSP servers loaded: 0
+2026-05-27T09:26:59.450Z [DEBUG] [LSP SERVER MANAGER] getAllLspServers returned 0 server(s)
+2026-05-27T09:26:59.451Z [DEBUG] LSP manager initialized with 0 servers
+2026-05-27T09:26:59.453Z [DEBUG] LSP server manager initialized successfully
+2026-05-27T09:26:59.455Z [DEBUG] LSP notification handlers registered successfully for all 0 server(s)
+2026-05-27T09:26:59.474Z [DEBUG] Failed to stat directory /etc/claude-code/.claude/output-styles: ENOENT: no such file or directory, statx '/etc/claude-code/.claude/output-styles'
+2026-05-27T09:26:59.474Z [DEBUG] Failed to stat directory /root/.claude/output-styles: ENOENT: no such file or directory, statx '/root/.claude/output-styles'
+2026-05-27T09:26:59.475Z [DEBUG] Total plugin output styles loaded: 0
+2026-05-27T09:26:59.483Z [DEBUG] [API:auth] OAuth token check complete
+2026-05-27T09:26:59.491Z [DEBUG] Fast mode unavailable: Fast mode is not available in the Agent SDK
+2026-05-27T09:26:59.492Z [DEBUG] [API:timing] dispatching to firstParty model=claude-opus-4-7[1m]
+2026-05-27T09:26:59.503Z [DEBUG] [API REQUEST] /v1/messages source=generate_session_title
+2026-05-27T09:26:59.509Z [WARN] [3P telemetry] Event dropped (no event logger initialized): plugin_loaded
+2026-05-27T09:26:59.513Z [DEBUG] installPluginsForHeadless: starting
+2026-05-27T09:26:59.524Z [DEBUG] [reconcile] 1 marketplace(s): claude-code-skills(install)
+2026-05-27T09:26:59.580Z [DEBUG] Preserving file permissions: 100600
+2026-05-27T09:26:59.580Z [DEBUG] Writing to temp file: /root/.claude.json.tmp.6531.6619a429db02
+2026-05-27T09:26:59.586Z [DEBUG] Applied original permissions to temp file
+2026-05-27T09:26:59.602Z [DEBUG] Temp file written successfully, size: 25051 bytes
+2026-05-27T09:26:59.607Z [DEBUG] Renaming /root/.claude.json.tmp.6531.6619a429db02 to /root/.claude.json
+2026-05-27T09:26:59.607Z [DEBUG] File /root/.claude.json written atomically
+2026-05-27T09:26:59.627Z [DEBUG] LSP Diagnostics: getLSPDiagnosticAttachments called
+2026-05-27T09:26:59.628Z [DEBUG] LSP Diagnostics: Checking registry - 0 pending
+2026-05-27T09:26:59.640Z [DEBUG] Hooks: Found 0 total hooks in registry
+2026-05-27T09:26:59.641Z [DEBUG] Sending 17 skills via attachment (initial)
+2026-05-27T09:26:59.641Z [DEBUG] Skill prompt: showing "dgxsparklabs-skill:e" (userFacingName="e")
+2026-05-27T09:26:59.641Z [DEBUG] Skill prompt: showing "dgxsparklabs-skill:d" (userFacingName="d")
+2026-05-27T09:26:59.642Z [DEBUG] Skill prompt: showing "dgxsparklabs-skill:c" (userFacingName="c")
+2026-05-27T09:26:59.642Z [DEBUG] Skill prompt: showing "dgxsparklabs-skill:b" (userFacingName="b")
+2026-05-27T09:26:59.642Z [DEBUG] Skill prompt: showing "dgxsparklabs-skill:a" (userFacingName="a")
+2026-05-27T09:26:59.643Z [DEBUG] Hooks: checkForNewResponses returning 0 responses
+2026-05-27T09:26:59.692Z [DEBUG] Stream started - received first chunk
+2026-05-27T09:26:59.692Z [DEBUG] [API:timing] first byte after 201ms
+2026-05-27T09:26:59.818Z [DEBUG] Org fast mode: enabled
+2026-05-27T09:26:59.846Z [DEBUG] Fast mode unavailable: Fast mode is not available in the Agent SDK
+2026-05-27T09:26:59.863Z [DEBUG] autocompact: tokens=[REDACTED] level=ok effectiveWindow=980000
+2026-05-27T09:26:59.865Z [DEBUG] Tool search disabled: ToolSearchTool is not available (may have been disallowed via disallowedTools).
+2026-05-27T09:27:00.026Z [DEBUG] attribution header x-anthropic-billing-header: cc_version=2.1.152.121; cc_entrypoint=sdk-cli; cch=00000;
+2026-05-27T09:27:00.034Z [DEBUG] Fast mode unavailable: Fast mode is not available in the Agent SDK
+2026-05-27T09:27:00.035Z [DEBUG] Fast mode unavailable: Fast mode is not available in the Agent SDK
+2026-05-27T09:27:00.036Z [DEBUG] [API:request] Creating client, ANTHROPIC_CUSTOM_HEADERS present: false, has Authorization header: false
+2026-05-27T09:27:00.037Z [DEBUG] [API:auth] OAuth token check starting
+2026-05-27T09:27:00.043Z [DEBUG] Watching for changes in setting files /root/.claude/settings.json, /tmp/test/.claude/settings.json, /tmp/test/.claude/settings.local.json...
+2026-05-27T09:27:00.062Z [DEBUG] [Bootstrap] Fetch ok
+2026-05-27T09:27:00.073Z [DEBUG] [Bootstrap] Cache unchanged, skipping write
+2026-05-27T09:27:00.074Z [DEBUG] [API:auth] OAuth token check complete
+2026-05-27T09:27:00.075Z [DEBUG] Fast mode unavailable: Fast mode is not available in the Agent SDK
+2026-05-27T09:27:00.075Z [DEBUG] [API:timing] dispatching to firstParty model=claude-opus-4-7[1m]
+2026-05-27T09:27:00.090Z [DEBUG] [API REQUEST] /v1/messages source=sdk
+2026-05-27T09:27:00.139Z [DEBUG] Stream started - received first chunk
+2026-05-27T09:27:00.140Z [DEBUG] [API:timing] first byte after 65ms
+2026-05-27T09:27:00.172Z [DEBUG] Fast mode unavailable: Fast mode is not available in the Agent SDK
+2026-05-27T09:27:00.205Z [DEBUG] LSP server manager shut down successfully
+2026-05-27T09:27:00.220Z [ERROR] Failed to check metrics opt-out status: Auth error: No API key available
+2026-05-27T09:27:00.221Z [DEBUG] Metrics export disabled by organization setting
+2026-05-27T09:27:00.232Z [DEBUG] BigQuery metrics exporter flush complete
+2026-05-27T09:27:00.232Z [DEBUG] BigQuery metrics exporter flush complete
+2026-05-27T09:27:00.233Z [DEBUG] BigQuery metrics exporter shutdown complete
+2026-05-27T09:27:00.315Z [DEBUG] Unable to get Windows USERPROFILE via PowerShell - IDE detection may be incomplete
+2026-05-27T09:27:00.315Z [DEBUG] git pull: cwd=/root/.claude/plugins/marketplaces/temp_1779874019774 ref=default
+2026-05-27T09:27:00.321Z [DEBUG] WSL IDE lockfile path detection failed (ENOENT): ENOENT: no such file or directory, scandir '/mnt/c/Users'
+2026-05-27T09:27:00.326Z [WARN] git pull failed, will re-clone:
+2026-05-27T09:27:00.409Z [DEBUG] git clone: url=https://github.com/alirezarezvani/claude-skills.git ref=default timeout=120000ms
+2026-05-27T09:27:00.439Z [DEBUG] Ripgrep first use test: PASSED (mode=embedded, path=/usr/local/lib/node_modules/@anthropic-ai/claude-code/bin/claude.exe)

@@ -1,0 +1,11 @@
+OK stub.
+
+=== full registry block ===
+parse error: Invalid numeric literal at line 53, column 4
+
+=== alternative grep approach ===
+dgxsparklabs-skill:a: scale probe a
+dgxsparklabs-skill:b: scale probe b
+dgxsparklabs-skill:c: scale probe c
+dgxsparklabs-skill:d: scale probe d
+dgxsparklabs-skill:e: scale probe e

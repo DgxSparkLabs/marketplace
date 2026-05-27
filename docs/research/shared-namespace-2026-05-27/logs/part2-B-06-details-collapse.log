@@ -1,0 +1,28 @@
+=== details dgxsparklabs-skill ===
+DgxSparkLabs Skills (dgxsparklabs-skill) 1.0.0
+  scale probe a
+  Source: skill-a-test@dgxsparklabs-marketplace
+
+Component inventory
+  Skills (1)  a
+  Agents (0)
+  Hooks (0)
+  MCP servers (0)
+  LSP servers (0)
+
+Projected token cost
+  Always-on:   ~29 tok   added to every session
+
+Per-component (rounded)
+  component  always-on  on-invoke
+  a                ~30        ~20
+
+  On-invoke cost is paid each time a skill or agent fires.
+  Token counts are estimates and may differ from actual usage.
+
+=== install timestamps for ordering ===
+2026-05-27T09:21:27.579Z  skill-a-test@dgxsparklabs-marketplace
+2026-05-27T09:21:29.336Z  skill-b-test@dgxsparklabs-marketplace
+2026-05-27T09:21:31.341Z  skill-c-test@dgxsparklabs-marketplace
+2026-05-27T09:21:33.697Z  skill-d-test@dgxsparklabs-marketplace
+2026-05-27T09:21:35.613Z  skill-e-test@dgxsparklabs-marketplace

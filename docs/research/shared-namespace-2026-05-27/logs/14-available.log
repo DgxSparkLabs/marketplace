@@ -1,0 +1,16 @@
+{
+  "pluginId": "skill-bar-test@dgxsparklabs-marketplace",
+  "name": "skill-bar-test",
+  "description": "Test bar — shared-namespace probe (bar half)",
+  "marketplaceName": "dgxsparklabs-marketplace",
+  "version": "1.0.0",
+  "source": "./_generated/skill-bar-test"
+}
+{
+  "pluginId": "skill-foo-test@dgxsparklabs-marketplace",
+  "name": "skill-foo-test",
+  "description": "Test foo — shared-namespace probe (foo half)",
+  "marketplaceName": "dgxsparklabs-marketplace",
+  "version": "1.0.0",
+  "source": "./_generated/skill-foo-test"
+}

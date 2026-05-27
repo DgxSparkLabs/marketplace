@@ -11,7 +11,20 @@
 
 ## Last action taken
 
-Five operator-feedback adoptions in one batch:
+Implemented Path A — brand-prefixed shared slash namespace, after two rounds of empirical Docker validation confirmed Claude accepts it. The change decouples install names (still unique per plugin) from slash namespace (now shared per construct):
+
+- Install: `claude plugin install skill-example@dgxsparklabs-marketplace` (unchanged)
+- Invoke: `/dgxsparklabs-skill:lab-notebook` (was `/skill-example:lab-notebook`)
+
+Source changes: two-line edit to `_base_plugin_shape` in `scripts/constructs.py` + two-line edit to `_make_marketplace_entry` in `scripts/generate_manifest.py` + one test rename in `tests/test_marketplace.py`. Doc cascade across `docs/ADDING_A_CONSTRUCT.md`, `docs/TEST_YOURSELF.md`, `docs/USER_GUIDE.md`, `skills/example/SKILL.md` inline comments. CHANGELOG entry added.
+
+**Pre-merge blocker**: operator runs the 6-step TUI tab-completion recipe at `docs/research/shared-namespace-2026-05-27/RESEARCH.md` § Probe C. Resolver-internals trace already shows the candidate set is well-formed; only the TUI render path remains unverified.
+
+Tests: 77 marketplace + 21 schema-fitness = 98 green. Drift clean.
+
+PR #10 will be at 11 commits after the next push.
+
+### Five prior operator-feedback adoptions (still in this PR):
 
 1. **Retired per-construct catch-all bundles** (`bundle-skill-all` etc.). Phase 2b loop deleted from `scripts/generate_manifest.py`; reserved-name check in `scripts/bundles.py` removed; tests, catalog, README, HANDOFF, USER_GUIDE, PLATFORMS, ARCHITECTURE, CONSTRUCT_TYPES, ADDING_A_CONSTRUCT, RESUME_HERE all updated. Plugin entry count 19 → **10** (9 individuals + 1 catalog bundle `bundle-examples`).
 

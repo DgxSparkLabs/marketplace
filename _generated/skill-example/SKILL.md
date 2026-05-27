@@ -1,7 +1,9 @@
 ---
-# `name` is the slash-component half of the invocation: `/skill-example:lab-notebook`.
-# This is operator-authored — the generator does NOT modify it. Pick a short
-# semantic word (not the plugin name) to avoid doubled forms like `/skill-example:example-skill`.
+# `name` is the slash-component half of the invocation: `/dgxsparklabs-skill:lab-notebook`.
+# The brand-prefixed namespace `dgxsparklabs-skill` is shared by every skill plugin
+# in this marketplace (set by scripts/constructs.py _base_plugin_shape). This `name:`
+# field is operator-authored — the generator does NOT modify it. Pick a short semantic
+# word. The bare flat form `/lab-notebook` also resolves at runtime.
 # See docs/ADDING_A_CONSTRUCT.md § "Trace each fragment to its source" for the full chain.
 name: lab-notebook
 description: Reference example. Echoes back a formatted lab-notebook-style status message. Shows how to write a SKILL.md with frontmatter, allowed-tools, and argument handling.

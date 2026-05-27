@@ -1,0 +1,19 @@
+✔ Successfully removed marketplace: dgxsparklabs-marketplace
+a-test
+b-test
+c-test
+d-test
+e-test
+example
+---
+  monitor: 1
+  output-style: 1
+  skill: 6
+  theme: 1
+  per-platform manifests emitted for 15 individual plugins
+---
+skill-a-test
+skill-b-test
+skill-c-test
+skill-d-test
+skill-e-test

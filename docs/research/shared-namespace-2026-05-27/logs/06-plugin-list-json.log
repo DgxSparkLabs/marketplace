@@ -1,0 +1,23 @@
+=== claude plugin list --json ===
+[
+  {
+    "id": "skill-bar-test@dgxsparklabs-marketplace",
+    "version": "1.0.0",
+    "scope": "project",
+    "enabled": true,
+    "installPath": "/root/.claude/plugins/cache/dgxsparklabs-marketplace/skill-bar-test/1.0.0",
+    "installedAt": "2026-05-27T02:48:43.617Z",
+    "lastUpdated": "2026-05-27T02:48:43.617Z",
+    "projectPath": "/tmp/test"
+  },
+  {
+    "id": "skill-foo-test@dgxsparklabs-marketplace",
+    "version": "1.0.0",
+    "scope": "project",
+    "enabled": true,
+    "installPath": "/root/.claude/plugins/cache/dgxsparklabs-marketplace/skill-foo-test/1.0.0",
+    "installedAt": "2026-05-27T02:48:38.915Z",
+    "lastUpdated": "2026-05-27T02:48:38.915Z",
+    "projectPath": "/tmp/test"
+  }
+]

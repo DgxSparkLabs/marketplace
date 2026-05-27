@@ -1,0 +1,28 @@
+=== skill-a-test plugin.json ===
+{
+  "name": "dgxsparklabs-skill",
+  "description": "scale probe a"
+}
+=== skill-b-test plugin.json ===
+{
+  "name": "dgxsparklabs-skill",
+  "description": "scale probe b"
+}
+=== skill-c-test plugin.json ===
+{
+  "name": "dgxsparklabs-skill",
+  "description": "scale probe c"
+}
+=== skill-d-test plugin.json ===
+{
+  "name": "dgxsparklabs-skill",
+  "description": "scale probe d"
+}
+=== skill-e-test plugin.json ===
+{
+  "name": "dgxsparklabs-skill",
+  "description": "scale probe e"
+}
+
+=== add marketplace ===
+Adding marketplace…✔ Successfully added marketplace: dgxsparklabs-marketplace (declared in user settings)

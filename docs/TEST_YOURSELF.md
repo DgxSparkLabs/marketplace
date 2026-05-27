@@ -324,28 +324,28 @@ Use the `claude` CLI directly — these commands are scriptable and work in head
 
 ### Claude construct reference card — exact strings to type and expect
 
-This table is the cheat sheet for the per-construct cells below. Every row was verified empirically in a Docker Claude session on 2026-05-26 (logs at `docs/research/naming-conventions-2026-05-26/logs/`). The marketplace name and the plugin.json name now agree across all 10 example plugins (post-Scheme-B+ alignment); the slash prefix in practice is `<construct>-example`.
+This table is the cheat sheet for the per-construct cells below. The install command's plugin name (`skill-example` etc.) is composed from `<construct.prefix>-<source-dir-name>` and is unique per plugin. The slash-invocation namespace is the **shared brand prefix** `dgxsparklabs-<construct.category>`, validated empirically at `docs/research/shared-namespace-2026-05-27/`. Multiple plugins of the same construct share one slash namespace — `/dgxsparklabs-skill:` is the single entry point for every skill the marketplace ships.
 
 | Construct      | Type to install                                                                | After install, `/plugins` shows               | Type to invoke                                                | Expected behavior on invoke                              |
 |---             |---                                                                             |---                                            |---                                                            |---                                                       |
-| skill          | `claude plugin install skill-example@dgxsparklabs-marketplace --scope project` | `skill-example@dgxsparklabs-marketplace`       | `/skill-example:lab-notebook [topic]` (or bare `/lab-notebook`) | Skill body renders a lab-notebook-style status block for the topic. |
+| skill          | `claude plugin install skill-example@dgxsparklabs-marketplace --scope project` | `skill-example@dgxsparklabs-marketplace`       | `/dgxsparklabs-skill:lab-notebook [topic]` (or bare `/lab-notebook`) | Skill body renders a lab-notebook-style status block for the topic. |
 | rule           | N/A — not a Claude plugin component as of 2026-05-26                            | (no entry)                                    | rule applies passively (no slash)                              | See Claude validation 8.                                  |
-| sub-agent      | `claude plugin install agent-example@dgxsparklabs-marketplace --scope project` | `agent-example@dgxsparklabs-marketplace`       | `/agents` then select `agent-example:notebook-reviewer`        | Sub-agent dispatched as a skeptical peer reviewer of a lab notebook entry. |
-| command        | `claude plugin install command-example@dgxsparklabs-marketplace --scope project` | `command-example@dgxsparklabs-marketplace`   | `/command-example:hello`                                       | Prints a formatted lab-notebook header for today's UTC date. |
+| sub-agent      | `claude plugin install agent-example@dgxsparklabs-marketplace --scope project` | `agent-example@dgxsparklabs-marketplace`       | `/agents` then select `dgxsparklabs-agent:notebook-reviewer`   | Sub-agent dispatched as a skeptical peer reviewer of a lab notebook entry. |
+| command        | `claude plugin install command-example@dgxsparklabs-marketplace --scope project` | `command-example@dgxsparklabs-marketplace`   | `/dgxsparklabs-command:hello`                                  | Prints a formatted lab-notebook header for today's UTC date. |
 | hook           | `claude plugin install hook-example@dgxsparklabs-marketplace --scope project`  | `hook-example@dgxsparklabs-marketplace`        | (passive — fires on events)                                    | Writes per-event sentinel files to `/tmp/hook-<event>-fired.log` for six event types. See validations 5a–5f. |
-| MCP server     | `claude plugin install mcp-example@dgxsparklabs-marketplace --scope project`   | `mcp-example@dgxsparklabs-marketplace`         | `mcp__mcp-example__example__fetch` (tool, model-called)        | Claude can fetch URLs via the wrapped `mcp-server-fetch`. Requires `uv` on PATH. |
+| MCP server     | `claude plugin install mcp-example@dgxsparklabs-marketplace --scope project`   | `mcp-example@dgxsparklabs-marketplace`         | `mcp__dgxsparklabs-mcp__example__fetch` (tool, model-called)   | Claude can fetch URLs via the wrapped `mcp-server-fetch`. Requires `uv` on PATH. |
 | LSP server     | `claude plugin install lsp-example@dgxsparklabs-marketplace --scope project`   | `lsp-example@dgxsparklabs-marketplace`         | (auto-attaches by file extension)                              | LSP loaded if the example points at a real server binary (illustrative only by default). |
 | monitor        | `claude plugin install monitor-example@dgxsparklabs-marketplace --scope project` | `monitor-example@dgxsparklabs-marketplace`   | (passive — runs `disk-usage` monitor at session start)         | `df -h .` output appended once per session.                |
 | output style   | `claude plugin install output-style-example@dgxsparklabs-marketplace --scope project` | `output-style-example@dgxsparklabs-marketplace` | `/output-style Lab Notebook Voice`                       | Subsequent Claude replies use measured, citation-focused prose. Persisted to `.claude/settings.local.json` `"outputStyle"`. |
 | theme          | `claude plugin install theme-example@dgxsparklabs-marketplace --scope project` | `theme-example@dgxsparklabs-marketplace`       | `/theme Lab Notebook`                                          | Terminal colors flip to the Lab Notebook palette (solarized-light-ish). F4 interactive cell. |
 
-**Reading the slash columns**: the prefix is the marketplace/plugin name (they're aligned now), the suffix after `:` is the component's own name from inside the plugin. For skill, the SKILL.md `name:` is `lab-notebook` (post-Scheme-B+ rename — was `example-skill`); for sub-agent it's the frontmatter `name:` `notebook-reviewer`; for command it's the filename `hello.md`; for MCP it's the server key `example` from mcp-config.json; for output-style and theme it's the human-readable `name:` from the file's metadata, typed as the slash argument. The skill flat form `/lab-notebook` also resolves and bypasses the namespace.
+**Reading the slash columns**: the prefix `dgxsparklabs-<category>` is the brand-namespace shared by all plugins of one construct type (set in [`scripts/constructs.py:91`](../scripts/constructs.py) `_base_plugin_shape` as `f"{brand}-{construct.category}"`). The suffix after `:` is the component's own name from inside the plugin — for skill it's the SKILL.md frontmatter `name:` (`lab-notebook`); for sub-agent it's the agent file frontmatter `name:` (`notebook-reviewer`); for command it's the filename stem (`hello`); for MCP it's the server key in mcp-config.json (`example`). The skill flat form (e.g. `/lab-notebook`) also resolves and bypasses the namespace prefix — Claude internally rewrites to the qualified form. Output-style and theme are invoked via their human-readable `name:` field as the slash argument, not under the brand namespace.
 
 **After-install enable step**: also flagged in setup Step 4. Every per-construct cell below has its own explicit `Enable` step. Skipping enable is the most common operator confusion.
 
 **Interactive vs headless**: many Claude slash commands require an interactive TTY session and return `Unknown command` or `isn't available in this environment` when invoked via `claude --print` (headless). Cells below flag this per-construct. Specifically: `/mcp`, `/agents`, `/output-style <name>`, `/theme <name>` are all interactive-only — they can be exercised under `claude --print` only via the hermetic stub's request-body inspection, not via direct slash invocation. See `docs/research/naming-conventions-2026-05-26/logs/15-output-style-theme.log:2-7` for the empirical capture.
 
-**Where do the names come from?** If you're staring at `/skill-example:lab-notebook` and wondering which file produced which segment: the plugin name (`skill-example`) is the construct prefix (`skill`, [`scripts/constructs.py:73`](../scripts/constructs.py)) + the source directory name (`example`, discovered via [`scripts/utils.py:33-41`](../scripts/utils.py) `scan_source_dir`); the marketplace suffix (`@dgxsparklabs-marketplace`) is [`MARKETPLACE.toml:12`](../MARKETPLACE.toml); the component name (`lab-notebook`) is the SKILL.md frontmatter `name:` field (operator-authored, e.g. `skills/example/SKILL.md` line 2). See [`ADDING_A_CONSTRUCT.md` § "Trace each fragment to its source"](./ADDING_A_CONSTRUCT.md#trace-each-fragment-to-its-source--claude-plugin-install-skill-notifydgxsparklabs-marketplace-byte-by-byte) for the full byte-by-byte breakdown of every fragment in `claude plugin install skill-notify@dgxsparklabs-marketplace`, including a diagram of which generator output file each fragment ends up in.
+**Where do the names come from?** Two-name decoupling as of 2026-05-27. The **install** plugin name (`skill-example`, what you type at `claude plugin install`) is `<construct.prefix>-<source-dir-name>`: prefix from [`scripts/constructs.py:73`](../scripts/constructs.py) + directory name discovered via [`scripts/utils.py:33-41`](../scripts/utils.py) `scan_source_dir`, composed at [`scripts/generate_manifest.py:138`](../scripts/generate_manifest.py) and read into marketplace.json by `_make_marketplace_entry` at [`scripts/generate_manifest.py:55-77`](../scripts/generate_manifest.py). The **slash** namespace (`dgxsparklabs-skill`) is `<brand>-<construct.category>`: brand stripped from MARKETPLACE.toml's marketplace name (line 12) in [`scripts/constructs.py:88-91`](../scripts/constructs.py) `_base_plugin_shape`, combined with `category` (line 76 for skill). The **component** name (`lab-notebook`) is the SKILL.md frontmatter `name:` field (operator-authored, e.g. `skills/example/SKILL.md` line 5). See [`ADDING_A_CONSTRUCT.md` § "Trace each fragment to its source"](./ADDING_A_CONSTRUCT.md#trace-each-fragment-to-its-source--claude-plugin-install-skill-notifydgxsparklabs-marketplace-byte-by-byte) for the full byte-by-byte breakdown.
 
 ### Per-construct verification
 
@@ -364,21 +364,21 @@ Each test installs ONE plugin of the construct type, then invokes it. Per-constr
 - [ ] **Verify in `/plugins`**: row labeled `skill-example@dgxsparklabs-marketplace`, status `✔ enabled`.
 - [ ] **Invoke** (canonical namespaced form; type in an interactive `claude` session):
   ```text
-  /skill-example:lab-notebook weather
+  /dgxsparklabs-skill:lab-notebook weather
   ```
-  Or the bare flat form (also resolves per `docs/research/naming-conventions-2026-05-26/logs/18-rename-proof.log:2-6`):
+  Or the bare flat form (also resolves per `docs/research/shared-namespace-2026-05-27/logs/10c-flat-foo.log:7`):
   ```text
   /lab-notebook weather
   ```
 - [ ] **Expected visible output**: a markdown block formatted as a lab-notebook status entry — header with the topic, current UTC timestamp, and the skill's canned body text per `skills/example/SKILL.md`.
-- [ ] **Slash-dropdown check**: typing `/skill-example` triggers autocomplete; you should see `/skill-example:lab-notebook` highlighted with the description from frontmatter: "Reference example. Echoes back a formatted lab-notebook-style status message…"
-- [ ] **Failure signals**: (a) no `skill-example` entry in `/plugins` → install path broken; (b) `/skill-example:lab-notebook` returns "Unknown command" → namespacing broken or skill `name:` field changed; (c) slash resolves but body is empty → SKILL.md frontmatter parse error.
+- [ ] **Slash-dropdown check**: typing `/dgxsparklabs-skill` triggers autocomplete; you should see `/dgxsparklabs-skill:lab-notebook` highlighted with the description from frontmatter: "Reference example. Echoes back a formatted lab-notebook-style status message…"
+- [ ] **Failure signals**: (a) no `skill-example` entry in `/plugins` → install path broken; (b) `/dgxsparklabs-skill:lab-notebook` returns "Unknown command" → shared-namespace migration didn't propagate or SKILL.md `name:` field changed; (c) slash resolves but body is empty → SKILL.md frontmatter parse error.
 - [ ] **Diagnostic**:
   ```bash
-  claude plugin details skill-example
+  claude plugin details dgxsparklabs-skill
   ls ~/.claude/plugins/cache/dgxsparklabs-marketplace/skill-example/
   ```
-  `details` lists `lab-notebook` as a component; the cache dir is populated.
+  Note: `claude plugin details dgxsparklabs-skill` collapses to the first-installed skill plugin only (known limitation of the shared-namespace migration — see `docs/research/shared-namespace-2026-05-27/` Probe B). The cache dir is populated regardless.
 
 #### Rule — N/A for Claude (retired 2026-05-26)
 
@@ -416,12 +416,12 @@ Each test installs ONE plugin of the construct type, then invokes it. Per-constr
   ```text
   /agents
   ```
-  Then select `agent-example:notebook-reviewer` from the picker.
-- [ ] **Expected (per spec, not empirically captured in PR #10 research)**: `/agents` shows the entry `agent-example:notebook-reviewer` with description "Reviews a lab notebook entry as a skeptical peer reviewer…" After selection, the next user message routes to that sub-agent context, and the reply tone is critical-second-opinion not generic Claude. This is inferred from the namespacing convention; the Docker research did not exercise the TUI picker. Operator should verify and report deviations.
+  Then select `dgxsparklabs-agent:notebook-reviewer` from the picker.
+- [ ] **Expected (per spec, not yet empirically captured for agents)**: `/agents` shows the entry `dgxsparklabs-agent:notebook-reviewer` with description "Reviews a lab notebook entry as a skeptical peer reviewer…" After selection, the next user message routes to that sub-agent context, and the reply tone is critical-second-opinion not generic Claude. This is inferred from the namespacing convention; the Docker research validated the shared-namespace mechanism for skills + commands but did not exercise the `/agents` TUI picker.
 - [ ] **Failure signals**: (a) no `agent-example` entry in `/plugins` → install path broken; (b) `/agents` picker has no row matching → agent loader broken or frontmatter `name:` mismatch; (c) selection succeeds but response is generic Claude tone → sub-agent context not switching (regression of PR #5 fixes).
 - [ ] **Diagnostic**:
   ```bash
-  claude plugin details agent-example | grep -F notebook-reviewer
+  claude plugin details dgxsparklabs-agent | grep -F notebook-reviewer
   ```
 
 #### Command — `command-example`
@@ -437,7 +437,7 @@ Each test installs ONE plugin of the construct type, then invokes it. Per-constr
 - [ ] **Verify in `/plugins`**: row labeled `command-example@dgxsparklabs-marketplace`, status `✔ enabled`.
 - [ ] **Invoke** (in any `claude` session — works in `--print` too):
   ```text
-  /command-example:hello
+  /dgxsparklabs-command:hello
   ```
 - [ ] **Expected visible output**: Claude prints a markdown block in this shape (substituting today's UTC date for `<DATE>`):
   ```markdown
@@ -449,8 +449,8 @@ Each test installs ONE plugin of the construct type, then invokes it. Per-constr
 
   ### Next steps
   ```
-- [ ] **Slash-dropdown check**: typing `/command-example:` triggers autocomplete; you should see `/command-example:hello` with description "Reference example slash command. Prints a formatted lab-notebook header."
-- [ ] **Failure signals**: (a) no `command-example` entry in `/plugins` → install broken; (b) `/command-example:hello` returns "Unknown command" → the rename from `example-command.md → hello.md` (PR #9) didn't propagate; (c) command runs but output is wrong shape → command file edited locally — re-check against `commands/example/commands/hello.md`.
+- [ ] **Slash-dropdown check**: typing `/dgxsparklabs-command:` triggers autocomplete; you should see `/dgxsparklabs-command:hello` with description "Reference example slash command. Prints a formatted lab-notebook header."
+- [ ] **Failure signals**: (a) no `command-example` entry in `/plugins` → install broken; (b) `/dgxsparklabs-command:hello` returns "Unknown command" → shared-namespace migration didn't propagate, OR the rename from `example-command.md → hello.md` (PR #9) didn't propagate; (c) command runs but output is wrong shape → command file edited locally — re-check against `commands/example/commands/hello.md`.
 
 #### Hook — `hook-example`
 
@@ -504,14 +504,14 @@ Each test installs ONE plugin of the construct type, then invokes it. Per-constr
   ```text
   /mcp
   ```
-  Server `example` should appear with status `✓ Connected` (assuming `uv` present). If `uv` is missing, you'll see `plugin:mcp-example:example: uvx mcp-server-fetch - ✗ Failed to connect`. `/mcp` is a TUI command; it cannot be exercised under `claude --print`.
+  Server `example` should appear with status `✓ Connected` (assuming `uv` present). If `uv` is missing, you'll see `plugin:dgxsparklabs-mcp:example: uvx mcp-server-fetch - ✗ Failed to connect`. `/mcp` is a TUI command; it cannot be exercised under `claude --print`.
 - [ ] **Exercise the tool (interactive)**: tools are model-called, not user-typed. Ask Claude:
   ```text
   fetch https://example.com and summarize the contents
   ```
   Watch the tool name in `claude --debug` output.
-- [ ] **Expected tool name**: `mcp__mcp-example__example__fetch` (hook-matcher form) or `plugin:mcp-example:example` (CLI display form).
-- [ ] **Failure signals**: (a) `/mcp` shows `✗ Failed to connect` with `uvx mcp-server-fetch` → `uv` not installed; (b) `/mcp` empty → server config not loaded — check `_generated/mcp-example/mcp-config.json` post-install; (c) tool invocation but model says "no fetch tool" → MCP namespace wrong (regression of the 2026-05-26 alignment).
+- [ ] **Expected tool name**: `mcp__dgxsparklabs-mcp__example__fetch` (hook-matcher form) or `plugin:dgxsparklabs-mcp:example` (CLI display form).
+- [ ] **Failure signals**: (a) `/mcp` shows `✗ Failed to connect` with `uvx mcp-server-fetch` → `uv` not installed; (b) `/mcp` empty → server config not loaded — check `_generated/mcp-example/mcp-config.json` post-install; (c) tool invocation but model says "no fetch tool" → shared-namespace migration didn't propagate to MCP plugin.
 
 #### LSP server — `lsp-example`
 
@@ -780,8 +780,8 @@ The validations below all remain live for every operator pass. Each is operator-
 - [ ] **Hermetic verification** — with `command-example` installed + enabled and the body-dumper stub running on port 8089:
   ```bash
   export ANTHROPIC_BASE_URL=http://127.0.0.1:8089
-  echo "/command-example:hello" | claude --print
-  grep -F "/command-example:hello" /tmp/stub-bodies.log
+  echo "/dgxsparklabs-command:hello" | claude --print
+  grep -F "/dgxsparklabs-command:hello" /tmp/stub-bodies.log
   ```
 - [ ] **Expected (hermetic)**: grep matches — the namespaced slash form reaches the request body, proving Claude resolved it client-side. (The skill-example body lives under the same namespacing convention.)
 - [ ] **Interactive**: with `skill-example` installed, in a real `claude` session type:
@@ -789,7 +789,7 @@ The validations below all remain live for every operator pass. Each is operator-
   /
   ```
   And read the autocomplete dropdown entry.
-- [ ] **Expected**: the entry resolves to `/skill-example:lab-notebook` (the UI may show a shorter label, but the actual invocation is the namespaced form). Per `code.claude.com/docs/en/plugins` (2026-05-26): *"Plugin skills are always namespaced (like `/my-first-plugin:hello`) to prevent conflicts..."* The SKILL.md frontmatter `name:` was changed from `example-skill` to `lab-notebook` on 2026-05-26 per Scheme B+ to eliminate the doubled slash form.
+- [ ] **Expected**: the entry resolves to `/dgxsparklabs-skill:lab-notebook` (the UI may show a shorter label, but the actual invocation is the namespaced form). Per `code.claude.com/docs/en/plugins` (2026-05-26): *"Plugin skills are always namespaced (like `/my-first-plugin:hello`) to prevent conflicts..."* The brand-prefixed shared namespace `dgxsparklabs-skill` was adopted 2026-05-27 after empirical validation at `docs/research/shared-namespace-2026-05-27/`.
 
 #### Claude validation 7b — agent namespacing (F7)
 
@@ -798,7 +798,7 @@ The validations below all remain live for every operator pass. Each is operator-
   ```text
   /agents
   ```
-- [ ] **Expected**: the entry appears as `agent-example:notebook-reviewer` (no `/` prefix — the colon-namespaced form is what `/agents` displays).
+- [ ] **Expected**: the entry appears as `dgxsparklabs-agent:notebook-reviewer` (no `/` prefix — the colon-namespaced form is what `/agents` displays).
 
 #### Claude validation 7c — MCP tool namespacing (F7)
 
@@ -808,7 +808,7 @@ The validations below all remain live for every operator pass. Each is operator-
   fetch https://example.com
   ```
   Watch the tool name in `claude --debug` output.
-- [ ] **Expected**: tool name appears as `mcp__mcp-example__example` (the hook-matcher form) or `plugin:mcp-example:example` (the CLI display form). Both are documented per `code.claude.com/docs/en/hooks` and `code.claude.com/docs/en/plugins-reference`.
+- [ ] **Expected**: tool name appears as `mcp__dgxsparklabs-mcp__example` (the hook-matcher form) or `plugin:dgxsparklabs-mcp:example` (the CLI display form). Both are documented per `code.claude.com/docs/en/hooks` and `code.claude.com/docs/en/plugins-reference`.
 
 #### Claude validation 8 — rule deprecation (F8)
 

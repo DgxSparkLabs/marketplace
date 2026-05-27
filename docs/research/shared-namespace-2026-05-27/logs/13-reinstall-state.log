@@ -1,0 +1,15 @@
+=== Reinstall + re-enable bar to restore state ===
+Installing plugin "skill-bar-test@dgxsparklabs-marketplace"...✔ Successfully installed plugin: skill-bar-test@dgxsparklabs-marketplace (scope: project)
+✘ Failed to enable plugin "skill-bar-test@dgxsparklabs-marketplace": Plugin "skill-bar-test@dgxsparklabs-marketplace" is already enabled
+Installed plugins:
+
+  ❯ skill-bar-test@dgxsparklabs-marketplace
+    Version: 1.0.0
+    Scope: project
+    Status: ✔ enabled
+
+  ❯ skill-foo-test@dgxsparklabs-marketplace
+    Version: 1.0.0
+    Scope: project
+    Status: ✔ enabled
+

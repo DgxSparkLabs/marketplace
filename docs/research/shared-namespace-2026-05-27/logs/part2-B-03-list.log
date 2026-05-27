@@ -1,0 +1,82 @@
+=== plugin list ===
+Installed plugins:
+
+  ❯ skill-a-test@dgxsparklabs-marketplace
+    Version: 1.0.0
+    Scope: project
+    Status: ✔ enabled
+
+  ❯ skill-b-test@dgxsparklabs-marketplace
+    Version: 1.0.0
+    Scope: project
+    Status: ✔ enabled
+
+  ❯ skill-c-test@dgxsparklabs-marketplace
+    Version: 1.0.0
+    Scope: project
+    Status: ✔ enabled
+
+  ❯ skill-d-test@dgxsparklabs-marketplace
+    Version: 1.0.0
+    Scope: project
+    Status: ✔ enabled
+
+  ❯ skill-e-test@dgxsparklabs-marketplace
+    Version: 1.0.0
+    Scope: project
+    Status: ✔ enabled
+
+
+=== plugin list --json ===
+[
+  {
+    "id": "skill-a-test@dgxsparklabs-marketplace",
+    "version": "1.0.0",
+    "scope": "project",
+    "enabled": true,
+    "installPath": "/root/.claude/plugins/cache/dgxsparklabs-marketplace/skill-a-test/1.0.0",
+    "installedAt": "2026-05-27T09:21:27.579Z",
+    "lastUpdated": "2026-05-27T09:21:27.579Z",
+    "projectPath": "/tmp/test"
+  },
+  {
+    "id": "skill-b-test@dgxsparklabs-marketplace",
+    "version": "1.0.0",
+    "scope": "project",
+    "enabled": true,
+    "installPath": "/root/.claude/plugins/cache/dgxsparklabs-marketplace/skill-b-test/1.0.0",
+    "installedAt": "2026-05-27T09:21:29.336Z",
+    "lastUpdated": "2026-05-27T09:21:29.336Z",
+    "projectPath": "/tmp/test"
+  },
+  {
+    "id": "skill-c-test@dgxsparklabs-marketplace",
+    "version": "1.0.0",
+    "scope": "project",
+    "enabled": true,
+    "installPath": "/root/.claude/plugins/cache/dgxsparklabs-marketplace/skill-c-test/1.0.0",
+    "installedAt": "2026-05-27T09:21:31.341Z",
+    "lastUpdated": "2026-05-27T09:21:31.341Z",
+    "projectPath": "/tmp/test"
+  },
+  {
+    "id": "skill-d-test@dgxsparklabs-marketplace",
+    "version": "1.0.0",
+    "scope": "project",
+    "enabled": true,
+    "installPath": "/root/.claude/plugins/cache/dgxsparklabs-marketplace/skill-d-test/1.0.0",
+    "installedAt": "2026-05-27T09:21:33.697Z",
+    "lastUpdated": "2026-05-27T09:21:33.697Z",
+    "projectPath": "/tmp/test"
+  },
+  {
+    "id": "skill-e-test@dgxsparklabs-marketplace",
+    "version": "1.0.0",
+    "scope": "project",
+    "enabled": true,
+    "installPath": "/root/.claude/plugins/cache/dgxsparklabs-marketplace/skill-e-test/1.0.0",
+    "installedAt": "2026-05-27T09:21:35.613Z",
+    "lastUpdated": "2026-05-27T09:21:35.613Z",
+    "projectPath": "/tmp/test"
+  }
+]

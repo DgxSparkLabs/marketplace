@@ -1,0 +1,86 @@
+=== Edge case: uninstall bar, foo should still resolve under shared ns ===
+✘ Failed to uninstall plugin "skill-bar-test@dgxsparklabs-marketplace": Plugin "skill-bar-test@dgxsparklabs-marketplace" is enabled at project scope (.claude/settings.json, shared with your team). To disable just for you: claude plugin disable skill-bar-test@dgxsparklabs-marketplace --scope local
+Installed plugins:
+
+  ❯ skill-bar-test@dgxsparklabs-marketplace
+    Version: 1.0.0
+    Scope: project
+    Status: ✔ enabled
+
+  ❯ skill-foo-test@dgxsparklabs-marketplace
+    Version: 1.0.0
+    Scope: project
+    Status: ✔ enabled
+
+skill-bar-test
+skill-foo-test
+--- /dgxsparklabs-skill:foo (only foo installed) ---
+OK stub.
+registry:
+dgxsparklabs-skill:foo: Test foo 
+dgxsparklabs-skill:bar: Test bar 
+--- /dgxsparklabs-skill:bar (uninstalled) ---
+OK stub.
+registry:
+dgxsparklabs-skill:foo: Test foo 
+dgxsparklabs-skill:bar: Test bar 
+=== Disable then uninstall bar ===
+✔ Successfully disabled plugin: skill-bar-test (scope: project)
+✘ Failed to uninstall plugin "skill-bar-test@dgxsparklabs-marketplace": Plugin "skill-bar-test@dgxsparklabs-marketplace" is enabled at project scope (.claude/settings.json, shared with your team). To disable just for you: claude plugin disable skill-bar-test@dgxsparklabs-marketplace --scope local
+--- list ---
+Installed plugins:
+
+  ❯ skill-bar-test@dgxsparklabs-marketplace
+    Version: 1.0.0
+    Scope: project
+    Status: ✘ disabled
+
+  ❯ skill-foo-test@dgxsparklabs-marketplace
+    Version: 1.0.0
+    Scope: project
+    Status: ✔ enabled
+
+--- cache dirs ---
+skill-bar-test
+skill-foo-test
+--- /dgxsparklabs-skill:foo after bar uninstall ---
+OK stub.
+registry:
+dgxsparklabs-skill:foo: Test foo 
+--- /dgxsparklabs-skill:bar after bar uninstall ---
+Unknown command: /dgxsparklabs-skill:bar
+registry:
+--- plugin details dgxsparklabs-skill after bar uninstall ---
+DgxSparkLabs Skills (dgxsparklabs-skill) 1.0.0
+  Test foo — shared-namespace probe (foo half)
+  Source: skill-foo-test@dgxsparklabs-marketplace
+
+Component inventory
+  Skills (1)  foo
+  Agents (0)
+  Hooks (0)
+  MCP servers (0)
+  LSP servers (0)
+
+Projected token cost
+  Always-on:   ~10 tok   added to every session
+
+Per-component (rounded)
+  component  always-on  on-invoke
+  foo             < 20       < 20
+
+  On-invoke cost is paid each time a skill or agent fires.
+  Token counts are estimates and may differ from actual usage.
+=== Try uninstall with explicit --scope project ===
+✔ Successfully uninstalled plugin: skill-bar-test (scope: project)
+--- list after ---
+Installed plugins:
+
+  ❯ skill-foo-test@dgxsparklabs-marketplace
+    Version: 1.0.0
+    Scope: project
+    Status: ✔ enabled
+
+--- cache dirs ---
+skill-bar-test
+skill-foo-test

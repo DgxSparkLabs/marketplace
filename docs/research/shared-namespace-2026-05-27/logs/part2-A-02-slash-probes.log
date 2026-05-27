@@ -1,0 +1,32 @@
+=== probe: /dgxsparklabs-command:hello-foo ===
+OK stub.
+--- body grep: command-name ---
+<command-name>/dgxsparklabs-command:hello-foo</command-name>
+--- body grep: dgxsparklabs-command:hello ---
+dgxsparklabs-command:hello-foo
+dgxsparklabs-command:hello-foo: foo command - command-parity probe
+dgxsparklabs-command:hello-bar: bar command - command-parity probe
+--- system-reminder slice ---
+
+=== probe: /dgxsparklabs-command:hello-bar ===
+OK stub.
+--- body grep: command-name ---
+<command-name>/dgxsparklabs-command:hello-bar</command-name>
+--- body grep: dgxsparklabs-command:hello ---
+dgxsparklabs-command:hello-bar
+dgxsparklabs-command:hello-foo: foo command - command-parity probe
+dgxsparklabs-command:hello-bar: bar command - command-parity probe
+--- system-reminder slice ---
+
+=== probe: /command-foo-test:hello-foo ===
+Unknown command: /command-foo-test:hello-foo
+--- body grep: command-name ---
+--- body grep: dgxsparklabs-command:hello ---
+--- system-reminder slice ---
+
+=== probe: /command-bar-test:hello-bar ===
+Unknown command: /command-bar-test:hello-bar
+--- body grep: command-name ---
+--- body grep: dgxsparklabs-command:hello ---
+--- system-reminder slice ---
+

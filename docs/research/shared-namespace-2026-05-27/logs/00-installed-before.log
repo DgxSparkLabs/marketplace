@@ -1,0 +1,16 @@
+{
+  "version": 2,
+  "plugins": {
+    "notebooklm@claude-code-skills": [
+      {
+        "scope": "project",
+        "projectPath": "/root/test",
+        "installPath": "/root/.claude/plugins/cache/claude-code-skills/notebooklm/2.7.0",
+        "version": "2.7.0",
+        "installedAt": "2026-05-27T02:09:48.440Z",
+        "lastUpdated": "2026-05-27T02:09:48.440Z",
+        "gitCommitSha": "eace618ba39ed401cb8f09fb1925ec3c7029b5a4"
+      }
+    ]
+  }
+}

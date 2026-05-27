@@ -29,6 +29,7 @@ from utils import (
     _frontmatter,
     _load_plugin_json,
     _marketplace_author,
+    _marketplace_name,
     _marketplace_version,
     write_plugin_json,
 )
@@ -61,17 +62,33 @@ class Construct(Protocol):
 def _base_plugin_shape(construct: Construct, name: str) -> dict:
     """Common plugin.json fields shared by all construct types.
 
-    The ``name`` field built here is the **plugin name** the operator types
-    in ``claude plugin install <name>@dgxsparklabs-marketplace``. It is
-    composed as ``<construct.prefix>-<source-dir-name>`` (e.g.
-    ``skill-notify`` for ``skills/notify/``). The construct prefixes
-    themselves are class attributes on each Construct (SkillConstruct.prefix
-    at line 73, etc.). For the full byte-by-byte trace of every name
-    fragment in an install command, see
-    ``docs/ADDING_A_CONSTRUCT.md`` § "Trace each fragment to its source".
+    The ``name`` field built here is the **Claude slash-namespace prefix**
+    (NOT the marketplace install identifier — that's separate, see below).
+    It is composed as ``<brand>-<construct.category>`` (e.g.
+    ``dgxsparklabs-skill`` for any skill plugin), so every skill plugin
+    shares one namespace and slash invocations become
+    ``/dgxsparklabs-skill:<frontmatter-name>``. ``<brand>`` is derived from
+    ``MARKETPLACE.toml`` ``name`` by stripping the trailing ``-marketplace``
+    suffix. The construct categories themselves are class attributes
+    (``SkillConstruct.category == "skill"`` at line 76, etc.).
+
+    The marketplace-entry name (what the operator types at install:
+    ``claude plugin install skill-notify@dgxsparklabs-marketplace``) is
+    composed separately by ``_make_marketplace_entry`` in
+    ``scripts/generate_manifest.py`` from ``plugin_dir.name`` (which is
+    ``<construct.prefix>-<source-dir-name>``, kept unique per plugin).
+    The two names intentionally differ — install address is per-plugin
+    and unique, slash namespace is per-construct and shared. See
+    ``docs/research/shared-namespace-2026-05-27/RESEARCH.md`` for the
+    empirical evidence that Claude routes slash by plugin.json ``name``
+    AND accepts multiple plugins sharing one ``name``, and
+    ``docs/ADDING_A_CONSTRUCT.md`` § "Trace each fragment to its source"
+    for the byte-by-byte walked example.
     """
+    mp_name = _marketplace_name()
+    brand = mp_name.removesuffix("-marketplace") if mp_name.endswith("-marketplace") else mp_name
     return {
-        "name": f"{construct.prefix}-{name}",
+        "name": f"{brand}-{construct.category}",
         "version": _marketplace_version(),
         "author": _marketplace_author(),
     }
@@ -80,11 +97,19 @@ def _base_plugin_shape(construct: Construct, name: str) -> dict:
 # ─── Construct implementations ────────────────────────────────────────────────
 
 class SkillConstruct:
-    # `prefix` is the first half of the plugin name. For a directory at
-    # skills/notify/, the resulting plugin name is f"{prefix}-{dir}" = "skill-notify".
-    # See docs/ADDING_A_CONSTRUCT.md § "Trace each fragment to its source"
-    # for how this fragment combines with the directory name + MARKETPLACE.toml
-    # to form `claude plugin install skill-notify@dgxsparklabs-marketplace`.
+    # `prefix` controls the INSTALL-time name (marketplace.json plugins[].name).
+    # For a directory at skills/notify/, the install name is f"{prefix}-{dir}" =
+    # "skill-notify". The operator types this in `claude plugin install skill-notify@...`.
+    #
+    # `category` controls the SLASH-namespace name (plugin.json `name` field).
+    # All skill plugins share `category = "skill"` so they share the brand-prefixed
+    # slash namespace `dgxsparklabs-skill` (composed in _base_plugin_shape). The
+    # operator types this in `/dgxsparklabs-skill:<frontmatter-name>`.
+    #
+    # See docs/ADDING_A_CONSTRUCT.md § "Trace each fragment to its source" for
+    # how these two fragments combine with MARKETPLACE.toml + scan_source_dir
+    # to form both `claude plugin install skill-notify@dgxsparklabs-marketplace`
+    # AND `/dgxsparklabs-skill:notify` from the same source dir.
     prefix = "skill"
     source_directory = REPO_ROOT / "skills"
     category = "skill"

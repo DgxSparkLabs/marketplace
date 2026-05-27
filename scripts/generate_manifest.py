@@ -55,9 +55,23 @@ from utils import (
 def _make_marketplace_entry(
     plugin_json: dict, plugin_dir: Path, category: str
 ) -> dict:
-    """Build a marketplace.json plugin entry from an in-memory plugin.json dict."""
+    """Build a marketplace.json plugin entry from an in-memory plugin.json dict.
+
+    The marketplace entry ``name`` is the install-time identifier (what the
+    operator types after ``claude plugin install``). It MUST be unique
+    per plugin and is derived here from ``plugin_dir.name`` (set in Phase 1
+    as ``<construct.prefix>-<source-dir-name>``, e.g. ``skill-notify``).
+
+    Note this DELIBERATELY differs from ``plugin_json["name"]`` (the
+    Claude slash-namespace prefix, e.g. ``dgxsparklabs-skill``) — multiple
+    plugins of the same construct share that name to group their skills
+    under one slash prefix. See ``_base_plugin_shape`` in
+    ``scripts/constructs.py`` for the rationale and
+    ``docs/research/shared-namespace-2026-05-27/RESEARCH.md`` for the
+    empirical evidence that the two names can safely differ.
+    """
     return {
-        "name": plugin_json["name"],
+        "name": plugin_dir.name,
         "source": f"./{plugin_dir.relative_to(REPO_ROOT).as_posix()}",
         "description": plugin_json["description"],
         "version": plugin_json["version"],

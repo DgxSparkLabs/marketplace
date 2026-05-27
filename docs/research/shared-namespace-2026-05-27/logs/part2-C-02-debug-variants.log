@@ -1,0 +1,8 @@
+=== --debug typing / (no command) ===
+Commands are in the form `/command [args]`
+
+=== --debug typing /dgx ===
+Unknown command: /dgx. Did you mean /d?
+
+=== --debug empty (just sessions start) ===
+Error: No messages returned from query
