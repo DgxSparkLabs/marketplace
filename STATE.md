@@ -11,17 +11,21 @@
 
 ## Last action taken
 
-Built `.devcontainer/` for operator QA + marketplace dev: Claude CLI (official Anthropic feature), Node 20, Python 3.12, uv (via curl), Flask, git, gh. Forwards ports 8088/8089 for the hermetic stub. Persists Claude auth across rebuilds via named docker volume scoped to `${devcontainerId}`. Added Setup Option A: Dev Container at the top of `docs/TEST_YOURSELF.md` Claude section.
+Fixed two real bugs from operator's first dev container run:
+1. **Flask missing** — `apt-get install python3-flask` in post-create.sh either failed or installed somewhere Python3 didn't find. Replaced with PEP 723 inline metadata in both stub files (`stub.py`, `stub_body_dumper.py`); `uv run` now fetches Flask into an ephemeral env on first invocation. No apt, no pip install, no virtualenv to activate. Matches AGENTS.md "always use uv" rule.
+2. **EACCES on /home/vscode/.claude/plugins** — the named docker volume was mounted root-owned, so `claude plugin marketplace add` couldn't mkdir. Added `sudo chown` in post-create.sh to fix it. Canonical pattern from Anthropic reference container.
 
-PR #10: https://github.com/DgxSparkLabs/marketplace/pull/10 — now six-commit bundle:
-- `3717127` housekeeping + roadmap + STATE.md + research dir archive moves + .gitignore
-- `4d4818b` mcp-example name alignment
-- `767b37b` Claude construct reference card (initial — empirically corrected later)
-- `a8c74af` Scheme B+ naming alignment across 10 example plugins + reference card empirical corrections
-- `dbdac07` 11-issue Claude section audit fix
-- (pending commit) dev container
+Smoke-tested locally: `uv run tests/fixtures/claude-stub/stub.py` resolves Flask (8 packages, 528ms) and starts the server. Tests still pass.
 
-Tests passing locally: 78 marketplace + 21 schema-fitness = 99 green. Drift clean.
+Touched files:
+- `tests/fixtures/claude-stub/stub.py` + `stub_body_dumper.py` — added PEP 723 + uv-run shebang
+- `tests/fixtures/claude-stub/README.md` — quick-start now uses `uv run`
+- `.devcontainer/post-create.sh` — chown for the volume; dropped apt flask
+- `.devcontainer/README.md` — tool table updated
+- `docs/TEST_YOURSELF.md` — hermetic session setup uses `uv run`
+- `.github/workflows/compat-headless-claude.yml` — CI also switched to `uv run`
+
+PR #10: https://github.com/DgxSparkLabs/marketplace/pull/10 — now 7-commit bundle. Tests passing locally: 78 marketplace + 21 schema-fitness = 99 green. Drift clean.
 
 ## What's next
 

@@ -253,19 +253,18 @@ Marketplace registration, listing, and install are auth-free (verified by `act`-
 
 For verifying F5 / F7 / F9 in CI or on a host with no Anthropic account, run Claude against a local stub server that returns Anthropic-shape responses. Hooks fire before the API call, slash commands resolve client-side, and output-style content appears verbatim in the request body — all three become observable from the stub's access log + captured bodies + sentinel files. F4 (theme visual distinctness) still requires interactive auth because it's a TTY paint operation with no observable in the request stream.
 
-Inside the container after installing Claude:
+Inside the container after installing Claude (the dev container already has `uv` ready):
 
 ```bash
-# 1. Install the stub's only dependency.
-apt-get update && apt-get install -y python3-flask
-
-# 2. Pick which stub to run.
+# 1. Pick which stub to run. Both are self-bootstrapping PEP 723 scripts —
+#    `uv run` fetches Flask into an ephemeral env on first invocation, no
+#    separate `pip install` or apt package needed.
 #    Use stub.py for F5 (sentinel files are the observable).
 #    Use stub_body_dumper.py for F7 / F9 (request bodies need grepping).
-python3 tests/fixtures/claude-stub/stub.py > /tmp/stub-server.log 2>&1 &
+uv run tests/fixtures/claude-stub/stub.py > /tmp/stub-server.log 2>&1 &
 sleep 1   # wait for Flask to bind
 
-# 3. Point Claude at the stub.
+# 2. Point Claude at the stub.
 export ANTHROPIC_BASE_URL=http://127.0.0.1:8088
 export ANTHROPIC_AUTH_TOKEN=stub            # any non-empty value works
 export API_TIMEOUT_MS=20000                 # fail fast on stub bugs

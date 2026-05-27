@@ -44,16 +44,15 @@ jobs:
       - uses: ./.github/actions/setup-claude
         id: claude
 
-      - name: Install stub dependency (Flask)
-        run: |
-          python3 -m pip install --user flask
-          python3 -c "import flask; print('flask', flask.__version__)"
+      # Flask is now declared in each stub's PEP 723 inline metadata; `uv run`
+      # fetches it into an ephemeral env on first invocation. No separate
+      # pip install step needed.
 
       - name: Start stub server (port 8088, JSON-shape)
         # Plain stub is enough for F5 sentinel checks. F7/F9 use the
         # body-dumper variant started in the next step on port 8089.
         run: |
-          nohup python3 tests/fixtures/claude-stub/stub.py > /tmp/stub-8088.log 2>&1 &
+          nohup uv run tests/fixtures/claude-stub/stub.py > /tmp/stub-8088.log 2>&1 &
           echo $! > /tmp/stub-8088.pid
           # Wait for the bind to succeed before continuing.
           for i in $(seq 1 20); do
@@ -67,7 +66,7 @@ jobs:
 
       - name: Start body-dumper stub (port 8089)
         run: |
-          nohup python3 tests/fixtures/claude-stub/stub_body_dumper.py > /tmp/stub-8089.log 2>&1 &
+          nohup uv run tests/fixtures/claude-stub/stub_body_dumper.py > /tmp/stub-8089.log 2>&1 &
           echo $! > /tmp/stub-8089.pid
           for i in $(seq 1 20); do
             if curl -sS http://127.0.0.1:8089/v1/models >/dev/null; then

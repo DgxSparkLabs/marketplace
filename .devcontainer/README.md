@@ -8,8 +8,8 @@ A pre-baked development + QA environment for this repo. Opening the marketplace 
 |---|---|---|
 | `claude` | The Claude Code CLI — needed for every Claude QA cell | [official Anthropic feature](https://github.com/anthropics/devcontainer-features/tree/main/src/claude-code) |
 | `node` 20 | Required by `claude`; also matches CI base image | [dev container feature](https://github.com/devcontainers/features/tree/main/src/node) |
-| `python` 3.12 + `flask` | Powers the hermetic Claude stub at `tests/fixtures/claude-stub/` | apt + python feature |
-| `uv` | Canonical Python tool per `AGENTS.md` — runs every PEP 723 script in `scripts/` and `tests/` | `astral.sh/uv/install.sh` in `post-create.sh` |
+| `python` 3.12 | Base interpreter; deps come from PEP 723 inline metadata via `uv run` | python feature |
+| `uv` | Canonical Python tool per `AGENTS.md` — runs every PEP 723 script in `scripts/`, `tests/`, and `tests/fixtures/claude-stub/`. Flask for the hermetic stub is declared in the stub's own PEP 723 header. | `astral.sh/uv/install.sh` in `post-create.sh` |
 | `git` + `gh` | Branch ops + PR review | dev container features |
 
 VS Code extensions that auto-install: Python + Pylance, Even Better TOML, YAML, GitHub Actions, GitHub PR. The Claude Code VS Code extension is added automatically by the official feature.
@@ -37,7 +37,7 @@ After the container is up:
 bash .devcontainer/post-create.sh
 
 # 2. Optional — start the hermetic stub for F5/F7/F9 verification
-python3 tests/fixtures/claude-stub/stub.py &
+uv run tests/fixtures/claude-stub/stub.py &
 export ANTHROPIC_BASE_URL=http://127.0.0.1:8088
 export ANTHROPIC_AUTH_TOKEN=stub
 

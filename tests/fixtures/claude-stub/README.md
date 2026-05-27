@@ -18,22 +18,23 @@ a TTY paint operation with no observable in the request stream.
 
 ## Quick start
 
-```bash
-# 1. Install the prereqs.
-pip install flask
+Both stubs are self-bootstrapping PEP 723 scripts. `uv` reads the inline metadata header, fetches Flask into an ephemeral environment, and runs the stub — no `pip install`, no apt package, no virtualenv to activate.
 
-# 2. Run the stub.
-python3 tests/fixtures/claude-stub/stub.py &
+```bash
+# 1. Start the stub (first run downloads Flask; subsequent runs are instant).
+uv run tests/fixtures/claude-stub/stub.py &
 sleep 1
 
-# 3. Point Claude at the stub.
+# 2. Point Claude at the stub.
 export ANTHROPIC_BASE_URL=http://127.0.0.1:8088
 export ANTHROPIC_AUTH_TOKEN=stub          # any non-empty value works
 export API_TIMEOUT_MS=20000               # fail fast on stub bugs
 
-# 4. Run any normal Claude command.
+# 3. Run any normal Claude command.
 echo "hello stub" | claude --print
 ```
+
+The shebang line `#!/usr/bin/env -S uv run --quiet` also lets you execute the file directly (`./tests/fixtures/claude-stub/stub.py`) on any host with `uv` on PATH.
 
 ## Env vars
 
