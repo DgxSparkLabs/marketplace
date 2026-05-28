@@ -1,0 +1,6 @@
+{
+  "name": "command-example-multi",
+  "version": "1.0.0",
+  "description": "Prints a formatted lab-notebook closing footer with a UTC timestamp.",
+  "commands": "./commands/"
+}

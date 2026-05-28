@@ -1,0 +1,6 @@
+{
+  "name": "hook-example-posttooluse",
+  "version": "1.0.0",
+  "description": "Single-event reference hook for PostToolUse, scoped to Write|Edit. Writes a sentinel to /tmp/hook-fired-posttooluse.log after the tool call completes.",
+  "hooks": "./hooks/hooks.json"
+}

@@ -1,0 +1,6 @@
+{
+  "name": "hook-example-userpromptsubmit",
+  "version": "1.0.0",
+  "description": "Single-event reference hook for UserPromptSubmit. Injects a [Lab Notebook context: timestamp=...] line on every prompt and writes a sentinel to /tmp/hook-fired-userpromptsubmit.log.",
+  "hooks": "./hooks/hooks.json"
+}

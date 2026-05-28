@@ -1,0 +1,4 @@
+{
+  "name": "dgxsparklabs-hook-example-multi",
+  "description": "Reference hook plugin covering every Claude hook event in one hooks.json. Pair with the nine per-event example plugins."
+}

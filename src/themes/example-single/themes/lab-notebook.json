@@ -1,0 +1,12 @@
+{
+  "name": "Lab Notebook",
+  "base": "light",
+  "overrides": {
+    "background": "#fdf6e3",
+    "foreground": "#586e75",
+    "claude": "#268bd2",
+    "error": "#dc322f",
+    "success": "#859900",
+    "warning": "#cb4b16"
+  }
+}

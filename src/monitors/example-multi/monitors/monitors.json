@@ -1,0 +1,17 @@
+[
+  {
+    "name": "disk-usage",
+    "command": "df -h . | tail -n +2",
+    "description": "Report current disk usage once at session start."
+  },
+  {
+    "name": "memory-usage",
+    "command": "free -h 2>/dev/null | head -2 || vm_stat 2>/dev/null | head -5",
+    "description": "Report current memory usage once at session start (Linux or macOS)."
+  },
+  {
+    "name": "git-status",
+    "command": "git status --short 2>/dev/null || echo 'not a git repo'",
+    "description": "Report uncommitted git changes once at session start."
+  }
+]

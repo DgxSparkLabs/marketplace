@@ -2,25 +2,39 @@
 
 **This is the first file to read when returning to this project after any break.** Don't read anything else first.
 
-Updated 2026-05-28 after the multi-instance-capable plugins refactor (Claude-only scope; PR #10).
+Updated 2026-05-28 (afternoon) after the symmetric single/multi expansion + `src/` reorganization + 15 review-finding fixes (PR #10).
+
+## Repo layout — what lives where
+
+- **`src/`** — operator-authored source content. Ten construct dirs (`src/skills/`, `src/rules/`, `src/commands/`, …) plus `src/MARKETPLACE.toml` and `src/catalog.toml`. Anything that becomes a plugin lives here.
+- **`scripts/`** — generator code (Python). Reads from `src/`, emits to `_generated/` and per-platform mirrors.
+- **`tests/`** — test suites for the generator + per-plugin schema.
+- **`docs/`** — human-facing reference + research artifacts.
+- **`_generated/`, `.agents/`, `.gemini/`, `.cursor/`, `.codex/`, `.claude-plugin/`, `.cursor-plugin/`, `gemini-extension.json`** — generator output; spec-mandated paths.
+- Root files (`README.md`, `CHANGELOG.md`, `HANDOFF.md`, `STATE.md`, `install.sh`, etc.) — operational metadata + user-facing one-line installers.
 
 ## Plugin-naming pattern (as of 2026-05-28)
 
 Two-field decoupling:
 
-- **Install identifier** (what you type in `claude plugin install …@dgxsparklabs-marketplace`): `<construct.prefix>-<source-dir-name>` — e.g. `skill-example`, `skill-example-single`, `command-example`.
-- **Slash namespace** (what appears in `/…` invocations and in `claude plugin details …`): `<brand>-<construct.prefix>-<source-dir-name>` — e.g. `dgxsparklabs-skill-example`, `dgxsparklabs-skill-example-single`. **Unique per plugin.**
+- **Install identifier** (what you type in `claude plugin install …@dgxsparklabs-marketplace`): `<construct.prefix>-<source-dir-name>` — e.g. `skill-example-multi`, `skill-example-single`, `command-example-multi`.
+- **Slash namespace** (what appears in `/…` invocations and in `claude plugin details …`): `<brand>-<construct.prefix>-<source-dir-name>` — e.g. `dgxsparklabs-skill-example-multi`, `dgxsparklabs-skill-example-single`. **Unique per plugin.**
 
-Composed in `scripts/constructs.py` `_base_plugin_shape` as `f"{brand}-{construct.prefix}-{name}"`. The brand prefix is derived from `MARKETPLACE.toml` `name` by stripping `-marketplace`.
+Composed in `scripts/constructs.py` `_base_plugin_shape` as `f"{brand}-{construct.prefix}-{name}"`. The brand prefix is derived from `src/MARKETPLACE.toml` `name` by stripping `-marketplace`.
 
-Slash forms for the 11 reference plugins:
+Representative slash forms from the 27 reference plugins:
 
 | Plugin | Slash form |
 |---|---|
-| `skill-example` (multi) | `/dgxsparklabs-skill-example:notebook` · `/dgxsparklabs-skill-example:status` |
+| `skill-example-multi` (multi) | `/dgxsparklabs-skill-example-multi:notebook` · `:status` |
 | `skill-example-single` (solo) | `/dgxsparklabs-skill-example-single:hello` |
-| `command-example` | `/dgxsparklabs-command-example:hello` |
-| `agent-example` | `/agents` → `dgxsparklabs-agent-example:notebook-reviewer` |
+| `command-example-multi` | `/dgxsparklabs-command-example-multi:hello` · `:goodbye` · `:ping` |
+| `agent-example-multi` | `/agents` → `dgxsparklabs-agent-example-multi:notebook-reviewer` (or `:summarizer`, `:validator`) |
+| `hook-example-userpromptsubmit` | (passive, fires per prompt) |
+| `output-style-example-multi` | `/output-style Lab Notebook Voice` · `Concise Engineer` · `Tutoring` |
+| `theme-example-multi` | `/theme Lab Notebook` · `Nord` · `Solarized Dark` |
+
+For the full 27-plugin inventory see `docs/CONSTRUCT_TYPES.md`.
 
 History: an earlier shared-namespace attempt called Path A (`d641f92`, 2026-05-27) collapsed all skill plugins under one slash namespace `/dgxsparklabs-skill:`; it was reverted on 2026-05-28 because `claude plugin details` couldn't separate the per-plugin component lists. See [`research/multi-instance-claude-only-2026-05-27/PLAN.md`](./research/multi-instance-claude-only-2026-05-27/PLAN.md) for the revert rationale.
 

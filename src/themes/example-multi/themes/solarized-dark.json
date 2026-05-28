@@ -1,0 +1,12 @@
+{
+  "name": "Solarized Dark",
+  "base": "dark",
+  "overrides": {
+    "background": "#002b36",
+    "foreground": "#839496",
+    "claude": "#2aa198",
+    "error": "#dc322f",
+    "success": "#859900",
+    "warning": "#b58900"
+  }
+}

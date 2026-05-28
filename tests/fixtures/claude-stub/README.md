@@ -144,8 +144,10 @@ echo "hello stub" | claude --print
 # Live tail
 tail -f .stub-logs/stub-bodies.log
 
-# Grep for a specific slash form
-grep -F '/dgxsparklabs-skill:lab-notebook' .stub-logs/stub-bodies.log
+# Grep for a specific slash form (post-2026-05-28 unique-per-plugin shape)
+grep -F '/dgxsparklabs-skill-example-single:hello' .stub-logs/stub-bodies.log
+# Or the multi-skill plugin's slash form:
+grep -F '/dgxsparklabs-skill-example:notebook' .stub-logs/stub-bodies.log
 
 # Truncate between probes
 : > .stub-logs/stub-bodies.log

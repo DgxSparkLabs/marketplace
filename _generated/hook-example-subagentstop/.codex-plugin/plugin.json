@@ -1,0 +1,6 @@
+{
+  "name": "hook-example-subagentstop",
+  "version": "1.0.0",
+  "description": "Single-event reference hook for SubagentStop. Fires when a sub-agent's turn ends and writes a sentinel to /tmp/hook-fired-subagentstop.log.",
+  "hooks": "./hooks/hooks.json"
+}

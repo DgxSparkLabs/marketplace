@@ -5,7 +5,7 @@
     "name": "DgxSparkLabs",
     "url": "https://github.com/DgxSparkLabs"
   },
-  "description": "One reference skill demonstrating the single-skill plugin layout.",
+  "description": "Prints a minimal greeting plus a UTC timestamp. The smallest possible single-skill reference plugin.",
   "skills": [
     "./"
   ],

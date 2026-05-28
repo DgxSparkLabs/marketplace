@@ -1,0 +1,15 @@
+{
+  "description": "Single-event reference hook for PreCompact. Fires before Claude compacts conversation history and writes a sentinel to /tmp/hook-fired-precompact.log.",
+  "hooks": {
+    "PreCompact": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "printf '%s preCompact fired\\n' \"$(date -u +%FT%TZ)\" >> /tmp/hook-fired-precompact.log"
+          }
+        ]
+      }
+    ]
+  }
+}

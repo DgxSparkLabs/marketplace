@@ -9,16 +9,16 @@ The marketplace supports 10 plugin construct types. The contribution workflow is
 For a one-off skill that doesn't belong with thematic siblings.
 
 ```bash
-mkdir -p skills/my-thing/.claude-plugin
+mkdir -p src/skills/my-thing/.claude-plugin
 
-cat > skills/my-thing/.claude-plugin/plugin.json <<'EOF'
+cat > src/skills/my-thing/.claude-plugin/plugin.json <<'EOF'
 {
   "name": "dgxsparklabs-skill-my-thing",
   "description": "One-line description for the marketplace listing."
 }
 EOF
 
-cat > skills/my-thing/SKILL.md <<'EOF'
+cat > src/skills/my-thing/SKILL.md <<'EOF'
 ---
 name: do-the-thing
 description: One-line tooltip shown in the slash autocomplete dropdown.
@@ -33,23 +33,23 @@ uv run tests/test_marketplace.py
 
 Slash form: `/dgxsparklabs-skill-my-thing:do-the-thing`. Bare flat form: `/do-the-thing`.
 
-Canonical reference: [`skills/example-single/`](../skills/example-single/).
+Canonical reference: [`src/skills/example-single/`](../src/skills/example-single/).
 
 ### Pattern 2 — multi-instance plugin
 
 For multiple skills under one theme. One install brings all of them.
 
 ```bash
-mkdir -p skills/git-helpers/{.claude-plugin,skills/{quick-commit,branch-summary,safe-rebase}}
+mkdir -p src/skills/git-helpers/{.claude-plugin,skills/{quick-commit,branch-summary,safe-rebase}}
 
-cat > skills/git-helpers/.claude-plugin/plugin.json <<'EOF'
+cat > src/skills/git-helpers/.claude-plugin/plugin.json <<'EOF'
 {
   "name": "dgxsparklabs-skill-git-helpers",
   "description": "Three skills for fast, safe git workflows."
 }
 EOF
 
-cat > skills/git-helpers/skills/quick-commit/SKILL.md <<'EOF'
+cat > src/skills/git-helpers/skills/quick-commit/SKILL.md <<'EOF'
 ---
 name: quick-commit
 description: Stage modified files and commit with a one-line message.
@@ -64,14 +64,14 @@ uv run scripts/generate_manifest.py
 
 Plugin name is the **category** (`git-helpers`); each child skill name is an **action** (`quick-commit`, `branch-summary`, `safe-rebase`). Slash forms: `/dgxsparklabs-skill-git-helpers:quick-commit`, etc.
 
-Canonical reference: [`skills/example/`](../skills/example/) (two skills: `notebook`, `status`).
+Canonical reference: [`src/skills/example-multi/`](../src/skills/example-multi/) (two skills: `notebook`, `status`).
 
 ### Pattern 3 — catalog bundle
 
 For grouping plugins of DIFFERENT construct types. Bundles are dep-only: no source dir, just a `catalog.toml` entry.
 
 ```bash
-cat >> catalog.toml <<'EOF'
+cat >> src/catalog.toml <<'EOF'
 
 [bundle.onboarding-pack]
 description = "Skill, hook, and rule a new contributor should install first."
@@ -87,7 +87,7 @@ uv run scripts/generate_manifest.py
 
 Plugin name: `bundle-onboarding-pack`. Install with one command — Claude auto-installs all member plugins as dependencies.
 
-Canonical reference: `[bundle.examples]` in [`catalog.toml`](../catalog.toml).
+Canonical reference: `[bundle.examples]` in [`src/catalog.toml`](../src/catalog.toml).
 
 ### Decision tree
 

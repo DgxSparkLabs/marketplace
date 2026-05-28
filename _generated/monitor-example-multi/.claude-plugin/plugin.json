@@ -1,0 +1,12 @@
+{
+  "name": "dgxsparklabs-monitor-example-multi",
+  "version": "1.0.0",
+  "author": {
+    "name": "DgxSparkLabs",
+    "url": "https://github.com/DgxSparkLabs"
+  },
+  "description": "Three reference monitors demonstrating the multi-monitor plugin layout.",
+  "experimental": {
+    "monitors": "./monitors/monitors.json"
+  }
+}

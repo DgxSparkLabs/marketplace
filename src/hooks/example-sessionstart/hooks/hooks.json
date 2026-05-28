@@ -1,0 +1,15 @@
+{
+  "description": "Single-event reference hook for SessionStart. Fires once when a Claude session begins and writes a sentinel to /tmp/hook-fired-sessionstart.log.",
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "printf '%s sessionStart fired\\n' \"$(date -u +%FT%TZ)\" >> /tmp/hook-fired-sessionstart.log"
+          }
+        ]
+      }
+    ]
+  }
+}

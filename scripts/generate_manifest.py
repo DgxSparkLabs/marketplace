@@ -58,17 +58,23 @@ def _make_marketplace_entry(
     """Build a marketplace.json plugin entry from an in-memory plugin.json dict.
 
     The marketplace entry ``name`` is the install-time identifier (what the
-    operator types after ``claude plugin install``). It MUST be unique
-    per plugin and is derived here from ``plugin_dir.name`` (set in Phase 1
-    as ``<construct.prefix>-<source-dir-name>``, e.g. ``skill-notify``).
+    operator types after ``claude plugin install``). It is unique per plugin
+    and is derived here from ``plugin_dir.name`` (set in Phase 1 as
+    ``<construct.prefix>-<source-dir-name>``, e.g. ``skill-example``).
 
-    Note this DELIBERATELY differs from ``plugin_json["name"]`` (the
-    Claude slash-namespace prefix, e.g. ``dgxsparklabs-skill``) — multiple
-    plugins of the same construct share that name to group their skills
-    under one slash prefix. See ``_base_plugin_shape`` in
-    ``scripts/constructs.py`` for the rationale and
-    ``docs/research/shared-namespace-2026-05-27/RESEARCH.md`` for the
-    empirical evidence that the two names can safely differ.
+    Post-2026-05-28 (multi-instance-capable refactor): ``plugin_json["name"]``
+    is the **plugin's slash namespace** (``<brand>-<construct.prefix>-<source-
+    dir-name>``, e.g. ``dgxsparklabs-skill-example``). It is also unique per
+    plugin, and the two fields differ only in the brand prefix.
+
+    An earlier short-lived attempt (Path A, ``d641f92``, 2026-05-27) used a
+    SHARED ``<brand>-<construct.category>`` name across all plugins of one
+    construct type, with the intent of grouping multi-instance components
+    under a single slash namespace. Path A was reverted on 2026-05-28 after
+    ``claude plugin details <shared-namespace>`` collapsed to a single first-
+    installed-wins view of components. See
+    ``docs/research/multi-instance-claude-only-2026-05-27/PLAN.md`` for the
+    revert rationale.
     """
     return {
         "name": plugin_dir.name,

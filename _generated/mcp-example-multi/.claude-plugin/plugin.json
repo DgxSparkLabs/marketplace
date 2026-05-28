@@ -1,0 +1,10 @@
+{
+  "name": "dgxsparklabs-mcp-example-multi",
+  "version": "1.0.0",
+  "author": {
+    "name": "DgxSparkLabs",
+    "url": "https://github.com/DgxSparkLabs"
+  },
+  "description": "Three reference MCP servers demonstrating the multi-server plugin layout.",
+  "mcpServers": "./mcp-config.json"
+}

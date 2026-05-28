@@ -1,0 +1,6 @@
+{
+  "name": "hook-example-sessionend",
+  "version": "1.0.0",
+  "description": "Single-event reference hook for SessionEnd. Fires once when a Claude session terminates and writes a sentinel to /tmp/hook-fired-sessionend.log.",
+  "hooks": "./hooks/hooks.json"
+}

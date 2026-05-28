@@ -59,7 +59,7 @@ from platforms import (
 )
 from utils import CATALOG, MARKETPLACE_JSON, scan_source_dir
 
-MARKETPLACE_TOML = REPO_ROOT / "MARKETPLACE.toml"
+MARKETPLACE_TOML = REPO_ROOT / "src" / "MARKETPLACE.toml"
 GENERATED_DIR = REPO_ROOT / "_generated"
 
 
@@ -89,12 +89,25 @@ class TestSourceLayout(unittest.TestCase):
                 )
 
     def test_examples_present_per_construct(self):
-        """Each construct source dir must contain an 'example' subdir."""
+        """Each construct source dir must contain at least one ``example*`` subdir.
+
+        Accepts any of: ``example/`` (legacy + rule), ``example-single/``,
+        ``example-multi/``, or per-event names like ``example-userpromptsubmit/``
+        (hooks). The construct just needs to ship at least one reference plugin
+        a contributor can copy.
+        """
         for construct_id, construct in CONSTRUCTS.items():
             with self.subTest(construct=construct_id):
-                self.assertTrue(
-                    (construct.source_directory / "example").is_dir(),
-                    f"{construct_id}: missing {construct.source_directory}/example/",
+                if not construct.source_directory.exists():
+                    self.fail(f"{construct_id}: source_directory missing")
+                example_dirs = [
+                    d for d in construct.source_directory.iterdir()
+                    if d.is_dir() and d.name.startswith("example")
+                ]
+                self.assertGreater(
+                    len(example_dirs), 0,
+                    f"{construct_id}: no example* subdir in "
+                    f"{construct.source_directory}/",
                 )
 
     def test_instance_names_kebab_case(self):
@@ -114,6 +127,35 @@ class TestSourceLayout(unittest.TestCase):
         self.assertFalse(
             (REPO_ROOT / "examples").exists(),
             "examples/ must not exist — examples live in native construct folders",
+        )
+
+    def test_per_event_hook_plugins_exist(self):
+        """src/hooks/ must contain a per-event example plugin for every
+        Claude hook event in the spec, plus example-multi.
+
+        Catches the case where someone deletes one of the per-event
+        plugins (which would silently shrink the marketplace's hook
+        coverage without breaking any other test).
+        """
+        from constructs import HookConstruct
+        hook = next(c for c in CONSTRUCTS.values() if isinstance(c, HookConstruct))
+        expected_per_event = {
+            "example-userpromptsubmit",
+            "example-pretooluse",
+            "example-posttooluse",
+            "example-notification",
+            "example-stop",
+            "example-subagentstop",
+            "example-sessionstart",
+            "example-sessionend",
+            "example-precompact",
+            "example-multi",
+        }
+        present = set(scan_source_dir(hook.source_directory))
+        missing = expected_per_event - present
+        self.assertFalse(
+            missing,
+            f"src/hooks/ is missing per-event reference plugin(s): {sorted(missing)}",
         )
 
 
@@ -213,36 +255,45 @@ class TestGeneratedPlugins(unittest.TestCase):
                     )
 
     def test_skill_plugin_layouts(self):
-        """Both example skill plugins must emit the correct ``skills`` field.
+        """For every source skill plugin, the generated plugin.json's ``skills``
+        field matches the source filesystem layout.
 
-        - ``skill-example`` is multi-skill: skills/example/skills/notebook/SKILL.md
-          + skills/example/skills/status/SKILL.md → ``skills: ["./skills/"]``.
-        - ``skill-example-single`` is solo: skills/example-single/SKILL.md at
-          plugin root → ``skills: ["./"]``.
+        - Solo (root ``SKILL.md`` at plugin root) → ``["./"]``.
+        - Multi (one or more ``skills/<x>/SKILL.md`` under ``skills/``) → ``["./skills/"]``.
 
-        The layout-detection branch in ``SkillConstruct.build_plugin_json``
-        picks between the two by inspecting source filesystem shape; this
-        test pins the externally visible contract.
+        Parameterized across every skill source plugin via
+        ``scan_source_dir`` + ``subTest`` so a third skill plugin added
+        later is automatically covered without a test edit.
         """
-        multi_pj = REPO_ROOT / "_generated" / "skill-example" / ".claude-plugin" / "plugin.json"
-        multi_data = json.loads(multi_pj.read_text(encoding="utf-8"))
-        self.assertEqual(multi_data["skills"], ["./skills/"])
-        self.assertTrue(
-            (REPO_ROOT / "_generated" / "skill-example" / "skills" / "notebook" / "SKILL.md").exists(),
-            "skill-example multi-skill layout: notebook SKILL.md missing under skills/",
-        )
-        self.assertTrue(
-            (REPO_ROOT / "_generated" / "skill-example" / "skills" / "status" / "SKILL.md").exists(),
-            "skill-example multi-skill layout: status SKILL.md missing under skills/",
-        )
-
-        single_pj = REPO_ROOT / "_generated" / "skill-example-single" / ".claude-plugin" / "plugin.json"
-        single_data = json.loads(single_pj.read_text(encoding="utf-8"))
-        self.assertEqual(single_data["skills"], ["./"])
-        self.assertTrue(
-            (REPO_ROOT / "_generated" / "skill-example-single" / "SKILL.md").exists(),
-            "skill-example-single solo layout: SKILL.md missing at plugin root",
-        )
+        skill = next(c for c in CONSTRUCTS.values() if isinstance(c, SkillConstruct))
+        for source_name in scan_source_dir(skill.source_directory):
+            src = skill.source_directory / source_name
+            gen_dir = REPO_ROOT / "_generated" / f"skill-{source_name}"
+            gen_pj = gen_dir / ".claude-plugin" / "plugin.json"
+            with self.subTest(plugin=source_name):
+                data = json.loads(gen_pj.read_text(encoding="utf-8"))
+                if (src / "SKILL.md").exists():
+                    # Solo layout: skills=["./"], one SKILL.md at plugin root
+                    self.assertEqual(
+                        data["skills"], ["./"],
+                        f"solo skill {source_name}: skills field mismatch",
+                    )
+                    self.assertTrue(
+                        (gen_dir / "SKILL.md").exists(),
+                        f"solo skill {source_name}: SKILL.md missing at plugin root",
+                    )
+                else:
+                    # Multi layout: skills=["./skills/"], at least one SKILL.md
+                    # under a skills/<x>/ subdir
+                    self.assertEqual(
+                        data["skills"], ["./skills/"],
+                        f"multi skill {source_name}: skills field mismatch",
+                    )
+                    skills_subdir = gen_dir / "skills"
+                    self.assertTrue(
+                        any(skills_subdir.rglob("SKILL.md")),
+                        f"multi skill {source_name}: no SKILL.md under skills/",
+                    )
 
     def test_mcp_server_keys_unique_across_plugins(self):
         """No two MCP plugins may share a top-level ``mcpServers`` key.
@@ -343,30 +394,31 @@ class TestPlatformMirrors(unittest.TestCase):
         )
 
     def test_gemini_skills_mirror_and_extension_manifest(self):
-        """Gemini mirror must contain skill content (at any depth) and a
-        valid ``gemini-extension.json``.
+        """Gemini mirror must contain skill content + a valid
+        ``gemini-extension.json``.
 
-        Same multi-instance unverified scope as ``test_agents_skills_mirror_exists``:
-        this test asserts the source bytes reached the mirror, not that
-        Gemini's discovery recursion finds nested ``skills/<skill>/SKILL.md``
-        under multi-skill source layouts. Per-skill mirror flattening is
-        deferred to ROADMAP #39 (gated on the Gemini QA cycle, roadmap #11).
-        See ``GeminiPlatform.emit`` NOTE comment.
+        Same solo-vs-multi split as ``test_agents_skills_mirror_exists``:
+        solo source pins exact path, multi source tolerates nesting per
+        the deferred-flattening fix (ROADMAP #39).
         """
         gemini = PLATFORMS["gemini"]
         skill = next(c for c in CONSTRUCTS.values() if isinstance(c, SkillConstruct))
         for name in scan_source_dir(skill.source_directory):
+            src = skill.source_directory / name
+            plugin_root = gemini.mirror_directory / "skills" / name
             with self.subTest(skill=name):
-                plugin_root = gemini.mirror_directory / "skills" / name
-                any_skill_md = (
-                    (plugin_root / "SKILL.md").exists()
-                    or any(plugin_root.rglob("SKILL.md"))
-                )
-                self.assertTrue(
-                    any_skill_md,
-                    f".gemini/skills/{name}/ contains no SKILL.md (neither "
-                    f"at plugin root nor in any nested skills/<skill>/ subdir)",
-                )
+                if (src / "SKILL.md").exists():
+                    self.assertTrue(
+                        (plugin_root / "SKILL.md").exists(),
+                        f"solo skill {name}: .gemini/skills/{name}/SKILL.md "
+                        "missing at expected exact path",
+                    )
+                else:
+                    self.assertTrue(
+                        any(plugin_root.rglob("SKILL.md")),
+                        f"multi skill {name}: no SKILL.md found anywhere under "
+                        f".gemini/skills/{name}/",
+                    )
         # Repo-level extension manifest (Phase 4 emission)
         manifest_path = gemini.mirror_directory / "gemini-extension.json"
         self.assertTrue(manifest_path.exists(), ".gemini/gemini-extension.json missing")
@@ -597,10 +649,11 @@ class TestPluginCount(unittest.TestCase):
     excludes RuleConstruct from the individuals count. Per-construct catch-
     all bundles were retired 2026-05-27.
 
-    Current expected total: ``10 + 1 = 11`` (was 10 before 2026-05-28).
-    The skill construct ships TWO source plugins post-2026-05-28
-    (``skill-example`` multi + ``skill-example-single`` solo) so individuals
-    grew by one. The lone catalog bundle is ``bundle-examples``.
+    Current expected total: ``26 + 1 = 27`` (was 11 before the 2026-05-28
+    construct-expansion wave). Every Claude-supported non-skill, non-rule
+    construct ships paired example-single + example-multi; hooks ship 9
+    per-event plugins + example-multi (10 total); skill ships its existing
+    two. The lone catalog bundle is ``bundle-examples``.
     """
 
     def test_marketplace_count_matches_expected_formula(self):
@@ -617,7 +670,7 @@ class TestPluginCount(unittest.TestCase):
                 for d in b.resolve_dependencies(CONSTRUCTS)
             )
         )
-        expected = individuals + catalog_bundles  # 10 + 1 = 11 (post-2026-05-28)
+        expected = individuals + catalog_bundles  # 26 + 1 = 27 (post-construct-expansion)
         self.assertEqual(
             len(manifest["plugins"]), expected,
             f"Expected {expected} plugins "
@@ -966,36 +1019,42 @@ class TestAgentsMirror(unittest.TestCase):
     """
 
     def test_agents_skills_mirror_exists(self):
-        """For every source skill plugin, at least one ``SKILL.md`` reaches
-        the ``.agents/skills/<plugin>/`` mirror.
+        """For every source skill plugin, ``SKILL.md`` reaches the
+        ``.agents/skills/<plugin>/`` mirror at the layout-appropriate path.
 
-        Two source layouts are supported per ``SkillConstruct.build_plugin_json``:
+        - Solo source (root ``SKILL.md``) → pins exact path
+          ``.agents/skills/<plugin>/SKILL.md``.
+        - Multi source (``skills/<x>/SKILL.md`` subdir) → tolerates the
+          nested path that ``shutil.copytree`` produces. Per-platform
+          discovery of the nested form on Windsurf / Cursor CLI / Devin
+          is deferred to ROADMAP #42; this test asserts only that the
+          source bytes reached the mirror.
 
-        - Solo: ``.agents/skills/<plugin>/SKILL.md`` (one file at plugin root).
-        - Multi: ``.agents/skills/<plugin>/skills/<skill>/SKILL.md``
-          (one or more files under nested ``skills/`` subdir).
-
-        This test asserts only that the source bytes reached the mirror,
-        not that downstream consumers (Windsurf / Cursor CLI / Devin) can
-        actually discover the multi-skill nested form. Per-platform
-        discovery verification for the multi-skill layout is deferred to
-        ROADMAP #42 (gated on the .agents/-reading platforms' QA cycles
-        #10/#12/#13/#14). See ``AgentsPlatform.emit`` NOTE comment.
+        Splitting solo vs multi assertions keeps the solo case as a strict
+        regression net (the canonical .agents/ spec shape) while leaving
+        the multi case tolerant pending downstream verification.
         """
         agents = next(p for p in PLATFORMS.values() if isinstance(p, AgentsPlatform))
         skill = next(c for c in CONSTRUCTS.values() if isinstance(c, SkillConstruct))
         for name in scan_source_dir(skill.source_directory):
+            src = skill.source_directory / name
+            plugin_root = agents.mirror_directory / "skills" / name
             with self.subTest(skill=name):
-                plugin_root = agents.mirror_directory / "skills" / name
-                any_skill_md = (
-                    (plugin_root / "SKILL.md").exists()
-                    or any(plugin_root.rglob("SKILL.md"))
-                )
-                self.assertTrue(
-                    any_skill_md,
-                    f".agents/skills/{name}/ contains no SKILL.md (neither "
-                    f"at plugin root nor in any nested skills/<skill>/ subdir)",
-                )
+                if (src / "SKILL.md").exists():
+                    # Solo: pin exact path (the documented .agents/ spec shape)
+                    self.assertTrue(
+                        (plugin_root / "SKILL.md").exists(),
+                        f"solo skill {name}: .agents/skills/{name}/SKILL.md missing "
+                        "at expected exact path",
+                    )
+                else:
+                    # Multi: tolerate any nested SKILL.md (mirror-flattening
+                    # fix deferred per ROADMAP #42)
+                    self.assertTrue(
+                        any(plugin_root.rglob("SKILL.md")),
+                        f"multi skill {name}: no SKILL.md found anywhere under "
+                        f".agents/skills/{name}/",
+                    )
 
     def test_agents_skills_no_claude_plugin_leak(self):
         """No .claude-plugin/ directory must appear under .agents/skills/."""

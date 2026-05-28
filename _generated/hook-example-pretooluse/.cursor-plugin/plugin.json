@@ -1,0 +1,6 @@
+{
+  "name": "hook-example-pretooluse",
+  "version": "1.0.0",
+  "description": "Single-event reference hook for PreToolUse, scoped to Write|Edit. Writes a sentinel to /tmp/hook-fired-pretooluse.log before the tool call runs.",
+  "hooks": "./hooks/hooks.json"
+}

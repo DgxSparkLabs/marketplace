@@ -1,0 +1,4 @@
+{
+  "name": "dgxsparklabs-hook-example-posttooluse",
+  "description": "Reference plugin demonstrating the PostToolUse hook event in isolation (matched on Write|Edit)."
+}

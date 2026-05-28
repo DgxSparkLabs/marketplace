@@ -1,0 +1,12 @@
+{
+  "name": "dgxsparklabs-command-example-multi",
+  "version": "1.0.0",
+  "author": {
+    "name": "DgxSparkLabs",
+    "url": "https://github.com/DgxSparkLabs"
+  },
+  "description": "Prints a formatted lab-notebook closing footer with a UTC timestamp.",
+  "commands": [
+    "./commands"
+  ]
+}

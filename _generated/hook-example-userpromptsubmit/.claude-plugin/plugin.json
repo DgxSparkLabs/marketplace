@@ -1,0 +1,9 @@
+{
+  "name": "dgxsparklabs-hook-example-userpromptsubmit",
+  "version": "1.0.0",
+  "author": {
+    "name": "DgxSparkLabs",
+    "url": "https://github.com/DgxSparkLabs"
+  },
+  "description": "Single-event reference hook for UserPromptSubmit. Injects a [Lab Notebook context: timestamp=...] line on every prompt and writes a sentinel to /tmp/hook-fired-userpromptsubmit.log."
+}

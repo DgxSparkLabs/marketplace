@@ -1,8 +1,8 @@
 # DgxSparkLabs Marketplace
 
-A multi-platform marketplace of agent skills, rules, and other constructs. Install natively on Claude Code, Codex, and Gemini with one-command GitHub fetches; import directly from GitHub into Cursor's team marketplace (IDE); or clone-and-open on Windsurf and Devin. Every construct lives in one source directory and the generator emits platform-native manifests (`.claude-plugin/`, `.codex-plugin/`, `.cursor-plugin/`) plus a shared `.agents/skills/` mirror that Windsurf, Cursor, and Devin all read natively.
+A multi-platform marketplace of agent skills, rules, and other constructs. Install natively on Claude Code, Codex, and Gemini with one-command GitHub fetches; import directly from GitHub into Cursor's team marketplace (IDE); or clone-and-open on Windsurf and Devin. Operator-authored source content lives under `src/`; the generator (`scripts/`) emits platform-native manifests (`.claude-plugin/`, `.codex-plugin/`, `.cursor-plugin/`) plus a shared `.agents/skills/` mirror that Windsurf, Cursor, and Devin all read natively.
 
-> **2026-05-28 minimal-stable-state.** The marketplace currently ships **10 reference plugins (one per Claude-supported construct type, plus a second skill example) + 1 cross-construct `bundle-examples` = 11 plugin entries**. The 26 production skills and 21 production rules that previously shipped have been archived under `docs/archive/skills-pre-stable-2026-05-26/` and `docs/archive/rules-pre-stable-2026-05-26/`. Per-construct catch-all bundles (`bundle-skill-all`, …) were retired 2026-05-27 because they doubled the marketplace listing without curation value. Real content is re-added one plugin at a time after each is verified across every platform. See `CHANGELOG.md` for the full transition note.
+> **2026-05-28 expanded reference set.** The marketplace currently ships **27 plugin entries**: 26 Claude-supported individuals (each construct demonstrates paired `example-single` + `example-multi` layouts; hooks expand further to nine per-event references plus an all-events `example-multi`) plus the `bundle-examples` catalog bundle. One additional `rule-example` is emitted for Cursor/Windsurf/Codex (not a Claude plugin component per F8). The 26 production skills and 21 production rules that previously shipped were archived under `docs/archive/skills-pre-stable-2026-05-26/` and `docs/archive/rules-pre-stable-2026-05-26/` and are re-added one at a time after per-platform verification. See `CHANGELOG.md` for the full transition note.
 
 ## Table of Contents
 
@@ -49,8 +49,8 @@ claude plugin install bundle-examples@dgxsparklabs-marketplace --scope project
 Or install one at a time. Install + enable are SEPARATE steps:
 
 ```bash
-claude plugin install skill-example@dgxsparklabs-marketplace --scope project
-claude plugin enable  skill-example@dgxsparklabs-marketplace
+claude plugin install skill-example-multi@dgxsparklabs-marketplace --scope project
+claude plugin enable  skill-example-multi@dgxsparklabs-marketplace
 ```
 
 If you skip enable, Claude says `Plugin not found in any editable settings scope.`
@@ -69,19 +69,20 @@ claude plugin list --json --available \
        '[.. | objects | select(.marketplaceName? == $mp)]'
 ```
 
-Invoke. Every plugin's slash form follows `/dgxsparklabs-<construct>-<plugin>:<component>`. The 11 plugin entries currently ship:
+Invoke. Every plugin's slash form follows `/dgxsparklabs-<construct>-<plugin>:<component>`. A representative sample of the 27 entries the marketplace ships:
 
 | Installed plugin | Slash form | What it does |
 |---|---|---|
-| `skill-example` | `/dgxsparklabs-skill-example:notebook` | Today's lab-notebook header |
-| `skill-example` | `/dgxsparklabs-skill-example:status`   | Disk usage + UTC timestamp |
+| `skill-example-multi` | `/dgxsparklabs-skill-example-multi:notebook` | Today's lab-notebook header |
+| `skill-example-multi` | `/dgxsparklabs-skill-example-multi:status`   | Disk usage + UTC timestamp |
 | `skill-example-single` | `/dgxsparklabs-skill-example-single:hello` | Minimal greeting |
-| `command-example` | `/dgxsparklabs-command-example:hello` | Formatted lab-notebook entry |
-| `agent-example` | `/agents` → pick `dgxsparklabs-agent-example:notebook-reviewer` | Sub-agent: skeptical peer review |
-| `output-style-example` | `/output-style Lab Notebook Voice` | Switch reply voice |
-| `theme-example` | `/theme Lab Notebook` | Switch terminal colors |
+| `command-example-multi` | `/dgxsparklabs-command-example-multi:hello` | Formatted lab-notebook entry |
+| `agent-example-multi` | `/agents` → pick `dgxsparklabs-agent-example-multi:notebook-reviewer` | Sub-agent: skeptical peer review |
+| `hook-example-userpromptsubmit` | (passive — fires per prompt) | Per-event hook reference; sentinel at `/tmp/hook-fired-userpromptsubmit.log` |
+| `output-style-example-multi` | `/output-style Lab Notebook Voice` | Switch reply voice |
+| `theme-example-multi` | `/theme Lab Notebook` | Switch terminal colors |
 
-Skills have a flat-form shortcut: just `/notebook`, `/status`, or `/hello` — Claude resolves them through the same namespace. Use the qualified form when autocomplete is ambiguous.
+For the full 27-plugin inventory plus the single-vs-multi distinction per construct, see `docs/CONSTRUCT_TYPES.md`. Skills have a flat-form shortcut (just `/notebook`, `/status`, `/hello`) — Claude resolves them through the same namespace; use the qualified form when autocomplete is ambiguous.
 
 ### Codex
 
@@ -186,22 +187,22 @@ The CLI supports all `.agents/` constructs (skill, rule, agent, hook, mcp, comma
 
 ## Construct Types Available
 
-Every construct type currently ships exactly one reference plugin (the `example/` source dir). Production skills and rules were archived 2026-05-26 — see the minimal-stable-state note above and `CHANGELOG.md`.
+Every Claude-supported construct ships paired `example-single` + `example-multi` reference plugins so contributors can study both layouts. Hooks expand further to nine per-event reference plugins plus an all-events `example-multi`. Production skills and rules were archived 2026-05-26 — see the expanded-reference-set note above and `CHANGELOG.md`.
 
-| Type | Prefix | Description | Count |
+| Type | Prefix | Description | Reference plugins |
 |------|--------|-------------|-------|
-| [skill](skills/) | `skill-` | Slash-command invoked on demand | 2 (`example` multi-skill, `example-single` solo) |
-| [rule](rules/) | `rule-` | Always-on context loaded every session | 1 (example) |
-| [command](commands/) | `command-` | Structured agent command definitions | 1 (example) |
-| [agent](agents/) | `agent-` | Autonomous agent configuration | 1 (example) |
-| [hook](hooks/) | `hook-` | Event-triggered automation | 1 (example) |
-| [mcp](mcp-servers/) | `mcp-` | Model Context Protocol server config | 1 (example) |
-| [lsp](lsp-servers/) | `lsp-` | Language Server Protocol integration | 1 (example) |
-| [monitor](monitors/) | `monitor-` | Continuous monitoring setup | 1 (example) |
-| [output-style](output-styles/) | `output-style-` | Output formatting rules | 1 (example) |
-| [theme](themes/) | `theme-` | Visual theme configuration | 1 (example) |
+| [skill](src/skills/) | `skill-` | Slash-command invoked on demand | `example-single` (solo: root `SKILL.md`) + `example-multi` (multi: `skills/<x>/SKILL.md`) |
+| [rule](src/rules/) | `rule-` | Always-on context loaded every session | `example` (one only — rule is not a Claude plugin component) |
+| [command](src/commands/) | `command-` | Slash command definitions | `example-single` (1 command) + `example-multi` (3 commands) |
+| [agent](src/agents/) | `agent-` | Sub-agent personas | `example-single` (1 agent) + `example-multi` (3 agents) |
+| [hook](src/hooks/) | `hook-` | Event-triggered automation | 9 per-event (`example-userpromptsubmit`, `example-pretooluse`, …) + `example-multi` (all events) |
+| [mcp](src/mcp-servers/) | `mcp-` | Model Context Protocol servers | `example-single` (1 server) + `example-multi` (3 servers) |
+| [lsp](src/lsp-servers/) | `lsp-` | Language Server Protocol integrations | `example-single` (1 LSP) + `example-multi` (3 LSPs) |
+| [monitor](src/monitors/) | `monitor-` | Session-start observation hooks | `example-single` (1 monitor) + `example-multi` (3 monitors) |
+| [output-style](src/output-styles/) | `output-style-` | Reply-voice configurations | `example-single` (1 style) + `example-multi` (3 styles) |
+| [theme](src/themes/) | `theme-` | Terminal color themes | `example-single` (1 theme) + `example-multi` (3 themes) |
 
-To add a new construct of any type, see [`docs/ADDING_A_CONSTRUCT.md`](docs/ADDING_A_CONSTRUCT.md).
+The single-vs-multi distinction is **layout-driven only for skill** (root `SKILL.md` vs `skills/<x>/SKILL.md`). For every other construct the two example plugins look structurally identical and differ only in content cardinality. To add a new plugin, see [`docs/ADDING_A_CONSTRUCT.md`](docs/ADDING_A_CONSTRUCT.md).
 
 ---
 

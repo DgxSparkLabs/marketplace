@@ -1,0 +1,9 @@
+{
+  "name": "dgxsparklabs-hook-example-sessionstart",
+  "version": "1.0.0",
+  "author": {
+    "name": "DgxSparkLabs",
+    "url": "https://github.com/DgxSparkLabs"
+  },
+  "description": "Single-event reference hook for SessionStart. Fires once when a Claude session begins and writes a sentinel to /tmp/hook-fired-sessionstart.log."
+}

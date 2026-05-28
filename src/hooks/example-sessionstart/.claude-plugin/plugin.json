@@ -1,0 +1,4 @@
+{
+  "name": "dgxsparklabs-hook-example-sessionstart",
+  "description": "Reference plugin demonstrating the SessionStart hook event in isolation."
+}

@@ -1,0 +1,4 @@
+{
+  "name": "dgxsparklabs-hook-example-userpromptsubmit",
+  "description": "Reference plugin demonstrating the UserPromptSubmit hook event in isolation."
+}

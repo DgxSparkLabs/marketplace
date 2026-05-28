@@ -27,6 +27,7 @@ from typing import Protocol, runtime_checkable
 from utils import (
     REPO_ROOT,
     _frontmatter,
+    _is_candidate_subdir,
     _load_plugin_json,
     _marketplace_author,
     _marketplace_name,
@@ -111,7 +112,7 @@ class SkillConstruct:
     # _read_source_plugin_description), since there's no single SKILL.md to
     # pull it from.
     prefix = "skill"
-    source_directory = REPO_ROOT / "skills"
+    source_directory = REPO_ROOT / "src" / "skills"
     category = "skill"
 
     def build_plugin_json(self, name: str) -> dict:
@@ -121,10 +122,14 @@ class SkillConstruct:
         skills_subdir = src / "skills"
 
         has_root = root_skill.exists()
+        # ``_is_candidate_subdir`` filters out junk dirs (``__pycache__``,
+        # hidden dirs) so a stray ``skills/__pycache__/SKILL.md`` doesn't
+        # falsely flip ``has_subdir=True`` and route a solo plugin into
+        # multi-layout emission.
         has_subdir = skills_subdir.is_dir() and any(
             (d / "SKILL.md").exists()
             for d in skills_subdir.iterdir()
-            if d.is_dir()
+            if _is_candidate_subdir(d)
         )
 
         if has_root and has_subdir:
@@ -141,13 +146,24 @@ class SkillConstruct:
                 f"(multi-skill layout). Create one or the other."
             )
 
-        # Description comes from the plugin-level .claude-plugin/plugin.json
-        # — operator-authored, separate from any per-skill SKILL.md
-        # frontmatter (which is the slash-autocomplete tooltip, a per-component
-        # concern). One source plugin can ship multiple SKILL.md files
-        # (multi-skill layout); the marketplace listing needs a single
-        # one-liner that scopes to the plugin, not any one skill.
-        base["description"] = _read_source_plugin_description(src, name)
+        # Solo-layout description fallback chain (most specific first):
+        #   1. SKILL.md frontmatter ``description:`` — the per-skill tooltip
+        #      doubles as a sensible plugin description when there's only one
+        #      skill in the plugin.
+        #   2. ``<src>/.claude-plugin/plugin.json`` ``description`` — operator-
+        #      authored plugin-level one-liner (separate concern but the right
+        #      backstop when frontmatter is absent).
+        #   3. Dir name — last resort, handled inside the helper.
+        # Multi-layout has no single SKILL.md, so it goes straight to the
+        # plugin-level description (which is the right shape for marketplace
+        # listing when the plugin ships multiple skills).
+        if has_root:
+            fm = _frontmatter(root_skill)
+            base["description"] = (
+                fm.get("description") or _read_source_plugin_description(src, name)
+            )
+        else:
+            base["description"] = _read_source_plugin_description(src, name)
         base["skills"] = ["./"] if has_root else ["./skills/"]
         base["keywords"] = ["skill", name]
         return base
@@ -182,7 +198,7 @@ class RuleConstruct:
     """
 
     prefix = "rule"
-    source_directory = REPO_ROOT / "rules"
+    source_directory = REPO_ROOT / "src" / "rules"
     category = "rule"
 
     def build_plugin_json(self, name: str) -> dict:
@@ -219,7 +235,7 @@ class RuleConstruct:
 
 class CommandConstruct:
     prefix = "command"
-    source_directory = REPO_ROOT / "commands"
+    source_directory = REPO_ROOT / "src" / "commands"
     category = "command"
 
     def build_plugin_json(self, name: str) -> dict:
@@ -248,7 +264,7 @@ class CommandConstruct:
 
 class AgentConstruct:
     prefix = "agent"
-    source_directory = REPO_ROOT / "agents"
+    source_directory = REPO_ROOT / "src" / "agents"
     category = "agent"
 
     def build_plugin_json(self, name: str) -> dict:
@@ -278,7 +294,7 @@ class AgentConstruct:
 
 class HookConstruct:
     prefix = "hook"
-    source_directory = REPO_ROOT / "hooks"
+    source_directory = REPO_ROOT / "src" / "hooks"
     category = "hook"
 
     def build_plugin_json(self, name: str) -> dict:
@@ -306,7 +322,7 @@ class HookConstruct:
 
 class MCPConstruct:
     prefix = "mcp"
-    source_directory = REPO_ROOT / "mcp-servers"
+    source_directory = REPO_ROOT / "src" / "mcp-servers"
     category = "mcp"
 
     def build_plugin_json(self, name: str) -> dict:
@@ -314,7 +330,9 @@ class MCPConstruct:
         source_pj = _load_plugin_json(
             self.source_directory / name / ".claude-plugin" / "plugin.json"
         )
-        base["description"] = source_pj["description"]
+        base["description"] = _read_source_plugin_description(
+            self.source_directory / name, name
+        )
         # mcpServers may be a path string or inline dict; pass through as-is
         base["mcpServers"] = source_pj["mcpServers"]
         return base
@@ -333,7 +351,7 @@ class MCPConstruct:
 
 class LSPConstruct:
     prefix = "lsp"
-    source_directory = REPO_ROOT / "lsp-servers"
+    source_directory = REPO_ROOT / "src" / "lsp-servers"
     category = "lsp"
 
     def build_plugin_json(self, name: str) -> dict:
@@ -341,7 +359,9 @@ class LSPConstruct:
         source_pj = _load_plugin_json(
             self.source_directory / name / ".claude-plugin" / "plugin.json"
         )
-        base["description"] = source_pj["description"]
+        base["description"] = _read_source_plugin_description(
+            self.source_directory / name, name
+        )
         base["lspServers"] = source_pj["lspServers"]
         return base
 
@@ -357,7 +377,7 @@ class LSPConstruct:
 
 class MonitorConstruct:
     prefix = "monitor"
-    source_directory = REPO_ROOT / "monitors"
+    source_directory = REPO_ROOT / "src" / "monitors"
     category = "monitor"
 
     def build_plugin_json(self, name: str) -> dict:
@@ -365,7 +385,9 @@ class MonitorConstruct:
         source_pj = _load_plugin_json(
             self.source_directory / name / ".claude-plugin" / "plugin.json"
         )
-        base["description"] = source_pj["description"]
+        base["description"] = _read_source_plugin_description(
+            self.source_directory / name, name
+        )
         base.setdefault("experimental", {})["monitors"] = (
             source_pj.get("experimental", {}).get("monitors", "./monitors/monitors.json")
         )
@@ -383,7 +405,7 @@ class MonitorConstruct:
 
 class OutputStyleConstruct:
     prefix = "output-style"
-    source_directory = REPO_ROOT / "output-styles"
+    source_directory = REPO_ROOT / "src" / "output-styles"
     category = "output-style"
 
     def build_plugin_json(self, name: str) -> dict:
@@ -391,7 +413,9 @@ class OutputStyleConstruct:
         source_pj = _load_plugin_json(
             self.source_directory / name / ".claude-plugin" / "plugin.json"
         )
-        base["description"] = source_pj["description"]
+        base["description"] = _read_source_plugin_description(
+            self.source_directory / name, name
+        )
         base["outputStyles"] = source_pj.get("outputStyles", "./output-styles")
         return base
 
@@ -407,7 +431,7 @@ class OutputStyleConstruct:
 
 class ThemeConstruct:
     prefix = "theme"
-    source_directory = REPO_ROOT / "themes"
+    source_directory = REPO_ROOT / "src" / "themes"
     category = "theme"
 
     def build_plugin_json(self, name: str) -> dict:
@@ -415,7 +439,9 @@ class ThemeConstruct:
         source_pj = _load_plugin_json(
             self.source_directory / name / ".claude-plugin" / "plugin.json"
         )
-        base["description"] = source_pj["description"]
+        base["description"] = _read_source_plugin_description(
+            self.source_directory / name, name
+        )
         base.setdefault("experimental", {})["themes"] = (
             source_pj.get("experimental", {}).get("themes", "./themes")
         )

@@ -1,6 +1,0 @@
-{
-  "name": "skill-example",
-  "version": "1.0.0",
-  "description": "Two reference skills demonstrating the multi-skill plugin layout.",
-  "skills": "./"
-}

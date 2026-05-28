@@ -1,0 +1,10 @@
+{
+  "name": "dgxsparklabs-lsp-example-multi",
+  "version": "1.0.0",
+  "author": {
+    "name": "DgxSparkLabs",
+    "url": "https://github.com/DgxSparkLabs"
+  },
+  "description": "Three reference LSP servers demonstrating the multi-server plugin layout (illustrative; binaries not bundled).",
+  "lspServers": "./lsp-config.json"
+}

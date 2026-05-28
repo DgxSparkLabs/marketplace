@@ -1,0 +1,15 @@
+{
+  "description": "Single-event reference hook for SubagentStop. Fires when a sub-agent's turn ends and writes a sentinel to /tmp/hook-fired-subagentstop.log.",
+  "hooks": {
+    "SubagentStop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "printf '%s subagentStop fired\\n' \"$(date -u +%FT%TZ)\" >> /tmp/hook-fired-subagentstop.log"
+          }
+        ]
+      }
+    ]
+  }
+}

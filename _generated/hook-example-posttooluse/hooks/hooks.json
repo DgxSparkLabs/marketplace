@@ -1,0 +1,16 @@
+{
+  "description": "Single-event reference hook for PostToolUse, scoped to Write|Edit. Writes a sentinel to /tmp/hook-fired-posttooluse.log after the tool call completes.",
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "printf '%s postToolUse %s\\n' \"$(date -u +%FT%TZ)\" \"${CLAUDE_TOOL_NAME:-unknown}\" >> /tmp/hook-fired-posttooluse.log"
+          }
+        ]
+      }
+    ]
+  }
+}

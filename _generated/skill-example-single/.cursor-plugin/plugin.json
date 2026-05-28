@@ -1,6 +1,6 @@
 {
   "name": "skill-example-single",
   "version": "1.0.0",
-  "description": "One reference skill demonstrating the single-skill plugin layout.",
+  "description": "Prints a minimal greeting plus a UTC timestamp. The smallest possible single-skill reference plugin.",
   "skills": "./"
 }

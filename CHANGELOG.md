@@ -1,5 +1,45 @@
 # Changelog
 
+## 2026-05-28 — Symmetric single/multi example set + `src/` reorganization + 15 review-finding fixes
+
+Three changes shipped in one commit on PR #10:
+
+1. **Every Claude-supported construct now demonstrates both layouts** via paired `example-single/` + `example-multi/` source plugins. Skills already had this from the prior commit; this commit extends the pattern to command, agent, mcp, lsp, monitor, output-style, and theme. Hooks expanded to nine per-event example plugins (`example-userpromptsubmit/`, `example-pretooluse/`, `example-posttooluse/`, `example-notification/`, `example-stop/`, `example-subagentstop/`, `example-sessionstart/`, `example-sessionend/`, `example-precompact/`) plus one `example-multi/` that covers all nine events in a single `hooks.json`. `skills/example/` was renamed to `skills/example-multi/` for naming symmetry. Rule stays at one example dir (not a Claude plugin component per F8).
+
+2. **Moved all operator-authored source content into `src/`.** Ten construct source dirs (`skills/`, `rules/`, `commands/`, …) plus the two operator-authored TOMLs (`MARKETPLACE.toml`, `catalog.toml`) are now under `src/`. Repo root is now generator code (`scripts/`) + tests (`tests/`) + docs (`docs/`) + operational metadata (`README.md`, `CHANGELOG.md`, `HANDOFF.md`, etc.) only. Used `git mv` so `git log --follow` traces history through the move. The 10 `source_directory = REPO_ROOT / "<dir>"` lines in `scripts/constructs.py` and the 2 path constants in `scripts/utils.py` (`MARKETPLACE_TOML`, `CATALOG`) were updated to point at `src/`.
+
+3. **Fixed all 15 code-review findings** from the audit of commit `649b398`:
+   - **#1**: `.github/workflows/compat-agents-cli.yml` assertion path updated to `skill-example-single` (cleanest solo-layout assertion shape).
+   - **#2 + #3**: `CodexPlatform.build_plugin_json` + `CursorPlatform.build_plugin_json` now derive the `skills` pointer from `construct.build_plugin_json(name)["skills"][0]` instead of hardcoding `"./skills/"` or `"./"`. The per-platform manifests now match the source layout for both solo and multi-skill plugins.
+   - **#4**: `docs/TEST_YOURSELF.md` Path A slash forms updated to the post-revert unique-per-plugin shape.
+   - **#5**: SkillConstruct solo-layout description fallback restored — `SKILL.md` frontmatter description is tried first, then `<src>/.claude-plugin/plugin.json`, then dir name.
+   - **#6**: `_read_source_plugin_description` helper applied symmetrically across MCPConstruct, LSPConstruct, MonitorConstruct, OutputStyleConstruct, ThemeConstruct.
+   - **#7**: New `_is_candidate_subdir` helper filters out junk dirs (`__pycache__`, hidden dirs) so `has_subdir` in SkillConstruct doesn't false-positive.
+   - **#8**: `_read_source_plugin_description` returns `data.get("description") or fallback` — handles explicit `null` + missing key + empty string uniformly.
+   - **#9**: `_read_source_plugin_description` catches `(json.JSONDecodeError, UnicodeDecodeError, OSError)` and reads with `utf-8-sig` to tolerate UTF-8 BOM.
+   - **#10**: `_make_marketplace_entry` docstring rewritten under the post-revert model.
+   - **#11**: `tests/fixtures/claude-stub/README.md` grep target updated to the new slash forms.
+   - **#12 (DEFERRED, NOTE comments stay)**: `.agents/`/`.gemini/` mirror nesting is still on ROADMAP #42/#39. The debt now affects more multi-skill plugins; per-platform mirror flattening lands when each QA cycle runs.
+   - **#13**: `_description_from_construct` narrowed the catch from bare `except Exception` to `(ValueError, KeyError, FileNotFoundError, json.JSONDecodeError)`.
+   - **#14**: `test_agents_skills_mirror_exists` + `test_gemini_skills_mirror_and_extension_manifest` split into per-plugin assertions — solo plugins pin exact path; multi plugins use `rglob` tolerance.
+   - **#15**: `test_skill_plugin_layouts` parameterized via `scan_source_dir` + `subTest` so it adapts to any new skill plugin automatically.
+
+### Marketplace plugin count: 27 (was 11)
+
+- 26 Claude-supported individuals: 2 × 8 (skill, command, agent, mcp, lsp, monitor, output-style, theme) + 10 (hooks: 9 per-event + 1 example-multi) = 26.
+- 1 catalog bundle (`bundle-examples`, now with 26 members).
+- 1 rule example (not in Claude marketplace per F8; remains for non-Claude platforms).
+
+### What's verified
+
+Claude path for the existing solo+multi skill plugins continues to work end-to-end through the hermetic stub. `claude plugin details dgxsparklabs-skill-example-multi` lists both `notebook` and `status`. `claude plugin details dgxsparklabs-skill-example-single` lists `hello`. 80 marketplace tests + 21 schema-fitness tests pass.
+
+### What's paused
+
+Per-platform empirical verification on Cursor/Codex/Gemini/Windsurf/Devin/.agents stays deferred per ROADMAP #9-#14 and #37-#42. The mirror-nesting fix (ROADMAP #42/#39) lands per-platform when the matching QA cycle runs.
+
+---
+
 ## 2026-05-28 — Skills: multi-instance-capable plugin layout (Claude-only); revert Path A; pause cross-platform verification
 
 Two changes shipped in one commit on PR #10:

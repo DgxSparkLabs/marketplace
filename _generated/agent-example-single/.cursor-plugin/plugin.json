@@ -1,0 +1,6 @@
+{
+  "name": "agent-example-single",
+  "version": "1.0.0",
+  "description": "Reviews a lab notebook entry as a skeptical peer reviewer. Use when the user has drafted a notebook entry and wants a critical second opinion before publishing.",
+  "agents": "./agents/"
+}

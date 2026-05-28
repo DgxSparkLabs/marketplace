@@ -1,21 +1,37 @@
 {
   "name": "bundle-examples",
   "version": "1.0.0",
-  "description": "Reference examples \u2014 install to study every construct type",
+  "description": "Reference examples \u2014 install to study every construct type. Each Claude-supported construct ships both example-single and example-multi (hooks ship nine per-event plus example-multi).",
   "author": {
     "name": "DgxSparkLabs",
     "url": "https://github.com/DgxSparkLabs"
   },
   "dependencies": [
-    "skill-example",
     "skill-example-single",
-    "command-example",
-    "agent-example",
-    "hook-example",
-    "mcp-example",
-    "lsp-example",
-    "monitor-example",
-    "output-style-example",
-    "theme-example"
+    "skill-example-multi",
+    "command-example-single",
+    "command-example-multi",
+    "agent-example-single",
+    "agent-example-multi",
+    "mcp-example-single",
+    "mcp-example-multi",
+    "lsp-example-single",
+    "lsp-example-multi",
+    "monitor-example-single",
+    "monitor-example-multi",
+    "output-style-example-single",
+    "output-style-example-multi",
+    "theme-example-single",
+    "theme-example-multi",
+    "hook-example-userpromptsubmit",
+    "hook-example-pretooluse",
+    "hook-example-posttooluse",
+    "hook-example-notification",
+    "hook-example-stop",
+    "hook-example-subagentstop",
+    "hook-example-sessionstart",
+    "hook-example-sessionend",
+    "hook-example-precompact",
+    "hook-example-multi"
   ]
 }

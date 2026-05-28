@@ -1,0 +1,16 @@
+{
+  "description": "Single-event reference hook for PreToolUse, scoped to Write|Edit. Writes a sentinel to /tmp/hook-fired-pretooluse.log before the tool call runs.",
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "printf '%s preToolUse %s\\n' \"$(date -u +%FT%TZ)\" \"${CLAUDE_TOOL_NAME:-unknown}\" >> /tmp/hook-fired-pretooluse.log"
+          }
+        ]
+      }
+    ]
+  }
+}

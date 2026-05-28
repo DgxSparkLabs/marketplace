@@ -26,6 +26,7 @@ Registry:
 
 from __future__ import annotations
 
+import json
 import shutil
 from pathlib import Path
 from typing import Protocol
@@ -90,10 +91,18 @@ def _description_from_construct(construct: Construct, name: str) -> str:
 
     Tries the construct's own build_plugin_json (which already does this
     logic per-type) and falls back to the bare name.
+
+    Narrows the catch to the failure modes the helper is meant to absorb:
+    ``ValueError`` from SkillConstruct's layout validator, ``KeyError`` from
+    a source plugin.json missing a required field, ``FileNotFoundError`` from
+    a missing source dir, and ``json.JSONDecodeError`` from a corrupt source
+    file. Anything else (e.g. an ``AttributeError`` from a regressed
+    construct class) propagates so the bug surfaces instead of degrading
+    silently to the bare dir name.
     """
     try:
         return construct.build_plugin_json(name).get("description", name)
-    except Exception:
+    except (ValueError, KeyError, FileNotFoundError, json.JSONDecodeError):
         return name
 
 
@@ -196,13 +205,11 @@ class CodexPlatform:
             "description": _description_from_construct(construct, name),
         }
         if isinstance(construct, SkillConstruct):
-            # NOTE: multi-instance source layout (skills/<skill>/SKILL.md under
-            # plugin) is UNVERIFIED on Codex. The "./skills/" path here is
-            # hardcoded — it assumes the multi-skill layout, but solo-layout
-            # plugins (SKILL.md at plugin root) need "./". Empirical
-            # verification deferred to ROADMAP #38 (gated on the Codex QA cycle,
-            # roadmap #10).
-            manifest["skills"] = "./skills/"
+            # Derive the skills pointer from the construct itself so the
+            # Codex manifest matches the source layout (solo → "./",
+            # multi → "./skills/"). Replaces the prior hardcoded
+            # "./skills/" which was wrong for solo-layout plugins.
+            manifest["skills"] = construct.build_plugin_json(name)["skills"][0]
         elif isinstance(construct, MCPConstruct):
             manifest["mcpServers"] = "./mcp.json"
         elif isinstance(construct, HookConstruct):
@@ -398,13 +405,11 @@ class CursorPlatform:
             "description": _description_from_construct(construct, name),
         }
         if isinstance(construct, SkillConstruct):
-            # NOTE: multi-instance source layout (skills/<skill>/SKILL.md
-            # under plugin) is UNVERIFIED on Cursor. The "./" path here
-            # assumes the solo layout (SKILL.md at plugin root); multi-skill
-            # plugins need "./skills/", which would require reading the
-            # source plugin.json to pick the right value. Fix deferred to
-            # ROADMAP #37 (gated on the Cursor IDE QA cycle, roadmap #9).
-            manifest["skills"] = "./"  # SKILL.md is at plugin root
+            # Derive the skills pointer from the construct itself so the
+            # Cursor manifest matches the source layout (solo → "./",
+            # multi → "./skills/"). Replaces the prior hardcoded "./" which
+            # was wrong for multi-skill plugins.
+            manifest["skills"] = construct.build_plugin_json(name)["skills"][0]
         elif isinstance(construct, AgentConstruct):
             manifest["agents"] = "./agents/"
         elif isinstance(construct, CommandConstruct):

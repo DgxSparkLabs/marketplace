@@ -1,0 +1,15 @@
+{
+  "description": "Single-event reference hook for SessionEnd. Fires once when a Claude session terminates and writes a sentinel to /tmp/hook-fired-sessionend.log.",
+  "hooks": {
+    "SessionEnd": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "printf '%s sessionEnd fired\\n' \"$(date -u +%FT%TZ)\" >> /tmp/hook-fired-sessionend.log"
+          }
+        ]
+      }
+    ]
+  }
+}

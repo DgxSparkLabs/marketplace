@@ -24,10 +24,11 @@ from functools import cache
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
+SRC = REPO_ROOT / "src"
 GENERATED = REPO_ROOT / "_generated"
 MARKETPLACE_JSON = REPO_ROOT / ".claude-plugin" / "marketplace.json"
-CATALOG = REPO_ROOT / "catalog.toml"
-MARKETPLACE_TOML = REPO_ROOT / "MARKETPLACE.toml"
+CATALOG = SRC / "catalog.toml"
+MARKETPLACE_TOML = SRC / "MARKETPLACE.toml"
 
 
 def scan_source_dir(source_dir: Path) -> list[str]:
@@ -47,6 +48,24 @@ def _load_plugin_json(path: Path) -> dict:
     return json.loads(path.read_text(encoding="utf-8"))
 
 
+def _is_candidate_subdir(d: Path) -> bool:
+    """True if ``d`` is a directory that looks like a real plugin source subdir.
+
+    Filters out tool-generated junk: hidden dirs (``.git``, ``.DS_Store``-
+    adjacent IDE artifacts) and ``__pycache__``. Used by SkillConstruct's
+    layout-detection branch to prevent ``skills/__pycache__/SKILL.md``
+    from flipping ``has_subdir=True`` and routing a solo plugin into
+    multi-layout emission.
+    """
+    if not d.is_dir():
+        return False
+    if d.name.startswith("."):
+        return False
+    if d.name == "__pycache__":
+        return False
+    return True
+
+
 def _read_source_plugin_description(src_plugin_dir: Path, fallback: str) -> str:
     """Read the plugin-level description from ``<src>/.claude-plugin/plugin.json``.
 
@@ -56,17 +75,22 @@ def _read_source_plugin_description(src_plugin_dir: Path, fallback: str) -> str:
     multi-skill layout have no single SKILL.md to pull a description from,
     so the operator authors it at the plugin level.
 
-    Falls back to ``fallback`` (typically the plugin directory name) if the
-    source plugin.json is missing, unparseable, or has no ``description``.
+    Falls back to ``fallback`` (typically the plugin directory name) when:
+      - the source plugin.json is missing
+      - the file is unparseable (json / unicode / OS error)
+      - the ``description`` field is missing, ``null``, or empty string
+
+    Reads with ``utf-8-sig`` so a UTF-8 BOM written by a Windows editor
+    doesn't crash the generator.
     """
     src_pj_path = src_plugin_dir / ".claude-plugin" / "plugin.json"
     if not src_pj_path.exists():
         return fallback
     try:
-        data = json.loads(src_pj_path.read_text(encoding="utf-8"))
-    except json.JSONDecodeError:
+        data = json.loads(src_pj_path.read_text(encoding="utf-8-sig"))
+    except (json.JSONDecodeError, UnicodeDecodeError, OSError):
         return fallback
-    return data.get("description", fallback)
+    return data.get("description") or fallback
 
 
 def _frontmatter(path: Path) -> dict:
