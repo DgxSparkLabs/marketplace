@@ -23,10 +23,11 @@
 - `uv run tasks.py verify` → drift-clean + all four suites + `claude plugin validate ./` "Validation passed".
 - Fresh `git clone` reproduces byte-identical (`--check` clean) and runs all four suites green.
 - North-star drop-in proven: `new_construct.py skill <name>` → regenerate → entry appears in `marketplace.json` + `docs/INVENTORY.md` with NO `catalog.toml` edit.
+- **Branch pushed; all 14 CI workflows green** on the tip (incl. all 9 per-construct compat workflows after fixing their post-reorg staleness — see `PITFALLS.md`). Validated locally with `act` first.
 
 ### Owner's remaining manual steps (not done autonomously)
 
-- Push the branch and open the PR(s); the plan's per-phase split maps to the 9 commits `20bd0b5..1cbaaa3` on `chore/housekeeping-and-roadmap`.
+- The branch is pushed and its PR is green end-to-end — review and merge to `main`.
 - After merge, tag `v1.0.0` (see `RELEASING.md`).
 - Optional: set the `CODEOWNERS` handle; promote `compat-headless-claude.yml` to required after an observed green run.
 
