@@ -1,24 +1,18 @@
 {
   "markdown": {
-    "command": "marksman",
-    "args": ["server"],
+    "command": "uv",
+    "args": ["run", "--no-project", "${CLAUDE_PLUGIN_ROOT}/example_lsp.py", "--lang", "markdown", "--always-error"],
     "extensionToLanguage": {
-      ".md": "markdown"
+      ".md": "markdown",
+      ".markdown": "markdown"
     }
   },
   "python": {
-    "command": "pyright-langserver",
-    "args": ["--stdio"],
+    "command": "uv",
+    "args": ["run", "--no-project", "${CLAUDE_PLUGIN_ROOT}/example_lsp.py", "--lang", "python", "--always-error"],
     "extensionToLanguage": {
       ".py": "python",
       ".pyi": "python"
-    }
-  },
-  "rust": {
-    "command": "rust-analyzer",
-    "args": [],
-    "extensionToLanguage": {
-      ".rs": "rust"
     }
   }
 }

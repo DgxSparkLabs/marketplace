@@ -780,7 +780,7 @@ Refs: RECOMMENDATION.md "CI assertion changes implied"
 **Detailed change description**:
 
 This is a mechanical sweep — every change either deletes a stale claim (per [[RECOMMENDATION]] "Contradictions with first report" table) or adds a one-line mention of a new emission. The implementer should:
-1. Read [[RECOMMENDATION]] §"Doc updates required" once as a checklist.
+1. Read [[RECOMMENDATION]] section "Doc updates required" once as a checklist.
 2. Apply each row.
 3. Run `uv run scripts/generate_manifest.py --check` to confirm no source-of-truth drift was introduced by the doc edits (shouldn't be possible, but cheap to check).
 
@@ -917,7 +917,7 @@ See Unit 8 — adding cursor/gemini/codex/windsurf jobs to `compat-agent.yml`, `
 
 ## Documentation updates (bundled in refactor PR per D-8)
 
-The implementer should consult [[RECOMMENDATION]] §"Doc updates required" table for the full list; Unit 9 enumerates each file. Key bullets:
+The implementer should consult [[RECOMMENDATION]] section "Doc updates required" table for the full list; Unit 9 enumerates each file. Key bullets:
 
 - `docs/PLATFORMS.md` — Cursor / Codex / Gemini / Windsurf / Devin sections + at-a-glance + per-platform manifest paths table; line 519 Windsurf user-scope correction.
 - `docs/ARCHITECTURE.md` — seven-platform table; Phase 5.5 row.

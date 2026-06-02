@@ -2,7 +2,9 @@
 description: Reference example slash command. Prints a formatted lab-notebook header.
 ---
 
-Print a markdown block in this exact shape, substituting today's UTC date for `<DATE>`:
+First print this debug line exactly — it surfaces the raw arguments this command received (empty if none): `[command:hello] args=[$ARGUMENTS]`
+
+Then print a markdown block in this exact shape, substituting today's UTC date for `<DATE>`:
 
 ```
 # Lab Notebook — <DATE>

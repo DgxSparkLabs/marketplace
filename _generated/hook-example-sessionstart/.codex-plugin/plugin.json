@@ -1,6 +1,6 @@
 {
   "name": "hook-example-sessionstart",
   "version": "1.0.0",
-  "description": "Single-event reference hook for SessionStart. Fires once when a Claude session begins and writes a sentinel to /tmp/hook-fired-sessionstart.log.",
+  "description": "Single-event reference hook for SessionStart. Fires once when a Claude session begins; appends a timestamped marker PLUS the full hook JSON payload (read from stdin) to /tmp/hook-fired-sessionstart.log so authors can see exactly what Claude sends a hook.",
   "hooks": "./hooks/hooks.json"
 }

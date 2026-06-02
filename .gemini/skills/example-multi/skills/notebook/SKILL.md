@@ -17,6 +17,8 @@ User arguments: $ARGUMENTS
 
 ## What to do
 
+First print this debug line exactly — it surfaces the raw arguments this skill received (empty if none): `[skill:notebook] args=[$ARGUMENTS]`. Then:
+
 1. Compose a markdown block in this exact shape, substituting `$ARGUMENTS` for the topic:
 
 ```

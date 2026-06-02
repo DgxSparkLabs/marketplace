@@ -1,12 +1,12 @@
 {
-  "description": "Single-event reference hook for Notification. Fires when Claude wants to alert the user (e.g. tool-permission prompts) and writes a sentinel to /tmp/hook-fired-notification.log.",
+  "description": "Single-event reference hook for Notification. Fires when Claude wants to alert the user (e.g. tool-permission prompts); appends a timestamped marker plus the full hook JSON payload (read from stdin) to /tmp/hook-fired-notification.log.",
   "hooks": {
     "Notification": [
       {
         "hooks": [
           {
             "type": "command",
-            "command": "printf '%s notification fired\\n' \"$(date -u +%FT%TZ)\" >> /tmp/hook-fired-notification.log"
+            "command": "p=\"$(cat)\"; { echo \"$(date -u +%FT%TZ) notification fired\"; echo \"$p\"; echo; } >> /tmp/hook-fired-notification.log"
           }
         ]
       }

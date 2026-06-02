@@ -132,14 +132,14 @@ The one known degradation: `claude plugin details dgxsparklabs-skill` resolves t
 
 ### Documentation cascade
 
-- `docs/ADDING_A_CONSTRUCT.md` § "Trace each fragment to its source" rewritten under the new dual-name model. Each fragment now cites its file:line and clarifies whether it owns the install name or the slash namespace.
+- `docs/ADDING_A_CONSTRUCT.md` section "Trace each fragment to its source" rewritten under the new dual-name model. Each fragment now cites its file:line and clarifies whether it owns the install name or the slash namespace.
 - `docs/TEST_YOURSELF.md` reference card + all 9 Claude per-construct cells updated with the new slash forms.
 - `docs/USER_GUIDE.md` slash-command table updated.
 - `skills/example/SKILL.md` inline comment above `name: lab-notebook` updated to reflect the new namespace structure.
 
 ### Known follow-ups (not blocking merge)
 
-- **Manual TUI verification of tab-completion**: the resolver-internals trace from Probe C (`claude --debug-file`) shows the candidate set is well-formed, but the actual TUI render path was not exercised. Operator runs the 6-step recipe at `docs/research/shared-namespace-2026-05-27/RESEARCH.md` § Probe C before merging PR #10.
+- **Manual TUI verification of tab-completion**: the resolver-internals trace from Probe C (`claude --debug-file`) shows the candidate set is well-formed, but the actual TUI render path was not exercised. Operator runs the 6-step recipe at `docs/research/shared-namespace-2026-05-27/RESEARCH.md` section Probe C before merging PR #10.
 - **`/agents` TUI behavior with shared namespace** not yet captured empirically — predicted to work per Probe C trace but operator should verify.
 - **Cursor / Codex plugin manifests are untouched** by this change. Their `build_plugin_json` implementations in `scripts/platforms.py` compose names independently. Whether to apply the same shared-namespace pattern there is a separate decision, deferred to each platform's QA cycle.
 

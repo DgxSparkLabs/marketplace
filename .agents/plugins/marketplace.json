@@ -64,7 +64,7 @@
     {
       "name": "hook-example-multi",
       "source": "./_generated/hook-example-multi",
-      "description": "Reference example hook covering all nine Claude hook events. Each handler writes a per-event sentinel line to /tmp/hook-fired-<event>.log so operators can verify firing with `tail /tmp/hook-fired-*.log` (the UserPromptSubmit hook also injects a context line into the prompt as before).",
+      "description": "Reference example hook covering all nine Claude hook events. Each handler reads the hook's JSON payload from stdin and appends a timestamped marker PLUS that full payload to /tmp/hook-fired-<event>.log \u2014 a 'debug example' so authors can see exactly what Claude sends each event (verify with `tail /tmp/hook-fired-*.log`, or `cat \u2026 | tail -n +1` and pipe through `jq` to pretty-print). The UserPromptSubmit handler also injects a context line into the prompt (stdout).",
       "version": "1.0.0",
       "author": {
         "name": "DgxSparkLabs",
@@ -75,7 +75,7 @@
     {
       "name": "hook-example-notification",
       "source": "./_generated/hook-example-notification",
-      "description": "Single-event reference hook for Notification. Fires when Claude wants to alert the user (e.g. tool-permission prompts) and writes a sentinel to /tmp/hook-fired-notification.log.",
+      "description": "Single-event reference hook for Notification. Fires when Claude wants to alert the user (e.g. tool-permission prompts); appends a timestamped marker plus the full hook JSON payload (read from stdin) to /tmp/hook-fired-notification.log.",
       "version": "1.0.0",
       "author": {
         "name": "DgxSparkLabs",
@@ -86,7 +86,7 @@
     {
       "name": "hook-example-posttooluse",
       "source": "./_generated/hook-example-posttooluse",
-      "description": "Single-event reference hook for PostToolUse, scoped to Write|Edit. Writes a sentinel to /tmp/hook-fired-posttooluse.log after the tool call completes.",
+      "description": "Single-event reference hook for PostToolUse, scoped to Write|Edit. After the tool completes, appends a timestamped marker plus the full hook JSON payload (read from stdin) to /tmp/hook-fired-posttooluse.log. The payload carries the tool name, input, and response \u2014 read it from stdin JSON, NOT from a CLAUDE_TOOL_NAME env var (which is not populated).",
       "version": "1.0.0",
       "author": {
         "name": "DgxSparkLabs",
@@ -97,7 +97,7 @@
     {
       "name": "hook-example-precompact",
       "source": "./_generated/hook-example-precompact",
-      "description": "Single-event reference hook for PreCompact. Fires before Claude compacts conversation history and writes a sentinel to /tmp/hook-fired-precompact.log.",
+      "description": "Single-event reference hook for PreCompact. Fires before Claude compacts conversation history; appends a timestamped marker plus the full hook JSON payload (read from stdin) to /tmp/hook-fired-precompact.log.",
       "version": "1.0.0",
       "author": {
         "name": "DgxSparkLabs",
@@ -108,7 +108,7 @@
     {
       "name": "hook-example-pretooluse",
       "source": "./_generated/hook-example-pretooluse",
-      "description": "Single-event reference hook for PreToolUse, scoped to Write|Edit. Writes a sentinel to /tmp/hook-fired-pretooluse.log before the tool call runs.",
+      "description": "Single-event reference hook for PreToolUse, scoped to Write|Edit. Before the tool runs, appends a timestamped marker plus the full hook JSON payload (read from stdin) to /tmp/hook-fired-pretooluse.log. The payload carries the tool name and tool input \u2014 read it from stdin JSON, NOT from a CLAUDE_TOOL_NAME env var (which is not populated).",
       "version": "1.0.0",
       "author": {
         "name": "DgxSparkLabs",
@@ -119,7 +119,7 @@
     {
       "name": "hook-example-sessionend",
       "source": "./_generated/hook-example-sessionend",
-      "description": "Single-event reference hook for SessionEnd. Fires once when a Claude session terminates and writes a sentinel to /tmp/hook-fired-sessionend.log.",
+      "description": "Single-event reference hook for SessionEnd. Fires once when a Claude session terminates; appends a timestamped marker plus the full hook JSON payload (read from stdin) to /tmp/hook-fired-sessionend.log.",
       "version": "1.0.0",
       "author": {
         "name": "DgxSparkLabs",
@@ -130,7 +130,7 @@
     {
       "name": "hook-example-sessionstart",
       "source": "./_generated/hook-example-sessionstart",
-      "description": "Single-event reference hook for SessionStart. Fires once when a Claude session begins and writes a sentinel to /tmp/hook-fired-sessionstart.log.",
+      "description": "Single-event reference hook for SessionStart. Fires once when a Claude session begins; appends a timestamped marker PLUS the full hook JSON payload (read from stdin) to /tmp/hook-fired-sessionstart.log so authors can see exactly what Claude sends a hook.",
       "version": "1.0.0",
       "author": {
         "name": "DgxSparkLabs",
@@ -141,7 +141,7 @@
     {
       "name": "hook-example-stop",
       "source": "./_generated/hook-example-stop",
-      "description": "Single-event reference hook for Stop. Fires when the assistant ends a turn and writes a sentinel to /tmp/hook-fired-stop.log.",
+      "description": "Single-event reference hook for Stop. Fires when the assistant ends a turn; appends a timestamped marker plus the full hook JSON payload (read from stdin) to /tmp/hook-fired-stop.log.",
       "version": "1.0.0",
       "author": {
         "name": "DgxSparkLabs",
@@ -152,7 +152,7 @@
     {
       "name": "hook-example-subagentstop",
       "source": "./_generated/hook-example-subagentstop",
-      "description": "Single-event reference hook for SubagentStop. Fires when a sub-agent's turn ends and writes a sentinel to /tmp/hook-fired-subagentstop.log.",
+      "description": "Single-event reference hook for SubagentStop. Fires when a sub-agent's turn ends; appends a timestamped marker plus the full hook JSON payload (read from stdin) to /tmp/hook-fired-subagentstop.log.",
       "version": "1.0.0",
       "author": {
         "name": "DgxSparkLabs",
@@ -163,7 +163,7 @@
     {
       "name": "hook-example-userpromptsubmit",
       "source": "./_generated/hook-example-userpromptsubmit",
-      "description": "Single-event reference hook for UserPromptSubmit. Injects a [Lab Notebook context: timestamp=...] line on every prompt and writes a sentinel to /tmp/hook-fired-userpromptsubmit.log.",
+      "description": "Single-event reference hook for UserPromptSubmit. Injects a [Lab Notebook context: timestamp=...] line into the prompt (stdout) AND appends a timestamped marker plus the full hook JSON payload (read from stdin) to /tmp/hook-fired-userpromptsubmit.log for debugging.",
       "version": "1.0.0",
       "author": {
         "name": "DgxSparkLabs",
@@ -174,7 +174,7 @@
     {
       "name": "lsp-example-multi",
       "source": "./_generated/lsp-example-multi",
-      "description": "Three reference LSP servers demonstrating the multi-server plugin layout (illustrative; binaries not bundled).",
+      "description": "Two bundled, dependency-free reference LSP servers (markdown + python) implementing real language-server features \u2014 diagnostics, document symbols, go-to-definition, hover, and references. Works out of the box (only uv required); no external language-server binary to install.",
       "version": "1.0.0",
       "author": {
         "name": "DgxSparkLabs",

@@ -1,5 +1,14 @@
 # Handoff
 
+> **2026-06-01 SESSION END — NEXT: live-tmux verification of the remaining constructs.** The LSP construct
+> was fully built, fixed (incremental-`didChange` bug), made observable (`--always-error` marker + input
+> log), and proven LIVE in the container tmux; it's documented in `docs/TEST_YOURSELF.md` cell 4.8.7 (human
+> walkthrough + agent tmux operator guide). **Continuation prompt:** [`docs/.research/CONTINUATION-construct-tmux-verification.md`](./docs/.research/CONTINUATION-construct-tmux-verification.md)
+> — read it cold to do the same live-tmux proof for command/skill/agent/hook/mcp/monitor/output-style/theme.
+> NOTE: this LSP work + several STRAY non-LSP modified files (`CHANGELOG.md`, `scripts/utils.py`,
+> `src/MARKETPLACE.toml`, two research docs) are **uncommitted** — do not commit blindly; the stray files are
+> not from this work.
+
 > **2026-05-27 SESSION END — NEXT SESSION HAS EXECUTION READY.** Three artifacts at [`docs/research/multi-instance-claude-only-2026-05-27/`](./docs/research/multi-instance-claude-only-2026-05-27/) prepare the next session for direct implementation:
 > 1. [`IMPLEMENTOR_PROMPT.md`](./docs/research/multi-instance-claude-only-2026-05-27/IMPLEMENTOR_PROMPT.md) — self-contained brief for a fresh agent to execute cold.
 > 2. [`PLAN.md`](./docs/research/multi-instance-claude-only-2026-05-27/PLAN.md) — full execution plan (~440 lines, ~2 hours of work).

@@ -1,5 +1,5 @@
 {
-  "description": "Single-event reference hook for PostToolUse, scoped to Write|Edit. Writes a sentinel to /tmp/hook-fired-posttooluse.log after the tool call completes.",
+  "description": "Single-event reference hook for PostToolUse, scoped to Write|Edit. After the tool completes, appends a timestamped marker plus the full hook JSON payload (read from stdin) to /tmp/hook-fired-posttooluse.log. The payload carries the tool name, input, and response — read it from stdin JSON, NOT from a CLAUDE_TOOL_NAME env var (which is not populated).",
   "hooks": {
     "PostToolUse": [
       {
@@ -7,7 +7,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "printf '%s postToolUse %s\\n' \"$(date -u +%FT%TZ)\" \"${CLAUDE_TOOL_NAME:-unknown}\" >> /tmp/hook-fired-posttooluse.log"
+            "command": "p=\"$(cat)\"; { echo \"$(date -u +%FT%TZ) postToolUse fired\"; echo \"$p\"; echo; } >> /tmp/hook-fired-posttooluse.log"
           }
         ]
       }

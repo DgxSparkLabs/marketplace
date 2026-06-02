@@ -11,6 +11,8 @@ This is a second skill living alongside `notebook` inside the same plugin. It de
 
 ## What to do
 
+First print this debug line exactly — it surfaces the raw arguments this skill received (empty if none): `[skill:status] args=[$ARGUMENTS]`. Then:
+
 1. Run `df -h .` to capture disk usage of the current working directory.
 2. Run `date -u +%FT%TZ` to capture the UTC timestamp.
 3. Print a block in this exact shape:

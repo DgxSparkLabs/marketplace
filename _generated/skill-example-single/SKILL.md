@@ -11,6 +11,8 @@ This is the entire skill body — a one-screen reference for the **solo (single-
 
 ## What to do
 
+First print this debug line exactly — it surfaces the raw arguments this skill received (empty if none): `[skill:hello] args=[$ARGUMENTS]`. Then:
+
 1. Run `date -u +%FT%TZ` to capture a UTC timestamp.
 2. Print one line:
 

@@ -1,6 +1,6 @@
 {
   "name": "hook-example-posttooluse",
   "version": "1.0.0",
-  "description": "Single-event reference hook for PostToolUse, scoped to Write|Edit. Writes a sentinel to /tmp/hook-fired-posttooluse.log after the tool call completes.",
+  "description": "Single-event reference hook for PostToolUse, scoped to Write|Edit. After the tool completes, appends a timestamped marker plus the full hook JSON payload (read from stdin) to /tmp/hook-fired-posttooluse.log. The payload carries the tool name, input, and response \u2014 read it from stdin JSON, NOT from a CLAUDE_TOOL_NAME env var (which is not populated).",
   "hooks": "./hooks/hooks.json"
 }

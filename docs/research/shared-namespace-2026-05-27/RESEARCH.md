@@ -211,7 +211,7 @@ One degradation:
 
 ## Migration plan for PATH A
 
-The marketplace's source-of-truth-to-emitted-files chain is documented in `docs/ADDING_A_CONSTRUCT.md` § "Trace each fragment to its source". Path A changes exactly one fragment: the `plugin.json` `name` field written by `_base_plugin_shape` at `scripts/constructs.py:73-77`. Marketplace entry naming (used by install commands) stays as-is — that remains `<construct.prefix>-<source-dir-name>`.
+The marketplace's source-of-truth-to-emitted-files chain is documented in `docs/ADDING_A_CONSTRUCT.md` section "Trace each fragment to its source". Path A changes exactly one fragment: the `plugin.json` `name` field written by `_base_plugin_shape` at `scripts/constructs.py:73-77`. Marketplace entry naming (used by install commands) stays as-is — that remains `<construct.prefix>-<source-dir-name>`.
 
 ### Files that change
 
@@ -220,7 +220,7 @@ The marketplace's source-of-truth-to-emitted-files chain is documented in `docs/
 | `scripts/constructs.py` | `_base_plugin_shape` → replace `"name": f"{construct.prefix}-{name}"` with `"name": "dgxsparklabs-skill"` (or more generally `"name": f"dgxsparklabs-{construct.category}"`, brand-prefixed per-construct). The marketplace entry's `name` continues to come from `scripts/generate_manifest.py:138` `plugin_dir = GENERATED / f"{construct.prefix}-{name}"` paired with `_make_marketplace_entry(plugin_json, plugin_dir, construct.category)` — but since the marketplace entry's `name` is read from the `_generated/<dir>` dir name (via `_make_marketplace_entry`), we need to verify the entry name composition or thread a separate `plugin_json["marketplace_name"]` field. Read scripts/generate_manifest.py:138-145 carefully before editing. |
 | `scripts/platforms.py` `CodexPlatform.build_plugin_json`, `CursorPlatform.build_plugin_json` | These may also call `_base_plugin_shape` or compose their own `name` — review and decide whether the brand-prefix should propagate to Codex/Cursor (probably yes if we want platform-parity slash invocations). |
 | `tests/test_marketplace.py` | Several assertions probably look for the prior `name: <prefix>-<dirname>` shape in cached plugin.json. Update those to expect `dgxsparklabs-<construct.category>` instead. Specifically, any test that reads `_generated/<plugin>/.claude-plugin/plugin.json` and asserts on the `name` field. |
-| `docs/ADDING_A_CONSTRUCT.md` § "Trace each fragment to its source" | The whole walked example needs to be re-walked under the new scheme. Specifically the lines that say `"skill-notify"` come from `_base_plugin_shape` — under PATH A the line "the plugin name half" comes from MARKETPLACE.toml + construct.category, not from construct.prefix + source-dir. The marketplace entry name (used in install) is still `<construct.prefix>-<source-dir-name>`, but the slash prefix becomes the brand-prefix. |
+| `docs/ADDING_A_CONSTRUCT.md` section "Trace each fragment to its source" | The whole walked example needs to be re-walked under the new scheme. Specifically the lines that say `"skill-notify"` come from `_base_plugin_shape` — under PATH A the line "the plugin name half" comes from MARKETPLACE.toml + construct.category, not from construct.prefix + source-dir. The marketplace entry name (used in install) is still `<construct.prefix>-<source-dir-name>`, but the slash prefix becomes the brand-prefix. |
 | `docs/TEST_YOURSELF.md`, `docs/PLATFORMS.md`, `docs/USER_GUIDE.md`, `README.md` | Every example slash invocation `/<prefix>-<name>:<skill-name>` becomes `/dgxsparklabs-<construct>:<skill-name>`. Searches that match those forms need updating. |
 
 ### Operator-visible delta after migration
@@ -314,15 +314,15 @@ done
 - Claude Code docs: `https://code.claude.com/docs/en/plugins` (fetched 2026-05-27), `https://code.claude.com/docs/en/plugins-reference` (fetched 2026-05-27)
 - Prior research this builds on: `docs/research/naming-conventions-2026-05-26/RESEARCH.md` (the qa-naming Docker recipe and body-dumper pattern)
 - Generator implementation: `scripts/constructs.py` (`_base_plugin_shape` at line 61, `SkillConstruct` at line 82), `scripts/generate_manifest.py` Phase 1 (line 130-146)
-- Operator-facing trace: `docs/ADDING_A_CONSTRUCT.md` § "Trace each fragment to its source"
+- Operator-facing trace: `docs/ADDING_A_CONSTRUCT.md` section "Trace each fragment to its source"
 
 ## PART 2 — follow-up probes (2026-05-27)
 
-Three follow-up probes settling the open caveats from Part 1 § "Open caveats". Same `qa-claude` container, same hermetic-reset pattern, same `stub_body_dumper.py` on port 8089. All probe runs land at `/tmp/workspace` inside the container; the host repo working tree is unchanged except for the new `logs/part2-*.log` files (see prefix). Probe-A artifacts share the `dgxsparklabs-command` plugin.json `name`; Probe-B uses 5 plugins sharing `dgxsparklabs-skill`; Probe-C reuses the Probe-B setup.
+Three follow-up probes settling the open caveats from Part 1 section "Open caveats". Same `qa-claude` container, same hermetic-reset pattern, same `stub_body_dumper.py` on port 8089. All probe runs land at `/tmp/workspace` inside the container; the host repo working tree is unchanged except for the new `logs/part2-*.log` files (see prefix). Probe-A artifacts share the `dgxsparklabs-command` plugin.json `name`; Probe-B uses 5 plugins sharing `dgxsparklabs-skill`; Probe-C reuses the Probe-B setup.
 
 ### TL;DR of part 2
 
-- **Probe A — command parity: PASS.** Two command plugins (`command-foo-test`, `command-bar-test`) sharing `plugin.json` `name: dgxsparklabs-command` install cleanly; `/dgxsparklabs-command:hello-foo` and `/dgxsparklabs-command:hello-bar` both resolve; controls `/command-foo-test:hello-foo` and `/command-bar-test:hello-bar` fail with `Unknown command`; `claude plugin validate` accepts both; `claude plugin details dgxsparklabs-command` collapses to the first-installed plugin (same degradation as skills, Part 1 § Probe 3).
+- **Probe A — command parity: PASS.** Two command plugins (`command-foo-test`, `command-bar-test`) sharing `plugin.json` `name: dgxsparklabs-command` install cleanly; `/dgxsparklabs-command:hello-foo` and `/dgxsparklabs-command:hello-bar` both resolve; controls `/command-foo-test:hello-foo` and `/command-bar-test:hello-bar` fail with `Unknown command`; `claude plugin validate` accepts both; `claude plugin details dgxsparklabs-command` collapses to the first-installed plugin (same degradation as skills, Part 1 section Probe 3).
 - **Probe B — scale to 5 plugins: PASS.** 5 skill plugins (a..e) sharing `dgxsparklabs-skill` all install with no warnings, no latency degradation across the sequence (1.7–2.3s per install, no monotonic increase); `claude plugin list` shows 5 distinct rows; `/dgxsparklabs-skill:{a..e}` all resolve; the system-prompt registry surfaces all 5 in one block; disabling 3 cleanly retracts those 3 from the registry while the other 2 keep resolving.
 - **Probe B confirmed "first-installed wins" for the details collapse.** When 5 plugins are installed in order a→e, `claude plugin details dgxsparklabs-skill` resolves to skill-**a**-test. When the same 5 are uninstalled and reinstalled in REVERSE order e→a, the details query resolves to skill-**e**-test. So the collapse rule is install-order, NOT alphabetic on the marketplace name. Operators can predict which plugin's inventory will surface: first-installed wins.
 - **Probe C — autocomplete signal: PARTIAL.** `--print` mode does NOT exercise interactive tab-completion; the only resolver hint it returns is `Unknown command: /foo. Did you mean /bar?` for invalid input (and the suggestion is just the shortest-similar command). HOWEVER, `--debug-file` exposes the resolver's internal candidate set: `Skill prompt: showing "dgxsparklabs-skill:e" (userFacingName="e")` lines are emitted for each loaded skill at session start. With 5 shared-namespace plugins, the debug log emits 5 such lines — one per skill — so the candidate set the TUI works from is 5 entries. The TUI tab-completion behavior with this candidate set still needs interactive verification (recipe below).
@@ -383,7 +383,7 @@ No duplicate-name warning at the CLI's own validator.
 | `claude plugin details command-bar-test` (marketplace name) | `not found` | logs/part2-A-04b-details-from-test-cwd.log:14 (same recipe) |
 | `claude plugin details dgxsparklabs-command` (shared name, from `/tmp/test`) | Resolves to ONE — `Source: command-foo-test@dgxsparklabs-marketplace`, `Skills (1) hello-foo` | logs/part2-A-04b-details-from-test-cwd.log:16-32 |
 
-**Same degradation as Part 1 § Probe 3** — first-installed wins. Note that `claude plugin details dgxsparklabs-command` lists the hello-foo command under "Skills (1)" — Claude's `plugin details` command counts the loaded components under the `Skills` line of the inventory regardless of construct type. (logs/part2-A-04b-details-from-test-cwd.log:23)
+**Same degradation as Part 1 section Probe 3** — first-installed wins. Note that `claude plugin details dgxsparklabs-command` lists the hello-foo command under "Skills (1)" — Claude's `plugin details` command counts the loaded components under the `Skills` line of the inventory regardless of construct type. (logs/part2-A-04b-details-from-test-cwd.log:23)
 
 ~={info} NOTE: There's a `details` CWD dependency: running `claude plugin details <name>` from the install-time cwd (`/tmp/test`, where the project-scoped install was performed) resolves the shared name; running from elsewhere returns `not found` even though `claude plugin list` shows the rows everywhere. This is consistent with project-scope plugins being cwd-sensitive — not a shared-namespace artifact. =~
 
@@ -450,7 +450,7 @@ dgxsparklabs-skill:e: scale probe e
 | `/dgxsparklabs-skill:e` | `OK stub.`, resolves | logs/part2-B-08-disable-3.log:43-44 |
 | Registry block (probe e) | only `dgxsparklabs-skill:d` and `dgxsparklabs-skill:e` listed | logs/part2-B-08-disable-3.log:50-51 |
 
-Disable cleanly retracts disabled plugins from the shared namespace; remaining plugins continue to resolve. Same behavior as Part 1 § Probe 7 but proven at higher cardinality.
+Disable cleanly retracts disabled plugins from the shared namespace; remaining plugins continue to resolve. Same behavior as Part 1 section Probe 7 but proven at higher cardinality.
 
 **Probe B verdict:** the shared-namespace mechanism scales to 5 plugins (and almost certainly higher — the disjoint-cache architecture means each plugin keeps its own version dir on disk and is processed independently by the loader; see Probe C debug output). No new failure modes appear at scale.
 

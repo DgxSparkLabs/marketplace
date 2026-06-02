@@ -2,7 +2,9 @@
 description: Prints a formatted lab-notebook closing footer with a UTC timestamp.
 ---
 
-Print a markdown block in this exact shape, substituting the current UTC timestamp for `<TIMESTAMP>`:
+First print this debug line exactly — it surfaces the raw arguments this command received (empty if none): `[command:goodbye] args=[$ARGUMENTS]`
+
+Then print a markdown block in this exact shape, substituting the current UTC timestamp for `<TIMESTAMP>`:
 
 ```
 ---

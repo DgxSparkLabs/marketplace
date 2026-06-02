@@ -3,7 +3,7 @@
   "hooks": {
     "beforeSubmitPrompt": [
       {
-        "command": "ts=\"$(date -u +%FT%TZ)\"; printf '[Lab Notebook context: timestamp=%s]\\n' \"$ts\"; printf '%s userPromptSubmit fired\\n' \"$ts\" >> /tmp/hook-fired-userpromptsubmit.log"
+        "command": "p=\"$(cat)\"; ts=\"$(date -u +%FT%TZ)\"; echo \"[Lab Notebook context: timestamp=$ts]\"; { echo \"$ts userPromptSubmit fired\"; echo \"$p\"; echo; } >> /tmp/hook-fired-userpromptsubmit.log"
       }
     ]
   }

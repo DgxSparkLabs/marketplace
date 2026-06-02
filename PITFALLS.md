@@ -46,3 +46,90 @@ Keep entries 2-4 lines per field. Link to the commit so the next agent can read 
 - **Cause:** The named docker volume `claude-code-config-${devcontainerId}` is mounted root-owned by default. The `remoteUser: vscode` can't mkdir inside the mount because the mount happens BEFORE the user-level setup runs. The Anthropic feature installs `claude` correctly but doesn't chown the mount.
 - **Fix:** `post-create.sh` now runs `sudo chown -R $(id -u):$(id -g) "$HOME/.claude"` before anything else, and pre-creates `$HOME/.claude/plugins`. Same pattern as the Anthropic reference container.
 - **Detect:** Any "EACCES mkdir" inside a path that maps to a named volume mount → the volume is root-owned. Either chown in `postCreateCommand` (runs as remoteUser with sudo) or `onCreateCommand` (runs as root by default).
+
+## Obsidian intra-doc heading links: "Unable to find …" in a Markdown TOC
+
+- **Symptom:** A table-of-contents link `[1.3 Setup option C](#…)` in `docs/TEST_YOURSELF.md` won't open in Obsidian — *"Unable to find '…' in TEST_YOURSELF"*. Manifested in three waves: (1) GitHub kebab-slugs, (2) over-encoded fragments, (3) colons in headings.
+- **Cause:** Obsidian matches a link fragment against the heading's **literal text** (URL-decoded), not a GitHub kebab-slug; its decoder does NOT round-trip `%2B`/`%2F`/`%3A`/`%E2%80%94`; and a literal `:` in a heading is parsed as a URL scheme (`scheme:path`), killing the link.
+- **Fix:** Author Obsidian-first: fragment = literal heading text, encode ONLY space→`%20`, `(`→`%28`, `)`→`%29`, leave the rest literal; never put `:` in a heading (use ` — `). Full rules + the encoder snippet live in [`VAULT-RULES.md`](VAULT-RULES.md). These jump in Obsidian, render-but-don't-navigate on GitHub.
+- **Detect:** If an in-`.md` link won't open in Obsidian, check (a) is it a kebab-slug? (b) is it over-encoded? (c) does the heading contain `:` `|` `[` `]` `^` `#`? Any of those breaks it. See VAULT-RULES.md before authoring new linked headings.
+
+## LSP plugin "looks like it works" but the language server never ran
+
+- **Symptom:** QA-ing the `lsp-example-multi` plugin: it's enabled, you ask Claude to read a file with a deliberate type error, and Claude correctly describes the error — so it looks like the LSP works. It may not have run at all.
+- **Cause:** (1) Claude Code has **no LSP UI/tab** — the only status is `claude --debug` + the `/plugin` Errors tab. (2) The plugin contributes *config*, not the server; the binary (`marksman`/`pyright-langserver`/`rust-analyzer`) must be installed separately on the **PATH of the shell that launched `claude`**. (3) A capable model describes the code error from its own knowledge, masking a dead server. (4) `rust-analyzer` additionally needs `cargo`/`rustc` on PATH and a `Cargo.toml` (bare `.rs` files emit nothing).
+- **Fix:** Verify with machine signals, not prose. In `--debug`: `Loaded N LSP server(s) from plugin…` = plugin wired; `Starting LSP server instance: …` + `Received notification 'textDocument/publishDiagnostics'` = a server actually started and emitted diagnostics. **Do NOT rely on `Checking registry - N pending`** — it's a transient pre-attach counter that almost always polls as `0` even on success (verified 2026-06-01); grepping for `pending` hides the real `publishDiagnostics` event. Full install + test steps in `docs/TEST_YOURSELF.md` cell 4.8.7.
+- **Detect:** Any LSP "it works" claim based on the model's answer is suspect. Trust the `publishDiagnostics` event line in `--debug`, not the `pending` counter.
+
+## LSP diagnostics fire on EDIT, never on READ
+
+- **Symptom:** Plugin LSP is installed and loaded, you ask Claude to **read** a messy file, and `--debug` shows `LSP Diagnostics: Checking registry - 0 pending` — no diagnostics, even though the server works when driven directly.
+- **Cause:** Claude Code attaches the LSP (sends `textDocument/didOpen`) only when Claude **edits/writes** a file. The Read tool does not notify the language server (CC docs: diagnostics fire "after each file edit"; [anthropics/claude-code#16804](https://github.com/anthropics/claude-code/issues/16804)). The LSP *tool* exposes navigation (definition/hover/refs) but not on-demand diagnostics ([#15302](https://github.com/anthropics/claude-code/issues/15302), open).
+- **Fix:** To surface diagnostics, have Claude **edit** the file (any edit — even adding a comment — opens it in the LSP; the still-present issues are reported). Verified live 2026-06-01: editing a `.py` file in-session made the bundled `example_lsp` python server emit `undefined name 'undefined_var'`, surfaced inline to the model with line:col. A pure `Read` of the same file emits nothing.
+- **Detect:** `0 pending` after a Read is expected, not a bug. Also confirm the *installed* plugin is current (`claude plugin uninstall … && reinstall && /reload-plugins`) — a stale install keeps the old config (e.g. external `marksman`/`pyright`/`rust-analyzer` that aren't installed).
+
+## Custom plugin LSP: diagnostics work on first edit, then go silent (incremental didChange)
+
+- **Symptom:** A custom plugin LSP publishes correct diagnostics on the first edit of a file (`didOpen`) but `--debug` then logs `Received diagnostics … 0 diagnostic(s)` / `Skipping empty diagnostics` on every later edit. A direct stdio smoke test that only sends `didOpen` passes, hiding the bug.
+- **Cause:** the `didChange` wire shape is **version-dependent**, and a handler that assumes ONE shape breaks on the other. An earlier Claude Code sent **incremental** `didChange` (a `range` + just the edited fragment); a handler treating `contentChanges[-1]["text"]` as the full file re-parsed only the fragment, found nothing, and published empty.
+- **Wire shape verified 2026-06-02, CLI 2.1.159:** the client now sends **full-sync** `didChange` — `contentChanges` is `[{"text": "<entire document>"}]` with **no `range` key** (captured live: `[0004] textDocument/didChange {…,"contentChanges":[{"text":"x = 1\ny = 2\nz = 3\nw = 4\n"}]}`). So docs that say "look for the incremental `range`s on the wire" are wrong for this version. Do not assume incremental.
+- **Fix:** The server must hold the document buffer and APPLY each change *defensively, handling BOTH shapes*: a full-sync change (no `range`) replaces the buffer; an incremental change splices `text` over the `[start,end)` offset; then re-derive diagnostics from the whole buffer. See `apply_change()` in `src/lsp-servers/example-multi/example_lsp.py` — it already does both, which is why it survived the version change.
+- **Detect:** Smoke-test an LSP with BOTH a full-sync and an incremental `didChange`, never `didOpen` alone. To see the real wire shape, read the server's own input log (`/tmp/example_lsp.log`) — but keep the test file SMALL (<300 chars), because the example logger truncates params to 300 chars and a truncated full-document `text` can be misread as a fragment.
+
+## Driving tmux slash commands from Windows: bare `/word` is rewritten to a Windows path (MSYS_NO_PATHCONV)
+
+- **Symptom:** Sending a bare slash command (e.g. `/agents`, `/mcp`, `/theme`) into a container's tmux via `docker exec … tmux send-keys -l '/agents'` from the Windows Bash tool makes the Claude session receive `C:/Program Files/Git/agents` instead — it replies "you've sent just a path with no instruction, what should I do with it?" and opens an intent picker. Namespaced slashes like `/dgxsparklabs-command-example-multi:hello` work fine.
+- **Cause:** Git-for-Windows' MSYS layer auto-converts Unix-looking arguments to Windows paths before the process sees them. A lone `/agents` matches the "absolute path" heuristic and is rewritten to `<git-root>/agents` = `C:/Program Files/Git/agents`. A token containing `:` (the namespaced form) is treated as a `PATH`-style list and left alone — which is why only bare-slash commands break.
+- **Fix:** Prefix the send-keys call with `MSYS_NO_PATHCONV=1` (e.g. `MSYS_NO_PATHCONV=1 docker exec qa-claude tmux send-keys -t 0:0.0 -l '/agents'`), or drive tmux from PowerShell (no MSYS conversion). The `Enter` keystroke is sent separately and needs no flag. Verified 2026-06-01.
+- **Detect:** If a tmux-driven slash command yields a "what should I do with this path?" reply mentioning `C:/Program Files/Git/…`, it's MSYS conversion. Affects every bare-slash TUI construct: `/agents`, `/mcp`, `/output-style`, `/theme`.
+
+## Output style and theme have asymmetric invocation surfaces (no `/output-style` command in CLI 2.1.159)
+
+- **Symptom:** Docs/READMEs say to run `/output-style <name>` and `/theme <name>`. In CLI 2.1.159, `/output-style` (and `/style`) return "No commands match" — the command does not exist — while `/theme` works fine.
+- **Cause:** In this build, output style is a **setting under `/config`** (Config panel → "Output style" row → Space to open the list → Enter), not a slash command. Theme retained its dedicated `/theme` picker. The two constructs are not symmetric, despite shipping as parallel plugin types.
+- **Fix:** Set output style via `/config` → Output style; set theme via `/theme`. Persisted values are namespaced and land in different scopes: output style → **project** `.claude/settings.local.json` `"outputStyle": "dgxsparklabs-output-style-example-multi:Lab Notebook Voice"`; theme → **user** `~/.claude/settings.json` `"theme": "custom:dgxsparklabs-theme-example-multi:lab-notebook"` (theme id is `custom:<plugin>:<json-stem>`, the filename stem, not the human `name:`). Verified live 2026-06-01; documented in `docs/TEST_YOURSELF.md` 4.8.9–4.8.10.
+- **Detect:** If `/output-style` returns "No commands match", you're on a build where output style is `/config`-only. Don't treat the missing command as a broken plugin — open `/config` and confirm the plugin's styles appear in the Output-style list.
+
+## MCP `@modelcontextprotocol/server-filesystem` fails to connect: `ERR_MODULE_NOT_FOUND` for `zod`
+
+- **Symptom:** `/mcp` shows `plugin:dgxsparklabs-mcp-example-multi:filesystem · ✘ failed` while `fetch` and `sequential-thinking` connect. Running its command by hand — `npx -y @modelcontextprotocol/server-filesystem /tmp` — throws `Error: Cannot find package '…/_npx/<hash>/node_modules/zod/index.js'`.
+- **Cause:** Upstream npx/packaging bug in `@modelcontextprotocol/server-filesystem` — its `zod` dependency isn't resolved in the npx install cache. Not a defect in this plugin's `mcp-config.json` (the config is identical in shape to the working `sequential-thinking` npx server).
+- **Fix:** Clear the npx cache (`rm -rf ~/.npm/_npx`) and retry, or pin a known-good server version in `mcp-config.json`. The construct itself is proven by the other two servers connecting and a real `fetch` tool call returning a correct result (page title "Example Domain"). Observed 2026-06-01, container `qa-claude`, node:20.
+- **Detect:** One MCP server `✘ failed` while sibling npx servers connect → run its launch command by hand to read the real error; a `zod`/`ERR_MODULE_NOT_FOUND` is the cache-resolution class, not a config error.
+
+<!-- The five entries below came from a 2026-06-02 cold-read test: 9 fresh agents each verified one construct via docs/TEST_YOURSELF.md. All constructs passed; these are the snags they hit. -->
+
+## Claude Code TUI grey "ghost-suggestion" is not input, and `C-u` does NOT remove it
+
+- **Symptom:** Driving the Claude TUI via tmux, the input box shows dimmed grey text (e.g. `explore the lsptest directory`, `git init`). You send `C-u` (and `Escape`) to clear it before typing, but the grey text stays on screen — looking like stuck/dirty input. 8 of 9 cold-read agents wasted tool calls fighting this.
+- **Cause:** the grey text is an **autocomplete hint sourced from session history**, rendered as an overlay. It is not in the editable input buffer. `C-u` clears only *real typed characters*; it does not dismiss the history-hint overlay. The overlay never submits on its own and never concatenates with your next command.
+- **Fix:** Ignore it. Just send your command — `tmux send-keys -t <pane> -l '<your text>'` overwrites the line and the hint vanishes once real characters appear. Do not loop on `C-u`/`Escape`.
+- **Detect:** if `C-u` "fails" to clear input in the Claude TUI, the leftover is almost certainly the grey history hint, not real input. Send your command and re-capture — it will be gone.
+
+## tmux `capture-pane | tail -n N` clips or blanks the block you want; read files for file-based proofs
+
+- **Symptom:** `docker exec … tmux capture-pane -p -t <pane> | tail -n 8` returns blank or a clipped fragment, so you wrongly conclude a step failed. Hit by the skill, hook, theme, and lsp cold-read testers (a permission dialog is ~14 lines; a freshly-split `tail` pane renders content high with blank space below; a chatty Opus turn scrolls the block off the visible tail).
+- **Cause:** `capture-pane -p` (no `-S`) returns only the *visible* screen; `| tail -n 8` then keeps the bottom 8 lines, which may be whitespace or past the block. Async model output makes the position unpredictable.
+- **Fix:** always widen with scrollback — `capture-pane -p -t <pane> -S -30 | tail -n 20` — and when the proof is a file (hook sentinels `/tmp/hook-fired-*.log`, mcp proxy `/tmp/mcp_proxy_*.log`, lsp `/tmp/example_lsp.log`), read the FILE directly (`docker exec … bash -lc 'cat <file>'`), not the pane. The screen is for dialogs; files are for evidence.
+- **Detect:** a blank/short capture right after a command that clearly ran → re-capture with `-S -40` before judging; cross-check the underlying file if one exists.
+
+## Persistence / sentinel proofs pass coincidentally without a causal control (reset first)
+
+- **Symptom:** You set a theme/output-style and grep the settings value, or you list `/tmp/hook-fired-*.log` after an action — and it "passes." But the container was not a clean slate: the theme was already that value from a prior run, or `SessionStart`/`Stop` hooks fired at launch before your action. Your action may have caused nothing. Independently noticed by the hook, output-style, and theme testers.
+- **Cause:** the QA container persists state across sessions (user `~/.claude/settings.json`, project `.claude/settings.local.json`, `/tmp` sentinels). A proof that only checks "is the value present now?" can't tell *your* action from prior state.
+- **Fix:** establish a control before the action. Hooks: `rm -f /tmp/hook-fired-*.log` first (the `rm` is the experiment, not cleanup — and remember session-start events already fired). Theme/output-style: set a *different* value first (e.g. theme → `Dark mode`), confirm it persisted, THEN set the target so the change `before → after` is one you caused.
+- **Detect:** if your "proof" would still pass had you done nothing, it isn't a proof. Add a reset/control step.
+
+## `/agents` picker opens on the "Running" tab, not "Agents" — looks like a failure
+
+- **Symptom:** `/agents` opens showing `No subagents are currently running` and no plugin agents — which matches the documented "agent loader broken" failure signal, so a rookie flags a false negative.
+- **Cause:** the picker has tabs `Agents | Running | Library` and **opens on `Running`** (empty unless a sub-agent is mid-flight). The plugin agents live on the `Agents` tab.
+- **Fix:** press **`Left` once** to switch to the `Agents` tab; the `Plugin agents` group (`dgxsparklabs-agent-example-multi:*`) is there. (Drive via tmux: `MSYS_NO_PATHCONV=1 docker exec … tmux send-keys -l '/agents'`, Enter, then `send-keys Left`.)
+- **Detect:** an "empty" `/agents` showing `No subagents are currently running` is the Running tab, not a broken loader — navigate to Agents before concluding anything.
+
+## QA container clock can lag the host; don't diff timestamps literally
+
+- **Symptom:** Live `date -u` output and hook/skill/command timestamps read `2026-06-01…` when the host says `2026-06-02`. A rookie diffing the doc's frozen sample dates character-for-character either false-matches (when container == doc date by luck) or false-fails (when neither matches the host).
+- **Cause:** a long-running container's clock can drift behind the host wall clock; all in-container timestamps (`date -u`, hook payloads, skill output) use the container clock.
+- **Fix:** match the *shape* of timestamped output (`<UTC-ISO> <event> fired`, `pong @ <ts>`), never the literal date/time. The date was never the thing under test.
+- **Detect:** a date mismatch between container output and the host/doc, with everything else correct → clock skew, not a defect.

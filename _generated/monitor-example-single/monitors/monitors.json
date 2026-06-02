@@ -1,7 +1,7 @@
 [
   {
     "name": "disk-usage",
-    "command": "df -h . | tail -n +2",
-    "description": "Report current disk usage once at session start."
+    "command": "echo '[monitor:disk-usage]'; df -h . | tail -n +2",
+    "description": "Report current disk usage once at session start. Output is prefixed with a [monitor:disk-usage] marker so the silently-injected context is identifiable."
   }
 ]

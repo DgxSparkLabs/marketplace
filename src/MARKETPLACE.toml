@@ -11,7 +11,7 @@
 # top-level `.claude-plugin/marketplace.json` "name" field by Phase 5 of
 # the generator. For the full byte-by-byte trace of how the install
 # command's name fragments are assembled, see
-# docs/ADDING_A_CONSTRUCT.md § "Trace each fragment to its source".
+# docs/ADDING_A_CONSTRUCT.md section "Trace each fragment to its source".
 #
 # Renaming the org or bumping the version is a single-line edit here
 # followed by `uv run scripts/generate_manifest.py --write`.

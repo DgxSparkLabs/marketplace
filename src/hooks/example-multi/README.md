@@ -11,13 +11,33 @@ Reference plugin demonstrating the **multi-event hook layout**: one plugin's `ho
 - `Stop`, `SubagentStop` — fire when the assistant or a sub-agent ends a turn.
 - `PreCompact` — fires before Claude compacts conversation history.
 
+## A "debug example" — every handler logs its stdin payload
+
+These hooks are written as **debug references**: each handler reads the hook's JSON
+payload from **stdin** (`p="$(cat)"`) and appends a timestamped marker **plus that
+full payload** to `/tmp/hook-fired-<event>.log`. So the sentinel isn't just "it
+fired" — it's a record of *exactly what Claude sends each event*, which is the
+single most useful thing to know when writing your own hook.
+
+> **Read the payload from stdin, not the environment.** A common mistake (which an
+> earlier version of this example made) is to read `${CLAUDE_TOOL_NAME}` from the
+> environment — it is **not populated**. The tool name, tool input, file paths,
+> session id, etc. all arrive as JSON on **stdin**. The `PreToolUse` sentinel makes
+> this concrete, e.g.:
+> ```json
+> {"hook_event_name":"PreToolUse","tool_name":"Edit","tool_input":{"file_path":".../clean.py","old_string":"...","new_string":"..."},"tool_use_id":"toolu_...","cwd":"...","session_id":"..."}
+> ```
+
 ## Verification
 
 ```
 ls /tmp/hook-fired-*.log
+cat /tmp/hook-fired-pretooluse.log        # marker line + the full JSON payload
+# pretty-print the payloads if you have jq:
+grep -v ' fired$' /tmp/hook-fired-pretooluse.log | jq .
 ```
 
-After running a Claude session, each fired event produces a sentinel file with a UTC timestamp line.
+After running a Claude session, each fired event produces a sentinel file containing a UTC timestamp + marker line followed by the verbatim JSON payload.
 
 ## When to choose multi over per-event
 

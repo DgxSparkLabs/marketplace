@@ -5,6 +5,6 @@
     "name": "DgxSparkLabs",
     "url": "https://github.com/DgxSparkLabs"
   },
-  "description": "Three reference LSP servers demonstrating the multi-server plugin layout (illustrative; binaries not bundled).",
+  "description": "Two bundled, dependency-free reference LSP servers (markdown + python) implementing real language-server features \u2014 diagnostics, document symbols, go-to-definition, hover, and references. Works out of the box (only uv required); no external language-server binary to install.",
   "lspServers": "./lsp-config.json"
 }
