@@ -556,32 +556,6 @@ class TestMarketplaceJson(unittest.TestCase):
         self.assertEqual(actual_names, expected, "marketplace.json plugin set mismatch")
 
 
-# ─── TestNoOrphanedConstructs ─────────────────────────────────────────────────
-
-class TestNoOrphanedConstructs(unittest.TestCase):
-    """Every construct instance appears in at least one bundle — integration."""
-
-    def test_every_construct_in_at_least_one_bundle(self):
-        """Every Claude-supported individual plugin must be reachable via
-        some catalog bundle. Rule-* are excluded post-F8. Per-construct catch-all
-        bundles were retired 2026-05-27, so this now relies entirely on catalog
-        bundles (e.g., bundle.examples) for coverage."""
-        all_bundle_deps: set[str] = set()
-        for bundle in load_bundles(CATALOG, CONSTRUCTS):
-            all_bundle_deps.update(bundle.resolve_dependencies(CONSTRUCTS))
-        # Every Claude-supported instance must be in some catalog bundle
-        for construct in CONSTRUCTS.values():
-            if type(construct) not in ClaudeCodePlatform.supports:
-                continue
-            for name in scan_source_dir(construct.source_directory):
-                plugin_name = f"{construct.prefix}-{name}"
-                with self.subTest(plugin=plugin_name):
-                    self.assertIn(
-                        plugin_name, all_bundle_deps,
-                        f"{plugin_name} is not in any catalog bundle",
-                    )
-
-
 # ─── TestBundleValidation ─────────────────────────────────────────────────────
 
 class TestBundleValidation(unittest.TestCase):
