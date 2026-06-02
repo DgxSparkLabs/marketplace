@@ -123,8 +123,8 @@ jobs:
 
       - name: Assert skill appears in Gemini's skill list
         # Match mode: grep substring — catalog row: gemini skills list --all | grep example-single
-        run: gemini skills list --all | grep -F "example-single"
+        run: gemini skills list --all | grep -F "hello"
 
       - name: Cleanup
         if: always()
-        run: gemini skills uninstall example-single || true
+        run: gemini skills uninstall hello || true
