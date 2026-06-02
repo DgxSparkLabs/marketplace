@@ -30,22 +30,22 @@ jobs:
       - name: Register marketplace
         run: claude plugin marketplace add ./
 
-      - name: Install hook-example plugin
-        run: claude plugin install hook-example@dgxsparklabs-marketplace --scope project
+      - name: Install hook-example-multi plugin
+        run: claude plugin install hook-example-multi@dgxsparklabs-marketplace --scope project
 
       - name: Assert plugin details shows hooks section with UserPromptSubmit entry
-        # Match mode: grep substring — catalog row: claude plugin details hook-example shows hooks section including UserPromptSubmit entry
-        run: claude plugin details hook-example | grep -F "UserPromptSubmit"
+        # Match mode: grep substring — catalog row: claude plugin details hook-example-multi shows hooks section including UserPromptSubmit entry
+        run: claude plugin details hook-example-multi@dgxsparklabs-marketplace | grep -F "UserPromptSubmit"
 
       - name: Cleanup
         if: always()
         run: |
-          claude plugin uninstall hook-example --scope project || true
+          claude plugin uninstall hook-example-multi --scope project || true
           claude plugin prune --scope project -y || true
           claude plugin marketplace remove dgxsparklabs-marketplace || true
 
   cursor-emission:
-    # Filesystem assertion: Cursor's per-plugin manifest for hook-example
+    # Filesystem assertion: Cursor's per-plugin manifest for hook-example-multi
     # must include the "hooks" pointer field.
     runs-on: ubuntu-latest
     steps:
@@ -55,11 +55,11 @@ jobs:
           version: "latest"
       - name: Regenerate manifests
         run: uv run scripts/generate_manifest.py
-      - name: Assert .cursor-plugin/plugin.json for hook-example includes 'hooks' field
+      - name: Assert .cursor-plugin/plugin.json for hook-example-multi includes 'hooks' field
         run: |
           python3 -c "
           import json, sys
-          d = json.load(open('_generated/hook-example/.cursor-plugin/plugin.json'))
+          d = json.load(open('_generated/hook-example-multi/.cursor-plugin/plugin.json'))
           sys.exit(0 if 'hooks' in d else 1)
           "
 

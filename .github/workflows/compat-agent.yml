@@ -30,23 +30,23 @@ jobs:
       - name: Register marketplace
         run: claude plugin marketplace add ./
 
-      - name: Install agent-example plugin
-        run: claude plugin install agent-example@dgxsparklabs-marketplace --scope project
+      - name: Install agent-example-single plugin
+        run: claude plugin install agent-example-single@dgxsparklabs-marketplace --scope project
 
       - name: Assert plugin details shows agents section with notebook-reviewer
-        # Match mode: grep substring — catalog row: claude plugin details agent-example shows agents section with notebook-reviewer
-        run: claude plugin details agent-example | grep -F "notebook-reviewer"
+        # Match mode: grep substring — catalog row: claude plugin details agent-example-single shows agents section with notebook-reviewer
+        run: claude plugin details agent-example-single@dgxsparklabs-marketplace | grep -F "notebook-reviewer"
 
       - name: Cleanup
         if: always()
         run: |
-          claude plugin uninstall agent-example --scope project || true
+          claude plugin uninstall agent-example-single --scope project || true
           claude plugin prune --scope project -y || true
           claude plugin marketplace remove dgxsparklabs-marketplace || true
 
   cursor-emission:
     # Filesystem assertion: after generation, Cursor's per-plugin manifest
-    # for agent-example must include the "agents" pointer field.
+    # for agent-example-single must include the "agents" pointer field.
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -57,11 +57,11 @@ jobs:
         run: uv run scripts/generate_manifest.py
       - name: Assert .cursor/agents/notebook-reviewer.md exists
         run: test -f .cursor/agents/notebook-reviewer.md
-      - name: Assert .cursor-plugin/plugin.json for agent-example includes 'agents' field
+      - name: Assert .cursor-plugin/plugin.json for agent-example-single includes 'agents' field
         run: |
           python3 -c "
           import json, sys
-          d = json.load(open('_generated/agent-example/.cursor-plugin/plugin.json'))
+          d = json.load(open('_generated/agent-example-single/.cursor-plugin/plugin.json'))
           sys.exit(0 if 'agents' in d else 1)
           "
 

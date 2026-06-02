@@ -43,7 +43,7 @@ jobs:
         run: |
           WORKDIR=$(mktemp -d)
           pushd "$WORKDIR"
-          agents install skill-example-single --scope project
+          agents install skill-example-single --scope project --marketplace-root "$GITHUB_WORKSPACE"
           test -f .agents/skills/example-single/SKILL.md \
             || (echo "expected .agents/skills/example-single/SKILL.md after install" >&2; exit 1)
           agents uninstall skill-example-single --scope project
@@ -55,7 +55,7 @@ jobs:
         run: |
           WORKDIR=$(mktemp -d)
           pushd "$WORKDIR"
-          agents install rule-example --scope project --agents-only
+          agents install rule-example --scope project --agents-only --marketplace-root "$GITHUB_WORKSPACE"
           test -f .agents/rules/example.md
           test ! -e .cursor/rules/example.md \
             || (echo "--agents-only should NOT spray to .cursor/" >&2; exit 1)
