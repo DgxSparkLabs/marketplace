@@ -21,3 +21,9 @@ jobs:
 
       - name: Run marketplace test suite
         run: uv run tests/test_marketplace.py -v
+
+      - name: Run schema-fitness test suite
+        run: uv run tests/test_schema_fitness.py
+
+      - name: Run agents CLI test suite
+        run: uv run tests/test_agents_cli.py
