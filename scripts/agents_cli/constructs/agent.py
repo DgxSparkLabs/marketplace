@@ -33,7 +33,7 @@ def install(marketplace_root: Path, name: str, *, scope: str, agents_only: bool)
     single .md file we use that; if it contains multiple, we write all of them
     by replacing the destination stem with each source stem.
     """
-    src_agents = marketplace_root / "agents" / name / "agents"
+    src_agents = marketplace_root / "src" / "agents" / name / "agents"
     if not src_agents.exists():
         raise FileNotFoundError(f"agent-{name} not found at {src_agents}")
     src_files = sorted(src_agents.glob("*.md"))

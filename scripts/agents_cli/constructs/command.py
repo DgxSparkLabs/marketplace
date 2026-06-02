@@ -9,7 +9,7 @@ from ..utils.paths import resolve_command
 
 
 def install(marketplace_root: Path, name: str, *, scope: str, agents_only: bool) -> list[Path]:
-    src_dir = marketplace_root / "commands" / name / "commands"
+    src_dir = marketplace_root / "src" / "commands" / name / "commands"
     if not src_dir.exists():
         raise FileNotFoundError(f"command-{name} not found at {src_dir}")
     src_files = sorted(src_dir.glob("*.md"))
