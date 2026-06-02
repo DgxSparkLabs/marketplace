@@ -4,6 +4,8 @@ A multi-platform marketplace of agent skills, rules, and other constructs. Insta
 
 > **2026-05-28 expanded reference set.** The marketplace currently ships **27 plugin entries**: 26 Claude-supported individuals (each construct demonstrates paired `example-single` + `example-multi` layouts; hooks expand further to nine per-event references plus an all-events `example-multi`) plus the `bundle-examples` catalog bundle. One additional `rule-example` is emitted for Cursor/Windsurf/Codex (not a Claude plugin component per F8). The 26 production skills and 21 production rules that previously shipped were archived under `docs/archive/skills-pre-stable-2026-05-26/` and `docs/archive/rules-pre-stable-2026-05-26/` and are re-added one at a time after per-platform verification. See `CHANGELOG.md` for the full transition note.
 
+> **Stability — Claude-first.** The reference set is stable and verified on Claude Code (the QA'd platform). The other five platforms emit, with parity tracked in [`docs/ROADMAP.md`](docs/ROADMAP.md) (#9–#14). New construct PRs are accepted now and validated Claude-first — drop a construct under `src/<construct>/`, open a PR, and on merge it is available to anyone pulling the marketplace.
+
 ## Table of Contents
 
 - [GitHub-Direct Install Support](#github-direct-install-support)
