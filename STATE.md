@@ -12,13 +12,27 @@
 - Fixed the agents CLI to resolve sources under `src/` — `tests/test_agents_cli.py` now passes 25/25.
 - Added a generated, drift-checked `docs/INVENTORY.md` (FR-12) as the authoritative plugin-entry list; fixed `snapshot_tree` to cover file targets.
 
-### Still in progress
+- Relaxed the bundle-membership gate: a construct is installable without catalog-bundle membership (bundles are optional curation now); removed `test_every_construct_in_at_least_one_bundle`.
+- Added `scripts/regen.{sh,ps1}` and `.github/workflows/regen-bot.yml` (auto-regenerate + commit on same-repo PR branches; forks fall back to the drift gate).
+- Release scaffolding: `LICENSE` (MIT), PR/issue templates, `CODE_OF_CONDUCT.md`, `SECURITY.md`, `CODEOWNERS` (commented template), `RELEASING.md`, `.github/dependabot.yml`. Version is already `1.0.0`.
+- CI (`ci.yml`) now runs all four suites (`test_marketplace`, `test_schema_fitness`, `test_agents_cli`, `test_tooling`); fixed stale plugin names in `compat-headless-claude.yml` (left advisory per its promotion plan).
+- Contributor tooling: `scripts/new_construct.py`, `scripts/validate_source.py` (+ `.pre-commit-config.yaml`), `tasks.py`, with `tests/test_tooling.py` (10 tests).
 
-- Relax the bundle-membership test (a construct is now installable without catalog-bundle membership; bundles are optional curation).
-- Regen helper + regen-bot CI.
-- Release scaffolding (LICENSE / templates).
-- CI to run all three suites (`test_marketplace.py`, `test_schema_fitness.py`, `test_agents_cli.py`).
-- Contributor tooling: `new_construct.py`, `validate_source.py`, `tasks.py`.
+### Verified
+
+- `uv run tasks.py verify` → drift-clean + all four suites + `claude plugin validate ./` "Validation passed".
+- Fresh `git clone` reproduces byte-identical (`--check` clean) and runs all four suites green.
+- North-star drop-in proven: `new_construct.py skill <name>` → regenerate → entry appears in `marketplace.json` + `docs/INVENTORY.md` with NO `catalog.toml` edit.
+
+### Owner's remaining manual steps (not done autonomously)
+
+- Push the branch and open the PR(s); the plan's per-phase split maps to the 9 commits `20bd0b5..1cbaaa3` on `chore/housekeeping-and-roadmap`.
+- After merge, tag `v1.0.0` (see `RELEASING.md`).
+- Optional: set the `CODEOWNERS` handle; promote `compat-headless-claude.yml` to required after an observed green run.
+
+### Out of scope (per plan section 4.4 / ROADMAP)
+
+- 6-platform QA parity (#9–#14) and multi-instance fixes (#37–#42); re-adding archived real content (#16–#18); PE-4 pinning example MCP/LSP versions.
 
 ## Session end — 2026-05-28 (afternoon)
 
