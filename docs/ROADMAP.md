@@ -14,6 +14,7 @@ status: live
 - **Done:** PRs #3–#9 landed. Marketplace reduced to 10 example plugins (19 entries). Claude verified clean (9/9 hermetic findings PASS, F4 deferred). Hermetic Claude CI runs on every PR.
 - **Now:** Next platform's QA cycle. Recommended start: **Cursor IDE** (biggest emission surface delta).
 - **Sequencing constraint:** all 6 platforms must verify clean on the minimal example set before any real skill or rule returns from `docs/archive/`.
+- **What the constraint gates:** this 6-platform-parity sequencing gates RE-ADDING the archived real skills/rules (#16–#18) — it does **not** gate accepting *new* construct PRs. New constructs are accepted now and validated Claude-first; the other 5 platforms still emit and their parity is tracked here.
 
 ## Status legend
 

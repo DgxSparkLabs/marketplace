@@ -1,5 +1,23 @@
 # Changelog
 
+## 2026-06-03 — Claude-first stable / PR-friendly groundwork (in progress)
+
+Preparing the first Claude-first stable cut and making the repo friendly to outside contributors. Landed so far:
+
+1. **Tracked previously-untracked LSP/MCP example sources.** The `src/lsp/` and `src/mcp/` example plugin sources were present in the working tree but never committed, so a fresh clone could not reproduce the full generated output. They are now tracked, and a clean clone regenerates identically.
+
+2. **Fixed the agents CLI `src/` path resolution.** The agents CLI still resolved construct sources at the old repo-root locations after the `src/` reorganization; it now points at `src/<construct>/` so it runs from a fresh checkout.
+
+3. **Added a generated, drift-checked `docs/INVENTORY.md`.** Plugin inventory (and counts) now live in one generated file that a test keeps in sync with the actual generated output. Prose docs point readers at `docs/INVENTORY.md` instead of hardcoding counts that go stale.
+
+### In progress
+
+- Relaxing the bundle-membership gate so a new construct is installable without being added to a catalog bundle (bundles become optional curation only).
+- CI auto-regeneration so generated output can't drift from sources.
+- Release scaffolding and contributor tooling for the Claude-first stable cut.
+
+---
+
 ## 2026-05-28 — Symmetric single/multi example set + `src/` reorganization + 15 review-finding fixes
 
 Three changes shipped in one commit on PR #10:

@@ -23,8 +23,8 @@
 > **2026-05-26 minimal-stable-state transition.** The marketplace was reduced to 10 reference plugins (one per construct type) + 1 cross-construct examples bundle + 8 catch-all bundles = **19 plugin entries** (was 81). The 26 production skills and 21 production rules that previously shipped were **archived, not deleted**, into `docs/archive/skills-pre-stable-2026-05-26/` and `docs/archive/rules-pre-stable-2026-05-26/`. Source preserved via `git mv` so every commit history is intact. Real content returns one plugin at a time after each is verified across every platform. See `CHANGELOG.md` for the full transition rationale.
 
 **Last updated:** 2026-05-24, after PR #1 merged to main (cross-platform native install compliance).
-**Branch state:** `main` at `bfb476d` (PR #1 merge commit). All 11 CI workflows green on main. Feature branch `feat/claude-plugin-compliance` preserved per user direction.
-**Active cleanup branch:** `docs/post-merge-cleanup` (audit-trail commits + footnote drops + this HANDOFF refresh). PR follow-up pending.
+**Branch state:** `main` at `4b00faa`. All 11 CI workflows green on main. Feature branch `feat/claude-plugin-compliance` preserved per user direction.
+**Active cleanup branch:** `chore/housekeeping-and-roadmap` (audit-trail commits + footnote drops + this HANDOFF refresh). PR follow-up pending.
 **Net status:** Marketplace is genuinely installable on all 6 platforms via each platform's native mechanism. End-to-end CI assertions verify registration → enumeration → install → use for the CLI-native platforms (Claude/Codex/Gemini). Goal met.
 
 ---
@@ -40,15 +40,12 @@ A **genuinely multi-platform plugin marketplace** for AI coding agents. Installs
 - **Windsurf IDE** — `git clone` + open (Cascade auto-discovers `.windsurf/rules/` AND `.agents/skills/`)
 - **Devin CLI** — `git clone` + `devin skills list` (auto-discovers `.devin/skills/` AND `.agents/skills/`)
 
-Current inventory (post 2026-05-26 minimal-stable-state):
+Current inventory — see [`docs/INVENTORY.md`](./docs/INVENTORY.md) (generated, authoritative) for the exact per-platform plugin-entry counts. Do not hardcode counts here; that file is the source of truth.
 
-- **1 example skill** (`skills/example/`) — 26 production skills archived under `docs/archive/skills-pre-stable-2026-05-26/`
-- **1 example rule** (`rules/example/`) — 21 production rules archived under `docs/archive/rules-pre-stable-2026-05-26/`
-- **`commands/`, `agents/`, `hooks/`, `mcp-servers/`, `lsp-servers/`, `monitors/`, `output-styles/`, `themes/`** — each has `example/`
-- **10 plugin entries** in `.claude-plugin/marketplace.json` (was 81): 9 Claude-supported individuals + 1 catalog bundle (`bundle-examples`). Per-construct catch-alls retired 2026-05-27.
-- **1 skill entry** in `.agents/skills/` (was 27)
-- **7 plugin entries** in `.cursor-plugin/marketplace.json` (was 49): rules + skills + agent + command + hook + mcp (Cursor's supported subset)
-- **99+ tests** across `tests/test_marketplace.py` + `tests/test_schema_fitness.py`
+- Example skills/rules ship under `src/<construct>/`; pre-stable production content is archived under `docs/archive/skills-pre-stable-2026-05-26/` and `docs/archive/rules-pre-stable-2026-05-26/`.
+- `.claude-plugin/marketplace.json` lists Claude-supported individuals + catalog bundles. Per-construct catch-alls retired 2026-05-27.
+- `.cursor-plugin/marketplace.json` lists Cursor's supported subset (rules + skills + agent + command + hook + mcp).
+- Tests: run all three suites — `tests/test_marketplace.py` + `tests/test_schema_fitness.py` + `tests/test_agents_cli.py`.
 
 ---
 
@@ -124,8 +121,9 @@ The goal is met. Remaining is polish / future-proofing:
 ```bash
 uv run scripts/generate_manifest.py           # regenerate everything from sources
 uv run scripts/generate_manifest.py --check   # CI gate: drift-detection mode
-uv run tests/test_marketplace.py              # 52 tests, must all pass
-uv run tests/test_marketplace.py -v           # verbose
+uv run tests/test_marketplace.py              # must all pass
+uv run tests/test_schema_fitness.py           # schema fitness suite
+uv run tests/test_agents_cli.py               # agents-cli suite
 ```
 
 For hermetic CI re-verification before pushing:
@@ -146,13 +144,12 @@ marketplace/
 ├── README.md                           Per-platform install + GitHub-Direct Install Support matrix
 ├── HANDOFF.md                          This file
 ├── gemini-extension.json               Root-level for `gemini extensions install <github-url>` (Phase 4.5)
-├── .claude-plugin/marketplace.json     Claude marketplace manifest (19 plugins post 2026-05-26; was 81 pre-archive)
-├── .cursor-plugin/marketplace.json     Cursor team-marketplace manifest (6 plugins post 2026-05-26; was 49 pre-archive; Phase 6)
+├── .claude-plugin/marketplace.json     Claude marketplace manifest (entry count: docs/INVENTORY.md, authoritative)
+├── .cursor-plugin/marketplace.json     Cursor team-marketplace manifest (entry count: docs/INVENTORY.md; Phase 6)
 ├── .agents/skills/<name>/              Cross-platform skill mirror (Windsurf+Cursor+Devin; Phase 1.5 of Phase 5)
-├── skills/<name>/                      Sources + skills/example/
-├── rules/<name>/                       Sources + rules/example/
-├── commands/example/, agents/example/, hooks/example/, mcp-servers/example/,
-│   lsp-servers/example/, monitors/example/, output-styles/example/, themes/example/
+├── src/<construct>/<name>/             Sources now live under src/ (cd7a7d8 reorg): src/skills/, src/rules/,
+│   src/commands/, src/agents/, src/hooks/, src/mcp-servers/, src/lsp-servers/, src/monitors/,
+│   src/output-styles/, src/themes/ — each with its example/ (e.g. src/skills/example-single/)
 ├── _generated/<plugin>/                Per-plugin wrappers; now contains:
 │   ├── .claude-plugin/plugin.json     (always, written by Construct.emit in Phase 1)
 │   ├── .codex-plugin/plugin.json      (where type(construct) ∈ CodexPlatform.supports; Phase 1.5)
@@ -173,7 +170,7 @@ marketplace/
 │   ├── generate_manifest.py            6-phase orchestrator (was 5; added 1.5/4.5/6 in Phase 5)
 │   ├── validate-codex-local.sh         Local-dev Codex validation
 │   └── validate-gemini-local.sh        Local-dev Gemini validation
-├── tests/test_marketplace.py           52 tests (18 added in Phase 5)
+├── tests/                              test_marketplace.py + test_schema_fitness.py + test_agents_cli.py
 ├── docs/
 │   ├── RESUME_HERE.md                  ★ Start here on re-entry
 │   ├── PLATFORMS.md                    Per-platform install/support/discovery/CI reference (master doc)
@@ -199,14 +196,14 @@ marketplace/
 
 ## Architecture Summary
 
-- **Sources of truth**: `MARKETPLACE.toml`, `catalog.toml`, source content under `<construct>/<name>/`. Humans edit these.
+- **Sources of truth**: `MARKETPLACE.toml`, `catalog.toml`, source content under `src/<construct>/<name>/` (cd7a7d8 reorg). Humans edit these.
 - **Generated**: `_generated/`, `.codex/`, `.gemini/`, `.cursor/`, `.windsurf/`, `.devin/`, `.agents/`, `.claude-plugin/marketplace.json`, `.cursor-plugin/marketplace.json`, `gemini-extension.json` (root). Generator produces all from sources.
 - **Construct classes** (10, in `scripts/constructs.py`) encapsulate per-construct build + emit. New construct = new class + registry entry.
 - **Platform classes** (7, in `scripts/platforms.py`) encapsulate per-platform mirror + `build_plugin_json` + `supports`. New platform = new class + registry entry.
 - **`supports`-gated emission** (Phase 5 / Decision B2): per-platform per-plugin manifests are written only where `type(construct) in platform.supports`. Adding a platform/construct automatically updates manifest emission via the protocol; no special cases.
 - **Bundles**: catalog only (`catalog.toml [bundle.*]` → Phase 2a). Per-construct code-generated catch-alls (Phase 2b) retired 2026-05-27 — they cluttered the marketplace listing without curation value.
 - **Rules**: install via `/plugin install` then activate via `activate.sh` symlink. Workaround for Claude Code's lack of native `rules` field. See `docs/RULE_FORMAT.md`.
-- **Multi-platform validation**: 10 compat workflows on push/PR; Phase 5 added enumeration + install assertions for Claude/Codex/Gemini. Verified end-to-end on main at `bfb476d`.
+- **Multi-platform validation**: 10 compat workflows on push/PR; Phase 5 added enumeration + install assertions for Claude/Codex/Gemini. Verified end-to-end on main at `4b00faa`.
 
 ---
 
@@ -227,11 +224,11 @@ marketplace/
 
 See [`docs/ADDING_A_CONSTRUCT.md`](./docs/ADDING_A_CONSTRUCT.md). General workflow:
 
-1. Copy `<construct>/example/` to `<construct>/<your-name>/`
+1. Copy `src/<construct>/example/` to `src/<construct>/<your-name>/`
 2. Edit the copied content
-3. If skill or rule: add to a bundle in `catalog.toml`
+3. (Optional) Add to a bundle in `catalog.toml` — bundles are optional curation; a construct is installable without bundle membership (the requirement was removed)
 4. `uv run scripts/generate_manifest.py`
-5. `uv run tests/test_marketplace.py`
+5. Run the three test suites (`tests/test_marketplace.py`, `tests/test_schema_fitness.py`, `tests/test_agents_cli.py`)
 6. Commit (no AI co-author attribution)
 
 The new per-platform per-plugin manifests (`.codex-plugin/`, `.cursor-plugin/`) are auto-generated; you don't write them by hand.

@@ -2,6 +2,24 @@
 
 > Live within-session truth. Pair with `HANDOFF.md` (between-sessions) and `PITFALLS.md` (cross-session lessons).
 
+## Session — 2026-06-03 (stable/PR-friendly implementation)
+
+**Goal:** land the in-flight tree and move toward a Claude-first stable release.
+
+### Landed
+
+- Committed the untracked in-flight sources: `example_lsp.py` plus two `mcp_logging_proxy.py`, and regenerated output. `.claude/` stays ignored (operator's local config).
+- Fixed the agents CLI to resolve sources under `src/` — `tests/test_agents_cli.py` now passes 25/25.
+- Added a generated, drift-checked `docs/INVENTORY.md` (FR-12) as the authoritative plugin-entry list; fixed `snapshot_tree` to cover file targets.
+
+### Still in progress
+
+- Relax the bundle-membership test (a construct is now installable without catalog-bundle membership; bundles are optional curation).
+- Regen helper + regen-bot CI.
+- Release scaffolding (LICENSE / templates).
+- CI to run all three suites (`test_marketplace.py`, `test_schema_fitness.py`, `test_agents_cli.py`).
+- Contributor tooling: `new_construct.py`, `validate_source.py`, `tasks.py`.
+
 ## Session end — 2026-05-28 (afternoon)
 
 **Branch:** `chore/housekeeping-and-roadmap` (PR #10, 15 commits after this one)

@@ -79,10 +79,10 @@ Invoke. Every plugin's slash form follows `/dgxsparklabs-<construct>-<plugin>:<c
 | `command-example-multi` | `/dgxsparklabs-command-example-multi:hello` | Formatted lab-notebook entry |
 | `agent-example-multi` | `/agents` → pick `dgxsparklabs-agent-example-multi:notebook-reviewer` | Sub-agent: skeptical peer review |
 | `hook-example-userpromptsubmit` | (passive — fires per prompt) | Per-event hook reference; sentinel at `/tmp/hook-fired-userpromptsubmit.log` |
-| `output-style-example-multi` | `/output-style Lab Notebook Voice` | Switch reply voice |
+| `output-style-example-multi` | set via `/config` → Output style → pick `Lab Notebook Voice` | Switch reply voice |
 | `theme-example-multi` | `/theme Lab Notebook` | Switch terminal colors |
 
-For the full 27-plugin inventory plus the single-vs-multi distinction per construct, see `docs/CONSTRUCT_TYPES.md`. Skills have a flat-form shortcut (just `/notebook`, `/status`, `/hello`) — Claude resolves them through the same namespace; use the qualified form when autocomplete is ambiguous.
+For the authoritative, generated plugin inventory see [`docs/INVENTORY.md`](docs/INVENTORY.md); for the single-vs-multi distinction per construct, see `docs/CONSTRUCT_TYPES.md`. Skills have a flat-form shortcut (just `/notebook`, `/status`, `/hello`) — Claude resolves them through the same namespace; use the qualified form when autocomplete is ambiguous.
 
 ### Codex
 
@@ -445,23 +445,24 @@ devin rules paths
 
 ```
 marketplace/
-├── MARKETPLACE.toml              # Marketplace identity (owner, version, license)
-├── catalog.toml                  # Bundle definitions only
 ├── gemini-extension.json         # Root-level copy for gemini extensions install <github-url>
 ├── .claude-plugin/
 │   └── marketplace.json          # Generated root manifest
 ├── .cursor-plugin/
 │   └── marketplace.json          # Cursor team-marketplace manifest (Cursor 2.6+)
-├── skills/                       # Source skill directories (one per skill)
-├── rules/                        # Source rule directories (one per rule)
-├── commands/                     # Command construct sources
-├── agents/                       # Agent construct sources
-├── hooks/                        # Hook construct sources
-├── mcp-servers/                  # MCP server construct sources
-├── lsp-servers/                  # LSP server construct sources
-├── monitors/                     # Monitor construct sources
-├── output-styles/                # Output style construct sources
-├── themes/                       # Theme construct sources
+├── src/
+│   ├── MARKETPLACE.toml          # Marketplace identity (owner, version, license)
+│   ├── catalog.toml              # Bundle definitions only
+│   ├── skills/                   # Source skill directories (one per skill)
+│   ├── rules/                    # Source rule directories (one per rule)
+│   ├── commands/                 # Command construct sources
+│   ├── agents/                   # Agent construct sources
+│   ├── hooks/                    # Hook construct sources
+│   ├── mcp-servers/              # MCP server construct sources
+│   ├── lsp-servers/              # LSP server construct sources
+│   ├── monitors/                 # Monitor construct sources
+│   ├── output-styles/            # Output style construct sources
+│   └── themes/                   # Theme construct sources
 ├── _generated/                   # Generated plugin wrappers + bundles
 ├── .agents/
 │   └── skills/                   # Cross-platform skills mirror (Windsurf, Cursor, Devin)
@@ -486,7 +487,7 @@ uv run scripts/generate_manifest.py
 
 ## Contributing
 
-To add a new construct, see [`docs/ADDING_A_CONSTRUCT.md`](docs/ADDING_A_CONSTRUCT.md). The guide covers all 10 construct types with a step-by-step checklist per type.
+To add a new construct, see [`docs/ADDING_A_CONSTRUCT.md`](docs/ADDING_A_CONSTRUCT.md). The guide covers all 10 construct types with a step-by-step checklist per type. For the full contributor workflow see [`CONTRIBUTING.md`](CONTRIBUTING.md), and for what's planned next (including per-platform parity status) see [`docs/ROADMAP.md`](docs/ROADMAP.md).
 
 ---
 
