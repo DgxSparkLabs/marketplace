@@ -27,3 +27,6 @@ jobs:
 
       - name: Run agents CLI test suite
         run: uv run tests/test_agents_cli.py
+
+      - name: Run contributor-tooling test suite
+        run: uv run tests/test_tooling.py
