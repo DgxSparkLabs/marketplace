@@ -1,0 +1,6 @@
+{
+  "name": "hook-example-notification",
+  "version": "1.0.0",
+  "description": "Single-event reference hook for Notification. Fires when Claude wants to alert the user (e.g. tool-permission prompts); appends a timestamped marker plus the full hook JSON payload (read from stdin) to /tmp/hook-fired-notification.log.",
+  "hooks": "./hooks/hooks.json"
+}

@@ -450,7 +450,7 @@ Every plugin in this marketplace is named `<prefix>-<instance-name>`:
 | Monitor | `monitor-` | `monitor-example` (Claude-only consumer) |
 | Output style | `output-style-` | `output-style-example` (Claude-only consumer) |
 | Theme | `theme-` | `theme-example` (Claude-only consumer) |
-| Bundle (dep-only) | `bundle-` | `bundle-skill-all`, `bundle-communication-skills` |
+| Bundle (dep-only) | `bundle-` | `bundle-examples`, `bundle-communication-skills` |
 
 ### Slash command namespacing (Claude-specific)
 
@@ -458,14 +458,15 @@ Per [code.claude.com/docs/en/plugins](https://code.claude.com/docs/en/plugins) (
 
 | Construct | Invocation form | Source |
 |---|---|---|
-| Skill | `/<plugin-name>:<skill-name>` (e.g., `/skill-example:example-skill`) | plugins.md, skills.md |
-| Command | `/<plugin-name>:<file-stem>` | skills.md ("Custom commands have been merged into skills") |
-| Agent (sub-agent) | `<plugin-name>:<agent-name>` (no `/` — appears in `/agents` UI) | plugins-reference.md |
-| MCP tool | `mcp__<plugin-name>__<tool-name>` (hook-matcher form) OR `plugin:<plugin-name>:<tool>` (CLI display form) | hooks.md, plugins-reference.md |
+| Skill (solo) | `/dgxsparklabs-skill-<plugin>:<skill-name>` (e.g., `/dgxsparklabs-skill-example-single:hello`) | plugins.md, skills.md |
+| Skill (multi) | `/dgxsparklabs-skill-<plugin>:<skill-name>` (e.g., `/dgxsparklabs-skill-example:notebook` or `/dgxsparklabs-skill-example:status`) | plugins.md, skills.md |
+| Command | `/dgxsparklabs-command-<plugin>:<file-stem>` (e.g., `/dgxsparklabs-command-example:hello`) | skills.md ("Custom commands have been merged into skills") |
+| Agent (sub-agent) | `dgxsparklabs-agent-<plugin>:<agent-name>` (no `/` — appears in `/agents` UI; e.g., `dgxsparklabs-agent-example:notebook-reviewer`) | plugins-reference.md |
+| MCP tool | `mcp__dgxsparklabs-mcp-<plugin>__<server-key>__<tool>` (hook-matcher form) OR `plugin:dgxsparklabs-mcp-<plugin>:<server-key>` (CLI display form) | hooks.md, plugins-reference.md |
 
-A common operator confusion: typing `/` in Claude shows skill entries that look "flat" (e.g., `example-skill`) — the autocomplete UI elides the namespace prefix, but the **resolved** invocation is always `/skill-example:example-skill`. This is UI sugar, not a flatten feature.
+A common operator confusion: typing `/` in Claude shows skill entries that look "flat" (e.g., bare `/notebook`, `/status`, `/hello`) — the flat form also resolves per `code.claude.com/docs/en/skills`, but the **canonical** invocation is the namespaced form `/dgxsparklabs-skill-<plugin>:<skill>`. The slash namespace is unique per plugin as of 2026-05-28 (an earlier shared-namespace attempt called Path A, `d641f92` on 2026-05-27, was reverted — see `docs/research/multi-instance-claude-only-2026-05-27/PLAN.md`). A single multi-skill plugin like `skill-example` (which ships `notebook` and `status`) groups its skills under one plugin namespace; separate plugins like `skill-example-single` get their own namespace.
 
-For **bundles**, namespacing follows each contained plugin's own name. Installing `bundle-skill-all` does not introduce a `bundle-skill-all:*` namespace — the contained skills appear under their own plugin namespaces (e.g., `/skill-act-runner:act-runner`).
+For **bundles**, namespacing follows each contained plugin's own name. Installing `bundle-examples` does not introduce a `bundle-examples:*` namespace — the contained plugins appear under their own plugin namespaces (e.g., `/dgxsparklabs-skill-example:notebook`, `/dgxsparklabs-command-example:hello`).
 
 Reference: [code.claude.com/docs/en/plugins-reference#plugin-components-reference](https://code.claude.com/docs/en/plugins-reference#plugin-components-reference).
 
@@ -476,12 +477,11 @@ A **bundle** is a dependency-only plugin that installs a curated group. An **ind
 | Bundle kind | How named | Source |
 |---|---|---|
 | Domain bundle (curated) | `bundle-<domain>-<construct-plural>` (e.g., `bundle-communication-skills`) | declared in `catalog.toml` |
-| Catch-all bundle (every plugin of one construct type) | `bundle-<prefix>-all` (e.g., `bundle-skill-all`) | code-generated; not declared in `catalog.toml` |
 | Cross-construct examples bundle | `bundle-examples` | declared in `catalog.toml` — installs one of each construct type for tutorial purposes |
 
 Installing a bundle in Claude auto-installs its dependencies (the install output reports `(+ N dependencies: ...)`). Uninstalling a bundle does NOT auto-remove its dependencies — they orphan until `claude plugin prune --scope <scope> -y`.
 
-**Claude-side bundle cascade after the 2026-05-26 rule deprecation**: bundles whose members are exclusively `rule:` references (`bundle-quality-rules`, `bundle-workflow-rules`, `bundle-documentation-rules`, `bundle-environment-rules`, `bundle-notifications-rules`) and the catch-all `bundle-rule-all` are no longer surfaced in Claude's marketplace listing because their dependencies are no longer valid Claude plugins. They remain available to Cursor / Codex / Gemini / Windsurf where rule plugins are still valid. For Claude users who want the rule content, use the symlink-or-copy approach described in the Claude section above.
+**Per-construct catch-all bundles retired 2026-05-27.** The generator used to emit `bundle-skill-all`, `bundle-agent-all`, …, one per construct type — `bundle-rule-all` was already gone after the 2026-05-26 Claude rule deprecation. They cluttered the marketplace listing without adding curation value (a "bundle of every skill" is just a filtered view of `claude plugin list --available`). To replicate the install-everything-of-one-construct workflow, use the jq filter pattern from `docs/TEST_YOURSELF.md` to enumerate by prefix and pipe to `claude plugin install`.
 
 ## Troubleshooting
 

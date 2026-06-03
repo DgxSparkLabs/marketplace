@@ -1,0 +1,10 @@
+{
+  "name": "dgxsparklabs-lsp-example-multi",
+  "version": "1.0.0",
+  "author": {
+    "name": "DgxSparkLabs",
+    "url": "https://github.com/DgxSparkLabs"
+  },
+  "description": "Two bundled, dependency-free reference LSP servers (markdown + python) implementing real language-server features \u2014 diagnostics, document symbols, go-to-definition, hover, and references. Works out of the box (only uv required); no external language-server binary to install.",
+  "lspServers": "./lsp-config.json"
+}

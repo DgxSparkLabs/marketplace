@@ -1,0 +1,20 @@
+=== Check 1: _generated/rule-*/.claude-plugin/plugin.json count ===
+0
+
+=== Check 2: activate.sh count ===
+0
+
+=== Check 3: rule-* directories in _generated ===
+/workspace/marketplace/_generated/rule-autonomous-persistence
+/workspace/marketplace/_generated/rule-blast-radius
+/workspace/marketplace/_generated/rule-code-hygiene
+/workspace/marketplace/_generated/rule-continuous-improvement
+/workspace/marketplace/_generated/rule-document-lifecycle
+
+=== Check 4: rule-* in marketplace.json plugin list ===
+0
+
+=== Check 5: bundle-quality-rules in marketplace.json ===
+
+=== Check 6: total plugin count ===
+53

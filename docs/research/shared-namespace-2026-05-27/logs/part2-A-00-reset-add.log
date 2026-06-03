@@ -1,0 +1,13 @@
+✔ Successfully removed marketplace: dgxsparklabs-marketplace
+=== state cleared ===
+claude-code-skills
+
+=== add marketplace ===
+Adding marketplace…✔ Successfully added marketplace: dgxsparklabs-marketplace (declared in user settings)
+
+=== marketplace list ===
+Configured marketplaces:
+
+  ❯ dgxsparklabs-marketplace
+    Source: Directory (/tmp/workspace)
+

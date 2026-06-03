@@ -19,16 +19,17 @@ cd marketplace
 # macOS/Linux:    curl -LsSf https://astral.sh/uv/install.sh | sh
 # Windows (PS):   irm https://astral.sh/uv/install.ps1 | iex
 
-# 3. Run the test suite (78 marketplace + 21 schema-fitness = 99 tests; should all pass)
+# 3. Run the test suite (should all pass)
 uv run tests/test_marketplace.py
 uv run tests/test_schema_fitness.py
+uv run tests/test_agents_cli.py
 
 # 4. Regenerate manifests + mirrors from sources
 uv run scripts/generate_manifest.py
 
 # 5. View the generated outputs
 ls _generated/                          # per-plugin wrappers (one per construct + bundles)
-cat .claude-plugin/marketplace.json     # top-level manifest (81 plugin entries)
+cat .claude-plugin/marketplace.json     # top-level manifest (plugin count: see docs/INVENTORY.md, generated/authoritative)
 ls .agents/skills/                      # cross-platform skill mirror (Windsurf/Cursor/Devin)
 ```
 
@@ -38,19 +39,19 @@ No project-level Python deps. Every script declares its own dependencies via PEP
 
 ### Add a new skill
 
-Copy `skills/example/` to `skills/<your-skill-name>/`, edit the `SKILL.md` frontmatter and body, optionally add to a bundle in `catalog.toml`, then regenerate. The full step-by-step is in [[ADDING_A_CONSTRUCT]]; the frontmatter field reference is in [[SKILL_FORMAT]].
+Copy `src/skills/example-single/` to `src/skills/<your-skill-name>/`, edit the `SKILL.md` frontmatter and body, then regenerate. The full step-by-step is in [[ADDING_A_CONSTRUCT]]; the frontmatter field reference is in [[SKILL_FORMAT]].
 
 ### Add a new rule
 
-Copy `rules/example/` to `rules/<your-rule-name>/`, edit `rule.md` (and the `formats/` files for Cursor/Windsurf if needed), regenerate. See [[ADDING_A_CONSTRUCT]] for the workflow and [[RULE_FORMAT]] for the multi-format spec (rule.md + Windsurf + Cursor + AGENTS.md).
+Copy `src/rules/example/` to `src/rules/<your-rule-name>/`, edit `rule.md` (and the `formats/` files for Cursor/Windsurf if needed), regenerate. See [[ADDING_A_CONSTRUCT]] for the workflow and [[RULE_FORMAT]] for the multi-format spec (rule.md + Windsurf + Cursor + AGENTS.md).
 
 ### Add a new MCP server / hook / agent / etc.
 
-Same pattern — copy `<source-dir>/example/`, edit, regenerate. The full per-construct table (source dir, example template, description source) is in [[CONSTRUCT_TYPES]]; the workflow is identical for all 10 construct types per [[ADDING_A_CONSTRUCT]].
+Same pattern — copy `src/<construct>/<name>/`, edit, regenerate. The full per-construct table (source dir, example template, description source) is in [[CONSTRUCT_TYPES]]; the workflow is identical for all 10 construct types per [[ADDING_A_CONSTRUCT]].
 
 ### Add a new construct type
 
-Adding an 11th construct type means writing a new class in `scripts/constructs.py` implementing the `Construct` protocol (`prefix`, `source_directory`, `category`, `build_plugin_json`, `emit`) and registering it in the `CONSTRUCTS` dict. Then declare `supports` membership in any `Platform` class that should host it (see [[ARCHITECTURE#The two protocols]]). Phase 1 picks up the new construct automatically; Phase 1.5 emits per-platform manifests via the `supports` gate; the code-generated `bundle-<prefix>-all` catch-all is created by Phase 2b. No generator-loop changes needed.
+Adding an 11th construct type means writing a new class in `scripts/constructs.py` implementing the `Construct` protocol (`prefix`, `source_directory`, `category`, `build_plugin_json`, `emit`) and registering it in the `CONSTRUCTS` dict. Then declare `supports` membership in any `Platform` class that should host it (see [[ARCHITECTURE#The two protocols]]). Phase 1 picks up the new construct automatically; Phase 1.5 emits per-platform manifests via the `supports` gate. No generator-loop changes needed.
 
 ### Add a new platform
 
@@ -65,7 +66,7 @@ When you're ready to contribute changes back upstream:
 3. **Make your changes** per the [[#Adding things]] section above.
 4. **Regenerate and check for drift**: `uv run scripts/generate_manifest.py --check`. This must exit 0.
 5. **Validate generated plugin manifests** (see [[#Running `claude plugin validate`]] below): `claude plugin validate _generated/<your-plugin>` for each plugin you added or changed, AND `claude plugin validate ./` for the marketplace as a whole. Both must produce zero warnings — CI gates on this via `.github/workflows/compat-validate.yml`.
-6. **Run the test suite**: `uv run tests/test_marketplace.py` (78 tests) AND `uv run tests/test_schema_fitness.py` (21 tests). Both must exit 0.
+6. **Run the test suite**: `uv run tests/test_marketplace.py`, `uv run tests/test_schema_fitness.py`, AND `uv run tests/test_agents_cli.py`. All must exit 0.
 7. **Open a PR** against `main`. See the [[#PR-only flow (never push to main)]] convention below.
 
 ## Testing
@@ -73,20 +74,22 @@ When you're ready to contribute changes back upstream:
 ### Running the test suite
 
 ```bash
-uv run tests/test_marketplace.py        # all 78 marketplace tests
-uv run tests/test_schema_fitness.py     # all 21 platform-schema-fitness tests
+uv run tests/test_marketplace.py        # marketplace tests
+uv run tests/test_schema_fitness.py     # platform-schema-fitness tests
+uv run tests/test_agents_cli.py         # agents-cli tests
 uv run tests/test_marketplace.py -v     # verbose
 uv run tests/test_marketplace.py -k rule  # only rule-related tests
 ```
 
-Tests live in two files:
+Tests live in three files:
 
-- `tests/test_marketplace.py` (78 tests): directory structure, YAML frontmatter parity, catalog consistency, generator drift, manifest schema, per-platform per-plugin manifest emission, mirror dir hygiene (no leaked `.claude-plugin/`), secret scanning.
-- `tests/test_schema_fitness.py` (21 tests): per-platform schema fitness — validates emitted manifests against reference JSON Schemas captured directly from each platform's docs (Cursor `SkillConstruct` plugin.json, Gemini `AgentConstruct` frontmatter, Windsurf hooks event names + shape, Cursor hooks shape + `version` presence, Gemini hooks event-name vocabulary, marketplace.json description presence, LSP / monitor / theme / hook example schemas).
+- `tests/test_marketplace.py`: directory structure, YAML frontmatter parity, catalog consistency, generator drift, manifest schema, per-platform per-plugin manifest emission, mirror dir hygiene (no leaked `.claude-plugin/`), secret scanning.
+- `tests/test_schema_fitness.py`: per-platform schema fitness — validates emitted manifests against reference JSON Schemas captured directly from each platform's docs (Cursor `SkillConstruct` plugin.json, Gemini `AgentConstruct` frontmatter, Windsurf hooks event names + shape, Cursor hooks shape + `version` presence, Gemini hooks event-name vocabulary, marketplace.json description presence, LSP / monitor / theme / hook example schemas).
+- `tests/test_agents_cli.py` (25 tests): the agents-CLI surface.
 
-Always run both before committing.
+Always run all three before committing.
 
-The drift gate (`uv run scripts/generate_manifest.py --check`) runs in CI and exits 1 if regenerated output differs from committed output. Run it before pushing if you've changed anything under `scripts/`, `<construct>/`, or `MARKETPLACE.toml`/`catalog.toml`.
+The drift gate (`uv run scripts/generate_manifest.py --check`) runs in CI and exits 1 if regenerated output differs from committed output. Run it before pushing if you've changed anything under `scripts/`, `src/<construct>/`, or `MARKETPLACE.toml`/`catalog.toml`.
 
 ### Running `claude plugin validate`
 
@@ -107,7 +110,7 @@ Per [code.claude.com/docs/en/plugins-reference#unrecognized-fields](https://code
 **When to run it**:
 
 - After adding a new plugin (any construct type).
-- After editing any `<construct>/<plugin>/.claude-plugin/plugin.json`, `MARKETPLACE.toml` description, or any source file the generator inlines into `_generated/<plugin>/.claude-plugin/plugin.json`.
+- After editing any `src/<construct>/<plugin>/.claude-plugin/plugin.json`, `MARKETPLACE.toml` description, or any source file the generator inlines into `_generated/<plugin>/.claude-plugin/plugin.json`.
 - Before opening or updating a PR — CI will fail if your changes introduce any warning or error.
 
 **How CI enforces it**:
@@ -212,4 +215,4 @@ Rules consume agent context in every session. Verbose rules dilute attention and
 
 ---
 
-*Last updated: 2026-05-24.*
+*Last updated: 2026-06-03.*

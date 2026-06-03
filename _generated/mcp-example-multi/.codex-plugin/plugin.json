@@ -1,0 +1,6 @@
+{
+  "name": "mcp-example-multi",
+  "version": "1.0.0",
+  "description": "Three reference MCP servers demonstrating the multi-server plugin layout.",
+  "mcpServers": "./mcp.json"
+}

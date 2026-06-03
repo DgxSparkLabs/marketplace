@@ -17,7 +17,7 @@ from ..utils.paths import resolve_mcp
 
 def install(marketplace_root: Path, name: str, *, scope: str, agents_only: bool) -> list[Path]:
     src_plugin_json = (
-        marketplace_root / "mcp-servers" / name / ".claude-plugin" / "plugin.json"
+        marketplace_root / "src" / "mcp-servers" / name / ".claude-plugin" / "plugin.json"
     )
     if not src_plugin_json.exists():
         raise FileNotFoundError(f"mcp-{name} not found at {src_plugin_json}")

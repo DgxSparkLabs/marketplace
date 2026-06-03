@@ -1,0 +1,15 @@
+{
+  "description": "Single-event reference hook for SubagentStop. Fires when a sub-agent's turn ends; appends a timestamped marker plus the full hook JSON payload (read from stdin) to /tmp/hook-fired-subagentstop.log.",
+  "hooks": {
+    "SubagentStop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "p=\"$(cat)\"; { echo \"$(date -u +%FT%TZ) subagentStop fired\"; echo \"$p\"; echo; } >> /tmp/hook-fired-subagentstop.log"
+          }
+        ]
+      }
+    ]
+  }
+}

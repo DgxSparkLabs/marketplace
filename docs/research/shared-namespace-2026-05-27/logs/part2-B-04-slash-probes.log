@@ -1,0 +1,45 @@
+=== probe: /dgxsparklabs-skill:a ===
+OK stub.
+--- command-name ---
+<command-name>/dgxsparklabs-skill:a</command-name>
+--- registry hits for letter a ---
+dgxsparklabs-skill:a
+dgxsparklabs-skill:a: scale probe a
+dgxsparklabs-skill:a</command-message>
+
+=== probe: /dgxsparklabs-skill:b ===
+OK stub.
+--- command-name ---
+<command-name>/dgxsparklabs-skill:b</command-name>
+--- registry hits for letter b ---
+dgxsparklabs-skill:b
+dgxsparklabs-skill:b: scale probe b
+dgxsparklabs-skill:b</command-message>
+
+=== probe: /dgxsparklabs-skill:c ===
+OK stub.
+--- command-name ---
+<command-name>/dgxsparklabs-skill:c</command-name>
+--- registry hits for letter c ---
+dgxsparklabs-skill:c
+dgxsparklabs-skill:c: scale probe c
+dgxsparklabs-skill:c</command-message>
+
+=== probe: /dgxsparklabs-skill:d ===
+OK stub.
+--- command-name ---
+<command-name>/dgxsparklabs-skill:d</command-name>
+--- registry hits for letter d ---
+dgxsparklabs-skill:d
+dgxsparklabs-skill:d: scale probe d
+dgxsparklabs-skill:d</command-message>
+
+=== probe: /dgxsparklabs-skill:e ===
+OK stub.
+--- command-name ---
+<command-name>/dgxsparklabs-skill:e</command-name>
+--- registry hits for letter e ---
+dgxsparklabs-skill:e
+dgxsparklabs-skill:e: scale probe e
+dgxsparklabs-skill:e</command-message>
+

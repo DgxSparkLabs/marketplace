@@ -1,0 +1,12 @@
+{
+  "name": "dgxsparklabs-theme-example-multi",
+  "version": "1.0.0",
+  "author": {
+    "name": "DgxSparkLabs",
+    "url": "https://github.com/DgxSparkLabs"
+  },
+  "description": "Three reference themes demonstrating the multi-theme plugin layout.",
+  "experimental": {
+    "themes": "./themes"
+  }
+}

@@ -30,26 +30,26 @@ jobs:
       - name: Register marketplace
         run: claude plugin marketplace add ./
 
-      - name: Install command-example plugin
-        run: claude plugin install command-example@dgxsparklabs-marketplace --scope project
+      - name: Install command-example-single plugin
+        run: claude plugin install command-example-single@dgxsparklabs-marketplace --scope project
 
       - name: Assert plugin is listed (grep match)
         # Match mode: grep substring — catalog row: claude plugin list → shows installed entry
-        run: claude plugin list | grep -F "command-example@dgxsparklabs-marketplace"
+        run: claude plugin list | grep -F "command-example-single@dgxsparklabs-marketplace"
 
       - name: Assert plugin details shows commands section
         # Match mode: grep substring — catalog row: claude plugin details shows commands section with one entry
-        run: claude plugin details command-example | grep -F "command-example"
+        run: claude plugin details command-example-single@dgxsparklabs-marketplace | grep -F "command-example-single"
 
       - name: Cleanup
         if: always()
         run: |
-          claude plugin uninstall command-example --scope project || true
+          claude plugin uninstall command-example-single --scope project || true
           claude plugin prune --scope project -y || true
           claude plugin marketplace remove dgxsparklabs-marketplace || true
 
   cursor-emission:
-    # Filesystem assertion: Cursor's per-plugin manifest for command-example
+    # Filesystem assertion: Cursor's per-plugin manifest for command-example-single
     # must include the "commands" pointer field (Cursor 2.4+ schema).
     runs-on: ubuntu-latest
     steps:
@@ -59,10 +59,10 @@ jobs:
           version: "latest"
       - name: Regenerate manifests
         run: uv run scripts/generate_manifest.py
-      - name: Assert .cursor-plugin/plugin.json for command-example includes 'commands' field
+      - name: Assert .cursor-plugin/plugin.json for command-example-single includes 'commands' field
         run: |
           python3 -c "
           import json, sys
-          d = json.load(open('_generated/command-example/.cursor-plugin/plugin.json'))
+          d = json.load(open('_generated/command-example-single/.cursor-plugin/plugin.json'))
           sys.exit(0 if 'commands' in d else 1)
           "

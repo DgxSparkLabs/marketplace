@@ -1,0 +1,23 @@
+=== test 1: /skill-example:example-skill (plugin.json name form) ===
+OK stub.
+
+=== test 2: /example-skill:example-skill ===
+Unknown command: /example-skill:example-skill
+
+=== test 3: /command-example:hello ===
+OK stub.
+
+=== test 4: /example-command:hello ===
+Unknown command: /example-command:hello
+
+=== captured bodies that contain example or hello ===
+/command-example:hello
+/example
+/examples
+/skill-example
+/skill-example:example-skill
+example-skill
+hello
+
+=== full bodies log size ===
+1996 /tmp/stub-bodies.log

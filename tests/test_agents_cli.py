@@ -169,16 +169,16 @@ class TestInstallSkillProjectScope(unittest.TestCase):
                 buf = io.StringIO()
                 with redirect_stdout(buf):
                     rc = install_mod.install(
-                        "skill-example", scope="project",
+                        "skill-example-single", scope="project",
                         marketplace_root=REPO_ROOT,
                     )
                 self.assertEqual(rc, 0, msg=buf.getvalue())
-                self.assertTrue((cwd / ".agents" / "skills" / "example" / "SKILL.md").exists())
+                self.assertTrue((cwd / ".agents" / "skills" / "example-single" / "SKILL.md").exists())
 
                 with redirect_stdout(io.StringIO()):
-                    rc = install_mod.uninstall("skill-example", scope="project")
+                    rc = install_mod.uninstall("skill-example-single", scope="project")
                 self.assertEqual(rc, 0)
-                self.assertFalse((cwd / ".agents" / "skills" / "example").exists())
+                self.assertFalse((cwd / ".agents" / "skills" / "example-single").exists())
 
 
 class TestInstallRuleAllSpray(unittest.TestCase):
@@ -217,11 +217,11 @@ class TestList(unittest.TestCase):
             with _Chdir(Path(tmp)):
                 with redirect_stdout(io.StringIO()):
                     install_mod.install(
-                        "skill-example", scope="project",
+                        "skill-example-single", scope="project",
                         marketplace_root=REPO_ROOT,
                     )
                 names = list_mod.installed_plugins(scope="project")
-                self.assertIn("skill-example", names)
+                self.assertIn("skill-example-single", names)
 
 
 class TestUnknownPluginErrors(unittest.TestCase):

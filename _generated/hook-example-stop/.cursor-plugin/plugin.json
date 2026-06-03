@@ -1,0 +1,6 @@
+{
+  "name": "hook-example-stop",
+  "version": "1.0.0",
+  "description": "Single-event reference hook for Stop. Fires when the assistant ends a turn; appends a timestamped marker plus the full hook JSON payload (read from stdin) to /tmp/hook-fired-stop.log.",
+  "hooks": "./hooks/hooks.json"
+}

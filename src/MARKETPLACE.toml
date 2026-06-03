@@ -1,0 +1,32 @@
+# MARKETPLACE.toml — single source of truth for marketplace identity
+#
+# Every generated manifest file (.claude-plugin/marketplace.json, the
+# per-plugin .claude-plugin/plugin.json wrappers, the cross-platform
+# mirror metadata) inherits its owner, repository URL, version, license,
+# and homepage from this file.
+#
+# `marketplace.name` below is the string after the `@` in every install
+# command: `claude plugin install <plugin>@<marketplace.name>`. It is
+# read by `_marketplace_name()` in scripts/utils.py and written into the
+# top-level `.claude-plugin/marketplace.json` "name" field by Phase 5 of
+# the generator. For the full byte-by-byte trace of how the install
+# command's name fragments are assembled, see
+# docs/ADDING_A_CONSTRUCT.md section "Trace each fragment to its source".
+#
+# Renaming the org or bumping the version is a single-line edit here
+# followed by `uv run scripts/generate_manifest.py --write`.
+
+[marketplace]
+name = "dgxsparklabs-marketplace"
+display_name = "DgxSparkLabs Marketplace"
+version = "1.0.0"
+description = "Cross-platform AI agent skills, rules, and reference plugins for Claude Code, Codex, Gemini, Cursor, Windsurf, and Devin."
+
+[owner]
+name = "DgxSparkLabs"
+url = "https://github.com/DgxSparkLabs"
+
+[repository]
+url = "https://github.com/DgxSparkLabs/marketplace"
+homepage = "https://github.com/DgxSparkLabs/marketplace"
+license = "MIT"

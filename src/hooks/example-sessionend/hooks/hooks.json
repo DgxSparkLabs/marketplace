@@ -1,0 +1,15 @@
+{
+  "description": "Single-event reference hook for SessionEnd. Fires once when a Claude session terminates; appends a timestamped marker plus the full hook JSON payload (read from stdin) to /tmp/hook-fired-sessionend.log.",
+  "hooks": {
+    "SessionEnd": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "p=\"$(cat)\"; { echo \"$(date -u +%FT%TZ) sessionEnd fired\"; echo \"$p\"; echo; } >> /tmp/hook-fired-sessionend.log"
+          }
+        ]
+      }
+    ]
+  }
+}

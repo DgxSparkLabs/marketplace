@@ -1,0 +1,4 @@
+{
+  "name": "dgxsparklabs-hook-example-precompact",
+  "description": "Reference plugin demonstrating the PreCompact hook event in isolation."
+}

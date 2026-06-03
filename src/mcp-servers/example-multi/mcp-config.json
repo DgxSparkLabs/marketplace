@@ -1,0 +1,16 @@
+{
+  "mcpServers": {
+    "fetch": {
+      "command": "uv",
+      "args": ["run", "--no-project", "${CLAUDE_PLUGIN_ROOT}/mcp_logging_proxy.py", "--name", "fetch", "--", "uvx", "mcp-server-fetch"]
+    },
+    "sequential-thinking": {
+      "command": "uv",
+      "args": ["run", "--no-project", "${CLAUDE_PLUGIN_ROOT}/mcp_logging_proxy.py", "--name", "sequential-thinking", "--", "npx", "-y", "@modelcontextprotocol/server-sequential-thinking"]
+    },
+    "filesystem": {
+      "command": "uv",
+      "args": ["run", "--no-project", "${CLAUDE_PLUGIN_ROOT}/mcp_logging_proxy.py", "--name", "filesystem", "--", "npx", "-y", "@modelcontextprotocol/server-filesystem", "/tmp"]
+    }
+  }
+}

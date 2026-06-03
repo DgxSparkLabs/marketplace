@@ -1,0 +1,19 @@
+=== install command-foo-test ===
+Installing plugin "command-foo-test@dgxsparklabs-marketplace"...✔ Successfully installed plugin: command-foo-test@dgxsparklabs-marketplace (scope: project)
+
+=== install command-bar-test ===
+Installing plugin "command-bar-test@dgxsparklabs-marketplace"...✔ Successfully installed plugin: command-bar-test@dgxsparklabs-marketplace (scope: project)
+
+=== plugin list ===
+Installed plugins:
+
+  ❯ command-bar-test@dgxsparklabs-marketplace
+    Version: 1.0.0
+    Scope: project
+    Status: ✔ enabled
+
+  ❯ command-foo-test@dgxsparklabs-marketplace
+    Version: 1.0.0
+    Scope: project
+    Status: ✔ enabled
+

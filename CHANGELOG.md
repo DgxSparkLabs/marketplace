@@ -1,5 +1,304 @@
 # Changelog
 
+## 2026-06-03 — Claude-first stable / PR-friendly groundwork (in progress)
+
+Preparing the first Claude-first stable cut and making the repo friendly to outside contributors. Landed so far:
+
+1. **Tracked previously-untracked LSP/MCP example sources.** The `src/lsp/` and `src/mcp/` example plugin sources were present in the working tree but never committed, so a fresh clone could not reproduce the full generated output. They are now tracked, and a clean clone regenerates identically.
+
+2. **Fixed the agents CLI `src/` path resolution.** The agents CLI still resolved construct sources at the old repo-root locations after the `src/` reorganization; it now points at `src/<construct>/` so it runs from a fresh checkout.
+
+3. **Added a generated, drift-checked `docs/INVENTORY.md`.** Plugin inventory (and counts) now live in one generated file that a test keeps in sync with the actual generated output. Prose docs point readers at `docs/INVENTORY.md` instead of hardcoding counts that go stale.
+
+### In progress
+
+- Relaxing the bundle-membership gate so a new construct is installable without being added to a catalog bundle (bundles become optional curation only).
+- CI auto-regeneration so generated output can't drift from sources.
+- Release scaffolding and contributor tooling for the Claude-first stable cut.
+
+---
+
+## 2026-05-28 — Symmetric single/multi example set + `src/` reorganization + 15 review-finding fixes
+
+Three changes shipped in one commit on PR #10:
+
+1. **Every Claude-supported construct now demonstrates both layouts** via paired `example-single/` + `example-multi/` source plugins. Skills already had this from the prior commit; this commit extends the pattern to command, agent, mcp, lsp, monitor, output-style, and theme. Hooks expanded to nine per-event example plugins (`example-userpromptsubmit/`, `example-pretooluse/`, `example-posttooluse/`, `example-notification/`, `example-stop/`, `example-subagentstop/`, `example-sessionstart/`, `example-sessionend/`, `example-precompact/`) plus one `example-multi/` that covers all nine events in a single `hooks.json`. `skills/example/` was renamed to `skills/example-multi/` for naming symmetry. Rule stays at one example dir (not a Claude plugin component per F8).
+
+2. **Moved all operator-authored source content into `src/`.** Ten construct source dirs (`skills/`, `rules/`, `commands/`, …) plus the two operator-authored TOMLs (`MARKETPLACE.toml`, `catalog.toml`) are now under `src/`. Repo root is now generator code (`scripts/`) + tests (`tests/`) + docs (`docs/`) + operational metadata (`README.md`, `CHANGELOG.md`, `HANDOFF.md`, etc.) only. Used `git mv` so `git log --follow` traces history through the move. The 10 `source_directory = REPO_ROOT / "<dir>"` lines in `scripts/constructs.py` and the 2 path constants in `scripts/utils.py` (`MARKETPLACE_TOML`, `CATALOG`) were updated to point at `src/`.
+
+3. **Fixed all 15 code-review findings** from the audit of commit `649b398`:
+   - **#1**: `.github/workflows/compat-agents-cli.yml` assertion path updated to `skill-example-single` (cleanest solo-layout assertion shape).
+   - **#2 + #3**: `CodexPlatform.build_plugin_json` + `CursorPlatform.build_plugin_json` now derive the `skills` pointer from `construct.build_plugin_json(name)["skills"][0]` instead of hardcoding `"./skills/"` or `"./"`. The per-platform manifests now match the source layout for both solo and multi-skill plugins.
+   - **#4**: `docs/TEST_YOURSELF.md` Path A slash forms updated to the post-revert unique-per-plugin shape.
+   - **#5**: SkillConstruct solo-layout description fallback restored — `SKILL.md` frontmatter description is tried first, then `<src>/.claude-plugin/plugin.json`, then dir name.
+   - **#6**: `_read_source_plugin_description` helper applied symmetrically across MCPConstruct, LSPConstruct, MonitorConstruct, OutputStyleConstruct, ThemeConstruct.
+   - **#7**: New `_is_candidate_subdir` helper filters out junk dirs (`__pycache__`, hidden dirs) so `has_subdir` in SkillConstruct doesn't false-positive.
+   - **#8**: `_read_source_plugin_description` returns `data.get("description") or fallback` — handles explicit `null` + missing key + empty string uniformly.
+   - **#9**: `_read_source_plugin_description` catches `(json.JSONDecodeError, UnicodeDecodeError, OSError)` and reads with `utf-8-sig` to tolerate UTF-8 BOM.
+   - **#10**: `_make_marketplace_entry` docstring rewritten under the post-revert model.
+   - **#11**: `tests/fixtures/claude-stub/README.md` grep target updated to the new slash forms.
+   - **#12 (DEFERRED, NOTE comments stay)**: `.agents/`/`.gemini/` mirror nesting is still on ROADMAP #42/#39. The debt now affects more multi-skill plugins; per-platform mirror flattening lands when each QA cycle runs.
+   - **#13**: `_description_from_construct` narrowed the catch from bare `except Exception` to `(ValueError, KeyError, FileNotFoundError, json.JSONDecodeError)`.
+   - **#14**: `test_agents_skills_mirror_exists` + `test_gemini_skills_mirror_and_extension_manifest` split into per-plugin assertions — solo plugins pin exact path; multi plugins use `rglob` tolerance.
+   - **#15**: `test_skill_plugin_layouts` parameterized via `scan_source_dir` + `subTest` so it adapts to any new skill plugin automatically.
+
+### Marketplace plugin count: 27 (was 11)
+
+- 26 Claude-supported individuals: 2 × 8 (skill, command, agent, mcp, lsp, monitor, output-style, theme) + 10 (hooks: 9 per-event + 1 example-multi) = 26.
+- 1 catalog bundle (`bundle-examples`, now with 26 members).
+- 1 rule example (not in Claude marketplace per F8; remains for non-Claude platforms).
+
+### What's verified
+
+Claude path for the existing solo+multi skill plugins continues to work end-to-end through the hermetic stub. `claude plugin details dgxsparklabs-skill-example-multi` lists both `notebook` and `status`. `claude plugin details dgxsparklabs-skill-example-single` lists `hello`. 80 marketplace tests + 21 schema-fitness tests pass.
+
+### What's paused
+
+Per-platform empirical verification on Cursor/Codex/Gemini/Windsurf/Devin/.agents stays deferred per ROADMAP #9-#14 and #37-#42. The mirror-nesting fix (ROADMAP #42/#39) lands per-platform when the matching QA cycle runs.
+
+---
+
+## 2026-05-28 — Skills: multi-instance-capable plugin layout (Claude-only); revert Path A; pause cross-platform verification
+
+Two changes shipped in one commit on PR #10:
+
+1. **Reverted Path A's shared slash namespace** (the prior 2026-05-27 entry). Per-plugin `plugin.json` `name` fields are now unique-per-plugin in the shape `<brand>-<construct.prefix>-<source-dir-name>` — e.g. `dgxsparklabs-skill-example`, `dgxsparklabs-skill-example-single`. Path A's `<brand>-<construct.category>` shape (which collapsed multiple plugins of one construct into one slash namespace) was abandoned because `claude plugin details <shared-namespace>` could only surface the first-installed plugin's components. With the revert, `claude plugin details dgxsparklabs-skill-example` lists both `notebook` and `status`; `claude plugin details dgxsparklabs-skill-example-single` lists `hello`.
+
+2. **Added multi-instance-capable layout for skill plugins.** `SkillConstruct.build_plugin_json` now detects two source layouts per plugin: **solo** (one `SKILL.md` at plugin root → `skills: ["./"]`) and **multi** (one or more `skills/<skill>/SKILL.md` under a `skills/` subdir → `skills: ["./skills/"]`). Source plugins with both layouts (or neither) raise `ValueError` from the generator. The two canonical examples both ship: `skills/example/` (multi, two skills `notebook` + `status`) and `skills/example-single/` (solo, one skill `hello`). Slash forms: `/dgxsparklabs-skill-example:notebook`, `/dgxsparklabs-skill-example:status`, `/dgxsparklabs-skill-example-single:hello`. Marketplace plugin count: **11** (was 10 — the second skill source added one individual entry).
+
+### What's verified
+
+**Claude path only.** All three slash invocations resolve via the hermetic Claude stub (`tests/fixtures/claude-stub/`). `claude plugin details dgxsparklabs-skill-example` lists both `notebook` AND `status` (Path A's first-installed-wins collapse is gone). `claude plugin details dgxsparklabs-skill-example-single` lists `hello`. The 79 marketplace tests + 21 schema-fitness tests are green.
+
+### What's paused (non-Claude verification)
+
+The five non-Claude platforms (Cursor IDE, Codex, Gemini, Windsurf, Devin) and the `.agents/` cross-platform shim **continue to emit** but their behavior under multi-skill source layouts is **explicitly unverified** as of 2026-05-28. Source-code NOTE comments tag each non-Claude `emit()` / `build_plugin_json` Skill branch with "multi-instance source layout UNVERIFIED — see ROADMAP #37-#42." Existing solo-layout behavior is unchanged on those platforms — only the new multi-skill source layout is unverified.
+
+### Where the follow-up is tracked
+
+- Platform QA cycles: **ROADMAP #9 (Cursor IDE) → #14 (`.agents/` shim)** — each platform's empirical verification round.
+- Multi-instance fixes per platform: **ROADMAP #37 (Cursor IDE) → #42 (`.agents/` shim)** — blocked on the matching QA cycle. Each follow-up is a localized edit to one Platform class's `emit()` or `build_plugin_json`, not a generator redesign.
+
+### Source changes
+
+- `scripts/constructs.py`: `_base_plugin_shape` flipped from `f"{brand}-{construct.category}"` to `f"{brand}-{construct.prefix}-{name}"`. `SkillConstruct.build_plugin_json` gained a layout-detection branch that picks between `skills: ["./"]` (solo) and `skills: ["./skills/"]` (multi), and reads the plugin-level description via the new `_read_source_plugin_description` helper. Both-layouts-present or neither-layout-present raise `ValueError`.
+- `scripts/utils.py`: new `_read_source_plugin_description(src_plugin_dir, fallback)` helper reads the operator-authored description from `<src>/.claude-plugin/plugin.json`. Distinct from per-skill SKILL.md frontmatter descriptions (which are slash-autocomplete tooltips, a per-component concern).
+- `scripts/platforms.py`: six NOTE comments tagging non-Claude Skill paths as multi-instance-unverified (CursorPlatform.build_plugin_json, CodexPlatform.build_plugin_json, GeminiPlatform.emit, WindsurfPlatform.emit, DevinPlatform.emit, AgentsPlatform.emit). No code changes — comments only.
+- `skills/example/`: reorganized to multi-skill layout. Deleted the old root `SKILL.md` (with `name: lab-notebook`); created `skills/notebook/SKILL.md` (the lab-notebook body, frontmatter `name: notebook`) and `skills/status/SKILL.md` (new ~20 lines running `df -h .` + UTC timestamp). Created `.claude-plugin/plugin.json` with operator-authored plugin-level description. Rewrote `README.md`.
+- `skills/example-single/`: NEW plugin demonstrating the solo layout. Three files: `.claude-plugin/plugin.json`, `SKILL.md` (`name: hello`), `README.md`.
+- `catalog.toml`: `bundle.examples` adds `skill:example-single` member.
+- `tests/test_marketplace.py`: renamed + updated `test_individual_plugin_name_is_unique_brand_namespace` (was `test_individual_plugin_name_is_brand_namespace` under Path A); new `test_skill_plugin_layouts` (asserts both `["./skills/"]` and `["./"]` shapes); new `test_mcp_server_keys_unique_across_plugins` (cross-plugin MCP server-key collision check); marketplace-count formula updated (10 + 1 = 11); `test_agents_skills_mirror_exists` and `test_gemini_skills_mirror_and_extension_manifest` relaxed to tolerate the nested multi-skill mirror path (the source bytes still reach the mirror; downstream discovery semantics are what's deferred). 79 marketplace tests pass (was 77; +2 for the new tests).
+- `docs/ROADMAP.md`: items #37-#42 (added in the prior session-prep commit `5ae8619`) cover per-platform multi-instance verification follow-ups, each `[BLOCKED]` on the matching platform QA cycle in #9-#14.
+- Doc cascade: `README.md`, `docs/ADDING_A_CONSTRUCT.md`, `docs/TEST_YOURSELF.md`, `docs/USER_GUIDE.md`, `docs/PLATFORMS.md`, `docs/CONSTRUCT_TYPES.md`, `docs/RESUME_HERE.md`, and the two skill `README.md` files updated to reflect the new model and the Claude-only verification scope.
+
+### Operator UX impact (none for installs)
+
+```
+claude plugin install skill-example@dgxsparklabs-marketplace --scope project
+claude plugin enable  skill-example@dgxsparklabs-marketplace
+claude plugin install skill-example-single@dgxsparklabs-marketplace --scope project
+claude plugin enable  skill-example-single@dgxsparklabs-marketplace
+```
+
+Inside a Claude session:
+
+```
+/dgxsparklabs-skill-example:notebook
+/dgxsparklabs-skill-example:status
+/dgxsparklabs-skill-example-single:hello
+```
+
+Bare flat forms `/notebook`, `/status`, `/hello` also resolve.
+
+---
+
+## 2026-05-27 — Brand-prefixed shared slash namespace (Path A) — REVERTED 2026-05-28
+
+Migrated the Claude slash-invocation namespace from per-plugin (`/skill-example:lab-notebook`) to **shared brand-prefix per construct** (`/dgxsparklabs-skill:lab-notebook`). All skill plugins now share one slash namespace; all command plugins share another; etc. Install commands stay per-plugin-unique.
+
+### What changed
+
+The generator now writes two different names into two different files:
+
+| File | Field | Value | Source |
+|---|---|---|---|
+| `.claude-plugin/marketplace.json` | `plugins[].name` | per-plugin unique (`skill-example`, `command-example`, …) | `plugin_dir.name` via `_make_marketplace_entry` |
+| `_generated/<plugin>/.claude-plugin/plugin.json` | `name` | brand-prefixed shared (`dgxsparklabs-skill`, `dgxsparklabs-command`, …) | `_base_plugin_shape` reads MARKETPLACE.toml + `construct.category` |
+
+This decoupling means the operator types:
+- **Install** (unique per plugin): `claude plugin install skill-example@dgxsparklabs-marketplace`
+- **Invoke** (shared across all skills): `/dgxsparklabs-skill:lab-notebook`
+
+### Empirical evidence
+
+Two Docker research rounds at `docs/research/shared-namespace-2026-05-27/RESEARCH.md` validated that Claude Code 2.1.152:
+
+1. Accepts multiple plugins sharing one `plugin.json` `name`
+2. Routes slash invocations by `plugin.json` `name` (so `/dgxsparklabs-skill:foo` and `/dgxsparklabs-skill:bar` both resolve from two different plugins under the same namespace)
+3. Keeps `claude plugin list` rows distinct by marketplace entry name
+4. Scales to at least 5 plugins per namespace with no install latency or correctness degradation
+5. Continues to accept the bare flat form (`/lab-notebook`, no namespace prefix)
+
+The one known degradation: `claude plugin details dgxsparklabs-skill` resolves to the first-installed plugin only. Operators recover by inspecting `_generated/<plugin>/.claude-plugin/plugin.json` directly or via `claude plugin list`.
+
+### Source changes
+
+- `scripts/constructs.py`: `_base_plugin_shape` reworked. Returns `name: f"{brand}-{construct.category}"` where `brand` is derived from MARKETPLACE.toml by stripping `-marketplace`. Imports `_marketplace_name` from utils. Docstring crosslinks to the research doc and the trace doc.
+- `scripts/generate_manifest.py`: `_make_marketplace_entry` now reads `plugin_dir.name` for the marketplace entry name instead of `plugin_json["name"]`. This is what preserves install-command stability.
+- `tests/test_marketplace.py`: `test_individual_plugin_name_matches_prefix_and_source` renamed to `test_individual_plugin_name_is_brand_namespace`. Expected value derived from MARKETPLACE.toml the same way the generator does.
+- All `_generated/<plugin>/.claude-plugin/plugin.json` files regenerated with new `name` values; per-platform mirrors (`.agents/`, `.gemini/`) regenerated.
+
+### Documentation cascade
+
+- `docs/ADDING_A_CONSTRUCT.md` section "Trace each fragment to its source" rewritten under the new dual-name model. Each fragment now cites its file:line and clarifies whether it owns the install name or the slash namespace.
+- `docs/TEST_YOURSELF.md` reference card + all 9 Claude per-construct cells updated with the new slash forms.
+- `docs/USER_GUIDE.md` slash-command table updated.
+- `skills/example/SKILL.md` inline comment above `name: lab-notebook` updated to reflect the new namespace structure.
+
+### Known follow-ups (not blocking merge)
+
+- **Manual TUI verification of tab-completion**: the resolver-internals trace from Probe C (`claude --debug-file`) shows the candidate set is well-formed, but the actual TUI render path was not exercised. Operator runs the 6-step recipe at `docs/research/shared-namespace-2026-05-27/RESEARCH.md` section Probe C before merging PR #10.
+- **`/agents` TUI behavior with shared namespace** not yet captured empirically — predicted to work per Probe C trace but operator should verify.
+- **Cursor / Codex plugin manifests are untouched** by this change. Their `build_plugin_json` implementations in `scripts/platforms.py` compose names independently. Whether to apply the same shared-namespace pattern there is a separate decision, deferred to each platform's QA cycle.
+
+---
+
+## 2026-05-27 — Retired per-construct catch-all bundles
+
+Per-construct catch-all bundles (`bundle-skill-all`, `bundle-agent-all`, …, one per Claude-supported construct) were removed. They previously were code-generated by Phase 2b of `scripts/generate_manifest.py` with `dependencies = [every instance of that construct]`. The operator's feedback was that they cluttered the marketplace listing without curation value — a "bundle of every skill" is just a filtered view of `claude plugin list --available` by prefix.
+
+### Plugin entry count
+
+| Date | Total | Composition |
+|---|---|---|
+| pre-PR-#9 | 81 | full set with all real skills + rules |
+| post-PR-#9 (2026-05-26) | 19 | 9 individuals + 1 catalog bundle + 9 catch-alls (rule has no catch-all per F8) |
+| post-this-commit (2026-05-27) | **10** | 9 individuals + 1 catalog bundle (`bundle-examples`) |
+
+### Source changes
+
+- `scripts/generate_manifest.py`: Phase 2b's catch-all emission loop deleted. Header preserved as documentation of the retirement.
+- `scripts/bundles.py`: `_reserved_bundle_names()` helper deleted; the `load_bundles` collision check that raised `ValueError` for `<prefix>-all` names is gone. Catalog may now use any name.
+- `catalog.toml`: comment block updated to reflect retirement; no member changes.
+
+### Test changes
+
+- `tests/test_marketplace.py`: `TestCatchAllBundles` class replaced with `TestNoStrayCatchAllBundles` which asserts the OPPOSITE — no `_generated/bundle-<prefix>-all/` dirs and no catch-all entries in `marketplace.json`. `test_bundle_cannot_use_reserved_catchall_name` deleted (the reservation is gone). `test_marketplace_lists_all_expected_plugins` and `test_marketplace_count_matches_expected_formula` updated to drop catch-alls from the expected set. `test_every_construct_in_at_least_one_bundle` now relies entirely on catalog bundles (specifically `bundle-examples`) for coverage.
+
+Tests: 77 marketplace + 21 schema-fitness = 98 green (was 99; the dropped catch-all-reserved-name test is gone).
+
+### Doc updates
+
+`README.md`, `HANDOFF.md`, `docs/USER_GUIDE.md`, `docs/PLATFORMS.md`, `docs/ARCHITECTURE.md`, `docs/CONSTRUCT_TYPES.md`, `docs/ADDING_A_CONSTRUCT.md`, `docs/RESUME_HERE.md`, and `docs/TEST_YOURSELF.md` updated to reflect the new count and remove catch-all references. The `docs/TEST_YOURSELF.md` Step 3 jq filter now scopes by `marketplaceName` (operator's improvement) instead of arbitrary `head -50`:
+
+```bash
+MARKETPLACE="dgxsparklabs-marketplace"
+claude plugin list --json --available \
+  | jq --arg mp "$MARKETPLACE" '[.. | objects | select(.marketplaceName? == $mp)]'
+```
+
+### Setup option B Docker — Flask + uv install
+
+`docs/TEST_YOURSELF.md` Setup option B (manual Docker) now documents the `curl -LsSf https://astral.sh/uv/install.sh | sh` step. Flask is no longer installed separately because the hermetic stubs carry PEP 723 inline metadata — `uv run` fetches Flask into an ephemeral env on first invocation.
+
+### Documentation: where names come from
+
+`docs/ADDING_A_CONSTRUCT.md` has a new top-level section "Where do the names come from? (read this if any name surprises you)" walking through the three name layers (marketplace / plugin / component) with `skill-example`/`lab-notebook` as the worked example. Answers the operator's question "if I make a new skill, what command do I need to run?" — short answer: `uv run scripts/generate_manifest.py`. `docs/TEST_YOURSELF.md` links to this section near the reference card.
+
+---
+
+## 2026-05-26 — Scheme B+ naming alignment across all example plugins
+
+Empirical Docker research (`docs/research/naming-conventions-2026-05-26/`) revealed that:
+
+1. The `docs/TEST_YOURSELF.md` reference card was wrong about what Claude displays — the generator already rewrites `plugin.json` `name` from `example-<construct>` to `<construct>-example` during emission, so `/plugins` always shows `<construct>-example`, never `example-<construct>`.
+2. The actual awkward slash form was narrowly `/skill-example:example-skill` (doubled "example") and the monitor component `example-disk` — everything else was already clean.
+3. Source-vs-marketplace name mismatch leaks via `claude plugin tag` against the source path (`logs/17-tag-checks.log:2-19`), so alignment still matters for the release-tag workflow even though it doesn't reach `/plugins` listings.
+4. Anthropic's idiom (1715 community + 203 official plugins surveyed) is 89% single semantic names, ~3% construct prefix. No `<construct>-example` pattern in their corpus.
+
+Applied **Scheme B+**: align source `plugin.json` `name` field to marketplace name (`<construct>-example`) for all 9 misaligned plugins, AND rename two redundant component names.
+
+### Source changes (Scheme B portion — 9 plugins)
+
+Every example plugin now has `plugin.json` `name` matching the marketplace entry:
+
+- `skills/example/.claude-plugin/plugin.json`: `example-skill` → `skill-example`
+- `agents/example/.claude-plugin/plugin.json`: `example-agent` → `agent-example`
+- `commands/example/.claude-plugin/plugin.json`: `example-command` → `command-example`
+- `hooks/example/.claude-plugin/plugin.json`: `example-hook` → `hook-example`
+- `lsp-servers/example/.claude-plugin/plugin.json`: `example-lsp` → `lsp-example`
+- `monitors/example/.claude-plugin/plugin.json`: `example-monitor` → `monitor-example`
+- `output-styles/example/.claude-plugin/plugin.json`: `example-output-style` → `output-style-example`
+- `themes/example/.claude-plugin/plugin.json`: `example-theme` → `theme-example`
+- `rules/example/.claude-plugin/plugin.json`: `example-rule` → `rule-example`
+- (`mcp-servers/example/.claude-plugin/plugin.json` was aligned in commit `4d4818b`.)
+
+Each `plugin.json` also had its `homepage` field updated from the obsolete `examples/example-<construct>` GitHub path to the current `<construct>/example/` layout.
+
+### Component renames (Scheme B+ portion — 2 files)
+
+- `skills/example/SKILL.md`: frontmatter `name: example-skill` → `name: lab-notebook`. Slash invocation changes from `/skill-example:example-skill` (doubled) to `/skill-example:lab-notebook` (proven via `docs/research/naming-conventions-2026-05-26/logs/18-rename-proof.log:2-3`). Flat form `/lab-notebook` also resolves.
+- `monitors/example/monitors/monitors.json`: monitor `name: "example-disk"` → `"disk-usage"`. Eliminates the redundant "example" prefix on a config artifact.
+
+### Documentation corrections
+
+- **`docs/TEST_YOURSELF.md`** — Claude construct reference card and all 9 per-construct cells corrected to use the empirically-verified strings. Previous "After install, /plugins shows" column claimed `example-<construct>` (false); now correctly shows `<construct>-example@dgxsparklabs-marketplace` per the empirical capture in `logs/04-plugin-list.log`. Skill cell now uses `/skill-example:lab-notebook`. Added enable-after-install steps for every construct per `logs/06-enable-qualified.log` finding.
+- **`docs/USER_GUIDE.md`** — slash command namespacing table updated with current example slash forms.
+- **Source READMEs** — `skills/example/README.md`, `agents/example/README.md`, `hooks/example/README.md`, `lsp-servers/example/README.md`, `monitors/example/README.md`, `output-styles/example/README.md`, `themes/example/README.md`, `rules/example/README.md`, `commands/example/README.md`, and `rules/example/activate.sh` updated to reflect the new `name` fields and current source dir paths (`<construct>/example/` not `examples/example-<construct>`).
+- **`scripts/validate-gemini-local.sh`** — `hooks migrate` argument updated to current path `hooks/example/hooks/hooks.json`.
+
+### Regenerated
+
+`uv run scripts/generate_manifest.py` re-emitted all `_generated/<plugin>-example/` outputs and per-platform mirror dirs with the new `plugin.json` `name` values. Tests still pass: 78 marketplace + 21 schema-fitness = 99 green.
+
+### Operator-visible deltas
+
+For each construct (using skill as the canonical example; pattern identical across others):
+
+| Surface | Before | After |
+|---|---|---|
+| Install command | `claude plugin install skill-example@dgxsparklabs-marketplace` | unchanged |
+| `/plugins` row | `skill-example@dgxsparklabs-marketplace` (already correct) | unchanged |
+| Slash invocation | `/skill-example:example-skill` (doubled "example") | `/skill-example:lab-notebook` ✓ |
+| Flat form (skills only) | `/example-skill` | `/lab-notebook` ✓ |
+| `claude plugin tag skills/example/` | `example-skill--v1.0.0` (mismatch) | `skill-example--v1.0.0` ✓ |
+
+---
+
+## 2026-05-26 — Housekeeping: untracked-state cleanup + mcp-example name alignment
+
+Two threads landed together to take the working tree back to a clean state and fix a three-name mismatch in the MCP example plugin.
+
+### Added
+
+- **`docs/ROADMAP.md`** — operator-syncable task list of sequenced platform QA cycles (Cursor IDE → Cursor CLI → Gemini → Windsurf → Devin → agents CLI), post-cycle real-content re-add plan, infrastructure follow-ups, and durable methodology threads.
+- **`STATE.md`** — live within-session state file per the CLAUDE.md three-file memory model (`STATE.md` + `HANDOFF.md` + `PITFALLS.md`).
+
+### Renamed (mcp-example name alignment)
+
+Before: marketplace listed `mcp-example`, `plugin.json` declared `example-mcp`, `mcp-config.json` declared server key `example-fetch` — three different names for one plugin chain, visible in different Claude surfaces.
+
+After: aligned all three to the `mcp-example` family. `plugin.json` `name` → `mcp-example`; `mcp-config.json` server key → `example`. User invocations now read `mcp__mcp-example__example__fetch` and `plugin:mcp-example:example` consistently.
+
+- **`mcp-servers/example/.claude-plugin/plugin.json`**: `name: example-mcp` → `name: mcp-example`.
+- **`mcp-servers/example/mcp-config.json`**: server key `example-fetch` → `example`.
+- **`mcp-servers/example/README.md`** — updated tool-name references and the install command (`/plugin install mcp-example@dgxsparklabs-marketplace`).
+- **`.github/workflows/compat-mcp.yml`** + **`scripts/validate-codex-local.sh`** + **`scripts/validate-gemini-local.sh`** — updated CI/local validation to register and list the server under its new name.
+- **`docs/TEST_YOURSELF.md`**, **`docs/PLATFORMS.md`**, **`docs/ADDING_A_CONSTRUCT.md`** — updated references and added a corrected MCP-naming paragraph to the construct convention section.
+
+### Housekeeping (untracked-state resolution)
+
+- **`docs/PLAN_DI_REFACTOR.md`** (empty stub at docs root) — deleted; canonical 1549-line plan lives at `docs/archive/di-refactor/PLAN_DI_REFACTOR.md`.
+- **`docs/research/claude-headless-qa/`** → moved to **`docs/archive/claude-headless-qa-2026-05-26/`** (settled artifacts of PR #8 hermetic Claude stub work).
+- **`docs/research/claude-qa-2026-05-26/`** → moved to **`docs/archive/claude-qa-2026-05-26/`** (settled artifacts of PR #6 Claude QA work).
+- **`docs/research/research/`** — 107-file, 2 MB canonical research stash added to `.gitignore`; files preserved on disk but not version-controlled. See AGENTS.md "Research Directory" rules.
+
+### Regenerated
+
+`uv run scripts/generate_manifest.py` re-emitted the `mcp-example` plugin contents across all `_generated/mcp-example/` and per-platform mirror dirs to pick up the new `name` and server key.
+
+---
+
 ## 2026-05-26 — Minimal-stable-state: archive non-example content + rename example-command
 
 The marketplace grew to 81 plugin entries (26 production skills + 21 production rules + 10 example plugins of each construct type + their bundles). At that scale every QA cycle, every bug investigation, and every cross-platform validation traversed the full set. The decision was to initialise a stable system at the minimum and re-add production content one plugin at a time as each is re-verified across every platform.
@@ -17,7 +316,7 @@ The marketplace grew to 81 plugin entries (26 production skills + 21 production 
 
 ### Renamed
 
-- **`commands/example/commands/example-command.md` → `commands/example/commands/hello.md`**. The slash invocation read `/command-example:example-command` — the component file's name redundantly repeated the plugin's prefix. New invocation: `/command-example:hello`, matching the canonical convention quoted in Anthropic's plugin docs (`/my-first-plugin:hello`). Other example component files were audited; none had analogous duplication (`agents/example/agents/notebook-reviewer.md`, `output-styles/example/output-styles/lab-notebook-voice.md`, `themes/example/themes/lab-notebook.json` all use generic content names; `mcp-servers/example` retains the external `example-fetch` tool name per `mcp-server-fetch`).
+- **`commands/example/commands/example-command.md` → `commands/example/commands/hello.md`**. The slash invocation read `/command-example:example-command` — the component file's name redundantly repeated the plugin's prefix. New invocation: `/command-example:hello`, matching the canonical convention quoted in Anthropic's plugin docs (`/my-first-plugin:hello`). Other example component files were audited; none had analogous duplication (`agents/example/agents/notebook-reviewer.md`, `output-styles/example/output-styles/lab-notebook-voice.md`, `themes/example/themes/lab-notebook.json` all use generic content names). `mcp-servers/example` had a three-name mismatch (`example-mcp` / `mcp-example` / `example-fetch`) which was resolved separately on the same day — see the housekeeping entry above.
 
 ### Documented
 

@@ -1,0 +1,41 @@
+=== Executing each hook command directly ===
+--- PostToolUse ---
+Running: printf '%s postToolUse %s\n' "$(date -u +%FT%TZ)" "${CLAUDE_TOOL_NAME:-unknown}" >> /tmp/hook-fired-posttooluse.log
+Exit: 0 | stdout: 
+--- PreToolUse ---
+Running: printf '%s preToolUse %s\n' "$(date -u +%FT%TZ)" "${CLAUDE_TOOL_NAME:-unknown}" >> /tmp/hook-fired-pretooluse.log
+Exit: 0 | stdout: 
+--- SessionEnd ---
+Running: printf '%s sessionEnd fired\n' "$(date -u +%FT%TZ)" >> /tmp/hook-fired-sessionend.log
+Exit: 0 | stdout: 
+--- SessionStart ---
+Running: printf '%s sessionStart fired\n' "$(date -u +%FT%TZ)" >> /tmp/hook-fired-sessionstart.log
+Exit: 0 | stdout: 
+--- Stop ---
+Running: printf '%s stop fired\n' "$(date -u +%FT%TZ)" >> /tmp/hook-fired-stop.log
+Exit: 0 | stdout: 
+--- UserPromptSubmit ---
+Running: ts="$(date -u +%FT%TZ)"; printf '[Lab Notebook context: timestamp=%s]\n' "$ts"; printf '%s userPromptSubmit fired\n' "$ts" >> /tmp/hook-fired-userpromptsubmit.log
+Exit: 0 | stdout: [Lab Notebook context: timestamp=2026-05-25T20:32:16Z]
+
+=== Sentinel files created in /tmp ===
+-rw-r--r-- 1 root root 38 May 25 20:32 /tmp/hook-fired-posttooluse.log
+-rw-r--r-- 1 root root 37 May 25 20:32 /tmp/hook-fired-pretooluse.log
+-rw-r--r-- 1 root root 38 May 25 20:32 /tmp/hook-fired-sessionend.log
+-rw-r--r-- 1 root root 40 May 25 20:32 /tmp/hook-fired-sessionstart.log
+-rw-r--r-- 1 root root 32 May 25 20:32 /tmp/hook-fired-stop.log
+-rw-r--r-- 1 root root 44 May 25 20:32 /tmp/hook-fired-userpromptsubmit.log
+
+=== Sentinel contents ===
+--- /tmp/hook-fired-posttooluse.log ---
+2026-05-25T20:32:16Z postToolUse Edit
+--- /tmp/hook-fired-pretooluse.log ---
+2026-05-25T20:32:16Z preToolUse Edit
+--- /tmp/hook-fired-sessionend.log ---
+2026-05-25T20:32:16Z sessionEnd fired
+--- /tmp/hook-fired-sessionstart.log ---
+2026-05-25T20:32:16Z sessionStart fired
+--- /tmp/hook-fired-stop.log ---
+2026-05-25T20:32:16Z stop fired
+--- /tmp/hook-fired-userpromptsubmit.log ---
+2026-05-25T20:32:16Z userPromptSubmit fired

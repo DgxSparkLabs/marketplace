@@ -1,0 +1,18 @@
+=== Hermetic Claude Code probe — 2026-05-26 ===
+Container: qa-claude (node:20)
+Claude version: 2.1.150
+Stub backend: 127.0.0.1:8089 (Flask, Anthropic Messages v1 shape)
+
+Verbatim env used:
+  ANTHROPIC_BASE_URL=http://127.0.0.1:8089
+  ANTHROPIC_AUTH_TOKEN=stub-token
+  API_TIMEOUT_MS=20000
+
+Outcomes:
+- claude --print succeeded against stub; stub's 'OK stub.' returned to operator stdout.
+- claude sent Auth header 'Bearer stub-token' to stub (no Anthropic API hit).
+- Hooks fired (F5): SessionStart, UserPromptSubmit, Stop, SessionEnd all wrote sentinels.
+- PreToolUse/PostToolUse did NOT fire because stub did not return a tool_use block — feasible to extend stub to drive these too.
+- Slash commands (F7): /command-example:example-command resolved client-side; /nonexistent-xxx returned 'Unknown command:'.
+- Output style (F9): Lab Notebook Voice content (incl. 'hedging', 'measured', 'Next:') appeared in request system[2] block (27061 bytes) — proven applied.
+- Theme (F4): NOT probed; visual change in TTY render is the success criterion, not hermetic-observable.

@@ -1,0 +1,17 @@
+✔ Successfully enabled plugin: skill-a-test (scope: project)
+✔ Successfully enabled plugin: skill-b-test (scope: project)
+✔ Successfully enabled plugin: skill-c-test (scope: project)
+=== list ===
+  ❯ skill-a-test@dgxsparklabs-marketplace
+    Status: ✔ enabled
+  ❯ skill-b-test@dgxsparklabs-marketplace
+    Status: ✔ enabled
+  ❯ skill-c-test@dgxsparklabs-marketplace
+    Status: ✔ enabled
+  ❯ skill-d-test@dgxsparklabs-marketplace
+    Status: ✔ enabled
+  ❯ skill-e-test@dgxsparklabs-marketplace
+    Status: ✔ enabled
+
+=== --debug + just / no extras ===
+Commands are in the form `/command [args]`

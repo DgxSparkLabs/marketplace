@@ -1,0 +1,15 @@
+{
+  "description": "Single-event reference hook for Stop. Fires when the assistant ends a turn; appends a timestamped marker plus the full hook JSON payload (read from stdin) to /tmp/hook-fired-stop.log.",
+  "hooks": {
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "p=\"$(cat)\"; { echo \"$(date -u +%FT%TZ) stop fired\"; echo \"$p\"; echo; } >> /tmp/hook-fired-stop.log"
+          }
+        ]
+      }
+    ]
+  }
+}

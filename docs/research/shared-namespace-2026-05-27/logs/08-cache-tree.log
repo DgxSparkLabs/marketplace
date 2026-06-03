@@ -1,0 +1,60 @@
+=== Cache structure ===
+total 16
+drwxr-xr-x 4 root root 4096 May 27 02:48 .
+drwxr-xr-x 4 root root 4096 May 27 02:48 ..
+drwxr-xr-x 3 root root 4096 May 27 02:48 skill-bar-test
+drwxr-xr-x 3 root root 4096 May 27 02:48 skill-foo-test
+=== foo-test cached plugin.json ===
+{
+  "name": "dgxsparklabs-skill",
+  "version": "1.0.0",
+  "author": {
+    "name": "DgxSparkLabs",
+    "url": "https://github.com/DgxSparkLabs"
+  },
+  "description": "Test foo — shared-namespace probe (foo half)",
+  "skills": [
+    "./"
+  ],
+  "keywords": [
+    "skill",
+    "foo-test"
+  ],
+  "displayName": "DgxSparkLabs Skills"
+}
+=== bar-test cached plugin.json ===
+{
+  "name": "dgxsparklabs-skill",
+  "version": "1.0.0",
+  "author": {
+    "name": "DgxSparkLabs",
+    "url": "https://github.com/DgxSparkLabs"
+  },
+  "description": "Test bar — shared-namespace probe (bar half)",
+  "skills": [
+    "./"
+  ],
+  "keywords": [
+    "skill",
+    "bar-test"
+  ],
+  "displayName": "DgxSparkLabs Skills"
+}
+=== foo-test cached SKILL.md ===
+---
+name: foo
+description: Test foo — shared-namespace probe (foo half)
+---
+
+# foo skill
+
+Test foo invocation under shared dgxsparklabs-skill namespace.
+=== bar-test cached SKILL.md ===
+---
+name: bar
+description: Test bar — shared-namespace probe (bar half)
+---
+
+# bar skill
+
+Test bar invocation under shared dgxsparklabs-skill namespace.

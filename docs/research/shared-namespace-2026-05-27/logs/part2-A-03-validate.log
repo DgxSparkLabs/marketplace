@@ -1,0 +1,14 @@
+=== validate command-foo-test ===
+Validating plugin manifest: /tmp/workspace/_generated/command-foo-test/.claude-plugin/plugin.json
+
+✔ Validation passed
+
+=== validate command-bar-test ===
+Validating plugin manifest: /tmp/workspace/_generated/command-bar-test/.claude-plugin/plugin.json
+
+✔ Validation passed
+
+=== validate whole marketplace ===
+Validating marketplace manifest: /tmp/workspace/.claude-plugin/marketplace.json
+
+✔ Validation passed

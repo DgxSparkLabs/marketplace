@@ -13,7 +13,7 @@ def install(marketplace_root: Path, name: str, *, scope: str, agents_only: bool)
 
     Returns the list of paths written.
     """
-    src = marketplace_root / "skills" / name
+    src = marketplace_root / "src" / "skills" / name
     if not src.exists():
         raise FileNotFoundError(f"skill-{name} not found at {src}")
 

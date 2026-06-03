@@ -35,23 +35,27 @@ jobs:
       - name: Assert agents --version exits 0
         run: agents --version
 
-      - name: Round-trip install/uninstall skill-example (project scope)
+      - name: Round-trip install/uninstall skill-example-single (project scope)
+        # Post-2026-05-28: skill-example-single is the solo-layout reference;
+        # its SKILL.md is at the plugin root, the cleanest assertion shape.
+        # skill-example-multi (the multi-skill plugin) emits nested SKILL.md
+        # files under skills/<x>/, so its assertion would require rglob.
         run: |
           WORKDIR=$(mktemp -d)
           pushd "$WORKDIR"
-          agents install skill-example --scope project
-          test -f .agents/skills/example/SKILL.md \
-            || (echo "expected .agents/skills/example/SKILL.md after install" >&2; exit 1)
-          agents uninstall skill-example --scope project
-          test ! -e .agents/skills/example \
-            || (echo "expected .agents/skills/example/ removed after uninstall" >&2; exit 1)
+          agents install skill-example-single --scope project --marketplace-root "$GITHUB_WORKSPACE"
+          test -f .agents/skills/example-single/SKILL.md \
+            || (echo "expected .agents/skills/example-single/SKILL.md after install" >&2; exit 1)
+          agents uninstall skill-example-single --scope project
+          test ! -e .agents/skills/example-single \
+            || (echo "expected .agents/skills/example-single/ removed after uninstall" >&2; exit 1)
           popd
 
       - name: Round-trip install rule-example with --agents-only
         run: |
           WORKDIR=$(mktemp -d)
           pushd "$WORKDIR"
-          agents install rule-example --scope project --agents-only
+          agents install rule-example --scope project --agents-only --marketplace-root "$GITHUB_WORKSPACE"
           test -f .agents/rules/example.md
           test ! -e .cursor/rules/example.md \
             || (echo "--agents-only should NOT spray to .cursor/" >&2; exit 1)

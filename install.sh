@@ -9,7 +9,7 @@
 #   curl -fsSL https://raw.githubusercontent.com/DgxSparkLabs/marketplace/main/install.sh | bash
 #   bash install.sh                       # install from the repo's main branch
 #   AGENTS_REF=my-branch bash install.sh  # install from a different ref
-#   bash install.sh install skill-example # install + immediately invoke
+#   bash install.sh install skill-example-multi # install + immediately invoke
 set -euo pipefail
 
 DEST="${AGENTS_DEST:-$HOME/.local/bin/agents}"

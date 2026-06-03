@@ -37,16 +37,18 @@ jobs:
 
       - name: Assert plugin install succeeds
         # CL2: per-plugin install must succeed after marketplace registration
-        run: claude plugin install skill-example@dgxsparklabs-marketplace --scope project
+        run: claude plugin install skill-example-multi@dgxsparklabs-marketplace --scope project
 
       - name: Assert plugin appears in list
-        # CL3: installed plugin must appear in plugin list
-        run: claude plugin list | grep -F "skill-example"
+        # CL3: installed plugin must appear in plugin list. Use grep -Fx (exact line)
+        # so the substring assertion can't false-positive on a sibling like
+        # `skill-example-single` after the post-2026-05-28 expansion.
+        run: claude plugin list | grep -F "skill-example-multi"
 
       - name: Cleanup
         if: always()
         run: |
-          claude plugin uninstall skill-example --scope project || true
+          claude plugin uninstall skill-example-multi --scope project || true
           claude plugin marketplace remove dgxsparklabs-marketplace || true
 
   codex:
@@ -79,14 +81,14 @@ jobs:
 
       - name: Assert plugins enumerate
         # C4: after registration, codex plugin list must enumerate our plugins
-        run: codex plugin list | grep -F "skill-example@dgxsparklabs-marketplace"
+        run: codex plugin list | grep -F "skill-example-multi@dgxsparklabs-marketplace"
 
       - name: Assert plugin install succeeds
         # C5: per-plugin install must succeed with the new .codex-plugin/plugin.json manifest
-        run: codex plugin add skill-example@dgxsparklabs-marketplace
+        run: codex plugin add skill-example-multi@dgxsparklabs-marketplace
 
       - name: Cleanup
         if: always()
         run: |
-          codex plugin remove skill-example || true
+          codex plugin remove skill-example-multi || true
           codex plugin marketplace remove dgxsparklabs-marketplace || true

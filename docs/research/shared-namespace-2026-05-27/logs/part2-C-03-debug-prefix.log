@@ -1,0 +1,14 @@
+=== --debug /dgxsparklabs-s (prefix matching shared namespace name) ===
+Unknown command: /dgxsparklabs-s
+
+=== --debug /dgxsparklabs-skill:a (exact valid form) ===
+OK stub.
+
+=== --debug /dgxsparklabs-skill: (prefix only - what completion does it suggest?) ===
+Unknown command: /dgxsparklabs-skill:
+
+=== --debug /dgxsparklabs-skill (no colon) ===
+Unknown command: /dgxsparklabs-skill
+
+=== --debug /a (flat form) ===
+OK stub.

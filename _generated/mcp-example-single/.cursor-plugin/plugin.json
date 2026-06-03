@@ -1,0 +1,6 @@
+{
+  "name": "mcp-example-single",
+  "version": "1.0.0",
+  "description": "Reference template for an MCP server plugin \u2014 copy to scaffold your own.",
+  "mcpServers": "./mcp-config.json"
+}

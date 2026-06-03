@@ -1,0 +1,27 @@
+=== tag --dry-run on skills/example (source - misaligned) ===
+Plugin:  example-skill
+Version: 1.0.0 (from plugin.json)
+Tag:     example-skill--v1.0.0
+
+✔ Dry run — would create tag example-skill--v1.0.0 at HEAD in /tmp/workspace
+  git -C /tmp/workspace tag -a example-skill--v1.0.0 -m "example-skill 1.0.0"
+  git -C /tmp/workspace push origin refs/tags/example-skill--v1.0.0
+
+=== tag --dry-run on _generated/skill-example (regenerated - aligned because rewritten) ===
+Plugin:  skill-example
+Version: 1.0.0 (from plugin.json)
+Marketplace entry: plugins[17] in /tmp/workspace/.claude-plugin/marketplace.json (version: 1.0.0)
+Tag:     skill-example--v1.0.0
+
+✔ Dry run — would create tag skill-example--v1.0.0 at HEAD in /tmp/workspace
+  git -C /tmp/workspace tag -a skill-example--v1.0.0 -m "skill-example 1.0.0"
+  git -C /tmp/workspace push origin refs/tags/skill-example--v1.0.0
+
+=== tag --dry-run on mcp-servers/example (source - already aligned to mcp-example) ===
+Plugin:  mcp-example
+Version: 1.0.0 (from plugin.json)
+Tag:     mcp-example--v1.0.0
+
+✔ Dry run — would create tag mcp-example--v1.0.0 at HEAD in /tmp/workspace
+  git -C /tmp/workspace tag -a mcp-example--v1.0.0 -m "mcp-example 1.0.0"
+  git -C /tmp/workspace push origin refs/tags/mcp-example--v1.0.0

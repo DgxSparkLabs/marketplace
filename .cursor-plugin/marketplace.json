@@ -3,28 +3,80 @@
   "description": "Cross-platform AI agent skills, rules, and reference plugins for Claude Code, Codex, Gemini, Cursor, Windsurf, and Devin.",
   "plugins": [
     {
-      "name": "agent-example",
-      "source": "./_generated/agent-example"
+      "name": "agent-example-multi",
+      "source": "./_generated/agent-example-multi"
     },
     {
-      "name": "command-example",
-      "source": "./_generated/command-example"
+      "name": "agent-example-single",
+      "source": "./_generated/agent-example-single"
     },
     {
-      "name": "hook-example",
-      "source": "./_generated/hook-example"
+      "name": "command-example-multi",
+      "source": "./_generated/command-example-multi"
     },
     {
-      "name": "mcp-example",
-      "source": "./_generated/mcp-example"
+      "name": "command-example-single",
+      "source": "./_generated/command-example-single"
+    },
+    {
+      "name": "hook-example-multi",
+      "source": "./_generated/hook-example-multi"
+    },
+    {
+      "name": "hook-example-notification",
+      "source": "./_generated/hook-example-notification"
+    },
+    {
+      "name": "hook-example-posttooluse",
+      "source": "./_generated/hook-example-posttooluse"
+    },
+    {
+      "name": "hook-example-precompact",
+      "source": "./_generated/hook-example-precompact"
+    },
+    {
+      "name": "hook-example-pretooluse",
+      "source": "./_generated/hook-example-pretooluse"
+    },
+    {
+      "name": "hook-example-sessionend",
+      "source": "./_generated/hook-example-sessionend"
+    },
+    {
+      "name": "hook-example-sessionstart",
+      "source": "./_generated/hook-example-sessionstart"
+    },
+    {
+      "name": "hook-example-stop",
+      "source": "./_generated/hook-example-stop"
+    },
+    {
+      "name": "hook-example-subagentstop",
+      "source": "./_generated/hook-example-subagentstop"
+    },
+    {
+      "name": "hook-example-userpromptsubmit",
+      "source": "./_generated/hook-example-userpromptsubmit"
+    },
+    {
+      "name": "mcp-example-multi",
+      "source": "./_generated/mcp-example-multi"
+    },
+    {
+      "name": "mcp-example-single",
+      "source": "./_generated/mcp-example-single"
     },
     {
       "name": "rule-example",
       "source": "./_generated/rule-example"
     },
     {
-      "name": "skill-example",
-      "source": "./_generated/skill-example"
+      "name": "skill-example-multi",
+      "source": "./_generated/skill-example-multi"
+    },
+    {
+      "name": "skill-example-single",
+      "source": "./_generated/skill-example-single"
     }
   ]
 }

@@ -15,7 +15,7 @@ from ..utils.paths import resolve_hook
 
 
 def install(marketplace_root: Path, name: str, *, scope: str, agents_only: bool) -> list[Path]:
-    src = marketplace_root / "hooks" / name / "hooks" / "hooks.json"
+    src = marketplace_root / "src" / "hooks" / name / "hooks" / "hooks.json"
     if not src.exists():
         raise FileNotFoundError(f"hook-{name} not found at {src}")
 

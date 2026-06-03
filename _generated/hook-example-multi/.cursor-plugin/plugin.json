@@ -1,0 +1,6 @@
+{
+  "name": "hook-example-multi",
+  "version": "1.0.0",
+  "description": "Reference example hook covering all nine Claude hook events. Each handler reads the hook's JSON payload from stdin and appends a timestamped marker PLUS that full payload to /tmp/hook-fired-<event>.log \u2014 a 'debug example' so authors can see exactly what Claude sends each event (verify with `tail /tmp/hook-fired-*.log`, or `cat \u2026 | tail -n +1` and pipe through `jq` to pretty-print). The UserPromptSubmit handler also injects a context line into the prompt (stdout).",
+  "hooks": "./hooks/hooks.json"
+}

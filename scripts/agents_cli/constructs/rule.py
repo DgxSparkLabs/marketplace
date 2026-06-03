@@ -14,7 +14,7 @@ def _source_for(marketplace_root: Path, name: str, dest: Path) -> Path:
     Prefers ``rules/<name>/formats/<platform>.md`` when the destination
     sits under that platform's directory; falls back to the raw ``rule.md``.
     """
-    src_root = marketplace_root / "rules" / name
+    src_root = marketplace_root / "src" / "rules" / name
     parts = dest.parts
     # Platform detection from destination path.
     if ".cursor" in parts:
@@ -29,7 +29,7 @@ def _source_for(marketplace_root: Path, name: str, dest: Path) -> Path:
 
 
 def install(marketplace_root: Path, name: str, *, scope: str, agents_only: bool) -> list[Path]:
-    src_root = marketplace_root / "rules" / name
+    src_root = marketplace_root / "src" / "rules" / name
     if not (src_root / "rule.md").exists():
         raise FileNotFoundError(f"rule-{name} not found at {src_root}/rule.md")
 

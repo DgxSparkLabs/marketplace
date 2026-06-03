@@ -1,0 +1,39 @@
+name: regen-bot
+
+# Auto-regenerate committed artifacts (manifests, mirrors, docs/INVENTORY.md)
+# so contributors only edit src/. SAME-REPO PR branches only — GitHub Actions
+# cannot push to a fork's branch, so fork PRs fall back to the ci.yml drift gate
+# plus the local helper (scripts/regen.sh / regen.ps1).
+on:
+  pull_request:
+    paths:
+      - "src/**"
+      - "scripts/**"
+
+permissions:
+  contents: write
+
+jobs:
+  regenerate:
+    # Skip on forks (Actions has no write token for a fork's branch).
+    if: github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+      - uses: astral-sh/setup-uv@v5
+      - name: Regenerate from src/
+        run: uv run scripts/generate_manifest.py
+      - name: Commit regenerated artifacts if changed
+        run: |
+          if [ -n "$(git status --porcelain)" ]; then
+            # Deterministic build bot — NOT an AI identity (project rule: no AI attribution).
+            git config user.name "marketplace-generator"
+            git config user.email "generator@dgxsparklabs.invalid"
+            git add -A
+            git commit -m "chore(generated): regenerate manifests"
+            git push
+          else
+            echo "No drift; generated artifacts already in sync."
+          fi

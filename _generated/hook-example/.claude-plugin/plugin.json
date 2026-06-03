@@ -1,9 +1,0 @@
-{
-  "name": "hook-example",
-  "version": "1.0.0",
-  "author": {
-    "name": "DgxSparkLabs",
-    "url": "https://github.com/DgxSparkLabs"
-  },
-  "description": "Reference example hook covering session-lifecycle, per-turn, and tool-lifecycle Claude events. Each hook writes a per-event sentinel line to /tmp/hook-fired-<event>.log so operators can verify firing with `tail /tmp/hook-fired-*.log` (the UserPromptSubmit hook also injects a context line into the prompt as before)."
-}

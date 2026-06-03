@@ -1,0 +1,12 @@
+=== try /skill-example:lab-notebook ===
+Unknown command: /skill-example:lab-notebook
+
+=== try /lab-notebook (flat skill name) ===
+Unknown command: /lab-notebook
+
+=== try OLD form /skill-example:example-skill (should fail now) ===
+Unknown command: /skill-example:example-skill
+
+=== body forms ===
+/lab-notebook
+/skill-example

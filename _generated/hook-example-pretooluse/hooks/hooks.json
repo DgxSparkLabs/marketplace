@@ -1,0 +1,16 @@
+{
+  "description": "Single-event reference hook for PreToolUse, scoped to Write|Edit. Before the tool runs, appends a timestamped marker plus the full hook JSON payload (read from stdin) to /tmp/hook-fired-pretooluse.log. The payload carries the tool name and tool input — read it from stdin JSON, NOT from a CLAUDE_TOOL_NAME env var (which is not populated).",
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "p=\"$(cat)\"; { echo \"$(date -u +%FT%TZ) preToolUse fired\"; echo \"$p\"; echo; } >> /tmp/hook-fired-pretooluse.log"
+          }
+        ]
+      }
+    ]
+  }
+}

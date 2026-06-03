@@ -1,0 +1,68 @@
+=== claude plugin validate ./ ===
+Validating marketplace manifest: /tmp/workspace/.claude-plugin/marketplace.json
+
+✔ Validation passed
+
+=== claude plugin validate by marketplace name (skill-example) ===
+Validating plugin manifest: /tmp/workspace/skill-example
+
+✘ Found 1 error:
+
+  ❯ file: File not found: /tmp/workspace/skill-example
+
+✘ Validation failed
+
+=== mcp list (if available) ===
+Checking MCP server health…
+
+plugin:mcp-example:example: uvx mcp-server-fetch - ✗ Failed to connect
+
+=== ~/.claude/settings.local.json registry ===
+cat: /root/.claude/settings.local.json: No such file or directory
+
+=== ~/.claude/plugins/cache layout ===
+total 44
+drwxr-xr-x 11 root root 4096 May 26 12:30 .
+drwxr-xr-x  3 root root 4096 May 26 12:30 ..
+drwxr-xr-x  3 root root 4096 May 26 12:30 agent-example
+drwxr-xr-x  3 root root 4096 May 26 12:30 command-example
+drwxr-xr-x  3 root root 4096 May 26 12:30 hook-example
+drwxr-xr-x  3 root root 4096 May 26 12:30 lsp-example
+drwxr-xr-x  3 root root 4096 May 26 12:30 mcp-example
+drwxr-xr-x  3 root root 4096 May 26 12:30 monitor-example
+drwxr-xr-x  3 root root 4096 May 26 12:30 output-style-example
+drwxr-xr-x  3 root root 4096 May 26 12:30 skill-example
+drwxr-xr-x  3 root root 4096 May 26 12:30 theme-example
+
+=== one example plugin.json cached form ===
+--- /root/.claude/plugins/cache/dgxsparklabs-marketplace/theme-example/1.0.0/.claude-plugin/plugin.json ---
+{
+  "name": "theme-example",
+  "version": "1.0.0",
+  "author": {
+    "name": "DgxSparkLabs",
+    "url": "https://github.com/DgxSparkLabs"
+  },
+  "description": "Reference template for a theme plugin (experimental) \u2014 copy to scaffold your own.",
+  "experimental": {
+    "themes": "./themes"
+  }
+}
+--- /root/.claude/plugins/cache/dgxsparklabs-marketplace/lsp-example/1.0.0/.claude-plugin/plugin.json ---
+{
+  "name": "lsp-example",
+  "version": "1.0.0",
+  "author": {
+    "name": "DgxSparkLabs",
+    "url": "https://github.com/DgxSparkLabs"
+  },
+  "description": "Reference template for an LSP server plugin \u2014 copy to scaffold your own.",
+  "lspServers": "./lsp-config.json"
+}
+--- /root/.claude/plugins/cache/dgxsparklabs-marketplace/hook-example/1.0.0/.codex-plugin/plugin.json ---
+{
+  "name": "hook-example",
+  "version": "1.0.0",
+  "description": "Reference example hook covering session-lifecycle, per-turn, and tool-lifecycle Claude events. Each hook writes a per-event sentinel line to /tmp/hook-fired-<event>.log so operators can verify firing with `tail /tmp/hook-fired-*.log` (the UserPromptSubmit hook also injects a context line into the prompt as before).",
+  "hooks": "./hooks/hooks.json"
+}

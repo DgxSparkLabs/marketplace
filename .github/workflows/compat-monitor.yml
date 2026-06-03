@@ -30,20 +30,20 @@ jobs:
       - name: Register marketplace
         run: claude plugin marketplace add ./
 
-      - name: Install monitor-example plugin
-        run: claude plugin install monitor-example@dgxsparklabs-marketplace --scope project
+      - name: Install monitor-example-single plugin
+        run: claude plugin install monitor-example-single@dgxsparklabs-marketplace --scope project
 
       - name: Assert plugin is listed (grep match)
         # Match mode: grep substring — catalog row: claude plugin list shows installed entry
-        run: claude plugin list | grep -F "monitor-example@dgxsparklabs-marketplace"
+        run: claude plugin list | grep -F "monitor-example-single@dgxsparklabs-marketplace"
 
       - name: Assert plugin details shows monitors section
         # Match mode: grep substring — catalog row: claude plugin details shows the relevant section
-        run: claude plugin details monitor-example | grep -F "monitor-example"
+        run: claude plugin details monitor-example-single@dgxsparklabs-marketplace | grep -F "monitor-example-single"
 
       - name: Cleanup
         if: always()
         run: |
-          claude plugin uninstall monitor-example --scope project || true
+          claude plugin uninstall monitor-example-single --scope project || true
           claude plugin prune --scope project -y || true
           claude plugin marketplace remove dgxsparklabs-marketplace || true

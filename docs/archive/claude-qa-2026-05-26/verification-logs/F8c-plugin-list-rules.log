@@ -1,0 +1,14 @@
+Adding marketplace…✔ Successfully added marketplace: dgxsparklabs-marketplace (declared in user settings)
+
+=== List all plugin names ===
+[]
+
+=== Try --available flag ===
+Usage: claude plugin list [options]
+
+List installed plugins
+
+Options:
+  --available  Include available plugins from marketplaces (requires --json)
+  -h, --help   Display help for command
+  --json       Output as JSON

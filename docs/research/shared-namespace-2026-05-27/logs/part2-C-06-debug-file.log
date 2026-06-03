@@ -1,0 +1,89 @@
+=== --debug-file: write all logs to file, then inspect ===
+OK stub.
+
+=== debug log size ===
+158 /tmp/claude-debug.log
+
+=== debug log lines mentioning dgxsparklabs or skill ===
+2026-05-27T09:26:18.713Z [DEBUG] MDM settings load completed in 27ms
+2026-05-27T09:26:19.004Z [DEBUG] [init] configureGlobalMTLS complete
+2026-05-27T09:26:19.103Z [DEBUG] [init] configureGlobalAgents complete
+2026-05-27T09:26:19.756Z [DEBUG] [STARTUP] setup() completed in 165ms
+2026-05-27T09:26:19.929Z [DEBUG] Checking plugin dgxsparklabs-skill: skillsPath=none, skillsPaths=1 paths
+2026-05-27T09:26:19.929Z [DEBUG] Attempting to load skills from plugin dgxsparklabs-skill skillsPaths: /tmp/workspace/_generated/skill-e-test
+2026-05-27T09:26:19.941Z [DEBUG] Loading from skillPath: /tmp/workspace/_generated/skill-e-test for plugin dgxsparklabs-skill
+2026-05-27T09:26:19.942Z [DEBUG] Checking plugin dgxsparklabs-skill: skillsPath=none, skillsPaths=1 paths
+2026-05-27T09:26:19.942Z [DEBUG] Attempting to load skills from plugin dgxsparklabs-skill skillsPaths: /tmp/workspace/_generated/skill-d-test
+2026-05-27T09:26:19.943Z [DEBUG] Loading from skillPath: /tmp/workspace/_generated/skill-d-test for plugin dgxsparklabs-skill
+2026-05-27T09:26:19.943Z [DEBUG] Checking plugin dgxsparklabs-skill: skillsPath=none, skillsPaths=1 paths
+2026-05-27T09:26:19.943Z [DEBUG] Attempting to load skills from plugin dgxsparklabs-skill skillsPaths: /tmp/workspace/_generated/skill-c-test
+2026-05-27T09:26:19.943Z [DEBUG] Loading from skillPath: /tmp/workspace/_generated/skill-c-test for plugin dgxsparklabs-skill
+2026-05-27T09:26:19.944Z [DEBUG] Checking plugin dgxsparklabs-skill: skillsPath=none, skillsPaths=1 paths
+2026-05-27T09:26:19.944Z [DEBUG] Attempting to load skills from plugin dgxsparklabs-skill skillsPaths: /tmp/workspace/_generated/skill-b-test
+2026-05-27T09:26:19.944Z [DEBUG] Loading from skillPath: /tmp/workspace/_generated/skill-b-test for plugin dgxsparklabs-skill
+2026-05-27T09:26:19.944Z [DEBUG] Checking plugin dgxsparklabs-skill: skillsPath=none, skillsPaths=1 paths
+2026-05-27T09:26:19.944Z [DEBUG] Attempting to load skills from plugin dgxsparklabs-skill skillsPaths: /tmp/workspace/_generated/skill-a-test
+2026-05-27T09:26:19.944Z [DEBUG] Loading from skillPath: /tmp/workspace/_generated/skill-a-test for plugin dgxsparklabs-skill
+2026-05-27T09:26:19.978Z [DEBUG] Loaded 1 skills from plugin dgxsparklabs-skill custom path: /tmp/workspace/_generated/skill-e-test
+2026-05-27T09:26:19.989Z [DEBUG] Loaded 1 skills from plugin dgxsparklabs-skill custom path: /tmp/workspace/_generated/skill-d-test
+2026-05-27T09:26:19.989Z [DEBUG] Loaded 1 skills from plugin dgxsparklabs-skill custom path: /tmp/workspace/_generated/skill-c-test
+2026-05-27T09:26:19.989Z [DEBUG] Loaded 1 skills from plugin dgxsparklabs-skill custom path: /tmp/workspace/_generated/skill-b-test
+2026-05-27T09:26:19.990Z [DEBUG] Loaded 1 skills from plugin dgxsparklabs-skill custom path: /tmp/workspace/_generated/skill-a-test
+2026-05-27T09:26:20.504Z [DEBUG] [API:auth] OAuth token check complete
+2026-05-27T09:26:20.833Z [DEBUG] Skill prompt: showing "dgxsparklabs-skill:e" (userFacingName="e")
+2026-05-27T09:26:20.833Z [DEBUG] Skill prompt: showing "dgxsparklabs-skill:d" (userFacingName="d")
+2026-05-27T09:26:20.834Z [DEBUG] Skill prompt: showing "dgxsparklabs-skill:c" (userFacingName="c")
+2026-05-27T09:26:20.834Z [DEBUG] Skill prompt: showing "dgxsparklabs-skill:b" (userFacingName="b")
+2026-05-27T09:26:20.834Z [DEBUG] Skill prompt: showing "dgxsparklabs-skill:a" (userFacingName="a")
+
+=== first 50 lines ===
+2026-05-27T09:26:18.713Z [DEBUG] MDM settings load completed in 27ms
+2026-05-27T09:26:18.976Z [DEBUG] Broken symlink or missing file encountered for settings.json at path: /etc/claude-code/managed-settings.json
+2026-05-27T09:26:18.990Z [DEBUG] Broken symlink or missing file encountered for settings.json at path: /tmp/test/.claude/settings.local.json
+2026-05-27T09:26:18.991Z [DEBUG] CA certs: Config fallback - globalEnv keys: , settingsEnv keys: none
+2026-05-27T09:26:19.003Z [DEBUG] [init] configureGlobalMTLS starting
+2026-05-27T09:26:19.004Z [DEBUG] [init] configureGlobalMTLS complete
+2026-05-27T09:26:19.004Z [DEBUG] [init] configureGlobalAgents starting
+2026-05-27T09:26:19.005Z [DEBUG] CA certs: stores=bundled,system, extraCertsPath=undefined
+2026-05-27T09:26:19.007Z [DEBUG] CA certs: Loaded 145 bundled root certificates
+2026-05-27T09:26:19.100Z [DEBUG] CA certs: Loaded 285 system CA certificates
+2026-05-27T09:26:19.102Z [DEBUG] mTLS: Creating HTTPS agent with custom certificates
+2026-05-27T09:26:19.103Z [DEBUG] [init] configureGlobalAgents complete
+2026-05-27T09:26:19.131Z [DEBUG] Error log sink initialized
+2026-05-27T09:26:19.177Z [DEBUG] [claudeai-mcp] Disabled: API-key auth precedence active
+2026-05-27T09:26:19.178Z [DEBUG] [STARTUP] Loading MCP configs...
+2026-05-27T09:26:19.538Z [DEBUG] Loaded 5 installed plugins from /root/.claude/plugins/installed_plugins.json
+2026-05-27T09:26:19.570Z [DEBUG] Git remote URL: null
+2026-05-27T09:26:19.570Z [DEBUG] No git remote URL found
+2026-05-27T09:26:19.591Z [DEBUG] [STARTUP] Running setup()...
+2026-05-27T09:26:19.626Z [DEBUG] Broken symlink or missing file encountered for settings.json at path: /etc/claude-code/managed-settings.json
+2026-05-27T09:26:19.630Z [DEBUG] Broken symlink or missing file encountered for settings.json at path: /tmp/test/.claude/settings.local.json
+2026-05-27T09:26:19.632Z [DEBUG] Loading skills from: managed=/etc/claude-code/.claude/skills, user=/root/.claude/skills, project=[]
+2026-05-27T09:26:19.643Z [DEBUG] Error log sink initialized
+2026-05-27T09:26:19.663Z [DEBUG] Failed to stat directory /root/.claude/commands: ENOENT: no such file or directory, statx '/root/.claude/commands'
+2026-05-27T09:26:19.663Z [DEBUG] Failed to stat directory /etc/claude-code/.claude/commands: ENOENT: no such file or directory, statx '/etc/claude-code/.claude/commands'
+2026-05-27T09:26:19.666Z [DEBUG] Loaded 0 unique skills (0 unconditional, 0 conditional, managed: 0, user: 0, project: 0, additional: 0, legacy commands: 0)
+2026-05-27T09:26:19.666Z [DEBUG] Failed to stat directory /etc/claude-code/.claude/agents: ENOENT: no such file or directory, statx '/etc/claude-code/.claude/agents'
+2026-05-27T09:26:19.667Z [DEBUG] Failed to stat directory /root/.claude/agents: ENOENT: no such file or directory, statx '/root/.claude/agents'
+2026-05-27T09:26:19.756Z [DEBUG] [STARTUP] setup() completed in 165ms
+2026-05-27T09:26:19.757Z [DEBUG] Cleared CA certificates cache
+2026-05-27T09:26:19.757Z [DEBUG] Cleared mTLS configuration cache
+2026-05-27T09:26:19.757Z [DEBUG] Cleared proxy agent cache
+2026-05-27T09:26:19.757Z [DEBUG] CA certs: stores=bundled,system, extraCertsPath=undefined
+2026-05-27T09:26:19.758Z [DEBUG] CA certs: Loaded 145 bundled root certificates
+2026-05-27T09:26:19.758Z [DEBUG] CA certs: Loaded 285 system CA certificates
+2026-05-27T09:26:19.759Z [DEBUG] mTLS: Creating HTTPS agent with custom certificates
+2026-05-27T09:26:19.772Z [DEBUG] [STARTUP] Loading commands and agents...
+2026-05-27T09:26:19.774Z [DEBUG] [ToolSearch:optimistic] disabled: ANTHROPIC_BASE_URL=http://127.0.0.1:8089 is not a first-party Anthropic host. Set ENABLE_TOOL_SEARCH=true (or auto / auto:N) if your proxy forwards tool_reference blocks.
+2026-05-27T09:26:19.925Z [DEBUG] Found 5 plugins (5 enabled, 0 disabled)
+2026-05-27T09:26:19.928Z [DEBUG] getPluginSkills: Processing 5 enabled plugins
+2026-05-27T09:26:19.929Z [DEBUG] Checking plugin dgxsparklabs-skill: skillsPath=none, skillsPaths=1 paths
+2026-05-27T09:26:19.929Z [DEBUG] Attempting to load skills from plugin dgxsparklabs-skill skillsPaths: /tmp/workspace/_generated/skill-e-test
+2026-05-27T09:26:19.941Z [DEBUG] Loading from skillPath: /tmp/workspace/_generated/skill-e-test for plugin dgxsparklabs-skill
+2026-05-27T09:26:19.942Z [DEBUG] Checking plugin dgxsparklabs-skill: skillsPath=none, skillsPaths=1 paths
+2026-05-27T09:26:19.942Z [DEBUG] Attempting to load skills from plugin dgxsparklabs-skill skillsPaths: /tmp/workspace/_generated/skill-d-test
+2026-05-27T09:26:19.943Z [DEBUG] Loading from skillPath: /tmp/workspace/_generated/skill-d-test for plugin dgxsparklabs-skill
+2026-05-27T09:26:19.943Z [DEBUG] Checking plugin dgxsparklabs-skill: skillsPath=none, skillsPaths=1 paths
+2026-05-27T09:26:19.943Z [DEBUG] Attempting to load skills from plugin dgxsparklabs-skill skillsPaths: /tmp/workspace/_generated/skill-c-test
+2026-05-27T09:26:19.943Z [DEBUG] Loading from skillPath: /tmp/workspace/_generated/skill-c-test for plugin dgxsparklabs-skill
+2026-05-27T09:26:19.944Z [DEBUG] Checking plugin dgxsparklabs-skill: skillsPath=none, skillsPaths=1 paths

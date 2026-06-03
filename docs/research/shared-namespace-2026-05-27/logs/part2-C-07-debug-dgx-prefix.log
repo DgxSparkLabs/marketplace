@@ -1,0 +1,25 @@
+Unknown command: /dgx. Did you mean /d?
+
+=== debug log for /dgx ===
+2026-05-27T09:26:42.188Z [DEBUG] Checking plugin dgxsparklabs-skill: skillsPath=none, skillsPaths=1 paths
+2026-05-27T09:26:42.188Z [DEBUG] Attempting to load skills from plugin dgxsparklabs-skill skillsPaths: /tmp/workspace/_generated/skill-e-test
+2026-05-27T09:26:42.188Z [DEBUG] Loading from skillPath: /tmp/workspace/_generated/skill-e-test for plugin dgxsparklabs-skill
+2026-05-27T09:26:42.189Z [DEBUG] Checking plugin dgxsparklabs-skill: skillsPath=none, skillsPaths=1 paths
+2026-05-27T09:26:42.189Z [DEBUG] Attempting to load skills from plugin dgxsparklabs-skill skillsPaths: /tmp/workspace/_generated/skill-d-test
+2026-05-27T09:26:42.189Z [DEBUG] Loading from skillPath: /tmp/workspace/_generated/skill-d-test for plugin dgxsparklabs-skill
+2026-05-27T09:26:42.190Z [DEBUG] Checking plugin dgxsparklabs-skill: skillsPath=none, skillsPaths=1 paths
+2026-05-27T09:26:42.190Z [DEBUG] Attempting to load skills from plugin dgxsparklabs-skill skillsPaths: /tmp/workspace/_generated/skill-c-test
+2026-05-27T09:26:42.190Z [DEBUG] Loading from skillPath: /tmp/workspace/_generated/skill-c-test for plugin dgxsparklabs-skill
+2026-05-27T09:26:42.190Z [DEBUG] Checking plugin dgxsparklabs-skill: skillsPath=none, skillsPaths=1 paths
+2026-05-27T09:26:42.190Z [DEBUG] Attempting to load skills from plugin dgxsparklabs-skill skillsPaths: /tmp/workspace/_generated/skill-b-test
+2026-05-27T09:26:42.191Z [DEBUG] Loading from skillPath: /tmp/workspace/_generated/skill-b-test for plugin dgxsparklabs-skill
+2026-05-27T09:26:42.191Z [DEBUG] Checking plugin dgxsparklabs-skill: skillsPath=none, skillsPaths=1 paths
+2026-05-27T09:26:42.191Z [DEBUG] Attempting to load skills from plugin dgxsparklabs-skill skillsPaths: /tmp/workspace/_generated/skill-a-test
+2026-05-27T09:26:42.191Z [DEBUG] Loading from skillPath: /tmp/workspace/_generated/skill-a-test for plugin dgxsparklabs-skill
+2026-05-27T09:26:42.220Z [DEBUG] Loaded 1 skills from plugin dgxsparklabs-skill custom path: /tmp/workspace/_generated/skill-e-test
+2026-05-27T09:26:42.221Z [DEBUG] Loaded 1 skills from plugin dgxsparklabs-skill custom path: /tmp/workspace/_generated/skill-d-test
+2026-05-27T09:26:42.221Z [DEBUG] Loaded 1 skills from plugin dgxsparklabs-skill custom path: /tmp/workspace/_generated/skill-c-test
+2026-05-27T09:26:42.222Z [DEBUG] Loaded 1 skills from plugin dgxsparklabs-skill custom path: /tmp/workspace/_generated/skill-b-test
+2026-05-27T09:26:42.222Z [DEBUG] Loaded 1 skills from plugin dgxsparklabs-skill custom path: /tmp/workspace/_generated/skill-a-test
+
+=== unknown command suggestions ===

@@ -1,0 +1,6 @@
+{
+  "name": "hook-example-precompact",
+  "version": "1.0.0",
+  "description": "Single-event reference hook for PreCompact. Fires before Claude compacts conversation history; appends a timestamped marker plus the full hook JSON payload (read from stdin) to /tmp/hook-fired-precompact.log.",
+  "hooks": "./hooks/hooks.json"
+}

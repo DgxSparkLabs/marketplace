@@ -1,0 +1,11 @@
+=== Step 4: plugin install skill-example ===
+Installing plugin "skill-example@dgxsparklabs-marketplace"...✔ Successfully installed plugin: skill-example@dgxsparklabs-marketplace (scope: project)
+
+=== Step 5: plugin list (after install) ===
+Installed plugins:
+
+  ❯ skill-example@dgxsparklabs-marketplace
+    Version: 1.0.0
+    Scope: project
+    Status: ✔ enabled
+

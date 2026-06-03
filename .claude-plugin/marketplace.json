@@ -7,8 +7,8 @@
   "description": "Cross-platform AI agent skills, rules, and reference plugins for Claude Code, Codex, Gemini, Cursor, Windsurf, and Devin.",
   "plugins": [
     {
-      "name": "agent-example",
-      "source": "./_generated/agent-example",
+      "name": "agent-example-multi",
+      "source": "./_generated/agent-example-multi",
       "description": "Reviews a lab notebook entry as a skeptical peer reviewer. Use when the user has drafted a notebook entry and wants a critical second opinion before publishing.",
       "version": "1.0.0",
       "author": {
@@ -18,31 +18,20 @@
       "category": "agent"
     },
     {
-      "name": "bundle-agent-all",
-      "source": "./_generated/bundle-agent-all",
-      "description": "Every agent in the marketplace",
+      "name": "agent-example-single",
+      "source": "./_generated/agent-example-single",
+      "description": "Reviews a lab notebook entry as a skeptical peer reviewer. Use when the user has drafted a notebook entry and wants a critical second opinion before publishing.",
       "version": "1.0.0",
       "author": {
         "name": "DgxSparkLabs",
         "url": "https://github.com/DgxSparkLabs"
       },
-      "category": "bundle"
-    },
-    {
-      "name": "bundle-command-all",
-      "source": "./_generated/bundle-command-all",
-      "description": "Every command in the marketplace",
-      "version": "1.0.0",
-      "author": {
-        "name": "DgxSparkLabs",
-        "url": "https://github.com/DgxSparkLabs"
-      },
-      "category": "bundle"
+      "category": "agent"
     },
     {
       "name": "bundle-examples",
       "source": "./_generated/bundle-examples",
-      "description": "Reference examples \u2014 install to study every construct type",
+      "description": "Reference examples \u2014 install to study every construct type. Each Claude-supported construct ships both example-single and example-multi (hooks ship nine per-event plus example-multi).",
       "version": "1.0.0",
       "author": {
         "name": "DgxSparkLabs",
@@ -51,85 +40,19 @@
       "category": "bundle"
     },
     {
-      "name": "bundle-hook-all",
-      "source": "./_generated/bundle-hook-all",
-      "description": "Every hook in the marketplace",
+      "name": "command-example-multi",
+      "source": "./_generated/command-example-multi",
+      "description": "Prints a formatted lab-notebook closing footer with a UTC timestamp.",
       "version": "1.0.0",
       "author": {
         "name": "DgxSparkLabs",
         "url": "https://github.com/DgxSparkLabs"
       },
-      "category": "bundle"
+      "category": "command"
     },
     {
-      "name": "bundle-lsp-all",
-      "source": "./_generated/bundle-lsp-all",
-      "description": "Every lsp in the marketplace",
-      "version": "1.0.0",
-      "author": {
-        "name": "DgxSparkLabs",
-        "url": "https://github.com/DgxSparkLabs"
-      },
-      "category": "bundle"
-    },
-    {
-      "name": "bundle-mcp-all",
-      "source": "./_generated/bundle-mcp-all",
-      "description": "Every mcp in the marketplace",
-      "version": "1.0.0",
-      "author": {
-        "name": "DgxSparkLabs",
-        "url": "https://github.com/DgxSparkLabs"
-      },
-      "category": "bundle"
-    },
-    {
-      "name": "bundle-monitor-all",
-      "source": "./_generated/bundle-monitor-all",
-      "description": "Every monitor in the marketplace",
-      "version": "1.0.0",
-      "author": {
-        "name": "DgxSparkLabs",
-        "url": "https://github.com/DgxSparkLabs"
-      },
-      "category": "bundle"
-    },
-    {
-      "name": "bundle-output-style-all",
-      "source": "./_generated/bundle-output-style-all",
-      "description": "Every output-style in the marketplace",
-      "version": "1.0.0",
-      "author": {
-        "name": "DgxSparkLabs",
-        "url": "https://github.com/DgxSparkLabs"
-      },
-      "category": "bundle"
-    },
-    {
-      "name": "bundle-skill-all",
-      "source": "./_generated/bundle-skill-all",
-      "description": "Every skill in the marketplace",
-      "version": "1.0.0",
-      "author": {
-        "name": "DgxSparkLabs",
-        "url": "https://github.com/DgxSparkLabs"
-      },
-      "category": "bundle"
-    },
-    {
-      "name": "bundle-theme-all",
-      "source": "./_generated/bundle-theme-all",
-      "description": "Every theme in the marketplace",
-      "version": "1.0.0",
-      "author": {
-        "name": "DgxSparkLabs",
-        "url": "https://github.com/DgxSparkLabs"
-      },
-      "category": "bundle"
-    },
-    {
-      "name": "command-example",
-      "source": "./_generated/command-example",
+      "name": "command-example-single",
+      "source": "./_generated/command-example-single",
       "description": "Reference example slash command. Prints a formatted lab-notebook header.",
       "version": "1.0.0",
       "author": {
@@ -139,9 +62,9 @@
       "category": "command"
     },
     {
-      "name": "hook-example",
-      "source": "./_generated/hook-example",
-      "description": "Reference example hook covering session-lifecycle, per-turn, and tool-lifecycle Claude events. Each hook writes a per-event sentinel line to /tmp/hook-fired-<event>.log so operators can verify firing with `tail /tmp/hook-fired-*.log` (the UserPromptSubmit hook also injects a context line into the prompt as before).",
+      "name": "hook-example-multi",
+      "source": "./_generated/hook-example-multi",
+      "description": "Reference example hook covering all nine Claude hook events. Each handler reads the hook's JSON payload from stdin and appends a timestamped marker PLUS that full payload to /tmp/hook-fired-<event>.log \u2014 a 'debug example' so authors can see exactly what Claude sends each event (verify with `tail /tmp/hook-fired-*.log`, or `cat \u2026 | tail -n +1` and pipe through `jq` to pretty-print). The UserPromptSubmit handler also injects a context line into the prompt (stdout).",
       "version": "1.0.0",
       "author": {
         "name": "DgxSparkLabs",
@@ -150,8 +73,118 @@
       "category": "hook"
     },
     {
-      "name": "lsp-example",
-      "source": "./_generated/lsp-example",
+      "name": "hook-example-notification",
+      "source": "./_generated/hook-example-notification",
+      "description": "Single-event reference hook for Notification. Fires when Claude wants to alert the user (e.g. tool-permission prompts); appends a timestamped marker plus the full hook JSON payload (read from stdin) to /tmp/hook-fired-notification.log.",
+      "version": "1.0.0",
+      "author": {
+        "name": "DgxSparkLabs",
+        "url": "https://github.com/DgxSparkLabs"
+      },
+      "category": "hook"
+    },
+    {
+      "name": "hook-example-posttooluse",
+      "source": "./_generated/hook-example-posttooluse",
+      "description": "Single-event reference hook for PostToolUse, scoped to Write|Edit. After the tool completes, appends a timestamped marker plus the full hook JSON payload (read from stdin) to /tmp/hook-fired-posttooluse.log. The payload carries the tool name, input, and response \u2014 read it from stdin JSON, NOT from a CLAUDE_TOOL_NAME env var (which is not populated).",
+      "version": "1.0.0",
+      "author": {
+        "name": "DgxSparkLabs",
+        "url": "https://github.com/DgxSparkLabs"
+      },
+      "category": "hook"
+    },
+    {
+      "name": "hook-example-precompact",
+      "source": "./_generated/hook-example-precompact",
+      "description": "Single-event reference hook for PreCompact. Fires before Claude compacts conversation history; appends a timestamped marker plus the full hook JSON payload (read from stdin) to /tmp/hook-fired-precompact.log.",
+      "version": "1.0.0",
+      "author": {
+        "name": "DgxSparkLabs",
+        "url": "https://github.com/DgxSparkLabs"
+      },
+      "category": "hook"
+    },
+    {
+      "name": "hook-example-pretooluse",
+      "source": "./_generated/hook-example-pretooluse",
+      "description": "Single-event reference hook for PreToolUse, scoped to Write|Edit. Before the tool runs, appends a timestamped marker plus the full hook JSON payload (read from stdin) to /tmp/hook-fired-pretooluse.log. The payload carries the tool name and tool input \u2014 read it from stdin JSON, NOT from a CLAUDE_TOOL_NAME env var (which is not populated).",
+      "version": "1.0.0",
+      "author": {
+        "name": "DgxSparkLabs",
+        "url": "https://github.com/DgxSparkLabs"
+      },
+      "category": "hook"
+    },
+    {
+      "name": "hook-example-sessionend",
+      "source": "./_generated/hook-example-sessionend",
+      "description": "Single-event reference hook for SessionEnd. Fires once when a Claude session terminates; appends a timestamped marker plus the full hook JSON payload (read from stdin) to /tmp/hook-fired-sessionend.log.",
+      "version": "1.0.0",
+      "author": {
+        "name": "DgxSparkLabs",
+        "url": "https://github.com/DgxSparkLabs"
+      },
+      "category": "hook"
+    },
+    {
+      "name": "hook-example-sessionstart",
+      "source": "./_generated/hook-example-sessionstart",
+      "description": "Single-event reference hook for SessionStart. Fires once when a Claude session begins; appends a timestamped marker PLUS the full hook JSON payload (read from stdin) to /tmp/hook-fired-sessionstart.log so authors can see exactly what Claude sends a hook.",
+      "version": "1.0.0",
+      "author": {
+        "name": "DgxSparkLabs",
+        "url": "https://github.com/DgxSparkLabs"
+      },
+      "category": "hook"
+    },
+    {
+      "name": "hook-example-stop",
+      "source": "./_generated/hook-example-stop",
+      "description": "Single-event reference hook for Stop. Fires when the assistant ends a turn; appends a timestamped marker plus the full hook JSON payload (read from stdin) to /tmp/hook-fired-stop.log.",
+      "version": "1.0.0",
+      "author": {
+        "name": "DgxSparkLabs",
+        "url": "https://github.com/DgxSparkLabs"
+      },
+      "category": "hook"
+    },
+    {
+      "name": "hook-example-subagentstop",
+      "source": "./_generated/hook-example-subagentstop",
+      "description": "Single-event reference hook for SubagentStop. Fires when a sub-agent's turn ends; appends a timestamped marker plus the full hook JSON payload (read from stdin) to /tmp/hook-fired-subagentstop.log.",
+      "version": "1.0.0",
+      "author": {
+        "name": "DgxSparkLabs",
+        "url": "https://github.com/DgxSparkLabs"
+      },
+      "category": "hook"
+    },
+    {
+      "name": "hook-example-userpromptsubmit",
+      "source": "./_generated/hook-example-userpromptsubmit",
+      "description": "Single-event reference hook for UserPromptSubmit. Injects a [Lab Notebook context: timestamp=...] line into the prompt (stdout) AND appends a timestamped marker plus the full hook JSON payload (read from stdin) to /tmp/hook-fired-userpromptsubmit.log for debugging.",
+      "version": "1.0.0",
+      "author": {
+        "name": "DgxSparkLabs",
+        "url": "https://github.com/DgxSparkLabs"
+      },
+      "category": "hook"
+    },
+    {
+      "name": "lsp-example-multi",
+      "source": "./_generated/lsp-example-multi",
+      "description": "Two bundled, dependency-free reference LSP servers (markdown + python) implementing real language-server features \u2014 diagnostics, document symbols, go-to-definition, hover, and references. Works out of the box (only uv required); no external language-server binary to install.",
+      "version": "1.0.0",
+      "author": {
+        "name": "DgxSparkLabs",
+        "url": "https://github.com/DgxSparkLabs"
+      },
+      "category": "lsp"
+    },
+    {
+      "name": "lsp-example-single",
+      "source": "./_generated/lsp-example-single",
       "description": "Reference template for an LSP server plugin \u2014 copy to scaffold your own.",
       "version": "1.0.0",
       "author": {
@@ -161,8 +194,19 @@
       "category": "lsp"
     },
     {
-      "name": "mcp-example",
-      "source": "./_generated/mcp-example",
+      "name": "mcp-example-multi",
+      "source": "./_generated/mcp-example-multi",
+      "description": "Three reference MCP servers demonstrating the multi-server plugin layout.",
+      "version": "1.0.0",
+      "author": {
+        "name": "DgxSparkLabs",
+        "url": "https://github.com/DgxSparkLabs"
+      },
+      "category": "mcp"
+    },
+    {
+      "name": "mcp-example-single",
+      "source": "./_generated/mcp-example-single",
       "description": "Reference template for an MCP server plugin \u2014 copy to scaffold your own.",
       "version": "1.0.0",
       "author": {
@@ -172,8 +216,19 @@
       "category": "mcp"
     },
     {
-      "name": "monitor-example",
-      "source": "./_generated/monitor-example",
+      "name": "monitor-example-multi",
+      "source": "./_generated/monitor-example-multi",
+      "description": "Three reference monitors demonstrating the multi-monitor plugin layout.",
+      "version": "1.0.0",
+      "author": {
+        "name": "DgxSparkLabs",
+        "url": "https://github.com/DgxSparkLabs"
+      },
+      "category": "monitor"
+    },
+    {
+      "name": "monitor-example-single",
+      "source": "./_generated/monitor-example-single",
       "description": "Reference template for a background monitor plugin \u2014 copy to scaffold your own.",
       "version": "1.0.0",
       "author": {
@@ -183,8 +238,19 @@
       "category": "monitor"
     },
     {
-      "name": "output-style-example",
-      "source": "./_generated/output-style-example",
+      "name": "output-style-example-multi",
+      "source": "./_generated/output-style-example-multi",
+      "description": "Three reference output styles demonstrating the multi-style plugin layout.",
+      "version": "1.0.0",
+      "author": {
+        "name": "DgxSparkLabs",
+        "url": "https://github.com/DgxSparkLabs"
+      },
+      "category": "output-style"
+    },
+    {
+      "name": "output-style-example-single",
+      "source": "./_generated/output-style-example-single",
       "description": "Reference template for an output style plugin \u2014 copy to scaffold your own.",
       "version": "1.0.0",
       "author": {
@@ -194,9 +260,9 @@
       "category": "output-style"
     },
     {
-      "name": "skill-example",
-      "source": "./_generated/skill-example",
-      "description": "Reference example. Echoes back a formatted lab-notebook-style status message. Shows how to write a SKILL.md with frontmatter, allowed-tools, and argument handling.",
+      "name": "skill-example-multi",
+      "source": "./_generated/skill-example-multi",
+      "description": "Two reference skills demonstrating the multi-skill plugin layout.",
       "version": "1.0.0",
       "author": {
         "name": "DgxSparkLabs",
@@ -205,8 +271,30 @@
       "category": "skill"
     },
     {
-      "name": "theme-example",
-      "source": "./_generated/theme-example",
+      "name": "skill-example-single",
+      "source": "./_generated/skill-example-single",
+      "description": "Prints a minimal greeting plus a UTC timestamp. The smallest possible single-skill reference plugin.",
+      "version": "1.0.0",
+      "author": {
+        "name": "DgxSparkLabs",
+        "url": "https://github.com/DgxSparkLabs"
+      },
+      "category": "skill"
+    },
+    {
+      "name": "theme-example-multi",
+      "source": "./_generated/theme-example-multi",
+      "description": "Three reference themes demonstrating the multi-theme plugin layout.",
+      "version": "1.0.0",
+      "author": {
+        "name": "DgxSparkLabs",
+        "url": "https://github.com/DgxSparkLabs"
+      },
+      "category": "theme"
+    },
+    {
+      "name": "theme-example-single",
+      "source": "./_generated/theme-example-single",
       "description": "Reference template for a theme plugin (experimental) \u2014 copy to scaffold your own.",
       "version": "1.0.0",
       "author": {

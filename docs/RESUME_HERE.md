@@ -2,6 +2,44 @@
 
 **This is the first file to read when returning to this project after any break.** Don't read anything else first.
 
+Updated 2026-05-28 (afternoon) after the symmetric single/multi expansion + `src/` reorganization + 15 review-finding fixes (PR #10).
+
+## Repo layout — what lives where
+
+- **`src/`** — operator-authored source content. Ten construct dirs (`src/skills/`, `src/rules/`, `src/commands/`, …) plus `src/MARKETPLACE.toml` and `src/catalog.toml`. Anything that becomes a plugin lives here.
+- **`scripts/`** — generator code (Python). Reads from `src/`, emits to `_generated/` and per-platform mirrors.
+- **`tests/`** — test suites for the generator + per-plugin schema.
+- **`docs/`** — human-facing reference + research artifacts.
+- **`_generated/`, `.agents/`, `.gemini/`, `.cursor/`, `.codex/`, `.claude-plugin/`, `.cursor-plugin/`, `gemini-extension.json`** — generator output; spec-mandated paths.
+- Root files (`README.md`, `CHANGELOG.md`, `HANDOFF.md`, `STATE.md`, `install.sh`, etc.) — operational metadata + user-facing one-line installers.
+
+## Plugin-naming pattern (as of 2026-05-28)
+
+Two-field decoupling:
+
+- **Install identifier** (what you type in `claude plugin install …@dgxsparklabs-marketplace`): `<construct.prefix>-<source-dir-name>` — e.g. `skill-example-multi`, `skill-example-single`, `command-example-multi`.
+- **Slash namespace** (what appears in `/…` invocations and in `claude plugin details …`): `<brand>-<construct.prefix>-<source-dir-name>` — e.g. `dgxsparklabs-skill-example-multi`, `dgxsparklabs-skill-example-single`. **Unique per plugin.**
+
+Composed in `scripts/constructs.py` `_base_plugin_shape` as `f"{brand}-{construct.prefix}-{name}"`. The brand prefix is derived from `src/MARKETPLACE.toml` `name` by stripping `-marketplace`.
+
+Representative slash forms from the 27 reference plugins:
+
+| Plugin | Slash form |
+|---|---|
+| `skill-example-multi` (multi) | `/dgxsparklabs-skill-example-multi:notebook` · `:status` |
+| `skill-example-single` (solo) | `/dgxsparklabs-skill-example-single:hello` |
+| `command-example-multi` | `/dgxsparklabs-command-example-multi:hello` · `:goodbye` · `:ping` |
+| `agent-example-multi` | `/agents` → `dgxsparklabs-agent-example-multi:notebook-reviewer` (or `:summarizer`, `:validator`) |
+| `hook-example-userpromptsubmit` | (passive, fires per prompt) |
+| `output-style-example-multi` | `/output-style Lab Notebook Voice` · `Concise Engineer` · `Tutoring` |
+| `theme-example-multi` | `/theme Lab Notebook` · `Nord` · `Solarized Dark` |
+
+For the full 27-plugin inventory see `docs/CONSTRUCT_TYPES.md`.
+
+History: an earlier shared-namespace attempt called Path A (`d641f92`, 2026-05-27) collapsed all skill plugins under one slash namespace `/dgxsparklabs-skill:`; it was reverted on 2026-05-28 because `claude plugin details` couldn't separate the per-plugin component lists. See [`research/multi-instance-claude-only-2026-05-27/PLAN.md`](./research/multi-instance-claude-only-2026-05-27/PLAN.md) for the revert rationale.
+
+---
+
 Updated 2026-05-24 after the cross-platform native install fix (Phase 1 generator additions + Phase 2 README rewrite + CI all green in real GHA). Previous version documented the post-DI-refactor state before this round.
 
 ---
@@ -53,7 +91,7 @@ scripts/generate_manifest.py — orchestrator; 6 phases:
   Phase 1.5: per-platform per-plugin manifests (supports-gated emission of
              .codex-plugin/plugin.json + .cursor-plugin/plugin.json)
   Phase 2a:  catalog bundles from catalog.toml [bundle.*]
-  Phase 2b:  code-generated catch-alls (bundle-<prefix>-all)
+  Phase 2b:  RETIRED 2026-05-27 — per-construct catch-all bundles removed
   Phase 3:   cross-platform mirrors (platform.emit per supported construct,
              includes .agents/skills/ via AgentsPlatform)
   Phase 4:   Gemini extension manifest at .gemini/gemini-extension.json
@@ -112,9 +150,9 @@ Examples are `example/` (not `example-<construct>/`).
 
 ```
 Individual:     <prefix>-<name>           e.g., skill-telegram-notify
-Catalog bundle: bundle-<bundle-name>      e.g., bundle-communication-skills
-Catch-all:      bundle-<prefix>-all       e.g., bundle-skill-all
+Catalog bundle: bundle-<bundle-name>      e.g., bundle-communication-skills, bundle-examples
 ```
+(Per-construct catch-alls `bundle-<prefix>-all` were retired 2026-05-27.)
 
 ---
 
@@ -143,8 +181,7 @@ Catch-all:      bundle-<prefix>-all       e.g., bundle-skill-all
 | **construct** | One of 10 construct types: skill, rule, command, agent, hook, mcp, lsp, monitor, output-style, theme. |
 | **Construct class** | A class in `scripts/constructs.py` implementing the Construct protocol. |
 | **Platform class** | A class in `scripts/platforms.py` implementing the Platform protocol (which now includes `build_plugin_json` for per-plugin native manifests). |
-| **bundle** | A dep-only plugin declaring dependencies on other plugins. Two kinds: catalog bundles (in `catalog.toml`) and code-generated catch-alls. |
-| **catch-all bundle** | `bundle-<prefix>-all` — code-generated, NOT in catalog.toml. |
+| **bundle** | A dep-only plugin declaring dependencies on other plugins. Declared in `catalog.toml`. Per-construct catch-alls retired 2026-05-27. |
 | **mirror** | An auto-generated directory under `.codex/`, `.gemini/`, `.cursor/`, `.windsurf/`, `.devin/`, or `.agents/` that copies generated content to the layout each platform expects. |
 | **`.agents/` standard** | Cross-platform skill (`.agents/skills/`) and plugin (`.agents/plugins/`) directory convention. Read by Windsurf, Cursor, Devin natively; Codex accepts `.claude-plugin/marketplace.json` as legacy-compatible. |
 | **generator** | `scripts/generate_manifest.py` — 6-phase orchestrator. |
@@ -174,7 +211,7 @@ Catch-all:      bundle-<prefix>-all       e.g., bundle-skill-all
 - **Per-plugin manifest emission unconditional across all platforms** — rejected via decision B2; emission is gated on `platform.supports`.
 - **CI assertions that test only registration without enumeration/install** — caused real defects to go undetected for weeks; new assertions in `compat-marketplace-add.yml` and `compat-extension.yml` close this gap.
 - **`members_from_construct` field in catalog.toml** — removed (DI refactor decision #24).
-- **`[bundle.<prefix>-all]` in catalog.toml** — reserved names; `load_bundles` raises ValueError.
+- **`[bundle.<prefix>-all]` reserved-name check** — retired 2026-05-27 along with the catch-alls themselves; the catalog may now use any name.
 - **`example-<construct>` directory naming** — renamed to `example/` (DI refactor decision #18).
 - **Hardcoding plugin count (e.g., `== 81`)** — test suite uses a computed formula.
 

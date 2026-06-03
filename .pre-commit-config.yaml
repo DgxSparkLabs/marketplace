@@ -1,0 +1,13 @@
+# Pre-commit hooks for marketplace contributors.
+#   one-time setup:  uv tool install pre-commit  (or: pipx install pre-commit)
+#                    pre-commit install
+# Thereafter `git commit` runs these automatically on changed src/ files.
+repos:
+  - repo: local
+    hooks:
+      - id: validate-source
+        name: validate construct sources
+        entry: uv run scripts/validate_source.py
+        language: system
+        files: ^src/
+        pass_filenames: false

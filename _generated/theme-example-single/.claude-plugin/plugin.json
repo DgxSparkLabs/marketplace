@@ -1,0 +1,12 @@
+{
+  "name": "dgxsparklabs-theme-example-single",
+  "version": "1.0.0",
+  "author": {
+    "name": "DgxSparkLabs",
+    "url": "https://github.com/DgxSparkLabs"
+  },
+  "description": "Reference template for a theme plugin (experimental) \u2014 copy to scaffold your own.",
+  "experimental": {
+    "themes": "./themes"
+  }
+}

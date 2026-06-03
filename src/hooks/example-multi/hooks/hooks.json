@@ -1,0 +1,97 @@
+{
+  "description": "Reference example hook covering all nine Claude hook events. Each handler reads the hook's JSON payload from stdin and appends a timestamped marker PLUS that full payload to /tmp/hook-fired-<event>.log — a 'debug example' so authors can see exactly what Claude sends each event (verify with `tail /tmp/hook-fired-*.log`, or `cat … | tail -n +1` and pipe through `jq` to pretty-print). The UserPromptSubmit handler also injects a context line into the prompt (stdout).",
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "p=\"$(cat)\"; { echo \"$(date -u +%FT%TZ) sessionStart fired\"; echo \"$p\"; echo; } >> /tmp/hook-fired-sessionstart.log"
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "p=\"$(cat)\"; ts=\"$(date -u +%FT%TZ)\"; echo \"[Lab Notebook context: timestamp=$ts]\"; { echo \"$ts userPromptSubmit fired\"; echo \"$p\"; echo; } >> /tmp/hook-fired-userpromptsubmit.log"
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "p=\"$(cat)\"; { echo \"$(date -u +%FT%TZ) preToolUse fired\"; echo \"$p\"; echo; } >> /tmp/hook-fired-pretooluse.log"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "p=\"$(cat)\"; { echo \"$(date -u +%FT%TZ) postToolUse fired\"; echo \"$p\"; echo; } >> /tmp/hook-fired-posttooluse.log"
+          }
+        ]
+      }
+    ],
+    "Notification": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "p=\"$(cat)\"; { echo \"$(date -u +%FT%TZ) notification fired\"; echo \"$p\"; echo; } >> /tmp/hook-fired-notification.log"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "p=\"$(cat)\"; { echo \"$(date -u +%FT%TZ) stop fired\"; echo \"$p\"; echo; } >> /tmp/hook-fired-stop.log"
+          }
+        ]
+      }
+    ],
+    "SubagentStop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "p=\"$(cat)\"; { echo \"$(date -u +%FT%TZ) subagentStop fired\"; echo \"$p\"; echo; } >> /tmp/hook-fired-subagentstop.log"
+          }
+        ]
+      }
+    ],
+    "SessionEnd": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "p=\"$(cat)\"; { echo \"$(date -u +%FT%TZ) sessionEnd fired\"; echo \"$p\"; echo; } >> /tmp/hook-fired-sessionend.log"
+          }
+        ]
+      }
+    ],
+    "PreCompact": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "p=\"$(cat)\"; { echo \"$(date -u +%FT%TZ) preCompact fired\"; echo \"$p\"; echo; } >> /tmp/hook-fired-precompact.log"
+          }
+        ]
+      }
+    ]
+  }
+}

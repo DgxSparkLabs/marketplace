@@ -1,6 +1,0 @@
-{
-  "name": "command-example",
-  "version": "1.0.0",
-  "description": "Reference example slash command. Prints a formatted lab-notebook header.",
-  "commands": "./commands/"
-}

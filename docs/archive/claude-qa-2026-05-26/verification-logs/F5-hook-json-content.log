@@ -1,0 +1,83 @@
+{
+  "description": "Reference example hook covering session-lifecycle, per-turn, and tool-lifecycle Claude events. Each hook writes a per-event sentinel line to /tmp/hook-fired-<event>.log so operators can verify firing with `tail /tmp/hook-fired-*.log` (the UserPromptSubmit hook also injects a context line into the prompt as before).",
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "printf '%s sessionStart fired\\n' \"$(date -u +%FT%TZ)\" >> /tmp/hook-fired-sessionstart.log"
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "ts=\"$(date -u +%FT%TZ)\"; printf '[Lab Notebook context: timestamp=%s]\\n' \"$ts\"; printf '%s userPromptSubmit fired\\n' \"$ts\" >> /tmp/hook-fired-userpromptsubmit.log"
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "printf '%s preToolUse %s\\n' \"$(date -u +%FT%TZ)\" \"${CLAUDE_TOOL_NAME:-unknown}\" >> /tmp/hook-fired-pretooluse.log"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "printf '%s postToolUse %s\\n' \"$(date -u +%FT%TZ)\" \"${CLAUDE_TOOL_NAME:-unknown}\" >> /tmp/hook-fired-posttooluse.log"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "printf '%s stop fired\\n' \"$(date -u +%FT%TZ)\" >> /tmp/hook-fired-stop.log"
+          }
+        ]
+      }
+    ],
+    "SessionEnd": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "printf '%s sessionEnd fired\\n' \"$(date -u +%FT%TZ)\" >> /tmp/hook-fired-sessionend.log"
+          }
+        ]
+      }
+    ]
+  }
+}
+---
+Event types found:
+PostToolUse
+PreToolUse
+SessionEnd
+SessionStart
+Stop
+UserPromptSubmit
+---
+Sentinel files referenced:
+/tmp/hook-fired-posttooluse.log
+/tmp/hook-fired-pretooluse.log
+/tmp/hook-fired-sessionend.log
+/tmp/hook-fired-sessionstart.log
+/tmp/hook-fired-stop.log
+/tmp/hook-fired-userpromptsubmit.log

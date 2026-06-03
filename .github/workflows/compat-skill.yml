@@ -30,17 +30,17 @@ jobs:
       - name: Register marketplace
         run: claude plugin marketplace add ./
 
-      - name: Install skill-telegram-notify plugin
-        run: claude plugin install skill-telegram-notify@dgxsparklabs-marketplace --scope project
+      - name: Install skill-example-single plugin
+        run: claude plugin install skill-example-single@dgxsparklabs-marketplace --scope project
 
       - name: Assert plugin is listed (grep match)
         # Match mode: grep substring — catalog row: claude plugin list shows installed entry
-        run: claude plugin list | grep -F "skill-telegram-notify@dgxsparklabs-marketplace"
+        run: claude plugin list | grep -F "skill-example-single@dgxsparklabs-marketplace"
 
       - name: Cleanup
         if: always()
         run: |
-          claude plugin uninstall skill-telegram-notify --scope project || true
+          claude plugin uninstall skill-example-single --scope project || true
           claude plugin prune --scope project -y || true
           claude plugin marketplace remove dgxsparklabs-marketplace || true
 
@@ -64,7 +64,7 @@ jobs:
         # Devin reads filesystem at session start — our .devin/skills/ mirror is already present after generator runs
         # working-directory: ${{ github.workspace }} per decision #15
         working-directory: ${{ github.workspace }}
-        run: devin skills list | grep -i "telegram"
+        run: devin skills list | grep -i "example"
 
   codex:
     # Required per Wave 4 (2026-05-22): org-level block confirmed lifted via 3 consecutive
@@ -119,12 +119,12 @@ jobs:
 
       - name: Install skill via Gemini
         # Gemini installs skills individually — no marketplace concept
-        run: echo "y" | gemini skills install ./_generated/skill-telegram-notify
+        run: echo "y" | gemini skills install ./_generated/skill-example-single
 
       - name: Assert skill appears in Gemini's skill list
-        # Match mode: grep substring — catalog row: gemini skills list --all | grep telegram-notify
-        run: gemini skills list --all | grep -F "telegram-notify"
+        # Match mode: grep substring — catalog row: gemini skills list --all | grep example-single
+        run: gemini skills list --all | grep -F "hello"
 
       - name: Cleanup
         if: always()
-        run: gemini skills uninstall telegram-notify || true
+        run: gemini skills uninstall hello || true

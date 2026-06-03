@@ -1,8 +1,10 @@
 # DgxSparkLabs Marketplace
 
-A multi-platform marketplace of agent skills, rules, and other constructs. Install natively on Claude Code, Codex, and Gemini with one-command GitHub fetches; import directly from GitHub into Cursor's team marketplace (IDE); or clone-and-open on Windsurf and Devin. Every construct lives in one source directory and the generator emits platform-native manifests (`.claude-plugin/`, `.codex-plugin/`, `.cursor-plugin/`) plus a shared `.agents/skills/` mirror that Windsurf, Cursor, and Devin all read natively.
+A multi-platform marketplace of agent skills, rules, and other constructs. Install natively on Claude Code, Codex, and Gemini with one-command GitHub fetches; import directly from GitHub into Cursor's team marketplace (IDE); or clone-and-open on Windsurf and Devin. Operator-authored source content lives under `src/`; the generator (`scripts/`) emits platform-native manifests (`.claude-plugin/`, `.codex-plugin/`, `.cursor-plugin/`) plus a shared `.agents/skills/` mirror that Windsurf, Cursor, and Devin all read natively.
 
-> **2026-05-26 minimal-stable-state.** The marketplace currently ships **10 reference plugins (one per construct type) + 1 cross-construct examples bundle + 8 catch-all bundles = 19 plugin entries**. The 26 production skills and 21 production rules that previously shipped have been archived under `docs/archive/skills-pre-stable-2026-05-26/` and `docs/archive/rules-pre-stable-2026-05-26/`. Real content is re-added one plugin at a time after each is verified across every platform. See `CHANGELOG.md` for the full transition note.
+> **2026-05-28 expanded reference set.** The marketplace currently ships **27 plugin entries**: 26 Claude-supported individuals (each construct demonstrates paired `example-single` + `example-multi` layouts; hooks expand further to nine per-event references plus an all-events `example-multi`) plus the `bundle-examples` catalog bundle. One additional `rule-example` is emitted for Cursor/Windsurf/Codex (not a Claude plugin component per F8). The 26 production skills and 21 production rules that previously shipped were archived under `docs/archive/skills-pre-stable-2026-05-26/` and `docs/archive/rules-pre-stable-2026-05-26/` and are re-added one at a time after per-platform verification. See `CHANGELOG.md` for the full transition note.
+
+> **Stability — Claude-first.** The reference set is stable and verified on Claude Code (the QA'd platform). The other five platforms emit, with parity tracked in [`docs/ROADMAP.md`](docs/ROADMAP.md) (#9–#14). New construct PRs are accepted now and validated Claude-first — drop a construct under `src/<construct>/`, open a PR, and on merge it is available to anyone pulling the marketplace.
 
 ## Table of Contents
 
@@ -11,7 +13,7 @@ A multi-platform marketplace of agent skills, rules, and other constructs. Insta
   - [Claude Code](#claude-code) · [Codex](#codex) · [Gemini](#gemini) · [Cursor](#cursor) · [Windsurf](#windsurf) · [Devin](#devin)
 - [Construct Types Available](#construct-types-available)
 - [Installation Patterns](#installation-patterns)
-  - Individual plugins · Domain bundles · Catch-all bundles · Cross-construct examples bundle
+  - Individual plugins · Domain bundles · Cross-construct examples bundle
 - [Per-Platform Details](#per-platform-details)
   - [Claude Code](#claude-code-1) · [Codex](#codex-1) · [Gemini](#gemini-1) · [Cursor](#cursor-1) · [Windsurf](#windsurf-1) · [Devin](#devin-1)
 - [Repository Structure](#repository-structure)
@@ -39,17 +41,50 @@ Pick your platform, copy the block, and you're running. For end-to-end managemen
 
 ### Claude Code
 
+Register the marketplace and install. The `bundle-examples` plugin auto-installs every reference example (one per construct type, plus the two skill examples):
+
 ```bash
-# In a Claude Code session — register the marketplace, then install what you want
-# Install + list both work end-to-end (verified: CL1/CL2/CL3 PASS)
-/plugin marketplace add DgxSparkLabs/marketplace
-# One of every construct type — useful for studying every reference plugin
-/plugin install bundle-examples@dgxsparklabs-marketplace
-# Or a single example plugin:
-/plugin install skill-example@dgxsparklabs-marketplace
-# Or every plugin of one construct type (currently one each — see minimal-stable-state note above):
-/plugin install bundle-skill-all@dgxsparklabs-marketplace
+claude plugin marketplace add DgxSparkLabs/marketplace
+claude plugin install bundle-examples@dgxsparklabs-marketplace --scope project
 ```
+
+Or install one at a time. Install + enable are SEPARATE steps:
+
+```bash
+claude plugin install skill-example-multi@dgxsparklabs-marketplace --scope project
+claude plugin enable  skill-example-multi@dgxsparklabs-marketplace
+```
+
+If you skip enable, Claude says `Plugin not found in any editable settings scope.`
+
+Browse what's installable. Simplest is a grep against the marketplace name:
+
+```bash
+claude plugin list --available | grep dgxsparklabs
+```
+
+For machine-readable filtering use jq against the JSON form:
+
+```bash
+claude plugin list --json --available \
+  | jq --arg mp "dgxsparklabs-marketplace" \
+       '[.. | objects | select(.marketplaceName? == $mp)]'
+```
+
+Invoke. Every plugin's slash form follows `/dgxsparklabs-<construct>-<plugin>:<component>`. A representative sample of the 27 entries the marketplace ships:
+
+| Installed plugin | Slash form | What it does |
+|---|---|---|
+| `skill-example-multi` | `/dgxsparklabs-skill-example-multi:notebook` | Today's lab-notebook header |
+| `skill-example-multi` | `/dgxsparklabs-skill-example-multi:status`   | Disk usage + UTC timestamp |
+| `skill-example-single` | `/dgxsparklabs-skill-example-single:hello` | Minimal greeting |
+| `command-example-multi` | `/dgxsparklabs-command-example-multi:hello` | Formatted lab-notebook entry |
+| `agent-example-multi` | `/agents` → pick `dgxsparklabs-agent-example-multi:notebook-reviewer` | Sub-agent: skeptical peer review |
+| `hook-example-userpromptsubmit` | (passive — fires per prompt) | Per-event hook reference; sentinel at `/tmp/hook-fired-userpromptsubmit.log` |
+| `output-style-example-multi` | set via `/config` → Output style → pick `Lab Notebook Voice` | Switch reply voice |
+| `theme-example-multi` | `/theme Lab Notebook` | Switch terminal colors |
+
+For the authoritative, generated plugin inventory see [`docs/INVENTORY.md`](docs/INVENTORY.md); for the single-vs-multi distinction per construct, see `docs/CONSTRUCT_TYPES.md`. Skills have a flat-form shortcut (just `/notebook`, `/status`, `/hello`) — Claude resolves them through the same namespace; use the qualified form when autocomplete is ambiguous.
 
 ### Codex
 
@@ -154,22 +189,22 @@ The CLI supports all `.agents/` constructs (skill, rule, agent, hook, mcp, comma
 
 ## Construct Types Available
 
-Every construct type currently ships exactly one reference plugin (the `example/` source dir). Production skills and rules were archived 2026-05-26 — see the minimal-stable-state note above and `CHANGELOG.md`.
+Every Claude-supported construct ships paired `example-single` + `example-multi` reference plugins so contributors can study both layouts. Hooks expand further to nine per-event reference plugins plus an all-events `example-multi`. Production skills and rules were archived 2026-05-26 — see the expanded-reference-set note above and `CHANGELOG.md`.
 
-| Type | Prefix | Description | Count |
+| Type | Prefix | Description | Reference plugins |
 |------|--------|-------------|-------|
-| [skill](skills/) | `skill-` | Slash-command invoked on demand | 1 (example) |
-| [rule](rules/) | `rule-` | Always-on context loaded every session | 1 (example) |
-| [command](commands/) | `command-` | Structured agent command definitions | 1 (example) |
-| [agent](agents/) | `agent-` | Autonomous agent configuration | 1 (example) |
-| [hook](hooks/) | `hook-` | Event-triggered automation | 1 (example) |
-| [mcp](mcp-servers/) | `mcp-` | Model Context Protocol server config | 1 (example) |
-| [lsp](lsp-servers/) | `lsp-` | Language Server Protocol integration | 1 (example) |
-| [monitor](monitors/) | `monitor-` | Continuous monitoring setup | 1 (example) |
-| [output-style](output-styles/) | `output-style-` | Output formatting rules | 1 (example) |
-| [theme](themes/) | `theme-` | Visual theme configuration | 1 (example) |
+| [skill](src/skills/) | `skill-` | Slash-command invoked on demand | `example-single` (solo: root `SKILL.md`) + `example-multi` (multi: `skills/<x>/SKILL.md`) |
+| [rule](src/rules/) | `rule-` | Always-on context loaded every session | `example` (one only — rule is not a Claude plugin component) |
+| [command](src/commands/) | `command-` | Slash command definitions | `example-single` (1 command) + `example-multi` (3 commands) |
+| [agent](src/agents/) | `agent-` | Sub-agent personas | `example-single` (1 agent) + `example-multi` (3 agents) |
+| [hook](src/hooks/) | `hook-` | Event-triggered automation | 9 per-event (`example-userpromptsubmit`, `example-pretooluse`, …) + `example-multi` (all events) |
+| [mcp](src/mcp-servers/) | `mcp-` | Model Context Protocol servers | `example-single` (1 server) + `example-multi` (3 servers) |
+| [lsp](src/lsp-servers/) | `lsp-` | Language Server Protocol integrations | `example-single` (1 LSP) + `example-multi` (3 LSPs) |
+| [monitor](src/monitors/) | `monitor-` | Session-start observation hooks | `example-single` (1 monitor) + `example-multi` (3 monitors) |
+| [output-style](src/output-styles/) | `output-style-` | Reply-voice configurations | `example-single` (1 style) + `example-multi` (3 styles) |
+| [theme](src/themes/) | `theme-` | Terminal color themes | `example-single` (1 theme) + `example-multi` (3 themes) |
 
-To add a new construct of any type, see [`docs/ADDING_A_CONSTRUCT.md`](docs/ADDING_A_CONSTRUCT.md).
+The single-vs-multi distinction is **layout-driven only for skill** (root `SKILL.md` vs `skills/<x>/SKILL.md`). For every other construct the two example plugins look structurally identical and differ only in content cardinality. To add a new plugin, see [`docs/ADDING_A_CONSTRUCT.md`](docs/ADDING_A_CONSTRUCT.md).
 
 ---
 
@@ -190,18 +225,6 @@ These examples show Claude Code's `/plugin install` slash-command syntax (most e
 ### Domain bundles — related items grouped
 
 > **2026-05-26 minimal-stable-state.** The 8 skill domain bundles and 5 rule domain bundles that previously lived here were removed alongside the source archive (see CHANGELOG). They will be re-introduced one at a time as production skills and rules return to the marketplace. The cross-construct `bundle-examples` is still available for studying every construct type from a single install.
-
-### Catch-all bundles — everything of one type
-
-```bash
-# Each catch-all currently installs the one example for its construct type.
-# As production plugins return, each catch-all grows to match.
-/plugin install bundle-skill-all@dgxsparklabs-marketplace
-/plugin install bundle-command-all@dgxsparklabs-marketplace
-# (Catch-alls exist for every Claude-supported construct: skill, command,
-# agent, hook, mcp, lsp, monitor, output-style, theme. There is no
-# bundle-rule-all — rules are not a Claude plugin component per F8.)
-```
 
 ### Cross-construct examples bundle — study all 10 construct types
 
@@ -424,23 +447,24 @@ devin rules paths
 
 ```
 marketplace/
-├── MARKETPLACE.toml              # Marketplace identity (owner, version, license)
-├── catalog.toml                  # Bundle definitions only
 ├── gemini-extension.json         # Root-level copy for gemini extensions install <github-url>
 ├── .claude-plugin/
 │   └── marketplace.json          # Generated root manifest
 ├── .cursor-plugin/
 │   └── marketplace.json          # Cursor team-marketplace manifest (Cursor 2.6+)
-├── skills/                       # Source skill directories (one per skill)
-├── rules/                        # Source rule directories (one per rule)
-├── commands/                     # Command construct sources
-├── agents/                       # Agent construct sources
-├── hooks/                        # Hook construct sources
-├── mcp-servers/                  # MCP server construct sources
-├── lsp-servers/                  # LSP server construct sources
-├── monitors/                     # Monitor construct sources
-├── output-styles/                # Output style construct sources
-├── themes/                       # Theme construct sources
+├── src/
+│   ├── MARKETPLACE.toml          # Marketplace identity (owner, version, license)
+│   ├── catalog.toml              # Bundle definitions only
+│   ├── skills/                   # Source skill directories (one per skill)
+│   ├── rules/                    # Source rule directories (one per rule)
+│   ├── commands/                 # Command construct sources
+│   ├── agents/                   # Agent construct sources
+│   ├── hooks/                    # Hook construct sources
+│   ├── mcp-servers/              # MCP server construct sources
+│   ├── lsp-servers/              # LSP server construct sources
+│   ├── monitors/                 # Monitor construct sources
+│   ├── output-styles/            # Output style construct sources
+│   └── themes/                   # Theme construct sources
 ├── _generated/                   # Generated plugin wrappers + bundles
 ├── .agents/
 │   └── skills/                   # Cross-platform skills mirror (Windsurf, Cursor, Devin)
@@ -465,7 +489,7 @@ uv run scripts/generate_manifest.py
 
 ## Contributing
 
-To add a new construct, see [`docs/ADDING_A_CONSTRUCT.md`](docs/ADDING_A_CONSTRUCT.md). The guide covers all 10 construct types with a step-by-step checklist per type.
+To add a new construct, see [`docs/ADDING_A_CONSTRUCT.md`](docs/ADDING_A_CONSTRUCT.md). The guide covers all 10 construct types with a step-by-step checklist per type. For the full contributor workflow see [`CONTRIBUTING.md`](CONTRIBUTING.md), and for what's planned next (including per-platform parity status) see [`docs/ROADMAP.md`](docs/ROADMAP.md).
 
 ---
 

@@ -1,0 +1,16 @@
+{
+  "name": "dgxsparklabs-skill-example-multi",
+  "version": "1.0.0",
+  "author": {
+    "name": "DgxSparkLabs",
+    "url": "https://github.com/DgxSparkLabs"
+  },
+  "description": "Two reference skills demonstrating the multi-skill plugin layout.",
+  "skills": [
+    "./skills/"
+  ],
+  "keywords": [
+    "skill",
+    "example-multi"
+  ]
+}

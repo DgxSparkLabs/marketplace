@@ -1,0 +1,21 @@
+=== Output style plugin validate ===
+Validating plugin manifest: /workspace/marketplace/_generated/output-style-example/.claude-plugin/plugin.json
+
+✔ Validation passed
+---
+=== output-style-example plugin.json ===
+{
+  "name": "output-style-example",
+  "version": "1.0.0",
+  "author": {
+    "name": "DgxSparkLabs",
+    "url": "https://github.com/DgxSparkLabs"
+  },
+  "description": "Reference template for an output style plugin \u2014 copy to scaffold your own.",
+  "outputStyles": "./output-styles"
+}
+
+=== output-style-example layout ===
+_generated/output-style-example/README.md
+_generated/output-style-example/output-styles/lab-notebook-voice.md
+_generated/output-style-example/.claude-plugin/plugin.json

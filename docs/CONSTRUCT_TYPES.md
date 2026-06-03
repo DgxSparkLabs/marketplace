@@ -2,31 +2,50 @@
 
 A Claude Code plugin can ship ten distinct **construct types**. This marketplace ships individual plugins, domain bundles, and reference examples for every one. For the contribution workflow, see [`ADDING_A_CONSTRUCT.md`](./ADDING_A_CONSTRUCT.md).
 
+## Single-vs-multi layout — what it means per construct
+
+Every Claude-supported construct ships paired `example-single` + `example-multi` reference plugins, plus the rule construct (one only — not a Claude plugin component) and the hook construct (nine per-event + `example-multi`).
+
+**Only the skill construct has a true layout switch**: solo plugins put `SKILL.md` at the plugin root (`skills: ["./"]`); multi-skill plugins put files under a `skills/<x>/` subdir (`skills: ["./skills/"]`). The generator detects this from the source filesystem.
+
+For every other construct the two example plugins look structurally identical and differ only in **content cardinality** — one entry vs many entries inside the existing config/subdir:
+
+- command: one `commands/<x>.md` vs multiple
+- agent: one `agents/<x>.md` vs multiple
+- hook: one event in `hooks/hooks.json` vs many events
+- mcp / lsp: one server entry in the config vs multiple
+- monitor: one monitor in the `monitors.json` array vs multiple
+- output-style: one `.md` style under `output-styles/` vs multiple
+- theme: one `.json` theme under `themes/` vs multiple
+
+The contributor experience is symmetric ("there's both a single example and a multi example"); the implementation symmetry differs.
+
+**Cross-platform note**: the multi-skill source layout (skill only) is **verified on Claude only**. The other five platforms + the `.agents/` shim are unverified for multi-skill source layouts — see ROADMAP #37-#42 and the NOTE comments in `scripts/platforms.py`. The mirror-nesting issue affects multi-skill plugins specifically; non-skill constructs already worked with multi-content layouts before this commit.
+
 ## The ten construct types
 
-| Construct    | What it is | Source dir | Example dir | Plugin name prefix |
+| Construct    | What it is | Source dir | Reference plugins | Plugin name prefix |
 |--------------|-----------|------------|-------------|-------------------|
-| **skill**    | On-demand domain expertise. Invoked by user (`/skill-name`) or auto-invoked by Claude when the description matches. | `skills/` | `skills/example/` | `skill-` |
-| **rule**     | Always-on behavioral guideline injected into every session via `.claude/rules/`. Requires a manual `activate.sh` symlink step after install (Claude Code limitation). | `rules/` | `rules/example/` | `rule-` |
-| **command**  | A custom slash command. Lighter-weight than a skill — single markdown file, user-invoked only. | `commands/` | `commands/example/` | `command-` |
-| **agent**    | A sub-agent persona with its own system prompt and scoped tool access. | `agents/` | `agents/example/` | `agent-` |
-| **hook**     | Event-triggered script (`UserPromptSubmit`, `PreToolUse`, `SessionStart`, `Stop`, etc.). | `hooks/` | `hooks/example/` | `hook-` |
-| **mcp**      | A Model Context Protocol server. Exposes tools, resources, and prompts to Claude. | `mcp-servers/` | `mcp-servers/example/` | `mcp-` |
-| **lsp**      | A Language Server Protocol server. Gives Claude type info, definitions, and diagnostics for a language. | `lsp-servers/` | `lsp-servers/example/` | `lsp-` |
-| **monitor**  | Background process that runs on an interval and surfaces output to Claude on demand. | `monitors/` | `monitors/example/` | `monitor-` |
-| **output-style** | System-prompt modification — adjusts Claude's voice, format, or behavior. | `output-styles/` | `output-styles/example/` | `output-style-` |
-| **theme**    | UI color theme (experimental). | `themes/` | `themes/example/` | `theme-` |
+| **skill**    | On-demand domain expertise. Invoked by user (`/skill-name`) or auto-invoked when the description matches. The only construct where single-vs-multi is layout-driven (root SKILL.md vs skills/<x>/SKILL.md). | `src/skills/` | `example-single` + `example-multi` | `skill-` |
+| **rule**     | Always-on behavioral guideline. Not a Claude plugin component per F8; surfaces on Cursor/Codex/Windsurf only. | `src/rules/` | `example` (one only) | `rule-` |
+| **command**  | A slash command. Markdown file with frontmatter. | `src/commands/` | `example-single` (1 cmd) + `example-multi` (3 cmds) | `command-` |
+| **agent**    | A sub-agent persona with its own system prompt and scoped tool access. | `src/agents/` | `example-single` (1 agent) + `example-multi` (3 agents) | `agent-` |
+| **hook**     | Event-triggered script. | `src/hooks/` | 9 per-event (`example-userpromptsubmit`, …, `example-precompact`) + `example-multi` (all events) | `hook-` |
+| **mcp**      | A Model Context Protocol server. | `src/mcp-servers/` | `example-single` (1 server) + `example-multi` (3 servers) | `mcp-` |
+| **lsp**      | A Language Server Protocol server. Illustrative configs; binaries not bundled. | `src/lsp-servers/` | `example-single` (1 LSP) + `example-multi` (3 LSPs) | `lsp-` |
+| **monitor**  | Session-start observation hook. Runs a command once at session start; surfaces output to Claude. | `src/monitors/` | `example-single` (1 monitor) + `example-multi` (3 monitors) | `monitor-` |
+| **output-style** | Reply-voice configuration. Operator-selected via `/output-style <name>`. | `src/output-styles/` | `example-single` (1 style) + `example-multi` (3 styles) | `output-style-` |
+| **theme**    | Terminal color theme (experimental). | `src/themes/` | `example-single` (1 theme) + `example-multi` (3 themes) | `theme-` |
 
 ## Bundles
 
-Bundles are dep-only plugins that group constructs for one-command installation. Two types:
+Bundles are dep-only plugins that group constructs for one-command installation. Only one type now:
 
 | Bundle type | Declared where | Name pattern | Example |
 |-------------|---------------|--------------|---------|
-| **Catalog bundle** | `catalog.toml [bundle.*]` | `bundle-<name>` | `bundle-communication-skills` |
-| **Catch-all bundle** | Code-generated by generator Phase 2b | `bundle-<prefix>-all` | `bundle-skill-all` |
+| **Catalog bundle** | `catalog.toml [bundle.*]` | `bundle-<name>` | `bundle-communication-skills`, `bundle-examples` |
 
-Catch-all bundles (`bundle-skill-all`, `bundle-rule-all`, etc.) are code-generated — the generator emits one per construct type that has at least one instance. They are NOT declared in `catalog.toml` (decision #23). Attempting to define them in the catalog raises a `ValueError`.
+Per-construct catch-all bundles (`bundle-skill-all`, `bundle-agent-all`, …) were retired 2026-05-27. They previously were code-generated by Phase 2b but added no curation value over `claude plugin list --available` filtered by prefix. The catalog may now use any name, including the old `<prefix>-all` form, without collision.
 
 ## Per-platform support matrix (as of 2026-05-25)
 
@@ -49,7 +68,6 @@ The platform-feature-routing refactor (CHANGELOG 2026-05-25) widened several pla
 ```
 Individual:    <prefix>-<instance-name>      e.g., skill-telegram-notify
 Catalog bundle: bundle-<bundle-name>          e.g., bundle-communication-skills
-Catch-all:     bundle-<prefix>-all            e.g., bundle-skill-all
 ```
 
 ## Install paths
@@ -64,8 +82,8 @@ Catch-all:     bundle-<prefix>-all            e.g., bundle-skill-all
 # Domain bundle
 /plugin install bundle-communication-skills@dgxsparklabs-marketplace
 
-# Catch-all (every skill)
-/plugin install bundle-skill-all@dgxsparklabs-marketplace
+# Cross-construct examples bundle (one of every construct type)
+/plugin install bundle-examples@dgxsparklabs-marketplace
 
 # Rule install + activate (extra step required — Claude Code limitation)
 /plugin install rule-blast-radius@dgxsparklabs-marketplace
@@ -76,11 +94,12 @@ bash ~/.claude/plugins/cache/dgxsparklabs-marketplace/rule-blast-radius/activate
 
 The generator (`scripts/generate_manifest.py`) reads sources and produces everything else. The architecture after the DI refactor:
 
-- `scripts/constructs.py` — 10 typed Construct classes; each implements `build_plugin_json` + `emit`
+- `scripts/constructs.py` — 10 typed Construct classes; each implements `build_plugin_json` + `emit`. Class `source_directory` attributes point at `src/<construct>/`.
 - `scripts/platforms.py` — 7 typed Platform classes (Claude, Codex, Gemini, Cursor, Windsurf, Devin, Agents); each declares `supports` + implements `emit`
-- `scripts/bundles.py` — Bundle dataclass + loader for `catalog.toml`
-- `scripts/utils.py` — shared helpers
-- `catalog.toml` — bundle definitions ONLY (no construct-type config, no platform config)
+- `scripts/bundles.py` — Bundle dataclass + loader for `src/catalog.toml`
+- `scripts/utils.py` — shared helpers (path constants `MARKETPLACE_TOML` and `CATALOG` point at `src/`)
+- `src/catalog.toml` — bundle definitions ONLY (no construct-type config, no platform config)
+- `src/MARKETPLACE.toml` — marketplace identity (name, owner, version, description)
 
 Adding a new construct type: write one new class in `constructs.py` + add an entry to `CONSTRUCTS`. No generator changes needed.
 

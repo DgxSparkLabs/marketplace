@@ -1,0 +1,32 @@
+=== probe: /dgxsparklabs-command:hello-foo ===
+OK stub.
+--- command-name in user msg ---
+<command-name>/dgxsparklabs-command:hello-foo</command-name>
+--- system-reminder skills/commands block ---
+dgxsparklabs-command:hello-foo
+dgxsparklabs-command:hello-foo: foo command - command-parity probe\n- dgxsparklabs-command:hello-bar: bar command - command-parity probe\n- update-config: Use this skill to configure the Claude Code harness via settings.json. Automated behaviors (\
+dgxsparklabs-command:hello-foo
+dgxsparklabs-command:hello-foo
+
+=== probe: /dgxsparklabs-command:hello-bar ===
+OK stub.
+--- command-name in user msg ---
+<command-name>/dgxsparklabs-command:hello-bar</command-name>
+--- system-reminder skills/commands block ---
+dgxsparklabs-command:hello-bar
+dgxsparklabs-command:hello-foo: foo command - command-parity probe\n- dgxsparklabs-command:hello-bar: bar command - command-parity probe\n- update-config: Use this skill to configure the Claude Code harness via settings.json. Automated behaviors (\
+dgxsparklabs-command:hello-bar
+dgxsparklabs-command:hello-bar
+
+=== probe: /command-foo-test:hello-foo ===
+Unknown command: /command-foo-test:hello-foo
+--- command-name in user msg ---
+--- system-reminder skills/commands block ---
+command-foo-test:hello-foo
+
+=== probe: /command-bar-test:hello-bar ===
+Unknown command: /command-bar-test:hello-bar
+--- command-name in user msg ---
+--- system-reminder skills/commands block ---
+command-bar-test:hello-bar
+

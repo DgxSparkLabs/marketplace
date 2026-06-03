@@ -52,21 +52,21 @@ echo "==> [mcp] Verify codex mcp list returns exit 0 (baseline)..."
 codex mcp list 2>&1
 echo ""
 
-echo "==> [mcp] Add example-fetch MCP server..."
-codex mcp add example-fetch -- uvx mcp-server-fetch 2>&1
+echo "==> [mcp] Add example MCP server..."
+codex mcp add example -- uvx mcp-server-fetch 2>&1
 echo ""
 
-echo "==> [mcp] Assert example-fetch appears in mcp list..."
-if codex mcp list 2>&1 | grep -F "example-fetch" >/dev/null; then
-  echo "    PASS: example-fetch found in codex mcp list"
+echo "==> [mcp] Assert example appears in mcp list..."
+if codex mcp list 2>&1 | grep -F "example" >/dev/null; then
+  echo "    PASS: example found in codex mcp list"
 else
-  echo "    FAIL: example-fetch not found in codex mcp list"
+  echo "    FAIL: example not found in codex mcp list"
   exit 1
 fi
 echo ""
 
-echo "==> [mcp] Assert codex mcp get example-fetch --json returns valid output..."
-codex mcp get example-fetch --json 2>&1
+echo "==> [mcp] Assert codex mcp get example --json returns valid output..."
+codex mcp get example --json 2>&1
 echo ""
 
 # --- Features ---

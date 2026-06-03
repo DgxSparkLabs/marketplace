@@ -1,0 +1,37 @@
+=== from /tmp/test ===
+--- list ---
+Installed plugins:
+
+  ❯ command-bar-test@dgxsparklabs-marketplace
+    Version: 1.0.0
+    Scope: project
+    Status: ✔ enabled
+
+  ❯ command-foo-test@dgxsparklabs-marketplace
+    Version: 1.0.0
+    Scope: project
+    Status: ✔ enabled
+
+--- details command-foo-test ---
+Plugin "command-foo-test" not found. Run `claude plugin list` to see installed plugins, or pass --plugin-dir <path> to load one from disk.
+--- details dgxsparklabs-command ---
+DgxSparkLabs Commands (dgxsparklabs-command) 1.0.0
+  foo command - command-parity probe
+  Source: command-foo-test@dgxsparklabs-marketplace
+
+Component inventory
+  Skills (1)  hello-foo
+  Agents (0)
+  Hooks (0)
+  MCP servers (0)
+  LSP servers (0)
+
+Projected token cost
+  Always-on:   ~37 tok   added to every session
+
+Per-component (rounded)
+  component  always-on  on-invoke
+  hello-foo        ~40       < 20
+
+  On-invoke cost is paid each time a skill or agent fires.
+  Token counts are estimates and may differ from actual usage.

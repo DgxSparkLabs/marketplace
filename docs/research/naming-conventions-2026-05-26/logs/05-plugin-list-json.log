@@ -1,0 +1,92 @@
+[
+  {
+    "id": "agent-example@dgxsparklabs-marketplace",
+    "version": "1.0.0",
+    "scope": "project",
+    "enabled": false,
+    "installPath": "/root/.claude/plugins/cache/dgxsparklabs-marketplace/agent-example/1.0.0",
+    "installedAt": "2026-05-26T12:30:34.389Z",
+    "lastUpdated": "2026-05-26T12:30:34.389Z",
+    "projectPath": "/tmp/workspace"
+  },
+  {
+    "id": "command-example@dgxsparklabs-marketplace",
+    "version": "1.0.0",
+    "scope": "project",
+    "enabled": false,
+    "installPath": "/root/.claude/plugins/cache/dgxsparklabs-marketplace/command-example/1.0.0",
+    "installedAt": "2026-05-26T12:30:35.379Z",
+    "lastUpdated": "2026-05-26T12:30:35.379Z",
+    "projectPath": "/tmp/workspace"
+  },
+  {
+    "id": "hook-example@dgxsparklabs-marketplace",
+    "version": "1.0.0",
+    "scope": "project",
+    "enabled": false,
+    "installPath": "/root/.claude/plugins/cache/dgxsparklabs-marketplace/hook-example/1.0.0",
+    "installedAt": "2026-05-26T12:30:36.728Z",
+    "lastUpdated": "2026-05-26T12:30:36.728Z",
+    "projectPath": "/tmp/workspace"
+  },
+  {
+    "id": "lsp-example@dgxsparklabs-marketplace",
+    "version": "1.0.0",
+    "scope": "project",
+    "enabled": false,
+    "installPath": "/root/.claude/plugins/cache/dgxsparklabs-marketplace/lsp-example/1.0.0",
+    "installedAt": "2026-05-26T12:30:39.117Z",
+    "lastUpdated": "2026-05-26T12:30:39.117Z",
+    "projectPath": "/tmp/workspace"
+  },
+  {
+    "id": "mcp-example@dgxsparklabs-marketplace",
+    "version": "1.0.0",
+    "scope": "project",
+    "enabled": false,
+    "installPath": "/root/.claude/plugins/cache/dgxsparklabs-marketplace/mcp-example/1.0.0",
+    "installedAt": "2026-05-26T12:30:38.133Z",
+    "lastUpdated": "2026-05-26T12:30:38.133Z",
+    "projectPath": "/tmp/workspace"
+  },
+  {
+    "id": "monitor-example@dgxsparklabs-marketplace",
+    "version": "1.0.0",
+    "scope": "project",
+    "enabled": false,
+    "installPath": "/root/.claude/plugins/cache/dgxsparklabs-marketplace/monitor-example/1.0.0",
+    "installedAt": "2026-05-26T12:30:40.738Z",
+    "lastUpdated": "2026-05-26T12:30:40.738Z",
+    "projectPath": "/tmp/workspace"
+  },
+  {
+    "id": "output-style-example@dgxsparklabs-marketplace",
+    "version": "1.0.0",
+    "scope": "project",
+    "enabled": false,
+    "installPath": "/root/.claude/plugins/cache/dgxsparklabs-marketplace/output-style-example/1.0.0",
+    "installedAt": "2026-05-26T12:30:41.974Z",
+    "lastUpdated": "2026-05-26T12:30:41.974Z",
+    "projectPath": "/tmp/workspace"
+  },
+  {
+    "id": "skill-example@dgxsparklabs-marketplace",
+    "version": "1.0.0",
+    "scope": "project",
+    "enabled": false,
+    "installPath": "/root/.claude/plugins/cache/dgxsparklabs-marketplace/skill-example/1.0.0",
+    "installedAt": "2026-05-26T12:30:33.309Z",
+    "lastUpdated": "2026-05-26T12:30:33.309Z",
+    "projectPath": "/tmp/workspace"
+  },
+  {
+    "id": "theme-example@dgxsparklabs-marketplace",
+    "version": "1.0.0",
+    "scope": "project",
+    "enabled": false,
+    "installPath": "/root/.claude/plugins/cache/dgxsparklabs-marketplace/theme-example/1.0.0",
+    "installedAt": "2026-05-26T12:30:43.192Z",
+    "lastUpdated": "2026-05-26T12:30:43.192Z",
+    "projectPath": "/tmp/workspace"
+  }
+]

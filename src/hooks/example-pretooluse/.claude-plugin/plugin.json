@@ -1,0 +1,4 @@
+{
+  "name": "dgxsparklabs-hook-example-pretooluse",
+  "description": "Reference plugin demonstrating the PreToolUse hook event in isolation (matched on Write|Edit)."
+}

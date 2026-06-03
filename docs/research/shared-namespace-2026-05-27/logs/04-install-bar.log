@@ -1,0 +1,4 @@
+=== Install skill-bar-test ===
+Installing plugin "skill-bar-test@dgxsparklabs-marketplace"...✔ Successfully installed plugin: skill-bar-test@dgxsparklabs-marketplace (scope: project)
+=== Enable skill-bar-test ===
+✘ Failed to enable plugin "skill-bar-test@dgxsparklabs-marketplace": Plugin "skill-bar-test@dgxsparklabs-marketplace" is already enabled

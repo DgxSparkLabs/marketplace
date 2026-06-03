@@ -1,0 +1,17 @@
+[
+  {
+    "name": "disk-usage",
+    "command": "echo '[monitor:disk-usage]'; df -h . | tail -n +2",
+    "description": "Report current disk usage once at session start. Output is prefixed with a [monitor:disk-usage] marker so the silently-injected context is identifiable."
+  },
+  {
+    "name": "memory-usage",
+    "command": "echo '[monitor:memory-usage]'; { free -h 2>/dev/null | head -2 || vm_stat 2>/dev/null | head -5; }",
+    "description": "Report current memory usage once at session start (Linux or macOS). Output is prefixed with a [monitor:memory-usage] marker."
+  },
+  {
+    "name": "git-status",
+    "command": "echo '[monitor:git-status]'; { git status --short 2>/dev/null || echo 'not a git repo'; }",
+    "description": "Report uncommitted git changes once at session start. Output is prefixed with a [monitor:git-status] marker."
+  }
+]

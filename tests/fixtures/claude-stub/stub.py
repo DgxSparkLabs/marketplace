@@ -1,3 +1,8 @@
+#!/usr/bin/env -S uv run --quiet
+# /// script
+# requires-python = ">=3.10"
+# dependencies = ["flask>=3.0"]
+# ///
 """Hermetic Anthropic-shape stub for Claude Code QA.
 
 Implements the minimum HTTP surface Claude Code probes at startup +

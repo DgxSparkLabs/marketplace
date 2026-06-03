@@ -1,0 +1,29 @@
+=== reset ===
+✔ Successfully removed marketplace: dgxsparklabs-marketplace
+Adding marketplace…✔ Successfully added marketplace: dgxsparklabs-marketplace (declared in user settings)
+
+=== install reverse order e d c b a ===
+Installing plugin "skill-e-test@dgxsparklabs-marketplace"...✔ Successfully installed plugin: skill-e-test@dgxsparklabs-marketplace (scope: project)
+Installing plugin "skill-d-test@dgxsparklabs-marketplace"...✔ Successfully installed plugin: skill-d-test@dgxsparklabs-marketplace (scope: project)
+Installing plugin "skill-c-test@dgxsparklabs-marketplace"...✔ Successfully installed plugin: skill-c-test@dgxsparklabs-marketplace (scope: project)
+Installing plugin "skill-b-test@dgxsparklabs-marketplace"...✔ Successfully installed plugin: skill-b-test@dgxsparklabs-marketplace (scope: project)
+Installing plugin "skill-a-test@dgxsparklabs-marketplace"...✔ Successfully installed plugin: skill-a-test@dgxsparklabs-marketplace (scope: project)
+
+=== install timestamps ===
+2026-05-27T09:23:03.299Z  skill-e-test@dgxsparklabs-marketplace
+2026-05-27T09:23:06.536Z  skill-d-test@dgxsparklabs-marketplace
+2026-05-27T09:23:08.948Z  skill-c-test@dgxsparklabs-marketplace
+2026-05-27T09:23:12.341Z  skill-b-test@dgxsparklabs-marketplace
+2026-05-27T09:23:15.987Z  skill-a-test@dgxsparklabs-marketplace
+
+=== details dgxsparklabs-skill ===
+DgxSparkLabs Skills (dgxsparklabs-skill) 1.0.0
+  scale probe e
+  Source: skill-e-test@dgxsparklabs-marketplace
+
+Component inventory
+  Skills (1)  e
+  Agents (0)
+  Hooks (0)
+  MCP servers (0)
+  LSP servers (0)

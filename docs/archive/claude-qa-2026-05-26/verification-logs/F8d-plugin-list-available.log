@@ -1,0 +1,22 @@
+=== plugin list --available --json | jq | grep rule- ===
+0
+
+=== Sample first 10 available plugins ===
+agent-example
+bundle-agent-all
+bundle-ai-services-skills
+bundle-code-analysis-skills
+bundle-command-all
+bundle-communication-skills
+bundle-devops-skills
+bundle-examples
+bundle-hook-all
+bundle-lsp-all
+
+=== bundle-quality-rules check ===
+
+=== bundle-* count ===
+18
+
+=== Total available ===
+53

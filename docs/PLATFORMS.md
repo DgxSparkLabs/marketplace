@@ -8,6 +8,8 @@ status: live
 
 This marketplace targets six AI coding platforms — Claude Code, Codex, Gemini, Cursor, Windsurf, and Devin. Three of them (Claude, Codex, Gemini) support a one-command GitHub install; the other three install via IDE import or `git clone`. A shared `.agents/skills/` directory is read natively by Windsurf, Cursor, and Devin — the only true cross-platform convergence point. For end-user install commands, start with `README.md`. This document is the canonical reference for how each platform installs, how it discovers content, what the CI workflows assert about it, and where the gaps are.
 
+> **2026-05-28 multi-instance scope (non-Claude platforms in active QA cycles).** Skill plugins can now use either a solo layout (`<plugin>/SKILL.md`) or a multi-skill layout (`<plugin>/skills/<skill>/SKILL.md`). The multi-instance source layout is **verified on Claude only** as of 2026-05-28. On the other five platforms (Cursor IDE, Codex, Gemini, Windsurf, Devin) and the `.agents/` cross-platform shim, multi-skill discovery is **unverified — paused until each platform's QA cycle lands**. The generator still emits content to the per-platform mirrors, but the nested `skills/<skill>/SKILL.md` shape may not be discovered by downstream consumers. See ROADMAP #37-#42 for the per-platform follow-up tasks and the NOTE comments in `scripts/platforms.py` for the source-level acknowledgement.
+
 ## How to read these docs
 
 This file is one of three hub docs in the pyramid:
@@ -86,7 +88,7 @@ Verified PASS in [[archive/phase-5-cross-platform-install/VERIFICATION_2026-05/e
 ### Per-plugin install
 
 ```bash
-claude plugin install bundle-skill-all@dgxsparklabs-marketplace --scope project
+claude plugin install bundle-examples@dgxsparklabs-marketplace --scope project
 ```
 
 Bundles auto-install their dependencies. The install output reports `(+ N dependencies: ...)`. Uninstalling a bundle does NOT auto-remove its deps — they orphan and persist until `claude plugin prune --scope <scope> -y`.
@@ -120,7 +122,7 @@ cp rules/blast-radius/rule.md ~/.claude/rules/blast-radius.md
 
 The `agents` CLI shim automates the per-marketplace install when targeted at `.agents/rules/` (`agents install rule-blast-radius --scope project --agents-only`), but Claude does not currently auto-discover from `.agents/rules/` — for Claude specifically the symlink-or-copy approach above is canonical. See `docs/USER_GUIDE.md` Claude section for the full operator walkthrough.
 
-**Claude-side bundle cascade**: bundles whose members are exclusively `rule:` references (`bundle-quality-rules`, `bundle-workflow-rules`, `bundle-documentation-rules`, `bundle-environment-rules`, `bundle-notifications-rules`) and the catch-all `bundle-rule-all` are no longer surfaced in Claude's marketplace listing because their dependencies are no longer valid Claude plugins. They remain available to Cursor / Codex / Gemini / Windsurf where rule plugins are still valid.
+**Claude-side bundle cascade**: bundles whose members are exclusively `rule:` references (`bundle-quality-rules`, `bundle-workflow-rules`, `bundle-documentation-rules`, `bundle-environment-rules`, `bundle-notifications-rules`) are no longer surfaced in Claude's marketplace listing because their dependencies are no longer valid Claude plugins. They remain available to Cursor / Codex / Gemini / Windsurf where rule plugins are still valid. (Per-construct catch-all bundles like `bundle-rule-all` were retired entirely 2026-05-27.)
 
 Source `rules/<name>/` directories remain — they still feed Cursor / Windsurf / Codex / Gemini rule emission. Cursor and Codex per-plugin manifests still surface them. Only the Claude-plugin wrapping is gone.
 
@@ -247,7 +249,7 @@ Reads `_generated/<plugin>/.codex-plugin/plugin.json` (emitted by generator Phas
 |---|---|
 | `compat-marketplace-add.yml` (codex job) | `codex plugin marketplace add ./` exits 0; `cat ~/.codex/config.toml \| grep -F dgxsparklabs-marketplace` matches; `codex plugin list \| grep -F "skill-example@dgxsparklabs-marketplace"` matches; `codex plugin add skill-example@dgxsparklabs-marketplace` exits 0 |
 | `compat-skill.yml` (codex job) | Registers marketplace from local path; asserts entry appears in `~/.codex/config.toml` |
-| `compat-mcp.yml` (codex job) | `codex mcp list` baseline exits 0; `codex mcp add example-fetch -- uvx mcp-server-fetch` succeeds; `codex mcp list \| grep -F example-fetch` matches; `codex mcp get example-fetch --json` exits 0 |
+| `compat-mcp.yml` (codex job) | `codex mcp list` baseline exits 0; `codex mcp add example -- uvx mcp-server-fetch` succeeds; `codex mcp list \| grep -F example` matches; `codex mcp get example --json` exits 0 |
 
 All Codex jobs run with `continue-on-error: false` (promoted from advisory to required after Wave 4 verification that the GitHub Actions org-level block on `@openai/codex` was lifted).
 
@@ -344,7 +346,7 @@ Not applicable — Gemini installs the whole marketplace as a single extension. 
 | `compat-extension.yml` (gemini job) | `gemini extensions list` baseline exits 0; `gemini extensions validate ./.gemini/` exits 0; local install via `echo "y" \| gemini extensions install ./.gemini/ --consent` succeeds; `gemini extensions list 2>&1 \| grep -F dgxsparklabs` matches |
 | `compat-extension.yml` (gemini-github-url-install job) | Installs from `https://github.com/DgxSparkLabs/marketplace --ref <current-branch> --consent`; asserts the extension appears in `extensions list` |
 | `compat-skill.yml` (gemini job) | `echo "y" \| gemini skills install ./_generated/skill-telegram-notify`; `gemini skills list --all \| grep -F telegram-notify` matches |
-| `compat-mcp.yml` (gemini job) | `gemini mcp list` baseline exits 0; `gemini mcp add example-fetch uvx mcp-server-fetch` succeeds; `gemini mcp list 2>&1 \| grep -F example-fetch` matches |
+| `compat-mcp.yml` (gemini job) | `gemini mcp list` baseline exits 0; `gemini mcp add example uvx mcp-server-fetch` succeeds; `gemini mcp list 2>&1 \| grep -F example` matches |
 
 ### Known gaps
 
@@ -668,7 +670,7 @@ Cursor rules:    .cursorrules, .cursor/rules/*.md
 | Workflow | What it asserts |
 |---|---|
 | `compat-skill.yml` (devin job) | `devin skills list \| grep -i telegram` matches (case-insensitive; Devin reads `.devin/skills/` mirror present after generator runs) |
-| `compat-mcp.yml` (devin job) | `devin mcp list` baseline exits 0; `devin mcp add example-fetch -- uvx mcp-server-fetch` succeeds; `devin mcp list \| grep -i example-fetch` matches |
+| `compat-mcp.yml` (devin job) | `devin mcp list` baseline exits 0; `devin mcp add example -- uvx mcp-server-fetch` succeeds; `devin mcp list \| grep -i example` matches |
 
 Devin jobs install the CLI via the composite action `./.github/actions/setup-devin` (which wraps the installer with `|| true` to tolerate the non-TTY exit code).
 
@@ -764,8 +766,7 @@ Note all `gemini` list commands need `2>&1` because Gemini writes list output to
 | **platform** | One of 7 emission targets: Claude Code, Codex, Gemini, Cursor, Windsurf, Devin, plus `AgentsPlatform`. Each is a class in `scripts/platforms.py`. |
 | **`supports`** | Per-platform set of construct CLASSES that platform can host. Gates per-plugin manifest emission and mirror generation. See [[ARCHITECTURE#The `supports` gate]]. |
 | **mirror hygiene** | Excluding per-platform manifest dirs (`.claude-plugin`, `.codex-plugin`, `.cursor-plugin`) from `shutil.copytree` so they don't bleed across mirrors. |
-| **bundle** | A dep-only plugin grouping other plugins. Two kinds: catalog bundles (declared in `catalog.toml`) and code-generated catch-alls (`bundle-<prefix>-all`). |
-| **catch-all** | A code-generated bundle named `bundle-<prefix>-all` (e.g., `bundle-skill-all`) installing every plugin of one construct type. NOT declared in `catalog.toml`. |
+| **bundle** | A dep-only plugin grouping other plugins. Declared in `catalog.toml`. Per-construct code-generated catch-alls were retired 2026-05-27. |
 | **`.agents/`** | Cross-platform skill convergence directory at `.agents/skills/<name>/SKILL.md`. Read natively by Windsurf, Cursor, and Devin. |
 | **GitHub-direct install** | A one-command install from a GitHub URL or shortform, without `git clone`. Supported natively by Claude, Codex, and Gemini. |
 

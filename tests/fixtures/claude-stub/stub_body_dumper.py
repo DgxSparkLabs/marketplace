@@ -1,3 +1,8 @@
+#!/usr/bin/env -S uv run --quiet
+# /// script
+# requires-python = ">=3.10"
+# dependencies = ["flask>=3.0"]
+# ///
 """Body-capturing variant of ``stub.py`` for assertion-driven QA.
 
 Identical wire behavior to ``stub.py`` (Anthropic Messages v1 shape,

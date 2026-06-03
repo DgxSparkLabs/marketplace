@@ -24,10 +24,11 @@ from functools import cache
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
+SRC = REPO_ROOT / "src"
 GENERATED = REPO_ROOT / "_generated"
 MARKETPLACE_JSON = REPO_ROOT / ".claude-plugin" / "marketplace.json"
-CATALOG = REPO_ROOT / "catalog.toml"
-MARKETPLACE_TOML = REPO_ROOT / "MARKETPLACE.toml"
+CATALOG = SRC / "catalog.toml"
+MARKETPLACE_TOML = SRC / "MARKETPLACE.toml"
 
 
 def scan_source_dir(source_dir: Path) -> list[str]:
@@ -45,6 +46,51 @@ def scan_source_dir(source_dir: Path) -> list[str]:
 def _load_plugin_json(path: Path) -> dict:
     """Cached read of a plugin.json file. Path must be absolute."""
     return json.loads(path.read_text(encoding="utf-8"))
+
+
+def _is_candidate_subdir(d: Path) -> bool:
+    """True if ``d`` is a directory that looks like a real plugin source subdir.
+
+    Filters out tool-generated junk: hidden dirs (``.git``, ``.DS_Store``-
+    adjacent IDE artifacts) and ``__pycache__``. Used by SkillConstruct's
+    layout-detection branch to prevent ``skills/__pycache__/SKILL.md``
+    from flipping ``has_subdir=True`` and routing a solo plugin into
+    multi-layout emission.
+    """
+    if not d.is_dir():
+        return False
+    if d.name.startswith("."):
+        return False
+    if d.name == "__pycache__":
+        return False
+    return True
+
+
+def _read_source_plugin_description(src_plugin_dir: Path, fallback: str) -> str:
+    """Read the plugin-level description from ``<src>/.claude-plugin/plugin.json``.
+
+    This is the marketplace-listing one-liner, distinct from per-component
+    descriptions (which live in each SKILL.md frontmatter for skills, or
+    each agent .md frontmatter for sub-agents, etc.). Skills under the
+    multi-skill layout have no single SKILL.md to pull a description from,
+    so the operator authors it at the plugin level.
+
+    Falls back to ``fallback`` (typically the plugin directory name) when:
+      - the source plugin.json is missing
+      - the file is unparseable (json / unicode / OS error)
+      - the ``description`` field is missing, ``null``, or empty string
+
+    Reads with ``utf-8-sig`` so a UTF-8 BOM written by a Windows editor
+    doesn't crash the generator.
+    """
+    src_pj_path = src_plugin_dir / ".claude-plugin" / "plugin.json"
+    if not src_pj_path.exists():
+        return fallback
+    try:
+        data = json.loads(src_pj_path.read_text(encoding="utf-8-sig"))
+    except (json.JSONDecodeError, UnicodeDecodeError, OSError):
+        return fallback
+    return data.get("description") or fallback
 
 
 def _frontmatter(path: Path) -> dict:
@@ -96,7 +142,15 @@ def _marketplace_author() -> dict:
 
 
 def _marketplace_name() -> str:
-    """Read the marketplace name from MARKETPLACE.toml."""
+    """Read the marketplace name from MARKETPLACE.toml.
+
+    This is the string after the ``@`` in
+    ``claude plugin install <plugin>@<marketplace>``. Single source of
+    truth at MARKETPLACE.toml line 12. Written into the top-level
+    ``.claude-plugin/marketplace.json`` ``name`` field by
+    ``_write_marketplace_json`` in ``scripts/generate_manifest.py``.
+    See docs/ADDING_A_CONSTRUCT.md section "Trace each fragment to its source".
+    """
     return _load_marketplace_toml()["marketplace"]["name"]
 
 

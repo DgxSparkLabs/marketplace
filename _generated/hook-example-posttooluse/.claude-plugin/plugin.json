@@ -1,0 +1,9 @@
+{
+  "name": "dgxsparklabs-hook-example-posttooluse",
+  "version": "1.0.0",
+  "author": {
+    "name": "DgxSparkLabs",
+    "url": "https://github.com/DgxSparkLabs"
+  },
+  "description": "Single-event reference hook for PostToolUse, scoped to Write|Edit. After the tool completes, appends a timestamped marker plus the full hook JSON payload (read from stdin) to /tmp/hook-fired-posttooluse.log. The payload carries the tool name, input, and response \u2014 read it from stdin JSON, NOT from a CLAUDE_TOOL_NAME env var (which is not populated)."
+}

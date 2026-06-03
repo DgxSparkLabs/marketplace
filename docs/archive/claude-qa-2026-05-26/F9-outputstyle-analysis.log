@@ -1,0 +1,23 @@
+note: If you believe this is a mistake, please contact your Python installation or OS distribution provider. You can override this, at the risk of breaking your Python installation or OS, by passing --break-system-packages.
+hint: See PEP 668 for the detailed specification.
+
+=== Frontmatter fields ===
+  name                           = Lab Notebook Voice
+  description                    = Writes responses in a measured, citation-focused lab notebook voice. Reference e...
+  keep-coding-instructions       = True
+
+=== Required-field check ===
+  name                           present=True
+  description                    present=True
+
+=== Body analysis ===
+Body length (chars): 731
+Body line count: 14
+
+Documented body markers present:
+  Next: prefix                         marker='Next:'                        present=True
+  Voice header                         marker='## Voice'                     present=True
+  Format header                        marker='## Format'                    present=True
+  Cite directive                       marker='Cite'                         present=True
+  no-hedging                           marker='hedging'                      present=True
+  observation vs interpretation        marker='interpretation'               present=True

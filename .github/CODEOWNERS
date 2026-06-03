@@ -1,0 +1,8 @@
+# Code owners — review routing.
+#
+# Set the maintainer's GitHub handle below and uncomment to require their
+# review on every PR. Left commented because the handle is environment-specific;
+# a CODEOWNERS pattern that names a non-existent user silently requests review
+# from nobody, which is worse than no rule.
+#
+# * @<owner-github-handle>

@@ -1,0 +1,12 @@
+{
+  "name": "Nord",
+  "base": "dark",
+  "overrides": {
+    "background": "#2e3440",
+    "foreground": "#d8dee9",
+    "claude": "#88c0d0",
+    "error": "#bf616a",
+    "success": "#a3be8c",
+    "warning": "#ebcb8b"
+  }
+}

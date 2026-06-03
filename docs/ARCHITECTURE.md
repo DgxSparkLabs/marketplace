@@ -102,7 +102,7 @@ Phases run sequentially in `main()` at `scripts/generate_manifest.py:110-244`. R
 
 - **Add a new phase**: when an emission has no logical home in the existing phases. Example: Phase 4.5 was added to copy `gemini-extension.json` to the repo root because `gemini extensions install <github-url>` looks for it there, not in `.gemini/`. Number the new phase with `.5` to preserve readability of the original five-phase design.
 - **Extend an existing phase**: when adding behavior that fits the phase's purpose. Example: if a new platform needs a repo-root manifest similar to Cursor's, extend Phase 6 (or copy the pattern into a new sibling phase).
-- **Don't touch Phase 1 / 2a / 2b / 3 / 5**: these are the load-bearing core. Phase 1 emits per-plugin Claude manifests; 2a/2b emit catalog bundles and catch-alls; 3 wipes and re-emits all mirrors; 5 writes the aggregated `.claude-plugin/marketplace.json`. Adding new behavior at these layers risks breaking the `supports` gate or the in-memory marketplace aggregation.
+- **Don't touch Phase 1 / 2a / 3 / 5**: these are the load-bearing core. Phase 1 emits per-plugin Claude manifests; 2a emits catalog bundles; 3 wipes and re-emits all mirrors; 5 writes the aggregated `.claude-plugin/marketplace.json`. Adding new behavior at these layers risks breaking the `supports` gate or the in-memory marketplace aggregation. (Phase 2b — per-construct catch-all bundles — was retired 2026-05-27.)
 
 Phases interact through two shared structures: `marketplace_entries: list[dict]` (Phase 1/2a/2b append; Phase 5 writes) and `individual_plugins: list[tuple[Path, Construct, str]]` (Phase 1 populates; Phase 1.5 and Phase 6 iterate).
 
@@ -143,7 +143,7 @@ Phases interact through two shared structures: `marketplace_entries: list[dict]`
                             │
                             ▼
             ┌───────────────────────────────┐
-            │ Phase 2b: catch-all bundles   │  → _generated/bundle-<prefix>-all/
+            │ Phase 2b: (retired 2026-05-27)│  per-construct catch-alls removed
             └───────────────┬───────────────┘
                             │
                             ▼
@@ -181,7 +181,7 @@ The orchestrator at `scripts/generate_manifest.py:110-244` runs the following ph
 | **1** | Individual construct plugins. For each construct × source instance, call `construct.build_plugin_json(name)` and `construct.emit(name, plugin_dir)` to write `_generated/<prefix>-<name>/`. Collects in-memory marketplace entries. | `scripts/generate_manifest.py:121-131` | `_generated/<prefix>-<name>/.claude-plugin/plugin.json` per source instance |
 | **1.5** | Per-platform per-plugin manifests. For each `(plugin, platform)` pair where `type(construct) in platform.supports`, call `platform.build_plugin_json(construct, name)` and write `_generated/<plugin>/.<platform>-plugin/plugin.json`. Empty `{}` returns are skipped. Claude is skipped (already done by Phase 1). | `scripts/generate_manifest.py:133-153` | `_generated/<plugin>/.codex-plugin/plugin.json` + `.cursor-plugin/plugin.json` where supported |
 | **2a** | Catalog bundles. Load `catalog.toml [bundle.*]` blocks, resolve member references, emit `_generated/bundle-<name>/` per bundle. | `scripts/generate_manifest.py:155-162` | `_generated/bundle-<name>/.claude-plugin/plugin.json` per catalog bundle |
-| **2b** | Code-generated catch-all bundles. For each construct that has source instances, emit `bundle-<prefix>-all` with `dependencies = [every instance]`. NOT declared in `catalog.toml`. | `scripts/generate_manifest.py:164-180` | `_generated/bundle-skill-all/`, `bundle-rule-all/`, etc. |
+| **2b** | **Retired 2026-05-27**. Previously emitted `bundle-<prefix>-all` per Claude-supported construct; removed because they doubled the marketplace listing without curation value. The phase header is preserved in `scripts/generate_manifest.py` for archaeology. | — | — |
 | **3** | Cross-platform mirrors. Wipe all `platform.mirror_directory` roots, then for each platform call `platform.emit(construct, name)` for every supported `(construct, name)`. Includes `AgentsPlatform` populating `.agents/skills/`. | `scripts/generate_manifest.py:182-196` | `.codex/`, `.gemini/`, `.cursor/`, `.windsurf/`, `.devin/`, `.agents/` populated |
 | **4** | Gemini extension manifest. Call `GeminiPlatform.emit_extension_manifest()` to write `.gemini/gemini-extension.json`. | `scripts/generate_manifest.py:198-200` | `.gemini/gemini-extension.json` |
 | **4.5** | Root-level `gemini-extension.json` copy. `gemini extensions install <github-url>` clones the repo and expects the manifest at the repo root, not inside `.gemini/`. Copy the Phase-4 output to the root. | `scripts/generate_manifest.py:202-209` | `gemini-extension.json` at repo root |
@@ -234,12 +234,11 @@ Phase 3 also wipes every `platform.mirror_directory` before re-emitting (`script
 
 | Behavior | Why it matters here |
 |---|---|
-| **Claude Code plugin dependencies auto-install.** Installing `bundle-skill-all` installs every dep. The install output reports `(+ N dependencies: ...)`. Uninstalling the bundle does NOT auto-remove its deps — they orphan and persist until `claude plugin prune --scope <scope> -y`. | The domain-bundle architecture (`skills-communication`, `bundle-skill-all`, etc.) is dep-only plugins with no inlined content. The auto-install behavior is what makes catch-alls usable in practice. |
+| **Claude Code plugin dependencies auto-install.** Installing `bundle-examples` installs every dep. The install output reports `(+ N dependencies: ...)`. Uninstalling the bundle does NOT auto-remove its deps — they orphan and persist until `claude plugin prune --scope <scope> -y`. | The domain-bundle architecture is dep-only plugins with no inlined content. Auto-install is what makes multi-member bundles usable in practice. |
 | **`claude plugin validate <path>` enforces kebab-case for Claude.ai marketplace sync.** Mixed-case names load locally but fail sync; the validator warns. `homepage` and `repository` fields are tolerated with an "Unknown field" warning — kept anyway for documentation. | Naming convention enforced repository-wide: hyphens throughout, no underscores. |
 | **Bundle references depend at install time; no transitive flattening.** A bundle's `dependencies` field lists its members directly; installing the bundle installs the deps in one transaction. Removing a member from the bundle does not retroactively un-install it from machines that installed the bundle. | Lets bundles compose cleanly without the generator needing to compute closure or maintain a graph. |
 | **The Construct Protocol is `@runtime_checkable` but concrete classes do NOT inherit from Protocol.** Structural typing works at static-check time; isinstance dispatches on concrete classes. | Means `isinstance(obj, Construct)` works for duck-typed Construct-shaped objects, while keeping the inheritance graph flat. |
-| **Bundle with both `members` and `members_from_construct` raises `ValueError` at load time.** | Prevents silent mis-cataloging. The `members_from_construct` field was removed from the Bundle dataclass — catch-alls are code-generated (Phase 2b), not catalog-declared. |
-| **Reserved bundle names: `<prefix>-all` per construct prefix.** `load_bundles` raises `ValueError` if `catalog.toml` tries to define one. | Prevents collision with the auto-generated catch-alls from Phase 2b. |
+| **Per-construct catch-all bundles retired 2026-05-27.** Phase 2b previously emitted `bundle-<prefix>-all` per Claude-supported construct. Removed because they doubled marketplace entries without adding curation. The reserved-name check in `load_bundles` is also gone. | The catalog can now use any name, including the old `<prefix>-all` form, without collision. |
 
 ## References
 

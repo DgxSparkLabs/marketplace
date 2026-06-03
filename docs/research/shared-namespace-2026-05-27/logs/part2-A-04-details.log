@@ -1,0 +1,8 @@
+=== details by marketplace name (command-foo-test) ===
+Plugin "command-foo-test" not found. Run `claude plugin list` to see installed plugins, or pass --plugin-dir <path> to load one from disk.
+
+=== details by marketplace name (command-bar-test) ===
+Plugin "command-bar-test" not found. Run `claude plugin list` to see installed plugins, or pass --plugin-dir <path> to load one from disk.
+
+=== details by shared plugin.json name (dgxsparklabs-command) ===
+Plugin "dgxsparklabs-command" not found. Run `claude plugin list` to see installed plugins, or pass --plugin-dir <path> to load one from disk.

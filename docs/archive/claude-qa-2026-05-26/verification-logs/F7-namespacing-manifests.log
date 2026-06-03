@@ -1,0 +1,20 @@
+=== skill-example ===
+skill-example (validated separately)
+Validating plugin manifest: /workspace/marketplace/_generated/skill-example/.claude-plugin/plugin.json
+
+✔ Validation passed
+=== command-example ===
+command-example (validated separately)
+Validating plugin manifest: /workspace/marketplace/_generated/command-example/.claude-plugin/plugin.json
+
+✔ Validation passed
+=== agent-example ===
+agent-example (validated separately)
+Validating plugin manifest: /workspace/marketplace/_generated/agent-example/.claude-plugin/plugin.json
+
+✔ Validation passed
+=== mcp-example ===
+mcp-example (validated separately)
+Validating plugin manifest: /workspace/marketplace/_generated/mcp-example/.claude-plugin/plugin.json
+
+✔ Validation passed
