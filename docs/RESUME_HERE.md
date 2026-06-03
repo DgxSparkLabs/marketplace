@@ -2,7 +2,13 @@
 
 **This is the first file to read when returning to this project after any break.** Don't read anything else first.
 
-Updated 2026-05-28 (afternoon) after the symmetric single/multi expansion + `src/` reorganization + 15 review-finding fixes (PR #10).
+Updated 2026-06-03.
+
+## Status (2026-06-03) — v1.0.0 published
+
+`v1.0.0` is released and `main` is green ([release](https://github.com/DgxSparkLabs/marketplace/releases/tag/v1.0.0)). Install: `claude plugin marketplace add DgxSparkLabs/marketplace`. Ships reference/example plugins; production skills/rules return per [`ROADMAP.md`](ROADMAP.md) #16–#18. **Read [`LESSONS.md`](LESSONS.md) before touching the generator, CI, or doing any layout/name change** — it captures the traps that cost us most.
+
+**Next planned task — documentation consolidation/cleanup.** A ready-to-execute brief (tiered plan + fresh-clone orientation for a picking-up agent) is at [`.research/NEXT-doc-consolidation.md`](.research/NEXT-doc-consolidation.md). Start there.
 
 ## Repo layout — what lives where
 
