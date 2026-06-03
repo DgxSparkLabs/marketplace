@@ -2,6 +2,14 @@
 
 > Live within-session truth. Pair with `HANDOFF.md` (between-sessions), `PITFALLS.md` (specific bug→fix entries), and `docs/LESSONS.md` (working-practice lessons for the next agent — read before any generator/CI/layout change).
 
+## Session — 2026-06-03 (post-v1.0.0 doc-consolidation)
+
+**Status:** `v1.0.0` is published; `main` green. Post-release doc-consolidation on branch `docs/consolidation`:
+- Market-intel `research/` (107 files) moved root → `docs/research/` → `docs/archive/research-market-intel-2026-05/` (two-step, history-preserving renames per the owner's call).
+- Four settled research arcs (`naming-conventions`, `shared-namespace`, `multi-instance`, `qa-bug-fixes`) + two tmux-QA notes archived under `docs/archive/`; two stale orphans (`pr1-body.md`, `ONBOARDING.md`) hard-deleted.
+- Live-doc references to moved/archived paths repointed (`rules/no-ai-credit/` → archived path; `docs/research/<arc>` → `docs/archive/<arc>`); `AGENTS.md` "Research Directory" section rewritten; dead root-`research/` `.gitignore` patterns dropped.
+- Docs-only: `uv run scripts/generate_manifest.py --check` clean throughout (no `src/`/`_generated/`/mirror bytes touched).
+
 ## Session — 2026-06-03 (stable/PR-friendly implementation)
 
 **Goal:** land the in-flight tree and move toward a Claude-first stable release.

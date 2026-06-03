@@ -102,6 +102,7 @@ Each platform must pass its `docs/TEST_YOURSELF.md` cells on the 10 example plug
 | 29 | `skill-example` `name:` field — keep `/example-skill` or shorten to `/example`? | `[DONE]` | PR #10 — SKILL.md `name:` is now `lab-notebook`. Slash form `/skill-example:lab-notebook` (proven via Docker research). |
 | 33 | **Systemic name-chain mismatch across 9 example plugins** (Scheme B+) | `[DONE]` | PR #10 — empirical Docker research (`docs/archive/naming-conventions-2026-05-26/`) revealed the visible mismatch was narrower than feared (source-vs-marketplace; never reaches `/plugins`), and the real awkward slash form was just `/skill-example:example-skill` doubled. Applied Scheme B+: align 9 `plugin.json` names + rename SKILL.md `name:` to `lab-notebook` + rename monitor `example-disk` to `disk-usage`. |
 | 34 | Extend per-construct reference cards to remaining 5 platforms in `docs/TEST_YOURSELF.md` | `[BACKLOG]` | Claude section now has exact-strings-to-type + expected-output card (PR #10). Cursor IDE / Cursor CLI / Gemini / Windsurf / Devin / agents CLI sections still terse — apply same depth as part of each platform's QA cycle (#9–#14). |
+| 43 | **Trim/split `docs/TEST_YOURSELF.md`** (2751 lines) — non-Claude sections are stale post-Claude-first; keep the Claude path, prune or split out the rest | `[BACKLOG]` | Deferred from the 2026-06 doc-consolidation (OQ3). Also repair the pre-existing intra-doc TOC heading-links the bundled LSP flags (lines 30–38). |
 
 ## Durable methodology threads
 

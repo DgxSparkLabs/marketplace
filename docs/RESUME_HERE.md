@@ -59,13 +59,11 @@ This repo (`DgxSparkLabs/marketplace`) is a **multi-platform plugin marketplace*
 ## You Are Here
 
 ```
-Active branch:         feat/claude-plugin-compliance
-Tip commit:            70e55d6 (docs(readme): add GitHub-direct install support matrix + reframe opener)
-Open PRs:              #1 at https://github.com/DgxSparkLabs/marketplace/pull/1 — MERGEABLE
-CI status:             ALL 11 WORKFLOWS GREEN on 70e55d6 (including new Gemini GitHub URL install assertion)
-Status:                Phase 1 + Phase 2 complete. End-to-end install proven for Claude/Codex/Gemini in real GHA. Awaiting merge call.
+Released:              v1.0.0 — main is green (https://github.com/DgxSparkLabs/marketplace/releases/tag/v1.0.0)
+Install:               claude plugin marketplace add DgxSparkLabs/marketplace
+Ships:                 reference/example plugins (Claude-first, verified); production skills/rules return per ROADMAP #16–#18
+In flight:             docs/consolidation — post-v1.0.0 doc cleanup (archive settled research, remove orphans, de-drift entry docs)
 Working directory:     C:\Users\devic\source\marketplace
-Last session ended:    2026-05-24, after cross-platform install fix verification + push to main awaited
 ```
 
 **Cross-references for context-loading:**
