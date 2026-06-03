@@ -8,7 +8,7 @@ Updated 2026-06-03.
 
 `v1.0.0` is released and `main` is green ([release](https://github.com/DgxSparkLabs/marketplace/releases/tag/v1.0.0)). Install: `claude plugin marketplace add DgxSparkLabs/marketplace`. Ships reference/example plugins; production skills/rules return per [`ROADMAP.md`](ROADMAP.md) #16–#18. **Read [`LESSONS.md`](LESSONS.md) before touching the generator, CI, or doing any layout/name change** — it captures the traps that cost us most.
 
-**Next planned task — documentation consolidation/cleanup.** A ready-to-execute brief (tiered plan + fresh-clone orientation for a picking-up agent) is at [`.research/NEXT-doc-consolidation.md`](.research/NEXT-doc-consolidation.md). Start there.
+**Doc-consolidation — done.** The post-v1.0.0 documentation cleanup landed: settled research archived under [`archive/`](archive/), the two orphans removed, and entry-doc links de-drifted. The executed plan + launch prompt are archived at [`archive/doc-consolidation-2026-06/`](archive/doc-consolidation-2026-06/).
 
 ## Repo layout — what lives where
 
