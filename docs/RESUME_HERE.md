@@ -62,7 +62,7 @@ This repo (`DgxSparkLabs/marketplace`) is a **multi-platform plugin marketplace*
 Released:              v1.0.0 — main is green (https://github.com/DgxSparkLabs/marketplace/releases/tag/v1.0.0)
 Install:               claude plugin marketplace add DgxSparkLabs/marketplace
 Ships:                 reference/example plugins (Claude-first, verified); production skills/rules return per ROADMAP #16–#18
-In flight:             docs/consolidation — post-v1.0.0 doc cleanup (archive settled research, remove orphans, de-drift entry docs)
+Doc cleanup:           docs/consolidation (PR #15) — post-v1.0.0 consolidation landed (archived settled research, removed orphans, de-drifted entry docs); CI green, pending merge
 Working directory:     C:\Users\devic\source\marketplace
 ```
 

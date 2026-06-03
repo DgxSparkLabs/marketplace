@@ -190,7 +190,7 @@ The user explicitly distrusts narration-without-artifacts. The work product is t
 - **Document lifecycle.** Three tiers, no more. Rules in `AGENTS.md` (conventions; max ~200 lines; no changelogs). Reference in `HANDOFF.md` (current state; updated in-place after behavior-changing commits). History in `CHANGELOG.md` (append-only).
 - **Autonomous persistence.** Don't pause to ask "should I keep going?" The human may be away. Only pause for what you genuinely cannot provide yourself.
 
-For the longer-form versions of these rules (Verification Ladder, Improve the Process, Session Resilience, Stay Motivated, Task Formation, Continuous Improvement), see the user-global excerpts imported into [`../AGENTS.md`](../AGENTS.md) — they apply project-wide and are not duplicated here.
+For the longer-form versions of these rules (Verification Ladder, Improve the Process, Session Resilience, Stay Motivated, Task Formation, Continuous Improvement), see the user-global excerpts imported into [`AGENTS.md`](AGENTS.md) — they apply project-wide and are not duplicated here.
 
 ### Writing rules — keep them concise
 

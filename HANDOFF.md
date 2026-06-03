@@ -84,7 +84,7 @@ Verification round exposed that the README documented install commands that didn
 
 The goal is met. Remaining is polish / future-proofing:
 
-1. **(In progress) Merge the post-merge cleanup PR** (`docs/post-merge-cleanup` branch) which commits the verification audit trail + drops `--ref` footnotes + refreshes this HANDOFF.md.
+1. **(Done) v1.0.0 published; docs consolidated.** The cross-platform install work and the post-v1.0.0 doc-consolidation (PR #15) both landed. For current priorities (per-platform QA parity, re-adding production content) see [`docs/RESUME_HERE.md`](./docs/RESUME_HERE.md) and [`docs/ROADMAP.md`](./docs/ROADMAP.md).
 
 2. **(Optional) Retire `.devin/skills/` mirror** in favor of `.agents/skills/` alone — Devin reads both per `devin skills paths` empirical evidence; collapse is byte-saving cleanup.
 
