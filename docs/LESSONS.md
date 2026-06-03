@@ -26,7 +26,7 @@ Rule: after any layout or published-name change, grep the **whole repo** — not
 
 ## 3. Unit tests ≠ CI ≠ reality
 
-`uv run tasks.py verify` was fully green while 9 GitHub workflows were red. The suites validate the generator and the `agents` CLI against a **local checkout**; they never install the **published** plugin by name and never drive the Codex/Gemini/Devin CLIs. Those are different claims.
+`uv run scripts/tasks.py verify` was fully green while 9 GitHub workflows were red. The suites validate the generator and the `agents` CLI against a **local checkout**; they never install the **published** plugin by name and never drive the Codex/Gemini/Devin CLIs. Those are different claims.
 
 Rule: anything touching published plugin names or a platform CLI must be exercised by the real workflow bytes — locally via `act`, then on GitHub. See lesson 4.
 
@@ -76,7 +76,7 @@ Cursor/Windsurf/Devin read the mirror dirs (`.cursor/`, `.windsurf/`, `.agents/`
 ```bash
 uv run scripts/new_construct.py <type> <name>   # scaffold from the example
 # edit the copied files
-uv run tasks.py verify                           # --check + 4 suites + claude plugin validate
+uv run scripts/tasks.py verify                           # --check + 4 suites + claude plugin validate
 git add . && git commit && open a PR             # NO catalog.toml edit needed
 ```
 

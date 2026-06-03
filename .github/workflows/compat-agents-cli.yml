@@ -23,13 +23,13 @@ jobs:
       - name: Ensure Python 3.11+
         run: python3 -c "import sys; assert sys.version_info >= (3, 11)"
 
-      - name: Install agents CLI via install.sh
+      - name: Install agents CLI via scripts/install.sh
         env:
           # Use the PR head ref (forks fall back to main) so the installer
           # pulls the branch under test, not whatever happens to be on main.
           AGENTS_REF: ${{ github.head_ref || github.ref_name }}
         run: |
-          bash install.sh || (echo "install.sh failed" >&2; exit 1)
+          bash scripts/install.sh || (echo "scripts/install.sh failed" >&2; exit 1)
           echo "$HOME/.local/bin" >> $GITHUB_PATH
 
       - name: Assert agents --version exits 0
@@ -72,12 +72,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install agents CLI via install.ps1
+      - name: Install agents CLI via scripts/install.ps1
         shell: pwsh
         env:
           AGENTS_REF: ${{ github.head_ref || github.ref_name }}
         run: |
-          ./install.ps1
+          ./scripts/install.ps1
           Write-Host "Installed wrapper at $env:LOCALAPPDATA\agents\bin\agents.ps1"
 
       - name: Assert wrapper produces version output

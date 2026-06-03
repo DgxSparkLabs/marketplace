@@ -371,13 +371,13 @@ A Python shim shipped with this marketplace that gives every platform a uniform 
 
 ```bash
 # POSIX (drops `agents` into ~/.local/bin/)
-curl -fsSL https://raw.githubusercontent.com/DgxSparkLabs/marketplace/main/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/DgxSparkLabs/marketplace/main/scripts/install.sh | bash
 
 # Windows PowerShell
-irm https://raw.githubusercontent.com/DgxSparkLabs/marketplace/main/install.ps1 | iex
+irm https://raw.githubusercontent.com/DgxSparkLabs/marketplace/main/scripts/install.ps1 | iex
 
 # Pin to a specific marketplace branch
-AGENTS_REF=some-branch curl -fsSL https://raw.githubusercontent.com/DgxSparkLabs/marketplace/main/install.sh | bash
+AGENTS_REF=some-branch curl -fsSL https://raw.githubusercontent.com/DgxSparkLabs/marketplace/main/scripts/install.sh | bash
 ```
 
 Env-var surface (from `install.sh`): `AGENTS_REF` (marketplace branch, default `main`), `AGENTS_MARKETPLACE_URL` (repo URL override), `AGENTS_DEST` (wrapper install path), `AGENTS_LIB` (library install path), `AGENTS_PYTHON` (Python interpreter). Same env vars on `install.ps1` (`$env:AGENTS_REF`, etc.).

@@ -6,7 +6,7 @@
 """tasks.py — one-verb task runner for the common workflows (NFR-8).
 
 Usage:
-    uv run tasks.py <task>
+    uv run scripts/tasks.py <task>
 
 Tasks:
     regen    regenerate manifests / mirrors / docs/INVENTORY.md from src/
@@ -23,7 +23,7 @@ import subprocess
 import sys
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parent
+ROOT = Path(__file__).resolve().parent.parent  # repo root (this file lives in scripts/)
 
 SUITES = ("test_marketplace", "test_schema_fitness", "test_agents_cli", "test_tooling")
 
@@ -67,7 +67,7 @@ TASKS = {"regen": regen, "check": check, "test": test, "verify": verify}
 
 def main(argv: list[str]) -> int:
     if len(argv) != 1 or argv[0] not in TASKS:
-        print(f"usage: uv run tasks.py <{'|'.join(TASKS)}>", file=sys.stderr)
+        print(f"usage: uv run scripts/tasks.py <{'|'.join(TASKS)}>", file=sys.stderr)
         return 2
     return TASKS[argv[0]]()
 

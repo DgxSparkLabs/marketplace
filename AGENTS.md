@@ -7,15 +7,15 @@ This is a Claude Code plugin marketplace. Not a software project — no build sy
 - `README.md` — user-facing install + Quick Start.
 - `HANDOFF.md` — long-form project state tracker (5 completed phases, layout, next steps).
 - `docs/RESUME_HERE.md` — 30-second re-entry orientation.
-- `CONTRIBUTING.md` — contributor workflow + conventions + output discipline (the canonical "how do I work in this repo" doc — see it before duplicating content here).
+- `docs/CONTRIBUTING.md` — contributor workflow + conventions + output discipline (the canonical "how do I work in this repo" doc — see it before duplicating content here).
 - `docs/ARCHITECTURE.md` — generator architecture: Construct + Platform protocols, six phases.
 - `docs/PLATFORMS.md` — per-platform install/support reference.
 - `docs/ADDING_A_CONSTRUCT.md` — the single contributor walkthrough for all 10 construct types.
 - `docs/CONSTRUCT_TYPES.md` — reference table for the 10 constructs.
 
-For project-wide conventions and contributor discipline, see `CONTRIBUTING.md`.
+For project-wide conventions and contributor discipline, see `docs/CONTRIBUTING.md`.
 
-This file (`AGENTS.md`) is the per-project AI-agent rule set: only project-specific conventions live here. Generic discipline content (verification ladder, blast radius, document lifecycle, output discipline, autonomous persistence, etc.) used to be duplicated here; it now lives in `CONTRIBUTING.md` under "Output discipline (...)" and the contributor's user-global content. Don't re-import generic rules into this file — keep it project-scoped.
+This file (`AGENTS.md`) is the per-project AI-agent rule set: only project-specific conventions live here. Generic discipline content (verification ladder, blast radius, document lifecycle, output discipline, autonomous persistence, etc.) used to be duplicated here; it now lives in `docs/CONTRIBUTING.md` under "Output discipline (...)" and the contributor's user-global content. Don't re-import generic rules into this file — keep it project-scoped.
 
 ## Conventions (project-specific)
 
@@ -47,7 +47,7 @@ Run the CI workflow locally with [act](https://github.com/nektos/act) and Docker
 ./tests/run-ci-local.sh -n       # dry-run (no container)
 ```
 
-For full per-platform act verification (Codex/Gemini/Cursor/Claude install + enumeration in Docker), use `docs/archive/phase-5-cross-platform-install/VERIFICATION_2026-05/reproduce.ps1` — see `CONTRIBUTING.md` section "Running act-based verification".
+For full per-platform act verification (Codex/Gemini/Cursor/Claude install + enumeration in Docker), use `docs/archive/phase-5-cross-platform-install/VERIFICATION_2026-05/reproduce.ps1` — see `docs/CONTRIBUTING.md` section "Running act-based verification".
 
 ## Research Directory
 

@@ -186,7 +186,7 @@ Never include AI co-author attribution in commit messages (see [`no-ai-credit`](
    uv run tests/test_schema_fitness.py
    ```
 
-6. **Validate**: run `claude plugin validate _generated/<your-prefix>-<your-name>` for your new plugin and `claude plugin validate ./` for the marketplace as a whole. Both must produce zero warnings — CI gates on this. See [`../CONTRIBUTING.md`](../CONTRIBUTING.md#running-claude-plugin-validate) for the full validate workflow, common warnings, and how the CI gate is wired.
+6. **Validate**: run `claude plugin validate _generated/<your-prefix>-<your-name>` for your new plugin and `claude plugin validate ./` for the marketplace as a whole. Both must produce zero warnings — CI gates on this. See [`CONTRIBUTING.md`](CONTRIBUTING.md#running-claude-plugin-validate) for the full validate workflow, common warnings, and how the CI gate is wired.
 
 7. **Commit** with a conventional commit message. No AI co-author attribution (`docs/archive/rules-pre-stable-2026-05-26/no-ai-credit/`).
 

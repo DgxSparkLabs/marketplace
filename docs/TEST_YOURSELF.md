@@ -306,7 +306,7 @@ Platform-by-platform support:
 | Cursor CLI | n/a — no plugin install | n/a | ✅ (reads workspace files) |
 | Windsurf | n/a — no CLI | n/a | ✅ (clone + open in IDE) |
 | Devin | n/a — no marketplace | n/a | ✅ (clone + `devin skills list`) |
-| `agents` CLI | ✅ via curl/irm one-liner | ✅ via `AGENTS_REF` env var | ✅ (`bash install.sh` from local checkout) |
+| `agents` CLI | ✅ via curl/irm one-liner | ✅ via `AGENTS_REF` env var | ✅ (`bash scripts/install.sh` from local checkout) |
 
 **Legend**:
 - ✅ — verified working in this repo's evidence (act/CI logs or per-platform reference docs).
@@ -2359,17 +2359,17 @@ Then install the `agents` CLI. Pick ONE of the four paths below:
 
 ```bash
 # Path 1 — Remote main (smoke test only — NOT for PR #5 verification):
-curl -fsSL https://raw.githubusercontent.com/DgxSparkLabs/marketplace/main/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/DgxSparkLabs/marketplace/main/scripts/install.sh | bash
 
 # Path 2 — Remote PR branch via curl URL path segment (fetches install.sh from the branch):
-curl -fsSL https://raw.githubusercontent.com/DgxSparkLabs/marketplace/main/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/DgxSparkLabs/marketplace/main/scripts/install.sh | bash
 
 # Path 3 — Remote PR branch via AGENTS_REF env var (install.sh from main, but clones the marketplace from the branch — see install.sh: `REF="${AGENTS_REF:-main}"`):
-AGENTS_REF=main curl -fsSL https://raw.githubusercontent.com/DgxSparkLabs/marketplace/main/install.sh | bash
+AGENTS_REF=main curl -fsSL https://raw.githubusercontent.com/DgxSparkLabs/marketplace/main/scripts/install.sh | bash
 
 # Path 4 — Local clone (most reliable — tests exactly the bytes at /workspace/marketplace):
 git clone --branch main https://github.com/DgxSparkLabs/marketplace.git /workspace/marketplace
-cd /workspace/marketplace && bash install.sh
+cd /workspace/marketplace && bash scripts/install.sh
 ```
 
 Then:
@@ -2391,11 +2391,11 @@ agents --version
 
 ```powershell
 # Path 1 — Remote main:
-irm https://raw.githubusercontent.com/DgxSparkLabs/marketplace/main/install.ps1 | iex
+irm https://raw.githubusercontent.com/DgxSparkLabs/marketplace/main/scripts/install.ps1 | iex
 
 # Path 2 — Remote PR branch via AGENTS_REF env var:
 $env:AGENTS_REF = 'main'
-irm https://raw.githubusercontent.com/DgxSparkLabs/marketplace/main/install.ps1 | iex
+irm https://raw.githubusercontent.com/DgxSparkLabs/marketplace/main/scripts/install.ps1 | iex
 
 # Path 3 — Local clone (most reliable):
 git clone --branch main https://github.com/DgxSparkLabs/marketplace.git C:\Users\devic\source\marketplace-pr5
@@ -2659,7 +2659,7 @@ Assumes `/workspace/marketplace` is the clone path (Docker setups in each platfo
 | Cursor CLI | `curl https://cursor.com/install -fsS \| bash` / `irm 'https://cursor.com/install?win32=true' \| iex` | N/A | `cd /workspace/marketplace && agent` | reads same paths as IDE; consumption via filesystem |
 | Windsurf | `codeium.com/windsurf` (GUI) | N/A (GUI) | open `/workspace/marketplace` (or host equivalent) in Windsurf → File → Open Folder | hooks (`.windsurf/hooks.json`) |
 | Devin | `curl -fsSL https://cli.devin.ai/install.sh \| bash` (WSL on Windows) | `ubuntu:24.04` | `cd /workspace/marketplace && devin skills list` | `.devin/skills/` retired (now uses `.agents/skills/`) |
-| `agents` CLI | `irm .../install.ps1 \| iex` (Win) / `curl ... \| bash` (POSIX) | `ubuntu:24.04` | `cd /workspace/marketplace && bash install.sh` | entire CLI is new |
+| `agents` CLI | `irm .../scripts/install.ps1 \| iex` (Win) / `curl ... \| bash` (POSIX) | `ubuntu:24.04` | `cd /workspace/marketplace && bash scripts/install.sh` | entire CLI is new |
 
 Remote-branch quick reference (where supported):
 
@@ -2672,7 +2672,7 @@ Remote-branch quick reference (where supported):
 | Cursor CLI | n/a — clone the branch and open |
 | Windsurf | n/a — clone the branch and open |
 | Devin | n/a — clone the branch and open |
-| `agents` CLI | `AGENTS_REF=main curl -fsSL https://raw.githubusercontent.com/DgxSparkLabs/marketplace/main/install.sh \| bash` |
+| `agents` CLI | `AGENTS_REF=main curl -fsSL https://raw.githubusercontent.com/DgxSparkLabs/marketplace/main/scripts/install.sh \| bash` |
 
 ---
 

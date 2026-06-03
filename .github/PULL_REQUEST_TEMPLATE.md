@@ -1,4 +1,4 @@
-<!-- New to the repo? See CONTRIBUTING.md and docs/ROADMAP.md. -->
+<!-- New to the repo? See docs/CONTRIBUTING.md and docs/ROADMAP.md. -->
 
 ## What & why
 
@@ -7,7 +7,7 @@
 ## Checklist
 
 - [ ] If I added or changed a construct, its source lives under `src/<construct>/<name>/`.
-- [ ] Generated artifacts are in sync — `uv run tasks.py verify` is green locally (or the `regen-bot` workflow committed the regenerated artifacts for me on a same-repo branch).
+- [ ] Generated artifacts are in sync — `uv run scripts/tasks.py verify` is green locally (or the `regen-bot` workflow committed the regenerated artifacts for me on a same-repo branch).
 - [ ] `claude plugin validate ./` is clean (zero warnings/errors).
 - [ ] No AI co-author attribution anywhere in commits, code, or docs (see `docs/archive/rules-pre-stable-2026-05-26/no-ai-credit/`).
 

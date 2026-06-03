@@ -27,7 +27,7 @@ Updated 2026-06-03.
 | [`TEST_YOURSELF.md`](TEST_YOURSELF.md) | Hands-on per-construct × per-platform QA cells |
 | [`CLAUDE_QA_RUNBOOK.md`](CLAUDE_QA_RUNBOOK.md) | The Claude-path QA runbook |
 
-Project-level context lives at repo root: [`../HANDOFF.md`](../HANDOFF.md) (longer state + history), [`../STATE.md`](../STATE.md) (within-session truth), [`../PITFALLS.md`](../PITFALLS.md) (bug→fix log), [`../README.md`](../README.md) (user-facing install), [`../CHANGELOG.md`](../CHANGELOG.md), [`../CONTRIBUTING.md`](../CONTRIBUTING.md).
+Project-level context lives at repo root: [`../HANDOFF.md`](../HANDOFF.md) (longer state + history), [`../STATE.md`](../STATE.md) (within-session truth), [`../PITFALLS.md`](../PITFALLS.md) (bug→fix log), [`../README.md`](../README.md) (user-facing install), [`../CHANGELOG.md`](../CHANGELOG.md). The contributor guide [`CONTRIBUTING.md`](CONTRIBUTING.md) and [`CODE_OF_CONDUCT.md`](CODE_OF_CONDUCT.md) now live here in `docs/`.
 
 ## Repo layout — what lives where
 

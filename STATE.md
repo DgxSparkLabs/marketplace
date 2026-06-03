@@ -24,11 +24,11 @@
 - Added `scripts/regen.{sh,ps1}` and `.github/workflows/regen-bot.yml` (auto-regenerate + commit on same-repo PR branches; forks fall back to the drift gate).
 - Release scaffolding: `LICENSE` (MIT), PR/issue templates, `CODE_OF_CONDUCT.md`, `SECURITY.md`, `CODEOWNERS` (commented template), `RELEASING.md`, `.github/dependabot.yml`. Version is already `1.0.0`.
 - CI (`ci.yml`) now runs all four suites (`test_marketplace`, `test_schema_fitness`, `test_agents_cli`, `test_tooling`); fixed stale plugin names in `compat-headless-claude.yml` (left advisory per its promotion plan).
-- Contributor tooling: `scripts/new_construct.py`, `scripts/validate_source.py` (+ `.pre-commit-config.yaml`), `tasks.py`, with `tests/test_tooling.py` (10 tests).
+- Contributor tooling: `scripts/new_construct.py`, `scripts/validate_source.py` (+ `.pre-commit-config.yaml`), `scripts/tasks.py`, with `tests/test_tooling.py` (10 tests).
 
 ### Verified
 
-- `uv run tasks.py verify` → drift-clean + all four suites + `claude plugin validate ./` "Validation passed".
+- `uv run scripts/tasks.py verify` → drift-clean + all four suites + `claude plugin validate ./` "Validation passed".
 - Fresh `git clone` reproduces byte-identical (`--check` clean) and runs all four suites green.
 - North-star drop-in proven: `new_construct.py skill <name>` → regenerate → entry appears in `marketplace.json` + `docs/INVENTORY.md` with NO `catalog.toml` edit.
 - **Branch pushed; all 14 CI workflows green** on the tip (incl. all 9 per-construct compat workflows after fixing their post-reorg staleness — see `PITFALLS.md`). Validated locally with `act` first.

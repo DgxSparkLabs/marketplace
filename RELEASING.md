@@ -10,7 +10,7 @@ are tracked toward parity in [`docs/ROADMAP.md`](docs/ROADMAP.md).
 2. **Regenerate.** Run `uv run scripts/generate_manifest.py`. The version
    propagates into every generated `plugin.json`, so expect a wide diff — keep
    the version bump in **its own commit**.
-3. **Verify.** Run `uv run tasks.py verify` — drift-clean, all three test suites
+3. **Verify.** Run `uv run scripts/tasks.py verify` — drift-clean, all three test suites
    (`test_marketplace`, `test_schema_fitness`, `test_agents_cli`), and
    `claude plugin validate ./` clean.
 4. **Record.** Add release notes to [`CHANGELOG.md`](CHANGELOG.md).

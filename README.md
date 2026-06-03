@@ -33,7 +33,7 @@ At-a-glance: which platforms install this marketplace directly from a GitHub URL
 | Cursor | ⚙️ IDE-only (paste GitHub URL) | Dashboard → Settings → Plugins → Import → paste repo URL (Cursor 2.6+) |
 | Windsurf | ❌ Clone required (no CLI exists) | `git clone https://github.com/DgxSparkLabs/marketplace` then open in IDE |
 | Devin | ❌ Clone required (no marketplace concept) | `git clone https://github.com/DgxSparkLabs/marketplace` then `devin skills list` |
-| `agents` CLI (cross-platform) | ✅ Yes (one-line installer) | `curl -fsSL https://raw.githubusercontent.com/DgxSparkLabs/marketplace/main/install.sh \| bash` then `agents install <plugin> --scope project` |
+| `agents` CLI (cross-platform) | ✅ Yes (one-line installer) | `curl -fsSL https://raw.githubusercontent.com/DgxSparkLabs/marketplace/main/scripts/install.sh \| bash` then `agents install <plugin> --scope project` |
 
 ## Quick Start
 
@@ -162,10 +162,10 @@ For any platform where you'd rather drive installs from a shell than rely on eac
 
 ```bash
 # POSIX one-liner installer (drops `agents` into ~/.local/bin/)
-curl -fsSL https://raw.githubusercontent.com/DgxSparkLabs/marketplace/main/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/DgxSparkLabs/marketplace/main/scripts/install.sh | bash
 
 # Windows PowerShell one-liner
-irm https://raw.githubusercontent.com/DgxSparkLabs/marketplace/main/install.ps1 | iex
+irm https://raw.githubusercontent.com/DgxSparkLabs/marketplace/main/scripts/install.ps1 | iex
 
 # Install a skill into the current project (.agents/ + per-platform paths)
 agents install skill-telegram-notify --scope project
@@ -489,7 +489,7 @@ uv run scripts/generate_manifest.py
 
 ## Contributing
 
-To add a new construct, see [`docs/ADDING_A_CONSTRUCT.md`](docs/ADDING_A_CONSTRUCT.md). The guide covers all 10 construct types with a step-by-step checklist per type. For the full contributor workflow see [`CONTRIBUTING.md`](CONTRIBUTING.md), and for what's planned next (including per-platform parity status) see [`docs/ROADMAP.md`](docs/ROADMAP.md).
+To add a new construct, see [`docs/ADDING_A_CONSTRUCT.md`](docs/ADDING_A_CONSTRUCT.md). The guide covers all 10 construct types with a step-by-step checklist per type. For the full contributor workflow see [`CONTRIBUTING.md`](docs/CONTRIBUTING.md), and for what's planned next (including per-platform parity status) see [`docs/ROADMAP.md`](docs/ROADMAP.md).
 
 ---
 
