@@ -8,7 +8,26 @@ Updated 2026-06-03.
 
 `v1.0.0` is released and `main` is green ([release](https://github.com/DgxSparkLabs/marketplace/releases/tag/v1.0.0)). Install: `claude plugin marketplace add DgxSparkLabs/marketplace`. Ships reference/example plugins; production skills/rules return per [`ROADMAP.md`](ROADMAP.md) #16–#18. **Read [`LESSONS.md`](LESSONS.md) before touching the generator, CI, or doing any layout/name change** — it captures the traps that cost us most.
 
-**Doc-consolidation — done.** The post-v1.0.0 documentation cleanup landed: settled research archived under [`archive/`](archive/), the two orphans removed, and entry-doc links de-drifted. The executed plan + launch prompt are archived at [`archive/doc-consolidation-2026-06/`](archive/doc-consolidation-2026-06/).
+**Doc-consolidation — complete; up as PR #15 (open, CI green, pending merge).** It archived settled research under [`archive/`](archive/), removed the two orphans, and de-drifted entry-doc links. The executed plan + launch prompt are archived at [`archive/doc-consolidation-2026-06/`](archive/doc-consolidation-2026-06/).
+
+## Canonical docs (find everything from here)
+
+| Doc | What it's for |
+|---|---|
+| [`LESSONS.md`](LESSONS.md) | Hard-won working rules — read before touching the generator, CI, or any layout/name change |
+| [`INVENTORY.md`](INVENTORY.md) | Generated, drift-checked plugin-entry inventory (authoritative counts) |
+| [`ARCHITECTURE.md`](ARCHITECTURE.md) | Generator architecture — Construct/Platform/Bundle protocols + generation phases |
+| [`PLATFORMS.md`](PLATFORMS.md) | Per-platform install / support / discovery / CI reference (6 platforms + `agents` CLI) |
+| [`USER_GUIDE.md`](USER_GUIDE.md) | End-user plugin management (install/list/enable/uninstall/scope) across platforms |
+| [`ADDING_A_CONSTRUCT.md`](ADDING_A_CONSTRUCT.md) | How to add a new construct of any of the 10 types |
+| [`CONSTRUCT_TYPES.md`](CONSTRUCT_TYPES.md) | What each construct type is + the full plugin inventory |
+| [`SKILL_FORMAT.md`](SKILL_FORMAT.md) | `SKILL.md` authoring reference |
+| [`RULE_FORMAT.md`](RULE_FORMAT.md) | Rule authoring + activation reference |
+| [`ROADMAP.md`](ROADMAP.md) | Sequenced task list — per-platform QA parity (#9–#14), production-content re-add (#16–#18) |
+| [`TEST_YOURSELF.md`](TEST_YOURSELF.md) | Hands-on per-construct × per-platform QA cells |
+| [`CLAUDE_QA_RUNBOOK.md`](CLAUDE_QA_RUNBOOK.md) | The Claude-path QA runbook |
+
+Project-level context lives at repo root: [`../HANDOFF.md`](../HANDOFF.md) (longer state + history), [`../STATE.md`](../STATE.md) (within-session truth), [`../PITFALLS.md`](../PITFALLS.md) (bug→fix log), [`../README.md`](../README.md) (user-facing install), [`../CHANGELOG.md`](../CHANGELOG.md), [`../CONTRIBUTING.md`](../CONTRIBUTING.md).
 
 ## Repo layout — what lives where
 
@@ -62,7 +81,7 @@ This repo (`DgxSparkLabs/marketplace`) is a **multi-platform plugin marketplace*
 Released:              v1.0.0 — main is green (https://github.com/DgxSparkLabs/marketplace/releases/tag/v1.0.0)
 Install:               claude plugin marketplace add DgxSparkLabs/marketplace
 Ships:                 reference/example plugins (Claude-first, verified); production skills/rules return per ROADMAP #16–#18
-Doc cleanup:           docs/consolidation (PR #15) — post-v1.0.0 consolidation landed (archived settled research, removed orphans, de-drifted entry docs); CI green, pending merge
+Doc cleanup:           complete on branch docs/consolidation; up as PR #15 (open, CI green, pending merge) — archived settled research, removed orphans, de-drifted entry-doc links
 Working directory:     C:\Users\devic\source\marketplace
 ```
 
