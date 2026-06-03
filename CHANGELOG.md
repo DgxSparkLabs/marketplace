@@ -346,7 +346,7 @@ Per the user's direct words: *"really, really hard to follow all the too many sk
 
 ## 2026-05-26 — Hermetic Claude QA via stub server
 
-The four interactive-auth cells (F4 / F5 / F7 / F9) previously required a human-driven Claude session to verify. Empirical research (`docs/research/claude-headless-qa/RESEARCH.md`) confirmed that Claude Code accepts a custom `ANTHROPIC_BASE_URL` pointing at a local stub server returning Anthropic-shape responses — no remote auth check at startup, no version validation, no licensing phone-home. This PR lands the stub as a canonical test fixture and wires it into CI for automated F5 / F7 / F9 verification on every PR.
+The four interactive-auth cells (F4 / F5 / F7 / F9) previously required a human-driven Claude session to verify. Empirical research (`docs/archive/claude-headless-qa-2026-05-26/RESEARCH.md`) confirmed that Claude Code accepts a custom `ANTHROPIC_BASE_URL` pointing at a local stub server returning Anthropic-shape responses — no remote auth check at startup, no version validation, no licensing phone-home. This PR lands the stub as a canonical test fixture and wires it into CI for automated F5 / F7 / F9 verification on every PR.
 
 ### Added
 
@@ -392,7 +392,7 @@ Hands-on Docker QA on 2026-05-25 surfaced 6 example-plugin bugs and 3 investigat
 - **`docs/TEST_YOURSELF.md` Claude section**: 16 hands-on validation methods covering hook firing per event type (6 sub-validations), slash command namespacing (3 forms: skill, agent, MCP tool), output-style observability with A/B compare, theme distinctiveness check, LSP / monitor / MCP / agent / command verifications, marketplace validate-no-warnings check, and rule-deprecation count check. Each validation specifies an operator-runnable action + the expected observation. Master matrix's Claude rule cell updated to N/A (was TEST³); footnote 3 reflects the deprecation rationale and points at USER_GUIDE.
 - **`.github/workflows/compat-validate.yml`** (NEW) — CI workflow promoting `claude plugin validate ./` warnings to errors via a portable grep-based fallback (since `--strict` is not yet available in all Claude CLI versions).
 - **Schema-fitness tests**: `tests/test_schema_fitness.py` extended with 6 new validators (marketplace description, LSP shape, monitor shape, theme schema, hook event coverage, hook event observability). Total schema-fitness tests: 21 (up from 15).
-- **`docs/research/claude-qa-2026-05-26/`** (research dossier) — 9-finding diagnosis report with 16 validation methods in Appendix A. Cites every claim against `code.claude.com/docs/en/...` URLs with fetch dates.
+- **`docs/archive/claude-qa-2026-05-26/`** (research dossier) — 9-finding diagnosis report with 16 validation methods in Appendix A. Cites every claim against `code.claude.com/docs/en/...` URLs with fetch dates.
 - **`CONTRIBUTING.md`** — new "Running `claude plugin validate`" section under Testing covering what / when / how-CI-enforces + a common-warnings remediation table; submission-flow checklist updated to require validate + schema-fitness tests; stale "52 tests" claim updated to "99 tests".
 
 ### Documentation

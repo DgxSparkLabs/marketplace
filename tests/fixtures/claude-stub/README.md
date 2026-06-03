@@ -182,7 +182,7 @@ Then from host: `curl http://127.0.0.1:8089/v1/models`.
 ## Origin
 
 Empirical feasibility research at
-`docs/research/claude-headless-qa/RESEARCH.md` confirmed that Claude
+`docs/archive/claude-headless-qa-2026-05-26/RESEARCH.md` confirmed that Claude
 Code accepts any `ANTHROPIC_BASE_URL` with no remote validation, and
 the stub recipe was developed there before being lifted into this
 canonical fixture location. The CI workflow at

@@ -52,7 +52,7 @@ Updated 2026-05-24 after the cross-platform native install fix (Phase 1 generato
 
 ## 30-Second TLDR
 
-This repo (`DgxSparkLabs/marketplace`) is a **multi-platform plugin marketplace** for Claude Code, Codex, Gemini, Cursor, Windsurf, and Devin. The generator emits **platform-native** per-plugin manifests (`.claude-plugin/`, `.codex-plugin/`, `.cursor-plugin/`) plus a shared `.agents/skills/` mirror — so each platform's native install command actually works end-to-end. PR #1 is open against `main`, all 11 CI workflows green, ready to merge.
+This repo (`DgxSparkLabs/marketplace`) is a **multi-platform plugin marketplace** for Claude Code, Codex, Gemini, Cursor, Windsurf, and Devin. The generator emits **platform-native** per-plugin manifests (`.claude-plugin/`, `.codex-plugin/`, `.cursor-plugin/`) plus a shared `.agents/skills/` mirror — so each platform's native install command actually works end-to-end. As of `v1.0.0` (published; `main` green), the reference set is verified Claude-first; the other five platforms emit, with parity tracked in [`ROADMAP.md`](ROADMAP.md) #9–#14.
 
 ---
 
@@ -162,17 +162,11 @@ Catalog bundle: bundle-<bundle-name>      e.g., bundle-communication-skills, bun
 
 ## Next Concrete Actions (in priority order)
 
-1. **Merge PR #1** — CI all green on `70e55d6`; this is the only remaining gate. Options:
-   - `gh pr merge 1 --squash` — collapses all commits into one (cleanest main history)
-   - `gh pr merge 1 --merge` — preserves full commit history with a merge commit (most accurate audit trail)
-   - `gh pr merge 1 --rebase` — replays commits linearly (clean linear history, rewrites SHAs)
-   - User direction pending as of this writing.
+1. **Per-platform QA parity** — verify the reference set on the five non-Claude platforms, one cycle at a time (Cursor IDE → Cursor CLI → Gemini → Windsurf → Devin). Tracked in [`ROADMAP.md`](ROADMAP.md) #9–#14.
 
-2. **Post-merge follow-up commit (small)** — drop the `--ref feat/claude-plugin-compliance` footnotes from the README; the no-ref forms work post-merge for Codex/Gemini.
+2. **Re-add production content** — return the archived skills/rules (`docs/archive/skills-pre-stable-2026-05-26/`, `docs/archive/rules-pre-stable-2026-05-26/`) one at a time, after each verifies across platforms. ROADMAP #16–#18.
 
-3. **(Optional) Verify C2 in real GHA post-merge** — `codex plugin marketplace add DgxSparkLabs/marketplace` (no ref) should now succeed against main. Either spot-test manually or add a one-shot CI job.
-
-4. **(Optional) Maintenance** — retire `.devin/skills/` once Devin's `.agents/skills/` reading is confirmed live (Devin docs say yes; existing `devin skills paths` empirical from May 22 says yes).
+3. **Accept new construct PRs** — validated Claude-first: drop a construct under `src/<construct>/`, open a PR, merge on green (the regen-bot commits regenerated artifacts on same-repo branches).
 
 ---
 
@@ -211,7 +205,7 @@ Catalog bundle: bundle-<bundle-name>      e.g., bundle-communication-skills, bun
 - **Codex per-plugin install with only `.claude-plugin/plugin.json`** — fails with `missing or invalid plugin.json`. Codex needs its own `.codex-plugin/plugin.json` (now emitted by Phase 1.5).
 - **Gemini GitHub URL install with `gemini-extension.json` only in `.gemini/`** — fails because Gemini looks for it at the cloned repo root. Now also emitted at repo root by Phase 4.5.
 - **Cursor binary name `cursor` in headless tests** — the headless CLI is `agent` (with `cursor-agent` as alias). Don't probe for `cursor --version`; probe for `agent --version`.
-- **Codex marketplace shortform without `--ref` against main pre-merge** — fails because main lacks the manifest. Auto-resolves on PR #1 merge.
+- **Codex marketplace shortform without `--ref` against main pre-merge** — failed before the manifest was on `main`; resolved once it merged (now on `main` at v1.0.0).
 - **Per-plugin manifest emission unconditional across all platforms** — rejected via decision B2; emission is gated on `platform.supports`.
 - **CI assertions that test only registration without enumeration/install** — caused real defects to go undetected for weeks; new assertions in `compat-marketplace-add.yml` and `compat-extension.yml` close this gap.
 - **`members_from_construct` field in catalog.toml** — removed (DI refactor decision #24).

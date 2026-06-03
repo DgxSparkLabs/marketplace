@@ -129,7 +129,7 @@ If CI fails here but the drift check passed, the offending file is one of: top-l
 |---|---|---|
 | `description: No marketplace description provided` | Top-level `description` missing from `marketplace.json` | Add a `description` field to `MARKETPLACE.toml` — the generator propagates it to the top-level `.claude-plugin/marketplace.json`. |
 | `Unrecognized field "<name>"` in a `plugin.json` | Typo or stale field name | Compare against the [Claude plugin manifest schema](https://code.claude.com/docs/en/plugins-reference#manifest-schema); fix at the source file the generator copies. |
-| LSP / monitor / theme / hook schema errors | Source content uses an invented schema shape | See `docs/research/claude-qa-2026-05-26/RESEARCH.md` Findings 2-5 for canonical schemas with examples. |
+| LSP / monitor / theme / hook schema errors | Source content uses an invented schema shape | See `docs/archive/claude-qa-2026-05-26/RESEARCH.md` Findings 2-5 for canonical schemas with examples. |
 
 ### Running act-based verification
 

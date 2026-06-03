@@ -218,7 +218,7 @@ This matrix is the index. Each cell tells you what to expect in the per-platform
 9. Cursor IDE sub-agent — **✅ KNOWN GOOD (2026-05-25 QA)**: `/notebook-reviewer` dropdown displays correctly. See positive-finding callout in Cursor section.
 10. Per `docs/PLATFORMS.md` Gemini section, Gemini commands exist natively as TOML but we do not emit them today (deferred, per round-2 capabilities scan U6). Marked N/A here.
 11. Per `docs/PLATFORMS.md` Cursor "What constructs it supports" table: Cursor commands / hooks / MCP are "manifest-only" — surfaced via per-plugin `.cursor-plugin/plugin.json` pointer fields, auto-discovered. **Verification method UNKNOWN for command/hook/MCP enumeration commands inside Cursor — see follow-up.**
-12. The `agents` CLI surface is the cross-platform shim — `agents install <name>` should land at `.agents/<type>/<name>/` (project) or `~/.agents/<type>/<name>/` (user). For construct types that no platform reads from `.agents/<type>/` natively (per `docs/research/platform-feature-routing/RECOMMENDATION.md` adoption matrix), the test is "the CLI emits to the right path" — downstream consumption is a forward-looking property.
+12. The `agents` CLI surface is the cross-platform shim — `agents install <name>` should land at `.agents/<type>/<name>/` (project) or `~/.agents/<type>/<name>/` (user). For construct types that no platform reads from `.agents/<type>/` natively (per `docs/archive/platform-feature-routing-2026-05/RECOMMENDATION.md` adoption matrix), the test is "the CLI emits to the right path" — downstream consumption is a forward-looking property.
 13. Gemini hooks emit at `.gemini/hooks/hooks.json`. **Verification method UNKNOWN** — Gemini has no documented hooks-list command. Best signal today is file presence + valid JSON. See follow-up.
 14. Windsurf hooks emit at `.windsurf/hooks.json`. **Verification method UNKNOWN** — Windsurf has no CLI; hook invocation depends on triggering Cascade events. See follow-up.
 15. Per `docs/PLATFORMS.md` Gemini section, Gemini's MCP support is CLI-managed via `gemini mcp add`, not extension-installed. Not in our emission scope.
@@ -2467,7 +2467,7 @@ For every supported construct, install and verify the on-disk landing path. The 
   ```bash
   test -d .agents/agents/agent-example && echo "agents YES"   # expected: agents YES (if CLI emits to .agents/agents/)
   ```
-- [ ] **Note**: per `docs/research/platform-feature-routing/RECOMMENDATION.md` adoption matrix, `.agents/agents/` is UNVERIFIED across all platforms — no platform reads it natively today. The CLI test is "emission lands at the right path." Consumption is via per-platform mirrors (`.cursor/agents/`, `.codex/agents/`, `.gemini/agents/`).
+- [ ] **Note**: per `docs/archive/platform-feature-routing-2026-05/RECOMMENDATION.md` adoption matrix, `.agents/agents/` is UNVERIFIED across all platforms — no platform reads it natively today. The CLI test is "emission lands at the right path." Consumption is via per-platform mirrors (`.cursor/agents/`, `.codex/agents/`, `.gemini/agents/`).
 - [ ] **Per-platform spray**: `ls .cursor/agents/notebook-reviewer.md` should exist (default-scope spray), and that file IS consumed by Cursor IDE.
 
 #### 10.5.4 Command — `command-example`
