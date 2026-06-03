@@ -1,6 +1,6 @@
 # STATE
 
-> Live within-session truth. Pair with `HANDOFF.md` (between-sessions) and `PITFALLS.md` (cross-session lessons).
+> Live within-session truth. Pair with `HANDOFF.md` (between-sessions), `PITFALLS.md` (specific bug→fix entries), and `docs/LESSONS.md` (working-practice lessons for the next agent — read before any generator/CI/layout change).
 
 ## Session — 2026-06-03 (stable/PR-friendly implementation)
 
