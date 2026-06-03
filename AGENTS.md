@@ -51,17 +51,17 @@ For full per-platform act verification (Codex/Gemini/Cursor/Claude install + enu
 
 ## Research Directory
 
-The `research/` directory contains 90+ files across 12 research rounds. Read `research/README.md` before modifying any research file.
+The market-intelligence research library (12 rounds, 100+ files) is **archived** at
+[`docs/archive/research-market-intel-2026-05/`](docs/archive/research-market-intel-2026-05/). It is
+historical context for the project's direction — not load-bearing for the v1.0.0 reference
+marketplace — and is no longer actively maintained. A separate, gitignored local stash lives at
+`docs/research/research/` (never version-controlled; a fresh clone never sees it).
 
-**Critical rules:**
-
-- **Canonical files** are the top-level `.md` files in `research/` (e.g., `arxiv_findings.md`, `github_findings.md`, `SUMMARY_AND_CONCLUSIONS.md`). These represent carefully consolidated findings across all rounds.
-- **Never wholesale-rewrite a canonical file.** Merge new findings incrementally into the existing structure. Rewrites lose data — past attempts dropped 21 arXiv papers and 38 GitHub repos.
-- **Archival rounds** live in `research/skill-marketplaces-N/`. These are raw research data, not authoritative. New rounds go in `skill-marketplaces-N+1/`.
-- **Verify before citing.** Star counts and repo existence must be checked against live sources before adding to canonical files. Prior rounds contain unverified data.
-- **Raw artifacts are gitignored.** Scrape dumps, notebook outputs, and batch results are excluded. Only curated analysis files are committed.
-- **Note provenance.** When adding a data point, note which research round or source it came from.
-- See `research/TASKS.md` for the current maintenance backlog.
+If research resumes, the original conventions still apply: the canonical top-level `.md` files
+(`SUMMARY_AND_CONCLUSIONS.md`, `arxiv_findings.md`, `github_findings.md`, …) are merged into
+incrementally and **never wholesale-rewritten** (past rewrites dropped 21 arXiv papers and 38 GitHub
+repos); archival rounds live in `skill-marketplaces-N/`; verify star counts and repo existence against
+live sources before citing; and note provenance for every data point.
 
 ## No AI Credit
 
@@ -83,7 +83,7 @@ Before completing any task, scan your output for:
 
 If any of these are present, remove them before finishing. No exceptions.
 
-The repo's own `rules/no-ai-credit/` rule documents this for downstream users; keep that rule and this section in sync.
+The repo's own no-ai-credit rule (archived at `docs/archive/rules-pre-stable-2026-05-26/no-ai-credit/` pending re-add per ROADMAP #16–18) documents this for downstream users; keep that rule and this section in sync.
 
 ## Writing Rules — Keep Them Concise
 

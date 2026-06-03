@@ -93,6 +93,6 @@ Three-part refactor in one commit per the plan at `~/.claude/plans/okay-this-is-
 
 ## Critical-rules adherence
 
-- No AI co-author attribution in the commit message (per `rules/no-ai-credit/`).
+- No AI co-author attribution in the commit message (per `docs/archive/rules-pre-stable-2026-05-26/no-ai-credit/`).
 - No direct push to `main` — PR #10 only.
 - Stayed within plan scope: did not touch non-Claude per-platform mirror flattening (deferred); did not move `scripts/` (the user's clarity goal is achieved by `src/` containing source content).

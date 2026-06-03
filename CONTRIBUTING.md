@@ -146,7 +146,7 @@ The script runs four verification workflows (`verify-codex.yml`, `verify-gemini.
 
 ### No AI co-author attribution in commits
 
-Never attribute work to any AI agent, tool, or assistant in commits, PRs, code comments, documentation, READMEs, changelogs, or any other output. No "Co-Authored-By" lines referencing an AI/bot. No "Generated with", "Created by", "Built with", "Powered by" followed by an AI tool name. No `noreply@` email addresses for AI bots. The repo's own [`rules/no-ai-credit/`](../rules/no-ai-credit/) rule documents this; check for and remove any such lines before finishing a task.
+Never attribute work to any AI agent, tool, or assistant in commits, PRs, code comments, documentation, READMEs, changelogs, or any other output. No "Co-Authored-By" lines referencing an AI/bot. No "Generated with", "Created by", "Built with", "Powered by" followed by an AI tool name. No `noreply@` email addresses for AI bots. The repo's own [`no-ai-credit`](docs/archive/rules-pre-stable-2026-05-26/no-ai-credit/) rule (archived pending re-add per ROADMAP #16–18) documents this; check for and remove any such lines before finishing a task.
 
 ### PR-only flow (never push to main)
 

@@ -131,7 +131,7 @@ uv run tests/test_schema_fitness.py
 git add . && git commit -m "feat(skill-<plugin>): <one-line>"
 ```
 
-Never include AI co-author attribution in commit messages (see [`rules/no-ai-credit/`](../rules/no-ai-credit/)).
+Never include AI co-author attribution in commit messages (see [`no-ai-credit`](archive/rules-pre-stable-2026-05-26/no-ai-credit/)).
 
 ---
 
@@ -188,7 +188,7 @@ Never include AI co-author attribution in commit messages (see [`rules/no-ai-cre
 
 6. **Validate**: run `claude plugin validate _generated/<your-prefix>-<your-name>` for your new plugin and `claude plugin validate ./` for the marketplace as a whole. Both must produce zero warnings — CI gates on this. See [`../CONTRIBUTING.md`](../CONTRIBUTING.md#running-claude-plugin-validate) for the full validate workflow, common warnings, and how the CI gate is wired.
 
-7. **Commit** with a conventional commit message. No AI co-author attribution (`rules/no-ai-credit/`).
+7. **Commit** with a conventional commit message. No AI co-author attribution (`docs/archive/rules-pre-stable-2026-05-26/no-ai-credit/`).
 
 ## Where do the names come from? (read this if any name surprises you)
 
@@ -230,7 +230,7 @@ Per [code.claude.com/docs/en/plugins](https://code.claude.com/docs/en/plugins) (
 
 The walked example: the marketplace already ships `skills/example/` as a multi-skill plugin (with `skills/notebook/SKILL.md` and `skills/status/SKILL.md` underneath). After `uv run scripts/generate_manifest.py`, the install command above works and the invocations become `/dgxsparklabs-skill-example:notebook` and `/dgxsparklabs-skill-example:status`. Every visible fragment maps to exactly one file:line below. `Ctrl+click` (or `git grep`) to follow.
 
-**Architectural note** (post-2026-05-28): the **install-time name** (`skill-example` in the install command) and the **slash-namespace name** (`dgxsparklabs-skill-example` in the invocation) are two separate fields, but both incorporate the source-directory name and are unique per plugin. An earlier short-lived experiment ("Path A", `d641f92`, 2026-05-27) collapsed multiple plugins of one construct into a shared slash namespace `/dgxsparklabs-skill:` — that was reverted on 2026-05-28 because `claude plugin details` could only show one plugin's components under the shared name. See [`docs/research/multi-instance-claude-only-2026-05-27/PLAN.md`](research/multi-instance-claude-only-2026-05-27/PLAN.md) for the revert rationale.
+**Architectural note** (post-2026-05-28): the **install-time name** (`skill-example` in the install command) and the **slash-namespace name** (`dgxsparklabs-skill-example` in the invocation) are two separate fields, but both incorporate the source-directory name and are unique per plugin. An earlier short-lived experiment ("Path A", `d641f92`, 2026-05-27) collapsed multiple plugins of one construct into a shared slash namespace `/dgxsparklabs-skill:` — that was reverted on 2026-05-28 because `claude plugin details` could only show one plugin's components under the shared name. See [`docs/archive/multi-instance-claude-only-2026-05-27/PLAN.md`](archive/multi-instance-claude-only-2026-05-27/PLAN.md) for the revert rationale.
 
 | Fragment | Defined at | What it does |
 |---|---|---|

@@ -42,7 +42,7 @@ Representative slash forms from the 27 reference plugins:
 
 For the full 27-plugin inventory see `docs/CONSTRUCT_TYPES.md`.
 
-History: an earlier shared-namespace attempt called Path A (`d641f92`, 2026-05-27) collapsed all skill plugins under one slash namespace `/dgxsparklabs-skill:`; it was reverted on 2026-05-28 because `claude plugin details` couldn't separate the per-plugin component lists. See [`research/multi-instance-claude-only-2026-05-27/PLAN.md`](./research/multi-instance-claude-only-2026-05-27/PLAN.md) for the revert rationale.
+History: an earlier shared-namespace attempt called Path A (`d641f92`, 2026-05-27) collapsed all skill plugins under one slash namespace `/dgxsparklabs-skill:`; it was reverted on 2026-05-28 because `claude plugin details` couldn't separate the per-plugin component lists. See [`docs/archive/multi-instance-claude-only-2026-05-27/PLAN.md`](./archive/multi-instance-claude-only-2026-05-27/PLAN.md) for the revert rationale.
 
 ---
 

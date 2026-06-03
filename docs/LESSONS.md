@@ -62,7 +62,7 @@ The `<brand>-` prefix on every slash namespace / `plugin.json` `name` is derived
 
 ## 8. Project conventions that override defaults
 
-- **No AI attribution, ever** (`rules/no-ai-credit/`): no `Co-Authored-By`, no "Generated with". This **overrides** the harness's default commit footer. Commit as the human git user; the CI regen-bot uses a non-AI identity (`marketplace-generator`).
+- **No AI attribution, ever** (`docs/archive/rules-pre-stable-2026-05-26/no-ai-credit/`): no `Co-Authored-By`, no "Generated with". This **overrides** the harness's default commit footer. Commit as the human git user; the CI regen-bot uses a non-AI identity (`marketplace-generator`).
 - **`uv` only** — never `pip`. Scripts use PEP 723 inline metadata + `uv run`.
 - **PR-only to `main`**; feature branches are fine to push.
 - **Counts live in `docs/INVENTORY.md`** (generated + drift-checked). Never hardcode a plugin/test count in prose — point at the file.
