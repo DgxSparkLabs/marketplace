@@ -28,7 +28,7 @@ Body of the skill prompt. Use $ARGUMENTS for the user's input.
 EOF
 
 uv run scripts/generate_manifest.py
-uv run tests/test_marketplace.py
+uv run scripts/tasks.py test
 ```
 
 Slash form: `/dgxsparklabs-skill-my-thing:do-the-thing`. Bare flat form: `/do-the-thing`.
@@ -125,8 +125,7 @@ For Pattern 1 (solo), it can feel redundant — write a short plugin-level descr
 
 ```bash
 uv run scripts/generate_manifest.py
-uv run tests/test_marketplace.py
-uv run tests/test_schema_fitness.py
+uv run scripts/tasks.py test
 
 git add . && git commit -m "feat(skill-<plugin>): <one-line>"
 ```
@@ -182,8 +181,7 @@ Never include AI co-author attribution in commit messages (see [`no-ai-credit`](
 
 5. **Test**:
    ```bash
-   uv run tests/test_marketplace.py
-   uv run tests/test_schema_fitness.py
+   uv run scripts/tasks.py test
    ```
 
 6. **Validate**: run `claude plugin validate _generated/<your-prefix>-<your-name>` for your new plugin and `claude plugin validate ./` for the marketplace as a whole. Both must produce zero warnings — CI gates on this. See [`CONTRIBUTING.md`](CONTRIBUTING.md#running-claude-plugin-validate) for the full validate workflow, common warnings, and how the CI gate is wired.

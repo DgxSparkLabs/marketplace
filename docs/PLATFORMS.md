@@ -81,7 +81,7 @@ Verified PASS in [[archive/phase-5-cross-platform-install/VERIFICATION_2026-05/e
 | `claude plugin marketplace list` | All registered marketplaces | After registration: `❯ dgxsparklabs-marketplace / Source: Directory (/mnt/c/Users/devic/source/marketplace)` (from `logs/CL1.txt`) |
 | `claude plugin list` | Installed plugins, with version + scope + enable state | `❯ skill-example@dgxsparklabs-marketplace / Version: 1.0.0 / Scope: project / Status: ✔ enabled` (from `logs/CL3.txt`) |
 | `claude plugin list --json` | Same, machine-readable | JSON: `{"installed": [...], "available": [...]}` — exit 0 even with no installs |
-| `claude plugin list --json --available` | Installed + every available plugin across registered marketplaces | All entries from this marketplace appear (19 as of 2026-05-26 minimal-stable-state; was 81 before the archive) |
+| `claude plugin list --json --available` | Installed + every available plugin across registered marketplaces | All entries from this marketplace appear (see [`docs/INVENTORY.md`](INVENTORY.md) for the current count) |
 | `claude plugin details <name>` | Component inventory + projected token cost for one plugin | Text table; missing-plugin response: `Plugin "..." not found.` |
 | `claude plugin validate <path>` | Plugin manifest correctness | `✔ Validation passed` (or `with warnings`); enforces kebab-case names for Claude.ai sync |
 
@@ -206,7 +206,7 @@ Verified PASS in [[archive/phase-5-cross-platform-install/VERIFICATION_2026-05/e
 
 | Command | What it lists | Example output |
 |---|---|---|
-| `codex plugin list` | Every plugin in every registered marketplace, with install status | `PLUGIN ... STATUS ... VERSION ... PATH` table; e.g. `skill-example@dgxsparklabs-marketplace ... not installed` (from `logs/C4.txt`; full 81-row enumeration in `logs/post-implementation-codex.log`) |
+| `codex plugin list` | Every plugin in every registered marketplace, with install status | `PLUGIN ... STATUS ... VERSION ... PATH` table; e.g. `skill-example@dgxsparklabs-marketplace ... not installed` (from `logs/C4.txt`; full enumeration in `logs/post-implementation-codex.log`) |
 | `cat ~/.codex/config.toml` | Registered marketplaces (no dedicated `marketplace list` subcommand) | `[marketplaces.dgxsparklabs-marketplace] / last_updated = "..." / source_type = "local" / source = "..."` (from `logs/C1.txt`) |
 | `codex mcp list` | Configured MCP servers from `~/.codex/config.toml` | Empty-state: `No MCP servers configured yet. Try \`codex mcp add my-tool -- my-command\`.` |
 | `codex mcp get <name>` | One MCP server detail; supports `--json` | Text or JSON; missing: `error: MCP server '<name>' not found` |
@@ -669,7 +669,7 @@ Cursor rules:    .cursorrules, .cursor/rules/*.md
 
 | Workflow | What it asserts |
 |---|---|
-| `compat-skill.yml` (devin job) | `devin skills list \| grep -i telegram` matches (case-insensitive; Devin reads `.devin/skills/` mirror present after generator runs) |
+| `compat-skill.yml` (devin job) | `devin skills list \| grep -i telegram` matches (case-insensitive; Devin reads `.agents/skills/` after the generator runs — the `.devin/skills/` mirror was retired 2026-05-25) |
 | `compat-mcp.yml` (devin job) | `devin mcp list` baseline exits 0; `devin mcp add example -- uvx mcp-server-fetch` succeeds; `devin mcp list \| grep -i example` matches |
 
 Devin jobs install the CLI via the composite action `./.github/actions/setup-devin` (which wraps the installer with `|| true` to tolerate the non-TTY exit code).
@@ -682,7 +682,7 @@ Devin jobs install the CLI via the composite action `./.github/actions/setup-dev
 
 ### Out-of-scope or non-applicable
 
-- A `.devin/skills/` mirror is currently emitted alongside `.agents/skills/`, but Devin reads both — retiring the `.devin/skills/` mirror is on the future-cleanup list per `HANDOFF.md`. Not load-bearing.
+- The `.devin/skills/` mirror was retired 2026-05-25 (D-1); Devin enumerates `.agents/skills/` natively (verified Q-B1 PASS). Not load-bearing.
 
 ### References
 
@@ -781,7 +781,7 @@ Note all `gemini` list commands need `2>&1` because Gemini writes list output to
 - [[archive/empirical-cli-findings/windsurf]] — Windsurf CLI verification (no CLI exists)
 - [[archive/empirical-cli-findings/codex]] — Codex npm metadata
 - [[archive/empirical-cli-findings/gemini]] — Gemini npm metadata
-- [[ARCHITECTURE]] — generator architecture (Construct + Platform protocols, six phases)
+- [[ARCHITECTURE]] — generator architecture (Construct + Platform protocols, generation phases)
 - [[CONTRIBUTING]] — how to add things and test
 - [[CONSTRUCT_TYPES]] — 10-construct reference table
 - [[RULE_FORMAT]] — rule format spec

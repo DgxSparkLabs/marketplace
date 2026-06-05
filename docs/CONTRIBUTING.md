@@ -20,9 +20,7 @@ cd marketplace
 # Windows (PS):   irm https://astral.sh/uv/install.ps1 | iex
 
 # 3. Run the test suite (should all pass)
-uv run tests/test_marketplace.py
-uv run tests/test_schema_fitness.py
-uv run tests/test_agents_cli.py
+uv run scripts/tasks.py test            # runs all four suites at once
 
 # 4. Regenerate manifests + mirrors from sources
 uv run scripts/generate_manifest.py
@@ -66,7 +64,7 @@ When you're ready to contribute changes back upstream:
 3. **Make your changes** per the [[#Adding things]] section above.
 4. **Regenerate and check for drift**: `uv run scripts/generate_manifest.py --check`. This must exit 0.
 5. **Validate generated plugin manifests** (see [[#Running `claude plugin validate`]] below): `claude plugin validate _generated/<your-plugin>` for each plugin you added or changed, AND `claude plugin validate ./` for the marketplace as a whole. Both must produce zero warnings — CI gates on this via `.github/workflows/compat-validate.yml`.
-6. **Run the test suite**: `uv run tests/test_marketplace.py`, `uv run tests/test_schema_fitness.py`, AND `uv run tests/test_agents_cli.py`. All must exit 0.
+6. **Run the test suite**: `uv run scripts/tasks.py test` (runs all four suites — `test_marketplace`, `test_schema_fitness`, `test_agents_cli`, `test_tooling`). All must exit 0.
 7. **Open a PR** against `main`. See the [[#PR-only flow (never push to main)]] convention below.
 
 ## Testing
@@ -74,22 +72,25 @@ When you're ready to contribute changes back upstream:
 ### Running the test suite
 
 ```bash
+uv run scripts/tasks.py test            # all four suites at once (recommended)
 uv run tests/test_marketplace.py        # marketplace tests
 uv run tests/test_schema_fitness.py     # platform-schema-fitness tests
 uv run tests/test_agents_cli.py         # agents-cli tests
+uv run tests/test_tooling.py            # contributor-tooling tests
 uv run tests/test_marketplace.py -v     # verbose
 uv run tests/test_marketplace.py -k rule  # only rule-related tests
 ```
 
-Tests live in three files:
+Tests live in four files:
 
 - `tests/test_marketplace.py`: directory structure, YAML frontmatter parity, catalog consistency, generator drift, manifest schema, per-platform per-plugin manifest emission, mirror dir hygiene (no leaked `.claude-plugin/`), secret scanning.
 - `tests/test_schema_fitness.py`: per-platform schema fitness — validates emitted manifests against reference JSON Schemas captured directly from each platform's docs (Cursor `SkillConstruct` plugin.json, Gemini `AgentConstruct` frontmatter, Windsurf hooks event names + shape, Cursor hooks shape + `version` presence, Gemini hooks event-name vocabulary, marketplace.json description presence, LSP / monitor / theme / hook example schemas).
-- `tests/test_agents_cli.py` (25 tests): the agents-CLI surface.
+- `tests/test_agents_cli.py`: the agents-CLI surface.
+- `tests/test_tooling.py`: the contributor tooling — `new_construct.py` scaffolder and `validate_source.py` pre-commit check.
 
-Always run all three before committing.
+Always run all four before committing (or just `uv run scripts/tasks.py test`).
 
-The drift gate (`uv run scripts/generate_manifest.py --check`) runs in CI and exits 1 if regenerated output differs from committed output. Run it before pushing if you've changed anything under `scripts/`, `src/<construct>/`, or `MARKETPLACE.toml`/`catalog.toml`.
+The drift gate (`uv run scripts/generate_manifest.py --check`) runs in CI and exits 1 if regenerated output differs from committed output. Run it before pushing if you've changed anything under `scripts/`, `src/<construct>/`, or `src/MARKETPLACE.toml`/`src/catalog.toml`.
 
 ### Running `claude plugin validate`
 
@@ -110,7 +111,7 @@ Per [code.claude.com/docs/en/plugins-reference#unrecognized-fields](https://code
 **When to run it**:
 
 - After adding a new plugin (any construct type).
-- After editing any `src/<construct>/<plugin>/.claude-plugin/plugin.json`, `MARKETPLACE.toml` description, or any source file the generator inlines into `_generated/<plugin>/.claude-plugin/plugin.json`.
+- After editing any `src/<construct>/<plugin>/.claude-plugin/plugin.json`, `src/MARKETPLACE.toml` description, or any source file the generator inlines into `_generated/<plugin>/.claude-plugin/plugin.json`.
 - Before opening or updating a PR — CI will fail if your changes introduce any warning or error.
 
 **How CI enforces it**:
@@ -127,7 +128,7 @@ If CI fails here but the drift check passed, the offending file is one of: top-l
 
 | Warning | Cause | Fix |
 |---|---|---|
-| `description: No marketplace description provided` | Top-level `description` missing from `marketplace.json` | Add a `description` field to `MARKETPLACE.toml` — the generator propagates it to the top-level `.claude-plugin/marketplace.json`. |
+| `description: No marketplace description provided` | Top-level `description` missing from `marketplace.json` | Add a `description` field to `src/MARKETPLACE.toml` — the generator propagates it to the top-level `.claude-plugin/marketplace.json`. |
 | `Unrecognized field "<name>"` in a `plugin.json` | Typo or stale field name | Compare against the [Claude plugin manifest schema](https://code.claude.com/docs/en/plugins-reference#manifest-schema); fix at the source file the generator copies. |
 | LSP / monitor / theme / hook schema errors | Source content uses an invented schema shape | See `docs/archive/claude-qa-2026-05-26/RESEARCH.md` Findings 2-5 for canonical schemas with examples. |
 
@@ -205,7 +206,7 @@ Rules consume agent context in every session. Verbose rules dilute attention and
 
 - [[HANDOFF]] — long-form project state tracker
 - [[README]] — user-facing entry point (install + Quick Start)
-- [[ARCHITECTURE]] — generator architecture (Construct + Platform protocols, six phases)
+- [[ARCHITECTURE]] — generator architecture (Construct + Platform protocols, generation phases)
 - [[ARCHITECTURE#Things worth knowing]] — system invariants worth knowing when contributing (bundle dependency auto-install, kebab-case validation, mirror hygiene)
 - [[PLATFORMS]] — per-platform install/support reference
 - [[ADDING_A_CONSTRUCT]] — primary contributor walkthrough

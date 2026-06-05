@@ -415,7 +415,7 @@ git clone https://github.com/DgxSparkLabs/marketplace
 ### Devin
 
 **What it reads:**
-- Skills: `.devin/skills/<name>/SKILL.md` (project) AND `.agents/skills/<name>/SKILL.md` — Devin reads both paths natively
+- Skills: `.agents/skills/<name>/SKILL.md` — Devin reads this natively (the legacy `.devin/skills/` mirror was retired 2026-05-25)
 - Rules: `.windsurf/rules/*.md`, `.cursor/rules/*.md`, `.cursorrules`, `AGENTS.md` — all read natively
 
 **Install + use:**
@@ -439,7 +439,7 @@ devin skills paths
 devin rules paths
 ```
 
-**Notable behavior:** Devin reads `.cursor/rules/` and `.windsurf/rules/` natively — every rule emitted to those mirror directories is auto-discovered (the marketplace currently ships the one example rule). Skills come from both `.devin/skills/` and `.agents/skills/`; the `.agents/skills/` path is the cross-platform convergence point shared with Windsurf and Cursor. `devin auth login` says "Log in to Windsurf" — Devin is built on Windsurf/Codeium infrastructure.
+**Notable behavior:** Devin reads `.cursor/rules/` and `.windsurf/rules/` natively — every rule emitted to those mirror directories is auto-discovered (the marketplace currently ships the one example rule). Skills come from `.agents/skills/` — the cross-platform convergence point shared with Windsurf and Cursor. `devin auth login` says "Log in to Windsurf" — Devin is built on Windsurf/Codeium infrastructure.
 
 ---
 
@@ -471,7 +471,7 @@ marketplace/
 ├── .codex/   .gemini/            # Cross-platform mirrors (Codex, Gemini)
 ├── .cursor/  .windsurf/  .devin/ # Cross-platform mirrors (Cursor, Windsurf, Devin)
 ├── scripts/
-│   ├── generate_manifest.py      # Generator entry point (6-phase orchestrator)
+│   ├── generate_manifest.py      # Generator entry point (multi-phase orchestrator; see docs/ARCHITECTURE.md)
 │   ├── constructs.py             # 10 Construct classes
 │   ├── platforms.py              # 7 Platform classes (incl. AgentsPlatform)
 │   ├── bundles.py                # Bundle + BundleMember dataclasses

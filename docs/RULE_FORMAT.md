@@ -6,18 +6,18 @@ This marketplace distributes rules in multiple formats to support different AI a
 
 ---
 
-## Rule Directory Structure (source — `rules/<name>/`)
+## Rule Directory Structure (source — `src/rules/<name>/`)
 
 ```
 my-rule/
 ├── rule.md             # Required — rule content in plain Markdown (AGENTS.md format)
 ├── README.md           # Required — documentation with install instructions
-└── formats/            # Required — tool-specific rule files (for cross-platform mirrors)
+└── formats/            # Optional — per-platform rule files; the generator falls back to rule.md if absent
     ├── windsurf.md     # Windsurf format (trigger: always_on)
     └── cursor.md       # Cursor format (alwaysApply: true)
 ```
 
-There is no `install.sh` in the source directory — the marketplace installer (`scripts/generate_manifest.py`) auto-generates a `_generated/rule-<name>/` plugin wrapper containing its own `activate.sh` for symlinking into `.claude/rules/`. See [[ADDING_A_CONSTRUCT]] for the workflow (the single contributor walkthrough covers rules along with the other 9 construct types).
+The generator (`scripts/generate_manifest.py`) copies `rule.md` into `_generated/rule-<name>/rules/<name>.md` so the per-platform Cursor/Codex manifests can point at it. Rules are **not** a Claude plugin component, so no `plugin.json` or `activate.sh` is emitted — on Claude Code you copy the rule into `.claude/rules/` yourself (see Installation Mechanism below). See [[ADDING_A_CONSTRUCT]] for the workflow (the single contributor walkthrough covers rules along with the other 9 construct types).
 
 ---
 
@@ -101,19 +101,17 @@ cat rule.md >> AGENTS.md
 
 ## Installation Mechanism
 
-Claude Code's plugin system does not yet support installing rules natively (no `rules` field in `plugin.json`; see [`archive/phase-1-compliance/INVESTIGATION_PLUGIN_DEPENDENCIES.md`](./archive/phase-1-compliance/INVESTIGATION_PLUGIN_DEPENDENCIES.md)). The workaround:
+Rules are **not** a Claude plugin component — Claude's plugin manifest has no `rules` field; rules are a memory feature (see `code.claude.com/docs/en/memory#organize-rules-with-claude-rules`). A rule is therefore **not** installed via `/plugin install`. On Claude Code:
 
-1. Rules ship as plugins under `_generated/rule-<name>/` with a small `activate.sh` helper.
-2. Users run `/plugin install rule-<name>@dgxsparklabs-marketplace` to extract the plugin to `~/.claude/plugins/cache/`.
-3. Users run the plugin's `activate.sh`, which symlinks the rule body into `.claude/rules/`.
-4. Claude Code loads `.claude/rules/*.md` automatically at session start.
+1. Copy `src/rules/<name>/rule.md` into `~/.claude/rules/<name>.md` (user scope) or `.claude/rules/<name>.md` (project scope).
+2. Claude Code loads `.claude/rules/*.md` automatically at session start.
 
-The generator builds all this — contributors editing `rules/<name>/rule.md` do not need to write or maintain install scripts.
+The generator copies `rule.md` into `_generated/rule-<name>/rules/<name>.md` so the per-platform Cursor/Codex manifests can point at it — but it emits **no** Claude `plugin.json` or `activate.sh` for rules. Contributors editing `src/rules/<name>/rule.md` do not write or maintain install scripts.
 
 For non-Claude-Code platforms (Cursor, Windsurf, Devin), the generator produces auto-committed mirrors:
 
-- `.cursor/rules/<name>.md` — from `rules/<name>/formats/cursor.md`
-- `.windsurf/rules/<name>.md` — from `rules/<name>/formats/windsurf.md`
+- `.cursor/rules/<name>.md` — from `src/rules/<name>/formats/cursor.md` (or `src/rules/<name>/rule.md` if there's no `formats/`)
+- `.windsurf/rules/<name>.md` — from `src/rules/<name>/formats/windsurf.md` (or `src/rules/<name>/rule.md` if there's no `formats/`)
 - `.agents/rules/<name>.md` — raw `rule.md`, forward-looking convergence (per D-12, 2026-05-25). No platform reads `.agents/rules/` today, but Cursor 2.7+ and Windsurf 2.0 are credible adopters.
 
 Devin reads rules from `.cursor/rules/` natively (no separate `.devin/rules/` mirror is emitted).

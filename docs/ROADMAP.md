@@ -11,7 +11,7 @@ status: live
 
 ## TL;DR — where we are
 
-- **Done:** PRs #3–#9 landed. Marketplace reduced to 10 example plugins (19 entries). Claude verified clean (9/9 hermetic findings PASS, F4 deferred). Hermetic Claude CI runs on every PR.
+- **Done:** PRs #3–#9 landed. Marketplace reduced to a minimal reference set across 10 construct types (current count in `docs/INVENTORY.md`, generated/authoritative). Claude verified clean (9/9 hermetic findings PASS, F4 deferred). Hermetic Claude CI runs on every PR.
 - **Now:** Next platform's QA cycle. Recommended start: **Cursor IDE** (biggest emission surface delta).
 - **Sequencing constraint:** all 6 platforms must verify clean on the minimal example set before any real skill or rule returns from `docs/archive/`.
 - **What the constraint gates:** this 6-platform-parity sequencing gates RE-ADDING the archived real skills/rules (#16–#18) — it does **not** gate accepting *new* construct PRs. New constructs are accepted now and validated Claude-first; the other 5 platforms still emit and their parity is tracked here.
@@ -50,7 +50,7 @@ Each platform must pass its `docs/TEST_YOURSELF.md` cells on the 10 example plug
 | 10 | Cursor CLI QA cycle | `[BLOCKED]` | #9 | `.agents/` + cursor-agent skills work |
 | 11 | Gemini CLI QA cycle | `[BLOCKED]` | #10 | Extensions install + hook conversion verified |
 | 12 | Windsurf IDE QA cycle | `[BLOCKED]` | #11 | Cascade discovers `.windsurf/rules/` + `.agents/skills/` |
-| 13 | Devin QA cycle | `[BLOCKED]` | #12 | `.devin/skills/` + `.agents/skills/` discovery |
+| 13 | Devin QA cycle | `[BLOCKED]` | #12 | `.agents/skills/` discovery |
 | 14 | `agents` CLI shim QA cycle | `[BLOCKED]` | #13 | Install / uninstall / list / info / scope flags |
 
 ## Deferred Claude QA item
@@ -80,7 +80,7 @@ Each platform must pass its `docs/TEST_YOURSELF.md` cells on the 10 example plug
 | 38 | **Codex — verify multi-instance source layouts** | `[BLOCKED]` | Blocker: #10 Cursor CLI / Codex QA. May need no code change (manifest hardcodes `"./skills/"` already) but needs empirical verification |
 | 39 | **Gemini — per-skill mirror flattening** in `GeminiPlatform.emit` for multi-instance skill plugins | `[BLOCKED]` | Blocker: #11 Gemini QA. The current `shutil.copytree` produces nested mirrors that Gemini discovery doesn't recurse into |
 | 40 | **Windsurf — per-skill mirror flattening** (via the `.windsurf/skills/` mirror) | `[BLOCKED]` | Blocker: #12 Windsurf QA |
-| 41 | **Devin — per-skill mirror flattening** (via the `.devin/skills/` mirror) | `[BLOCKED]` | Blocker: #13 Devin QA |
+| 41 | **Devin — per-skill mirror flattening** (via the `.agents/skills/` mirror Devin reads; `.devin/skills/` retired 2026-05-25) | `[BLOCKED]` | Blocker: #13 Devin QA |
 | 42 | **`.agents/` shim — per-skill mirror flattening** in `AgentsPlatform.emit` (consumed by Cursor CLI + Windsurf + Devin via convergence path) | `[BLOCKED]` | Blocker: any of #10/#12/#13/#14. Highest leverage fix because 3 platforms read from `.agents/`. |
 
 ## Housekeeping — pre-existing untracked state

@@ -8,7 +8,7 @@ This is a Claude Code plugin marketplace. Not a software project — no build sy
 - `HANDOFF.md` — long-form project state tracker (5 completed phases, layout, next steps).
 - `docs/RESUME_HERE.md` — 30-second re-entry orientation.
 - `docs/CONTRIBUTING.md` — contributor workflow + conventions + output discipline (the canonical "how do I work in this repo" doc — see it before duplicating content here).
-- `docs/ARCHITECTURE.md` — generator architecture: Construct + Platform protocols, six phases.
+- `docs/ARCHITECTURE.md` — generator architecture: Construct + Platform protocols, generation phases.
 - `docs/PLATFORMS.md` — per-platform install/support reference.
 - `docs/ADDING_A_CONSTRUCT.md` — the single contributor walkthrough for all 10 construct types.
 - `docs/CONSTRUCT_TYPES.md` — reference table for the 10 constructs.
@@ -33,7 +33,8 @@ This file (`AGENTS.md`) is the per-project AI-agent rule set: only project-speci
 Run the test suite to validate all skills, rules, manifests, and generator drift:
 
 ```bash
-uv run tests/test_marketplace.py        # all 52 tests
+uv run scripts/tasks.py test            # all four suites
+uv run tests/test_marketplace.py        # just the marketplace suite
 uv run tests/test_marketplace.py -v     # verbose
 uv run tests/test_marketplace.py -k rule  # only rule tests
 ```

@@ -85,9 +85,8 @@ Catalog bundle: bundle-<bundle-name>          e.g., bundle-communication-skills
 # Cross-construct examples bundle (one of every construct type)
 /plugin install bundle-examples@dgxsparklabs-marketplace
 
-# Rule install + activate (extra step required — Claude Code limitation)
-/plugin install rule-blast-radius@dgxsparklabs-marketplace
-bash ~/.claude/plugins/cache/dgxsparklabs-marketplace/rule-blast-radius/activate.sh
+# Rules aren't a Claude plugin component (F8) — copy the rule body into .claude/rules/
+cp src/rules/example/rule.md ~/.claude/rules/example.md   # user scope (or .claude/rules/ for a project)
 ```
 
 ## Architecture

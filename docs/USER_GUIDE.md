@@ -9,7 +9,7 @@ status: live
 
 ## What this is
 
-The DgxSparkLabs marketplace ships 27 skills, 22 rules, and 8 other-construct example plugins (agent, command, hook, mcp, lsp, monitor, output-style, theme) across six AI coding platforms — Claude Code, Codex, Gemini, Cursor, Windsurf, and Devin — plus a cross-platform `agents` CLI shim. Each platform exposes its own install / list / enable / disable / uninstall surface. This document covers every one of them so you do not have to chase per-vendor docs to learn how to manage what you installed. For the per-platform technical reference (paths each platform reads, CI assertions, known gaps), see `docs/PLATFORMS.md`. For hands-on QA verification with explicit expected behaviour, see `docs/TEST_YOURSELF.md`.
+The DgxSparkLabs marketplace ships reference/example plugins across all ten construct types (skill, rule, command, agent, hook, mcp, lsp, monitor, output-style, theme) — see [`docs/INVENTORY.md`](INVENTORY.md) for the authoritative inventory — across six AI coding platforms — Claude Code, Codex, Gemini, Cursor, Windsurf, and Devin — plus a cross-platform `agents` CLI shim. Each platform exposes its own install / list / enable / disable / uninstall surface. This document covers every one of them so you do not have to chase per-vendor docs to learn how to manage what you installed. For the per-platform technical reference (paths each platform reads, CI assertions, known gaps), see `docs/PLATFORMS.md`. For hands-on QA verification with explicit expected behaviour, see `docs/TEST_YOURSELF.md`.
 
 ## Table of contents
 
@@ -547,5 +547,5 @@ Use the named form `/add-plugin <plugin-name>@<url>`. The naked URL form sends t
 - `docs/ARCHITECTURE.md` — generator and emission architecture
 - `docs/ADDING_A_CONSTRUCT.md` — contributor walkthrough for adding a new plugin
 - `docs/TEST_YOURSELF.md` — operator QA verification with explicit hands-on validations
-- `CONTRIBUTING.md` — broader contributor workflow + the `claude plugin validate` CI gate
+- `docs/CONTRIBUTING.md` — broader contributor workflow + the `claude plugin validate` CI gate
 - `CHANGELOG.md` — release notes

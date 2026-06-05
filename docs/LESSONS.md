@@ -7,7 +7,7 @@ status: live
 
 # Lessons for the next agent
 
-Distilled from the 2026-06-03 stabilization session (made the marketplace releasable + PR-friendly and got all 14 CI workflows green). These are the things that cost us time so they don't cost you yours. Pair with `PITFALLS.md` (specific bug→fix entries) and `HANDOFF.md` (state).
+Distilled from the 2026-06-03 stabilization session (made the marketplace releasable + PR-friendly and got the full CI matrix green). These are the things that cost us time so they don't cost you yours. Pair with `PITFALLS.md` (specific bug→fix entries) and `HANDOFF.md` (state).
 
 ## 1. Verify by making it FAIL, not just pass
 

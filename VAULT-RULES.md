@@ -76,4 +76,4 @@ So a GitHub slug looks nothing like what Obsidian searches for, and vice-versa. 
 - [Obsidian Help — Internal links](https://obsidian.md/help/Linking+notes+and+files/Internal+links) (Markdown links must URL-encode the destination; spaces → `%20`)
 - [Obsidian Forum — heading link compatibility (Obsidian vs GitHub)](https://forum.obsidian.md/t/heading-link-compatibility/46988)
 - [Obsidian Forum — links with a colon don't work](https://forum.obsidian.md/t/links-including-a-colon-in-the-domain-path-component-do-not-work/8253)
-- Incident this came from: `docs/TEST_YOURSELF.md` table-of-contents fix (2026-05/06).
+- Incident this came from: the `docs/TEST_YOURSELF.md` table-of-contents fixes (2026-05 through 2026-06).

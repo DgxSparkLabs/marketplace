@@ -99,9 +99,9 @@ Working directory:     C:\Users\devic\source\marketplace
 
 ---
 
-## Architecture (Post Cross-Platform Install Fix)
+## Architecture
 
-The generator now orchestrates **7 platforms** through **6 phases** plus per-plugin native-manifest emission:
+The generator now orchestrates **7 platforms** through its generation phases plus per-plugin native-manifest emission:
 
 ```
 scripts/utils.py        — shared helpers
@@ -109,22 +109,14 @@ scripts/constructs.py   — 10 Construct classes
 scripts/platforms.py    — 7 Platform classes (Claude, Codex, Gemini, Cursor, Windsurf, Devin, AgentsPlatform)
                           + Platform.build_plugin_json(construct, name) protocol method
 scripts/bundles.py      — Bundle dataclass + load_bundles
-scripts/generate_manifest.py — orchestrator; 6 phases:
-  Phase 1:   individual plugins (construct.emit per source instance, Claude-side)
-  Phase 1.5: per-platform per-plugin manifests (supports-gated emission of
-             .codex-plugin/plugin.json + .cursor-plugin/plugin.json)
-  Phase 2a:  catalog bundles from catalog.toml [bundle.*]
-  Phase 2b:  RETIRED 2026-05-27 — per-construct catch-all bundles removed
-  Phase 3:   cross-platform mirrors (platform.emit per supported construct,
-             includes .agents/skills/ via AgentsPlatform)
-  Phase 4:   Gemini extension manifest at .gemini/gemini-extension.json
-  Phase 4.5: copy .gemini/gemini-extension.json to repo root (enables GitHub URL install)
-  Phase 5:   marketplace.json from in-memory entries
-  Phase 6:   .cursor-plugin/marketplace.json at repo root (enables Cursor team-import)
+scripts/generate_manifest.py — orchestrator. Runs the generation phases
+                          (1, 1.5, 2a, 2b[retired], 3, 4, 4.5, 5, 5.5, 6, 7) to emit
+                          per-plugin manifests, cross-platform mirrors, marketplace.json,
+                          and docs/INVENTORY.md. See docs/ARCHITECTURE.md for what each emits.
 catalog.toml — bundle definitions ONLY
 ```
 
-### Key architectural decisions (this round)
+### Key architectural decisions (cross-platform install round)
 
 | # | Decision | Where |
 |---|----------|-------|
@@ -146,7 +138,7 @@ DI refactor decisions (prior round) still hold — see [`archive/di-refactor/PLA
 | Gemini | `gemini-extension.json` at repo root (for GitHub URL install) or `.gemini/gemini-extension.json` (for local install) | n/a (extensions, not plugins) | `.gemini/skills/` (mirror) | reads `GEMINI.md`, `AGENTS.md` |
 | Cursor IDE | `.cursor-plugin/marketplace.json` (team-marketplace import) | `_generated/<plugin>/.cursor-plugin/plugin.json` | `.agents/skills/` (primary, per Cursor docs) | `.cursor/rules/` (auto-load) |
 | Windsurf | n/a (no marketplace) | n/a (no CLI) | `.windsurf/skills/` AND `.agents/skills/` (both auto-discovered by Cascade) | `.windsurf/rules/` (auto-load) |
-| Devin | n/a (no marketplace) | n/a (no CLI) | `.devin/skills/` AND `.agents/skills/` (both auto-discovered) | reads `.cursor/rules/`, `.windsurf/rules/`, `AGENTS.md` |
+| Devin | n/a (no marketplace) | n/a (no CLI) | `.agents/skills/` (auto-discovered; `.devin/skills/` retired 2026-05-25) | reads `.cursor/rules/`, `.windsurf/rules/`, `AGENTS.md` |
 
 ---
 
@@ -201,7 +193,7 @@ Catalog bundle: bundle-<bundle-name>      e.g., bundle-communication-skills, bun
 | **bundle** | A dep-only plugin declaring dependencies on other plugins. Declared in `catalog.toml`. Per-construct catch-alls retired 2026-05-27. |
 | **mirror** | An auto-generated directory under `.codex/`, `.gemini/`, `.cursor/`, `.windsurf/`, `.devin/`, or `.agents/` that copies generated content to the layout each platform expects. |
 | **`.agents/` standard** | Cross-platform skill (`.agents/skills/`) and plugin (`.agents/plugins/`) directory convention. Read by Windsurf, Cursor, Devin natively; Codex accepts `.claude-plugin/marketplace.json` as legacy-compatible. |
-| **generator** | `scripts/generate_manifest.py` — 6-phase orchestrator. |
+| **generator** | `scripts/generate_manifest.py` — multi-phase orchestrator (see ARCHITECTURE.md). |
 | **act-based verification** | Hermetic local-container CI runs via nektos/act for verification before pushing. Scaffolds at `docs/archive/phase-5-cross-platform-install/VERIFICATION_2026-05/workflows/`. |
 | **compat workflow** | A `.github/workflows/compat-<construct>.yml` file verifying our marketplace works for that construct across applicable platforms. |
 
