@@ -1,15 +1,15 @@
 ---
 date: 2026-05-25
-purpose: hands-on QA verification of all 6 supported platforms + the `agents` CLI, per construct × per platform
+purpose: hands-on QA verification of all supported platforms + the `agents` CLI, per construct × per platform
 audience: operator-qa
 status: live
 ---
 
 # Test Yourself — Platform QA Walkthrough
 
-A step-by-step verification guide for an operator to confirm the DgxSparkLabs marketplace works end-to-end on each of the six supported platforms plus the cross-platform `agents` CLI. Each section is independent — work through all of them, or pick the platforms you actually use.
+A step-by-step verification guide for an operator to confirm the DgxSparkLabs marketplace works end-to-end on each of the supported platforms plus the cross-platform `agents` CLI. Each section is independent — work through all of them, or pick the platforms you actually use.
 
-> **2026-05-30 single/multi scope (updated for `cd7a7d8`).** *Every* Claude-supported construct now ships a **`-single`** (solo: the simplest possible plugin of that type) and a **`-multi`** (several components in one plugin) reference plugin, and all source dirs moved under **`src/`**. Hooks ship as **9 per-event plugins + 1 `-multi`**. Marketplace total: **27** entries (26 individuals + `bundle-examples`). The Claude reference card and cells below cover both layouts; empirically captured 2026-05-30 (CLI 2.1.157) — examples:
+> **2026-05-30 single/multi scope (updated for `cd7a7d8`).** *Every* Claude-supported construct now ships a **`-single`** (solo: the simplest possible plugin of that type) and a **`-multi`** (several components in one plugin) reference plugin, and all source dirs moved under **`src/`**. Hooks ship as **a per-event plugin for each event plus a `-multi`**. Marketplace total: a catalog of entries (the individuals plus `bundle-examples`) — see `docs/INVENTORY.md` for the authoritative count. The Claude reference card and cells below cover both layouts; empirically captured 2026-05-30 (CLI 2.1.157) — examples:
 >
 > - `/dgxsparklabs-skill-example-multi:notebook` · `:status` — two skills in the multi-skill plugin (`src/skills/example-multi/`)
 > - `/dgxsparklabs-skill-example-single:hello` — the only skill in the solo plugin (`src/skills/example-single/`)
@@ -224,7 +224,7 @@ This matrix is the index. Each cell tells you what to expect in the per-platform
 15. Per `docs/PLATFORMS.md` Gemini section, Gemini's MCP support is CLI-managed via `gemini mcp add`, not extension-installed. Not in our emission scope.
 16. Devin MCP — `devin mcp list`/`get`/`add` are CLI-managed (per `docs/PLATFORMS.md` Devin "Discovery commands"). Marketplace currently does not emit a Devin-native MCP config; verification is "Devin's MCP surface works alongside our marketplace install".
 
-**TEST cell count**: 53 hands-on test cells across the grid (vs 4-5 in the prior revision). N/A and CLAUDE-ONLY cells are skipped intentionally.
+**TEST cells**: a hands-on test cell for every supported construct × platform combination across the grid (a substantial expansion over the prior revision's handful). N/A and CLAUDE-ONLY cells are skipped intentionally.
 
 **Construct support sources**:
 - `scripts/platforms.py` — each Platform class's `supports` set is the ground truth.
@@ -306,7 +306,7 @@ Platform-by-platform support:
 | Cursor CLI | n/a — no plugin install | n/a | ✅ (reads workspace files) |
 | Windsurf | n/a — no CLI | n/a | ✅ (clone + open in IDE) |
 | Devin | n/a — no marketplace | n/a | ✅ (clone + `devin skills list`) |
-| `agents` CLI | ✅ via curl/irm one-liner | ✅ via `AGENTS_REF` env var | ✅ (`bash install.sh` from local checkout) |
+| `agents` CLI | ✅ via curl/irm one-liner | ✅ via `AGENTS_REF` env var | ✅ (`bash scripts/install.sh` from local checkout) |
 
 **Legend**:
 - ✅ — verified working in this repo's evidence (act/CI logs or per-platform reference docs).
@@ -352,7 +352,7 @@ Throughout the per-construct tests below, these plugin names are used as the sta
 
 ## 4. Claude Code
 
-**What we're verifying**: marketplace registration + per-construct install for the **9 construct types** Claude supports (`ClaudeCodePlatform.supports` per `docs/PLATFORMS.md` Claude "What constructs it supports" — `RuleConstruct` was removed 2026-05-26 because rules are not a Claude plugin component per `code.claude.com/docs/en/plugins-reference#plugin-components-reference`). This is also the verification surface for the 2026-05-26 Claude QA fixes (marketplace description, LSP / monitor / theme / hook example fixes, `uv` prereq doc, rule emission retirement) — see the validation list below.
+**What we're verifying**: marketplace registration + per-construct install for the construct types Claude supports (`ClaudeCodePlatform.supports` per `docs/PLATFORMS.md` Claude "What constructs it supports" — `RuleConstruct` was removed 2026-05-26 because rules are not a Claude plugin component per `code.claude.com/docs/en/plugins-reference#plugin-components-reference`). This is also the verification surface for the 2026-05-26 Claude QA fixes (marketplace description, LSP / monitor / theme / hook example fixes, `uv` prereq doc, rule emission retirement) — see the validation list below.
 
 ### 4.1 Setup option A — Dev Container (recommended)
 
@@ -470,14 +470,14 @@ Use the `claude` CLI directly — these commands are scriptable and work in head
 	  [.. | objects | select(.marketplaceName? == $mp)]
 	' /tmp/plugins.json
   ```
-  **Expected**: JSON array of **27** plugins — **26 Claude-supported individuals + 1 cross-construct catalog bundle** `bundle-examples`. The 26 individuals are: 8 construct types (skill / command / agent / mcp / lsp / monitor / output-style / theme) × `{-single, -multi}` = 16, plus the hook family = 9 per-event plugins (`hook-example-userpromptsubmit` … `hook-example-precompact`) + 1 `hook-example-multi` = 10. Rule individuals are excluded per F8. Empirically verified 2026-05-30 against `claude` CLI 2.1.157: this enumeration returns exactly 27. If you see **10**, you are on a pre-`cd7a7d8` checkout (the symmetric single/multi expansion had not landed).
+  **Expected**: a JSON array of the full set of plugins — the Claude-supported individuals plus the cross-construct catalog bundle `bundle-examples` (see `docs/INVENTORY.md` for the authoritative count). The individuals are the non-hook construct types × `{-single, -multi}`, plus the hook family (a per-event plugin `hook-example-userpromptsubmit` … `hook-example-precompact` plus a `hook-example-multi`). Rule individuals are excluded per F8. Empirically verified 2026-05-30 against `claude` CLI 2.1.157. If the array is small enough to be missing the single/multi siblings, you are on a pre-`cd7a7d8` checkout (the symmetric single/multi expansion had not landed).
 
 - [ ] Step 4 — **install auto-enables (CLI ≥ 2.1.157); the old "enable-after-install" gotcha is REVERSED**. Verified 2026-05-30 against `claude` 2.1.157: `claude plugin install <plugin>@dgxsparklabs-marketplace --scope project` lands the plugin **already enabled** — it writes `"enabledPlugins": { "<plugin>@dgxsparklabs-marketplace": true }` straight into `<project>/.claude/settings.json`. Running a separate `claude plugin enable …` afterward now *errors* with `Plugin "<…>" is already enabled`. (Older CLIs ≤ the 2026-05-26 research baseline landed plugins disabled and required an explicit enable; that is no longer true.) The per-construct cells below keep an **Enable** step for back-compat with older CLIs — on 2.1.157 it is a harmless no-op that prints "already enabled"; treat that as PASS, not failure.
   - **Scope is cwd-relative.** Because `--scope project` writes enablement into the *current directory's* `.claude/settings.json`, `claude plugin list` only shows `✔ enabled` when run **from the same project dir** you installed in. Run it from elsewhere and the same plugins read back `✘ disabled` — that is correct scope behavior, not a regression. This is the new single most likely cause of "I installed it but `list` says disabled."
 
 ### 4.7 Claude construct reference card — exact strings to type and expect
 
-This table is the cheat sheet for the per-construct cells below. As of `cd7a7d8`, every Claude-supported construct ships **two reference plugins** — a `-single` (solo: one component, the simplest possible plugin of that type) and a `-multi` (several components in one plugin) — so QA exercises both layouts. Hooks are the exception: they ship as **9 per-event plugins + 1 `-multi`** covering all nine events.
+This table is the cheat sheet for the per-construct cells below. As of `cd7a7d8`, every Claude-supported construct ships **two reference plugins** — a `-single` (solo: one component, the simplest possible plugin of that type) and a `-multi` (several components in one plugin) — so QA exercises both layouts. Hooks are the exception: they ship as **a per-event plugin for each event plus a `-multi`** covering every event.
 
 > **Namespace model — Path A was reverted (`649b398`).** The earlier "shared brand namespace" (`/dgxsparklabs-skill:` as one entry point for every skill) is **gone**. Each plugin now has its **own** slash namespace equal to its `plugin.json` `name`, which is `dgxsparklabs-<install-name>`. So the install name `skill-example-multi` → slash namespace `dgxsparklabs-skill-example-multi` → invoked as `/dgxsparklabs-skill-example-multi:<component>`. Ignore any lingering reference to `docs/archive/shared-namespace-2026-05-27/` for invocation strings — that approach is no longer shipped.
 
@@ -493,7 +493,7 @@ Install pattern for every row: `claude plugin install <install-name>@dgxsparklab
 | command · multi       | `command-example-multi`        | ✅ `/dgxsparklabs-command-example-multi:hello` · `:goodbye` · `:ping`                                | `hello` → header; `goodbye` → closing footer; `ping` → "pong" + UTC.              |
 | agent · single        | `agent-example-single`         | ◦ `/agents` → select `dgxsparklabs-agent-example-single:notebook-reviewer`                          | Sub-agent dispatched as a skeptical peer reviewer of a lab-notebook entry.        |
 | agent · multi         | `agent-example-multi`          | ✅ `/agents` → `dgxsparklabs-agent-example-multi:notebook-reviewer` · `:summarizer` · `:validator`   | Three sub-agents in one plugin; pick any from the picker. Live-verified (4.8.3).  |
-| hook · per-event (×9) | `hook-example-<event>`         | passive — fires its one event                                                                       | Writes `/tmp/hook-fired-<event>.log`. One plugin per event (`…-userpromptsubmit` … `…-precompact`). |
+| hook · per-event      | `hook-example-<event>`         | passive — fires its one event                                                                       | Writes `/tmp/hook-fired-<event>.log`. One plugin per event (`…-userpromptsubmit` … `…-precompact`). |
 | hook · multi          | `hook-example-multi`           | passive — fires all nine events                                                                     | ✅ each sentinel `/tmp/hook-fired-<event>.log` holds a marker + the full JSON payload (stdin). All 9 live-verified; see 4.8.5. |
 | mcp · single          | `mcp-example-single`           | ◦ model-called tool, server key `example` (confirm `mcp__…` name via `claude --debug`)              | Claude can fetch URLs via the wrapped server. Requires `uv` on PATH.              |
 | mcp · multi           | `mcp-example-multi`            | ✅ model-called tools, server keys `fetch` · `filesystem` · `sequential-thinking`                    | Three MCP servers in one plugin (each behind a logging proxy). Requires `uv`. Live-verified (4.8.6). |
@@ -561,9 +561,9 @@ Passive constructs (**hook**, **monitor**, **lsp**) are never "invoked" — they
 
 **▶ Lessons from the cold-read test — read this FIRST (the six things that actually trip rookies)**
 
-On 2026-06-02 we ran a controlled experiment: nine fresh agents, each with zero prior context, each verified ONE construct using only this guide. **All nine constructs PASSED** — the constructs are solid. But the agents independently hit the same handful of snags. Here they are with the fix and exact commands, so you don't rediscover them the hard way:
+On 2026-06-02 we ran a controlled experiment: a set of fresh agents, each with zero prior context, each verified ONE construct using only this guide. **Every construct PASSED** — the constructs are solid. But the agents independently hit the same handful of snags. Here they are with the fix and exact commands, so you don't rediscover them the hard way:
 
-1. **Grey "ghost-suggestion" text is NOT your input, and `C-u` does NOT remove it.** After almost every turn the input box shows dimmed grey text — an autocomplete hint from session history (e.g. `explore the lsptest directory`, `git init`). It will not submit on its own and it does not corrupt your next command. `C-u` clears any *real typed* characters but leaves the grey hint on screen; it only disappears once you type a fresh command over it. **Do not fight it** — 8 of 9 agents wasted tool calls pressing `C-u`/`Escape` at it. Just send your command (the `-l` text overwrites the line):
+1. **Grey "ghost-suggestion" text is NOT your input, and `C-u` does NOT remove it.** After almost every turn the input box shows dimmed grey text — an autocomplete hint from session history (e.g. `explore the lsptest directory`, `git init`). It will not submit on its own and it does not corrupt your next command. `C-u` clears any *real typed* characters but leaves the grey hint on screen; it only disappears once you type a fresh command over it. **Do not fight it** — nearly every agent wasted tool calls pressing `C-u`/`Escape` at it. Just send your command (the `-l` text overwrites the line):
    ```bash
    docker exec qa-claude tmux send-keys -t 0:0.0 -l '/dgxsparklabs-command-example-multi:hello'
    docker exec qa-claude tmux send-keys -t 0:0.0 Enter
@@ -1041,7 +1041,7 @@ Each row is tagged with the plugin's own namespace `(dgxsparklabs-command-exampl
 
 #### 4.8.5 Hook — `hook-example-multi`
 
-*(covers all 9 events in one plugin; there are also 9 single-event plugins `hook-example-<event>` in the reference card, one per event)*
+*(covers all the events in one plugin; there are also single-event plugins `hook-example-<event>` in the reference card, one per event)*
 
 - [ ] **Install**:
   ```bash
@@ -1529,7 +1529,7 @@ Each cell is operator-runnable ("do X, observe Y"); the hermetic variant needs t
   claude plugin validate ./
   ```
   (or add `--strict` if your CLI version supports the flag)
-- [ ] **Expected**: exit code 0; output contains `Validation passed` (verified — 27 plugins total, 0 `rule-*` plugins); the previously-seen `description: No marketplace description provided` warning is GONE.
+- [ ] **Expected**: exit code 0; output contains `Validation passed` (verified — the full catalog of plugins, with no `rule-*` plugins); the previously-seen `description: No marketplace description provided` warning is GONE.
 - [ ] **CI gate**: `.github/workflows/compat-validate.yml` runs this on every PR and fails the build if ANY warning or error appears.
 
 #### 4.9.2 Claude validation 2 — lsp-example schema (F2)
@@ -2306,7 +2306,7 @@ git clone --branch main https://github.com/DgxSparkLabs/marketplace.git ~/market
 
 #### 9.5.1 Skill — `skill-example` (read via `.agents/skills/`)
 - [ ] **Hands-on invocation**: `devin skills list`
-- [ ] **Expected**: lists 27 skills from `.agents/skills/` (since `.devin/skills/` was retired this round). `example` is one of them. Output format per `docs/PLATFORMS.md` Devin "Discovery commands": `/<slash-command> [triggers] (path) - description`.
+- [ ] **Expected**: lists the skills from `.agents/skills/` (since `.devin/skills/` was retired this round). `example` is one of them. Output format per `docs/PLATFORMS.md` Devin "Discovery commands": `/<slash-command> [triggers] (path) - description`.
 - [ ] **Hands-on (dispatching the skill)**: in a `devin` session, ask Devin to use the skill.
 - [ ] **Diagnostic**: `devin skills paths` should mention `.agents/skills/` AND `~/.agents/skills/` (user scope) — `.devin/skills/` should be ABSENT (the legacy mirror was retired per D-1).
 - [ ] **Hands-on (show)**: `devin skills show example` — prints the skill body.
@@ -2359,17 +2359,17 @@ Then install the `agents` CLI. Pick ONE of the four paths below:
 
 ```bash
 # Path 1 — Remote main (smoke test only — NOT for PR #5 verification):
-curl -fsSL https://raw.githubusercontent.com/DgxSparkLabs/marketplace/main/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/DgxSparkLabs/marketplace/main/scripts/install.sh | bash
 
 # Path 2 — Remote PR branch via curl URL path segment (fetches install.sh from the branch):
-curl -fsSL https://raw.githubusercontent.com/DgxSparkLabs/marketplace/main/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/DgxSparkLabs/marketplace/main/scripts/install.sh | bash
 
 # Path 3 — Remote PR branch via AGENTS_REF env var (install.sh from main, but clones the marketplace from the branch — see install.sh: `REF="${AGENTS_REF:-main}"`):
-AGENTS_REF=main curl -fsSL https://raw.githubusercontent.com/DgxSparkLabs/marketplace/main/install.sh | bash
+AGENTS_REF=main curl -fsSL https://raw.githubusercontent.com/DgxSparkLabs/marketplace/main/scripts/install.sh | bash
 
 # Path 4 — Local clone (most reliable — tests exactly the bytes at /workspace/marketplace):
 git clone --branch main https://github.com/DgxSparkLabs/marketplace.git /workspace/marketplace
-cd /workspace/marketplace && bash install.sh
+cd /workspace/marketplace && bash scripts/install.sh
 ```
 
 Then:
@@ -2391,11 +2391,11 @@ agents --version
 
 ```powershell
 # Path 1 — Remote main:
-irm https://raw.githubusercontent.com/DgxSparkLabs/marketplace/main/install.ps1 | iex
+irm https://raw.githubusercontent.com/DgxSparkLabs/marketplace/main/scripts/install.ps1 | iex
 
 # Path 2 — Remote PR branch via AGENTS_REF env var:
 $env:AGENTS_REF = 'main'
-irm https://raw.githubusercontent.com/DgxSparkLabs/marketplace/main/install.ps1 | iex
+irm https://raw.githubusercontent.com/DgxSparkLabs/marketplace/main/scripts/install.ps1 | iex
 
 # Path 3 — Local clone (most reliable):
 git clone --branch main https://github.com/DgxSparkLabs/marketplace.git C:\Users\devic\source\marketplace-pr5
@@ -2640,7 +2640,7 @@ When you're done (or if something breaks mid-flow), capture:
 4. **Which cells were UNKNOWN-method** — operator's notes on how they tried to verify, even if the method wasn't documented. These notes feed the next research round.
 5. **Anything that felt wrong even if it "worked"** — confusing output, unclear errors, ambiguous flags, missing help text
 
-A short report is fine — even a one-line summary per platform like "Cursor: agent + command + hook + MCP all visible in UI ✓; Gemini hook not auto-discovered ✗" is genuinely useful. With the expanded matrix, the per-cell granularity makes it easier to report a partial pass ("8/10 Claude cells PASS, lsp and monitor UNKNOWN-method").
+A short report is fine — even a one-line summary per platform like "Cursor: agent + command + hook + MCP all visible in UI ✓; Gemini hook not auto-discovered ✗" is genuinely useful. With the expanded matrix, the per-cell granularity makes it easier to report a partial pass ("most Claude cells PASS, lsp and monitor UNKNOWN-method").
 
 If you'd prefer, file findings as GitHub issues against `DgxSparkLabs/marketplace` (one per finding so they can be triaged independently).
 
@@ -2652,14 +2652,14 @@ Assumes `/workspace/marketplace` is the clone path (Docker setups in each platfo
 
 | Platform | Native install | Docker base image | Local install command (from `/workspace/marketplace`) | New emissions this refactor |
 |---|---|---|---|---|
-| Claude Code | `npm install -g @anthropic-ai/claude-code` | `node:20` | `claude plugin marketplace add /workspace/marketplace` | none — regression check (all 10 constructs) |
+| Claude Code | `npm install -g @anthropic-ai/claude-code` | `node:20` | `claude plugin marketplace add /workspace/marketplace` | none — regression check (all construct types) |
 | Codex | `npm install -g @openai/codex` | `node:20` | `codex plugin marketplace add /workspace/marketplace` | sub-agents (`.codex/agents/*.toml`), `.agents/plugins/marketplace.json` |
 | Gemini | `npm install -g @google/gemini-cli` | `node:20` | `echo "y" \| gemini extensions install /workspace/marketplace --consent` | sub-agents (`.gemini/agents/`), hooks (`.gemini/hooks/hooks.json`) |
-| Cursor IDE | `cursor.com/download` (GUI) | N/A (GUI) | open `/workspace/marketplace` (or host equivalent) in Cursor → File → Open Folder | sub-agents, commands, hooks, MCP (4 new!) |
+| Cursor IDE | `cursor.com/download` (GUI) | N/A (GUI) | open `/workspace/marketplace` (or host equivalent) in Cursor → File → Open Folder | sub-agents, commands, hooks, MCP (all new this refactor!) |
 | Cursor CLI | `curl https://cursor.com/install -fsS \| bash` / `irm 'https://cursor.com/install?win32=true' \| iex` | N/A | `cd /workspace/marketplace && agent` | reads same paths as IDE; consumption via filesystem |
 | Windsurf | `codeium.com/windsurf` (GUI) | N/A (GUI) | open `/workspace/marketplace` (or host equivalent) in Windsurf → File → Open Folder | hooks (`.windsurf/hooks.json`) |
 | Devin | `curl -fsSL https://cli.devin.ai/install.sh \| bash` (WSL on Windows) | `ubuntu:24.04` | `cd /workspace/marketplace && devin skills list` | `.devin/skills/` retired (now uses `.agents/skills/`) |
-| `agents` CLI | `irm .../install.ps1 \| iex` (Win) / `curl ... \| bash` (POSIX) | `ubuntu:24.04` | `cd /workspace/marketplace && bash install.sh` | entire CLI is new |
+| `agents` CLI | `irm .../scripts/install.ps1 \| iex` (Win) / `curl ... \| bash` (POSIX) | `ubuntu:24.04` | `cd /workspace/marketplace && bash scripts/install.sh` | entire CLI is new |
 
 Remote-branch quick reference (where supported):
 
@@ -2672,7 +2672,7 @@ Remote-branch quick reference (where supported):
 | Cursor CLI | n/a — clone the branch and open |
 | Windsurf | n/a — clone the branch and open |
 | Devin | n/a — clone the branch and open |
-| `agents` CLI | `AGENTS_REF=main curl -fsSL https://raw.githubusercontent.com/DgxSparkLabs/marketplace/main/install.sh \| bash` |
+| `agents` CLI | `AGENTS_REF=main curl -fsSL https://raw.githubusercontent.com/DgxSparkLabs/marketplace/main/scripts/install.sh \| bash` |
 
 ---
 
@@ -2693,7 +2693,7 @@ Discovered during the first hands-on QA pass of this doc. All three are real and
 
 ### 14.2 🐛 Gemini sub-agents not discovered
 
-- **Symptom**: `gemini extensions install` succeeds; `gemini extensions list 2>&1` and `gemini skills list --all 2>&1` both show our content correctly (all 27 skills enumerated); but `/agents` in an interactive `gemini` session shows only built-ins (`codebase_investigator`, `cli_help`, `generalist`) — not our `notebook-reviewer`.
+- **Symptom**: `gemini extensions install` succeeds; `gemini extensions list 2>&1` and `gemini skills list --all 2>&1` both show our content correctly (all our skills enumerated); but `/agents` in an interactive `gemini` session shows only built-ins (`codebase_investigator`, `cli_help`, `generalist`) — not our `notebook-reviewer`.
 - **State on disk**: `~/.gemini/extensions/dgxsparklabs-marketplace/agents/notebook-reviewer.md` exists with valid frontmatter.
 - **Hypothesis**: Either the file location inside the extension is wrong (Gemini may expect `agents/<name>/agent.md` not `agents/<name>.md`), or the frontmatter is missing a required field, or Gemini's agent loader is gated on a `gemini-extension.json` declaration we don't emit.
 - **Scope to investigate**: `GeminiPlatform.emit` in `scripts/platforms.py` + Gemini extension reference docs at `geminicli.com/docs/extensions/reference/` (specifically the sub-agents section).

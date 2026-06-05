@@ -2,7 +2,7 @@
 
 Complete specification for the `SKILL.md` file format used by agent skills.
 
-> **Marketplace note**: When you add a skill to this marketplace (in `skills/<name>/SKILL.md`), the generator (`scripts/generate_manifest.py`) automatically produces a Claude Code plugin wrapper at `_generated/skill-<name>/` containing a `.claude-plugin/plugin.json` and a copy of your skill content. You never write `plugin.json` yourself for a skill — it's derived from `SKILL.md` frontmatter + `MARKETPLACE.toml` identity. See [[ADDING_A_CONSTRUCT]] for the contributor workflow (the single walkthrough covers skills along with the other 9 construct types).
+> **Marketplace note**: When you add a skill to this marketplace (in `src/skills/<name>/SKILL.md`), the generator (`scripts/generate_manifest.py`) automatically produces a Claude Code plugin wrapper at `_generated/skill-<name>/` containing a `.claude-plugin/plugin.json` and a copy of your skill content. You never write `plugin.json` yourself for a skill — it's derived from `SKILL.md` frontmatter + `MARKETPLACE.toml` identity. See [[ADDING_A_CONSTRUCT]] for the contributor workflow (the single walkthrough covers skills along with the other construct types).
 
 ## File Structure
 
@@ -142,7 +142,7 @@ Use `$SKILL_DIR` to reference scripts and files within the skill's own directory
 |----------|-------|
 | `$SKILL_DIR` | Absolute path to the installed skill directory |
 
-`$SKILL_DIR` is resolved at **install time** by the marketplace installer, which replaces it with the actual install path (e.g., `~/.claude/skills/my-skill` or `.devin/skills/my-skill`). This ensures commands work regardless of which platform or scope the skill is installed to.
+`$SKILL_DIR` is resolved at **install time** by the marketplace installer, which replaces it with the actual install path (e.g., `~/.claude/skills/my-skill` or `.agents/skills/my-skill`). This ensures commands work regardless of which platform or scope the skill is installed to.
 
 Example:
 ```markdown
@@ -154,11 +154,11 @@ After installing to Claude Code, this becomes:
 uv run ~/.claude/skills/send-email/scripts/send_email.py --to "user@example.com" --subject "Hello" --body "Hi"
 ```
 
-**Always use `$SKILL_DIR` for script paths.** Do not hardcode platform-specific paths like `~/.config/devin/skills/my-skill/`.
+**Always use `$SKILL_DIR` for script paths.** Do not hardcode platform-specific paths like `~/.claude/skills/my-skill/`.
 
 #### 3. File inclusion
 
-Include the contents of a file using `@` syntax. Paths are **relative to the config directory** (e.g., `.windsurf/`, `.devin/`, or `~/.config/devin/`), not relative to the skill directory.
+Include the contents of a file using `@` syntax. Paths are **relative to the config directory** (e.g., `.windsurf/`, `.agents/`, or `.cursor/`), not relative to the skill directory.
 
 ```markdown
 Check the code against our style guide:
@@ -170,7 +170,7 @@ Apply these rules to the current file.
 
 To include a file from within the skill's own directory, use the `references/` subdirectory convention and reference from the config root:
 ```markdown
-@skills/my-skill/references/guide.md
+@.agents/skills/my-skill/references/guide.md
 ```
 
 #### 4. Command output

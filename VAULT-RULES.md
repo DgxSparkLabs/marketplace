@@ -9,7 +9,7 @@ audience: anyone (human or agent) editing .md files here
 This repo is read **primarily in Obsidian**, secondarily on GitHub. Obsidian and GitHub resolve
 in-document heading links by **different** algorithms and **no single syntax jumps in both**. We author
 **Obsidian-first**: links jump in Obsidian; on GitHub they still render as links but do not navigate
-(accepted trade-off). These rules exist because the TEST_YOURSELF.md table of contents cost three
+(accepted trade-off). These rules exist because the TEST_YOURSELF.md table of contents cost several
 debugging rounds — follow them and intra-doc links work on the first try.
 
 ## TL;DR
@@ -76,4 +76,4 @@ So a GitHub slug looks nothing like what Obsidian searches for, and vice-versa. 
 - [Obsidian Help — Internal links](https://obsidian.md/help/Linking+notes+and+files/Internal+links) (Markdown links must URL-encode the destination; spaces → `%20`)
 - [Obsidian Forum — heading link compatibility (Obsidian vs GitHub)](https://forum.obsidian.md/t/heading-link-compatibility/46988)
 - [Obsidian Forum — links with a colon don't work](https://forum.obsidian.md/t/links-including-a-colon-in-the-domain-path-component-do-not-work/8253)
-- Incident this came from: `docs/TEST_YOURSELF.md` table-of-contents fix (2026-05/06).
+- Incident this came from: the `docs/TEST_YOURSELF.md` table-of-contents fixes (2026-05 through 2026-06).

@@ -6,15 +6,15 @@ status: live
 
 # Architecture
 
-The generator turns canonical source content (skills, rules, ...) into platform-native install artifacts using a strategy pattern. Two protocols — `Construct` and `Platform` — encapsulate per-type and per-platform behavior; a thin orchestrator in `scripts/generate_manifest.py` runs nine phases (numbered 1, 1.5, 2a, 2b, 3, 4, 4.5, 5, 6) to produce per-platform manifests and mirrors. Mirror hygiene is built in via shared `shutil.copytree` ignore patterns. This document is the canonical reference for the protocols, the phases, and the contracts they uphold. For per-platform install behavior, see [[PLATFORMS]].
+The generator turns canonical source content (skills, rules, ...) into platform-native install artifacts using a strategy pattern. Two protocols — `Construct` and `Platform` — encapsulate per-type and per-platform behavior; a thin orchestrator in `scripts/generate_manifest.py` runs the generation phases in order (1, 1.5, 2a, 2b [retired], 3, 4, 4.5, 5, 5.5, 6, 7) to produce per-platform manifests, cross-platform mirrors, and the generated `docs/INVENTORY.md`. Mirror hygiene is built in via shared `shutil.copytree` ignore patterns. This document is the canonical reference for the protocols, the phases, and the contracts they uphold. For per-platform install behavior, see [[PLATFORMS]].
 
 ## How to read this document
 
 Start with the section that matches what you want to do:
 
 - **Adding a new construct type** (a new plugin kind like `skill` or `rule`): jump to *The two protocols → Construct*, then *How to extend → Adding a new construct type*.
-- **Adding a new platform** (a new emission target like Claude or Codex): jump to *The two protocols → Platform*, then *The seven platform classes* and *How to extend → Adding a new platform*.
-- **Understanding why an output file exists**: read *The six generation phases* end-to-end; each phase output is annotated with its trigger.
+- **Adding a new platform** (a new emission target like Claude or Codex): jump to *The two protocols → Platform*, then *The platform classes* and *How to extend → Adding a new platform*.
+- **Understanding why an output file exists**: read *The generation phases* end-to-end; each phase output is annotated with its trigger.
 - **Debugging a stray file in the wrong directory**: jump to *Mirror hygiene*.
 - **Writing CI assertions**: read *The `supports` gate*, then cross-check against the CI tables in [[PLATFORMS]].
 - **Just trying to orient**: read *The two protocols* and *Things worth knowing*, in that order.
@@ -37,13 +37,13 @@ class Construct(Protocol):
 
     def emit(self, name: str, target_dir: Path) -> None:
         """Write the full plugin to target_dir: copy source, generate
-        construct-specific artifacts (e.g., activate.sh for rules), and
+        construct-specific artifacts (e.g., the rule.md copy that per-platform manifests point at), and
         write .claude-plugin/plugin.json. Does ALL I/O for this instance."""
 ```
 
 Ten concrete implementations live in the same file: `SkillConstruct`, `RuleConstruct`, `CommandConstruct`, `AgentConstruct`, `HookConstruct`, `MCPConstruct`, `LSPConstruct`, `MonitorConstruct`, `OutputStyleConstruct`, `ThemeConstruct`. Each knows where its source content lives and how to build its plugin.json shape. The `CONSTRUCTS` registry (a `dict[str, Construct]`) is the single source of truth.
 
-For the user-facing reference table of all 10 construct types, see [[CONSTRUCT_TYPES]].
+For the user-facing reference table of the supported construct types, see [[CONSTRUCT_TYPES]].
 
 ### Platform
 
@@ -64,7 +64,7 @@ class Platform(Protocol):
         type(construct) in self.supports. Return {} to skip emission."""
 ```
 
-`build_plugin_json` is the mechanism for emitting per-plugin native manifests at `_generated/<plugin>/.<platform>-plugin/plugin.json` only where the platform actually hosts that construct type. Seven concrete implementations live in `scripts/platforms.py`; the `PLATFORMS` registry at `scripts/platforms.py:344-352` is the single source of truth.
+`build_plugin_json` is the mechanism for emitting per-plugin native manifests at `_generated/<plugin>/.<platform>-plugin/plugin.json` only where the platform actually hosts that construct type. Concrete implementations live in `scripts/platforms.py`; the `PLATFORMS` registry at `scripts/platforms.py:344-352` is the single source of truth.
 
 ## How to extend
 
@@ -98,19 +98,19 @@ Phase 1.5 (per-plugin manifests), Phase 3 (mirror generation), and the `supports
 
 ### Modifying generation phases
 
-Phases run sequentially in `main()` at `scripts/generate_manifest.py:110-244`. Reasons to touch them:
+Phases run sequentially in `main()` in `scripts/generate_manifest.py`. Reasons to touch them:
 
-- **Add a new phase**: when an emission has no logical home in the existing phases. Example: Phase 4.5 was added to copy `gemini-extension.json` to the repo root because `gemini extensions install <github-url>` looks for it there, not in `.gemini/`. Number the new phase with `.5` to preserve readability of the original five-phase design.
+- **Add a new phase**: when an emission has no logical home in the existing phases. Example: Phase 4.5 was added to copy `gemini-extension.json` to the repo root because `gemini extensions install <github-url>` looks for it there, not in `.gemini/`. Number the new phase with `.5` (e.g., 4.5, 5.5) so it slots in without renumbering the existing phases.
 - **Extend an existing phase**: when adding behavior that fits the phase's purpose. Example: if a new platform needs a repo-root manifest similar to Cursor's, extend Phase 6 (or copy the pattern into a new sibling phase).
-- **Don't touch Phase 1 / 2a / 3 / 5**: these are the load-bearing core. Phase 1 emits per-plugin Claude manifests; 2a emits catalog bundles; 3 wipes and re-emits all mirrors; 5 writes the aggregated `.claude-plugin/marketplace.json`. Adding new behavior at these layers risks breaking the `supports` gate or the in-memory marketplace aggregation. (Phase 2b — per-construct catch-all bundles — was retired 2026-05-27.)
+- **Don't touch Phase 1 / 2a / 3 / 5 / 7**: these are the load-bearing core. Phase 1 emits per-plugin Claude manifests; 2a emits catalog bundles; 3 wipes and re-emits all mirrors; 5 writes the aggregated `.claude-plugin/marketplace.json`; 7 writes the drift-checked `docs/INVENTORY.md`. Adding new behavior at these layers risks breaking the `supports` gate, the in-memory marketplace aggregation, or the inventory drift check. (Phase 2b — per-construct catch-all bundles — was retired 2026-05-27.)
 
 Phases interact through two shared structures: `marketplace_entries: list[dict]` (Phase 1/2a/2b append; Phase 5 writes) and `individual_plugins: list[tuple[Path, Construct, str]]` (Phase 1 populates; Phase 1.5 and Phase 6 iterate).
 
-## The seven platform classes
+## The platform classes
 
 | Class | File:line | `supports` | Mirror dir | Why it exists |
 |---|---|---|---|---|
-| `ClaudeCodePlatform` | `scripts/platforms.py:102-139` | 9 of 10 constructs (RuleConstruct intentionally excluded per `code.claude.com/docs/en/plugins-reference#plugin-components-reference`, 2026-05-26 — rules are a memory feature, not a plugin component) | none (no separate mirror) | Canonical platform; `marketplace.json` + per-plugin `.claude-plugin/plugin.json` are written by main flow. `build_plugin_json` delegates to the construct so Claude schema stays a single source of truth. |
+| `ClaudeCodePlatform` | `scripts/platforms.py:102-139` | all constructs except rule (RuleConstruct intentionally excluded per `code.claude.com/docs/en/plugins-reference#plugin-components-reference`, 2026-05-26 — rules are a memory feature, not a plugin component) | none (no separate mirror) | Canonical platform; `marketplace.json` + per-plugin `.claude-plugin/plugin.json` are written by main flow. `build_plugin_json` delegates to the construct so Claude schema stays a single source of truth. |
 | `CodexPlatform` | `scripts/platforms.py:128-191` | skill, mcp, hook, agent | `.codex/` | Codex reuses our `.claude-plugin/marketplace.json` (legacy-compatible). Emits `.codex-plugin/plugin.json` per supported plugin. Skill mirror retired (D-1, 2026-05-25); only `.codex/agents/<n>.toml` is emitted to the mirror dir (sub-agent TOML converted from Claude-style markdown via `scripts/converters/md_to_toml.py`). |
 | `GeminiPlatform` | `scripts/platforms.py:194-256` | skill, agent, hook | `.gemini/` | Mirrors skills to `.gemini/skills/`, sub-agents to `.gemini/agents/<n>.md`, and hooks to `.gemini/hooks/hooks.json` (per Gemini extensions reference, 2026-05-25). Emits the repo-level `.gemini/gemini-extension.json` via `emit_extension_manifest` (Phase 4). Returns `{}` from `build_plugin_json` — Gemini's install unit is extensions, not plugins. |
 | `CursorPlatform` | `scripts/platforms.py:259-330` | rule, skill, agent, command, hook, mcp | `.cursor/` | Emits `.cursor/rules/<name>.md` from per-rule format files and `.cursor/agents/<n>.md` for workspace-level sub-agents (Cursor 2.4 schema). Command/Hook/MCP are surfaced via per-plugin `.cursor-plugin/plugin.json` pointer fields (auto-discovered by Cursor). Skills served from `.agents/` — no `.cursor/skills/`. |
@@ -118,7 +118,7 @@ Phases interact through two shared structures: `marketplace_entries: list[dict]`
 | `DevinPlatform` | `scripts/platforms.py:373-394` | skill | `None` | Devin reads rules from `.cursor/rules/` natively and skills from `.agents/skills/` (verified Q-B1, 2026-05-25). Skill mirror retired (D-1); `mirror_directory` is `None` so Phase 3 skips it. `supports` keeps `SkillConstruct` so a future per-plugin Devin manifest schema can plug in via Phase 1.5 without code changes. |
 | `AgentsPlatform` | `scripts/platforms.py:397-442` | skill, rule | `.agents/` | The `.agents/skills/<name>/SKILL.md` path is read natively by Windsurf, Cursor, AND Devin — a true cross-platform skill convergence. Also emits `.agents/rules/<name>.md` as forward-looking convergence (D-12, 2026-05-25). Implemented as a proper Platform class (not a special-case step) for symmetry. Hosts content only — `build_plugin_json` returns `{}`. |
 
-## The six generation phases
+## The generation phases
 
 ```
         source content (skills/, rules/, commands/, ...)
@@ -174,7 +174,9 @@ Phases interact through two shared structures: `marketplace_entries: list[dict]`
             └───────────────────────────────┘
 ```
 
-The orchestrator at `scripts/generate_manifest.py:110-244` runs the following phases in order:
+(The diagram above shows the major path; Phase 5.5 also mirrors `marketplace.json` to `.agents/plugins/` after Phase 5, and Phase 7 writes `docs/INVENTORY.md` last — both are in the table below.)
+
+The orchestrator's `main()` in `scripts/generate_manifest.py` runs the following phases in order:
 
 | Phase | What it does | File:line | Output |
 |---|---|---|---|
@@ -187,9 +189,10 @@ The orchestrator at `scripts/generate_manifest.py:110-244` runs the following ph
 | **4.5** | Root-level `gemini-extension.json` copy. `gemini extensions install <github-url>` clones the repo and expects the manifest at the repo root, not inside `.gemini/`. Copy the Phase-4 output to the root. | `scripts/generate_manifest.py:202-209` | `gemini-extension.json` at repo root |
 | **5** | Top-level `marketplace.json`. Aggregate the in-memory marketplace entries collected during Phase 1+2 and write `.claude-plugin/marketplace.json`. Entries are sorted by `(category, name)` for deterministic diffs. Built from in-memory data so the `category` field survives even though it's not stored in individual plugin.json files. | `scripts/generate_manifest.py:211-212` | `.claude-plugin/marketplace.json` |
 | **5.5** | Codex canonical marketplace path. Copy `.claude-plugin/marketplace.json` byte-identical to `.agents/plugins/marketplace.json` — the path documented at developers.openai.com/codex/plugins/build (2026-05-25). Both paths remain valid; we serve both. | `scripts/generate_manifest.py:219-226` | `.agents/plugins/marketplace.json` |
-| **6** | Root-level `.cursor-plugin/marketplace.json`. Cursor team-marketplace import expects a multi-plugin manifest at the repo root listing all Cursor-supported plugins. | `scripts/generate_manifest.py:228-250` | `.cursor-plugin/marketplace.json` at repo root |
+| **6** | Root-level `.cursor-plugin/marketplace.json`. Cursor team-marketplace import expects a multi-plugin manifest at the repo root listing all Cursor-supported plugins. | `scripts/generate_manifest.py` | `.cursor-plugin/marketplace.json` at repo root |
+| **7** | Generated inventory. Walk the final marketplace entries and write the authoritative, drift-checked plugin list (FR-12). This is the single source of truth for plugin counts — prose elsewhere references it rather than restating numbers. | `scripts/generate_manifest.py` | `docs/INVENTORY.md` |
 
-After Phase 6, the generator prints a one-line summary of category counts and per-platform manifest counts.
+After Phase 7, the generator prints a one-line summary of category counts and per-platform manifest counts.
 
 ## The `supports` gate
 
@@ -242,13 +245,13 @@ Phase 3 also wipes every `platform.mirror_directory` before re-emitting (`script
 
 ## References
 
-- `scripts/platforms.py:64-352` — Platform protocol + 7 Platform classes + registry
-- `scripts/constructs.py:38-56` — Construct protocol; 10 Construct classes follow
-- `scripts/generate_manifest.py:110-244` — `main()`, the nine-phase orchestrator
+- `scripts/platforms.py:64-352` — Platform protocol + Platform classes + registry
+- `scripts/constructs.py:38-56` — Construct protocol; Construct classes follow
+- `scripts/generate_manifest.py:110-244` — `main()`, the phase orchestrator
 - `scripts/bundles.py` — `Bundle` dataclass + `load_bundles`
 - `scripts/utils.py` — shared helpers (`scan_source_dir`, `_marketplace_*`, `write_plugin_json`)
-- [[CONSTRUCT_TYPES]] — 10-construct reference table
-- [[RULE_FORMAT]] — rule install workaround (`activate.sh`)
+- [[CONSTRUCT_TYPES]] — construct reference table
+- [[RULE_FORMAT]] — rule authoring + how rules install (Claude memory subsystem; mirrors on other platforms)
 - [[SKILL_FORMAT]] — SKILL.md format spec
 - [[ADDING_A_CONSTRUCT]] — primary contributor walkthrough
 - [[PLATFORMS]] — per-platform install/support reference

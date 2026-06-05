@@ -6,10 +6,10 @@
 # via AGENTS_LIB). AGENTS_REF selects the marketplace branch (default main).
 #
 # Usage:
-#   curl -fsSL https://raw.githubusercontent.com/DgxSparkLabs/marketplace/main/install.sh | bash
-#   bash install.sh                       # install from the repo's main branch
-#   AGENTS_REF=my-branch bash install.sh  # install from a different ref
-#   bash install.sh install skill-example-multi # install + immediately invoke
+#   curl -fsSL https://raw.githubusercontent.com/DgxSparkLabs/marketplace/main/scripts/install.sh | bash
+#   bash scripts/install.sh                       # install from the repo's main branch
+#   AGENTS_REF=my-branch bash scripts/install.sh  # install from a different ref
+#   bash scripts/install.sh install skill-example-multi # install + immediately invoke
 set -euo pipefail
 
 DEST="${AGENTS_DEST:-$HOME/.local/bin/agents}"

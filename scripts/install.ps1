@@ -10,10 +10,10 @@
   Works on Windows PowerShell 5.1 and PowerShell 7+.
 
 .EXAMPLE
-  irm https://raw.githubusercontent.com/DgxSparkLabs/marketplace/main/install.ps1 | iex
+  irm https://raw.githubusercontent.com/DgxSparkLabs/marketplace/main/scripts/install.ps1 | iex
 
 .EXAMPLE
-  powershell -ExecutionPolicy Bypass -File install.ps1
+  powershell -ExecutionPolicy Bypass -File scripts/install.ps1
 #>
 
 $ErrorActionPreference = 'Stop'

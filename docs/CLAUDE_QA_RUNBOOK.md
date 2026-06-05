@@ -2,7 +2,7 @@
 date: 2026-06-02
 purpose: self-contained setup + QA runbook for the Claude plugin platform, driven by an automated agent through tmux (interactive) and claude --print (non-interactive)
 audience: agent-operator (drives the Claude TUI from the host via docker exec ... tmux send-keys)
-scope: Claude Code ONLY — the other five platforms + the agents CLI live in docs/TEST_YOURSELF.md
+scope: Claude Code ONLY — the other platforms + the agents CLI live in docs/TEST_YOURSELF.md
 status: live
 source: distilled from docs/TEST_YOURSELF.md Section 4 (verified live 2026-06-01/02, claude CLI 2.1.159); cross-checked against the live src/ tree, the hermetic stub, and the dev container on 2026-06-02
 ---
@@ -20,11 +20,11 @@ This runbook is self-contained — you should not need to open `docs/TEST_YOURSE
 
 ## 0. Read this first — the five rules that prevent every common mistake
 
-These come from a controlled cold-read test (nine fresh agents, one construct each — all nine passed, but they hit the same snags). Internalize them before driving anything.
+These come from a controlled cold-read test (several fresh agents, one construct each — all passed, but they hit the same snags). Internalize them before driving anything.
 
 1. **Trust machine signals, not the model's prose.** A capable model (Opus 4.x) narrates a lot — it will recite injected monitor data, describe a type error it spotted by *reading* (with no language server running), and propose "Next:" steps, all before your construct fires. None of that is proof. The real signal is always a **file, a settings write, a namespaced task header, or a source-tagged diagnostic** — never a sentence Claude wrote.
 
-2. **The grey "ghost-suggestion" text is not your input, and `C-u` does NOT clear it.** After most turns the input box shows dimmed grey text (an autocomplete hint from history). It never submits on its own and never concatenates with your next command. Don't fight it — your `send-keys -l '<text>'` overwrites the line and the hint vanishes. (8 of 9 cold-read agents wasted calls pressing `C-u`/`Escape` at it.)
+2. **The grey "ghost-suggestion" text is not your input, and `C-u` does NOT clear it.** After most turns the input box shows dimmed grey text (an autocomplete hint from history). It never submits on its own and never concatenates with your next command. Don't fight it — your `send-keys -l '<text>'` overwrites the line and the hint vanishes. (most cold-read agents wasted calls pressing `C-u`/`Escape` at it.)
 
 3. **`capture-pane | tail -n N` lies — widen with scrollback, and read files for file-based proofs.** A freshly split pane or a chatty turn pushes the block you want above the visible tail. Always `capture-pane -p -t <pane> -S -30 | tail -n 20`, and when the proof is a file (hook sentinels, mcp proxy log, lsp input log) read the **file** directly with `bash -lc 'cat <file>'`.
 
@@ -151,7 +151,7 @@ claude plugin marketplace list                             # expect: dgxsparklab
 
 ```bash
 claude plugin validate ./
-# Expect: exit 0, "Validation passed", 27 plugins total, 0 rule-* plugins, no description warning.
+# Expect: exit 0, "Validation passed", the full set of plugins, no rule-* plugins, no description warning.
 ```
 
 Enumerate just this marketplace's plugins:
@@ -160,9 +160,9 @@ Enumerate just this marketplace's plugins:
 MARKETPLACE="dgxsparklabs-marketplace"
 claude plugin list --json --available > /tmp/plugins.json 2>/tmp/claude.err
 jq --arg mp "$MARKETPLACE" '[.. | objects | select(.marketplaceName? == $mp)]' /tmp/plugins.json
-# Expect a JSON array of 27 plugins: 16 (8 construct types x {-single,-multi})
-#  + 10 hooks (9 per-event + 1 multi) + 1 bundle-examples. Rule individuals excluded.
-#  If you see 10, you are on a pre-cd7a7d8 checkout.
+# Expect a JSON array of the full set of plugins: the -single/-multi pairs for each construct type,
+#  the per-event and multi hook plugins, and bundle-examples. Rule individuals excluded.
+#  A much shorter array means you are on a pre-cd7a7d8 checkout (see docs/INVENTORY.md for the authoritative set).
 ```
 
 **Install model (CLI ≥ 2.1.157 — verify with `claude --version`):**
@@ -210,9 +210,9 @@ docker exec qa-claude tmux capture-pane -p -t 0:0.0 -S -30 | tail -n 20
 # Create an ABSOLUTE scratch dir (a pane's cwd/$HOME can differ from a `docker exec bash -lc` shell):
 docker exec qa-claude bash -lc 'mkdir -p /workspace/lsptest && cd /workspace/lsptest && pwd'
 
-# Install all nine -multi plugins into project scope (install auto-enables):
+# Install every -multi plugin into project scope (install auto-enables):
 docker exec qa-claude bash -lc 'cd /workspace/lsptest && for p in command skill agent hook mcp monitor output-style theme lsp; do claude plugin install ${p}-example-multi@dgxsparklabs-marketplace --scope project 2>&1 | tail -n1; done'
-# -> nine "✔ Successfully installed plugin: <p>-example-multi@dgxsparklabs-marketplace (scope: project)"
+# -> one "✔ Successfully installed plugin: <p>-example-multi@dgxsparklabs-marketplace (scope: project)" per construct
 
 # Confirm enabled:
 docker exec qa-claude bash -lc 'cd /workspace/lsptest && claude plugin list 2>&1 | grep -E "@dgxsparklabs|Status:"'
@@ -374,10 +374,10 @@ Expect the picker's **Plugin agents** group (`dgxsparklabs-agent-example-multi:n
 
 Hooks are passive (fire on events) and produce **no chat output** — the proof is sentinel files. The example reads the event's JSON payload from **stdin** and writes `/tmp/hook-fired-<event>.log` (marker line + full payload). **Headless: PARTIAL.**
 
-**Variants & install** — the "single" axis here is the nine per-event plugins; "multi" wires all nine events.
+**Variants & install** — the "single" axis here is the per-event hook plugins; "multi" wires all the events.
 
 ```bash
-# multi (all 9 events in one plugin):
+# multi (all events in one plugin):
 docker exec qa-claude bash -lc 'cd /workspace/lsptest && claude plugin install hook-example-multi@dgxsparklabs-marketplace --scope project'
 # per-event (install any of these 9; each fires its one event):
 #   hook-example-{userpromptsubmit,sessionstart,pretooluse,posttooluse,stop,subagentstop,sessionend,notification,precompact}
@@ -402,7 +402,7 @@ Expect a marker line + the full JSON payload — note the real `tool_name` (the 
 {"session_id":"…","cwd":"/workspace/lsptest","hook_event_name":"PreToolUse","tool_name":"Edit","tool_input":{…},"tool_use_id":"toolu_…"}
 ```
 
-To fire all nine: restart `claude` (`SessionStart`) → the edit+approve above (six) → `/compact` (`PreCompact`, re-fires `SessionStart`/`SubagentStop`) → `/exit` (`SessionEnd`). Then `docker exec qa-claude bash -lc 'ls /tmp/hook-fired-*.log'` shows 9 files. Use `/exit` (not Ctrl+C) to fire `SessionEnd` reliably.
+To fire every event: restart `claude` (`SessionStart`) → the edit+approve above → `/compact` (`PreCompact`, re-fires `SessionStart`/`SubagentStop`) → `/exit` (`SessionEnd`). Then `docker exec qa-claude bash -lc 'ls /tmp/hook-fired-*.log'` shows one sentinel file per event. Use `/exit` (not Ctrl+C) to fire `SessionEnd` reliably.
 
 **Non-interactive (headless)** — stub on 8088. Confirmed firing under `claude --print`: `SessionStart`, `UserPromptSubmit`, `Stop`, `SessionEnd`:
 
@@ -682,8 +682,8 @@ Install pattern for every row: `claude plugin install <install-name>@dgxsparklab
 | skill · multi | `skill-example-multi` | `…-skill-example-multi:notebook [topic]` · `:status` | YES |
 | agent · single | `agent-example-single` | `/agents` → `…-agent-example-single:notebook-reviewer` | NO |
 | agent · multi | `agent-example-multi` | `/agents` → `…:notebook-reviewer` · `:summarizer` · `:validator` | NO |
-| hook · per-event (×9) | `hook-example-<event>` | passive (one event) | PARTIAL |
-| hook · multi | `hook-example-multi` | passive (all 9 events) | PARTIAL |
+| hook · per-event | `hook-example-<event>` | passive (one event) | PARTIAL |
+| hook · multi | `hook-example-multi` | passive (all events) | PARTIAL |
 | mcp · single | `mcp-example-single` | model-called; server key `example` | PARTIAL |
 | mcp · multi | `mcp-example-multi` | model-called; keys `fetch` · `filesystem` · `sequential-thinking` | PARTIAL |
 | monitor · single | `monitor-example-single` | passive — `disk-usage` at session start | NO |

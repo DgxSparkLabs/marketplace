@@ -1,10 +1,10 @@
 # Construct Types
 
-A Claude Code plugin can ship ten distinct **construct types**. This marketplace ships individual plugins, domain bundles, and reference examples for every one. For the contribution workflow, see [`ADDING_A_CONSTRUCT.md`](./ADDING_A_CONSTRUCT.md).
+A Claude Code plugin can ship a range of distinct **construct types**. This marketplace ships individual plugins, domain bundles, and reference examples for every one. For the contribution workflow, see [`ADDING_A_CONSTRUCT.md`](./ADDING_A_CONSTRUCT.md).
 
 ## Single-vs-multi layout — what it means per construct
 
-Every Claude-supported construct ships paired `example-single` + `example-multi` reference plugins, plus the rule construct (one only — not a Claude plugin component) and the hook construct (nine per-event + `example-multi`).
+Every Claude-supported construct ships paired `example-single` + `example-multi` reference plugins, plus the rule construct (one only — not a Claude plugin component) and the hook construct (per-event plugins + `example-multi`).
 
 **Only the skill construct has a true layout switch**: solo plugins put `SKILL.md` at the plugin root (`skills: ["./"]`); multi-skill plugins put files under a `skills/<x>/` subdir (`skills: ["./skills/"]`). The generator detects this from the source filesystem.
 
@@ -20,7 +20,7 @@ For every other construct the two example plugins look structurally identical an
 
 The contributor experience is symmetric ("there's both a single example and a multi example"); the implementation symmetry differs.
 
-**Cross-platform note**: the multi-skill source layout (skill only) is **verified on Claude only**. The other five platforms + the `.agents/` shim are unverified for multi-skill source layouts — see ROADMAP #37-#42 and the NOTE comments in `scripts/platforms.py`. The mirror-nesting issue affects multi-skill plugins specifically; non-skill constructs already worked with multi-content layouts before this commit.
+**Cross-platform note**: the multi-skill source layout (skill only) is **verified on Claude only**. The other platforms + the `.agents/` shim are unverified for multi-skill source layouts — see ROADMAP #37-#42 and the NOTE comments in `scripts/platforms.py`. The mirror-nesting issue affects multi-skill plugins specifically; non-skill constructs already worked with multi-content layouts before this commit.
 
 ## The ten construct types
 
@@ -30,7 +30,7 @@ The contributor experience is symmetric ("there's both a single example and a mu
 | **rule**     | Always-on behavioral guideline. Not a Claude plugin component per F8; surfaces on Cursor/Codex/Windsurf only. | `src/rules/` | `example` (one only) | `rule-` |
 | **command**  | A slash command. Markdown file with frontmatter. | `src/commands/` | `example-single` (1 cmd) + `example-multi` (3 cmds) | `command-` |
 | **agent**    | A sub-agent persona with its own system prompt and scoped tool access. | `src/agents/` | `example-single` (1 agent) + `example-multi` (3 agents) | `agent-` |
-| **hook**     | Event-triggered script. | `src/hooks/` | 9 per-event (`example-userpromptsubmit`, …, `example-precompact`) + `example-multi` (all events) | `hook-` |
+| **hook**     | Event-triggered script. | `src/hooks/` | per-event (`example-userpromptsubmit`, …, `example-precompact`) + `example-multi` (all events) | `hook-` |
 | **mcp**      | A Model Context Protocol server. | `src/mcp-servers/` | `example-single` (1 server) + `example-multi` (3 servers) | `mcp-` |
 | **lsp**      | A Language Server Protocol server. Illustrative configs; binaries not bundled. | `src/lsp-servers/` | `example-single` (1 LSP) + `example-multi` (3 LSPs) | `lsp-` |
 | **monitor**  | Session-start observation hook. Runs a command once at session start; surfaces output to Claude. | `src/monitors/` | `example-single` (1 monitor) + `example-multi` (3 monitors) | `monitor-` |
@@ -85,16 +85,15 @@ Catalog bundle: bundle-<bundle-name>          e.g., bundle-communication-skills
 # Cross-construct examples bundle (one of every construct type)
 /plugin install bundle-examples@dgxsparklabs-marketplace
 
-# Rule install + activate (extra step required — Claude Code limitation)
-/plugin install rule-blast-radius@dgxsparklabs-marketplace
-bash ~/.claude/plugins/cache/dgxsparklabs-marketplace/rule-blast-radius/activate.sh
+# Rules aren't a Claude plugin component (F8) — copy the rule body into .claude/rules/
+cp src/rules/example/rule.md ~/.claude/rules/example.md   # user scope (or .claude/rules/ for a project)
 ```
 
 ## Architecture
 
 The generator (`scripts/generate_manifest.py`) reads sources and produces everything else. The architecture after the DI refactor:
 
-- `scripts/constructs.py` — 10 typed Construct classes; each implements `build_plugin_json` + `emit`. Class `source_directory` attributes point at `src/<construct>/`.
+- `scripts/constructs.py` — one typed Construct class per construct type; each implements `build_plugin_json` + `emit`. Class `source_directory` attributes point at `src/<construct>/`.
 - `scripts/platforms.py` — 7 typed Platform classes (Claude, Codex, Gemini, Cursor, Windsurf, Devin, Agents); each declares `supports` + implements `emit`
 - `scripts/bundles.py` — Bundle dataclass + loader for `src/catalog.toml`
 - `scripts/utils.py` — shared helpers (path constants `MARKETPLACE_TOML` and `CATALOG` point at `src/`)
