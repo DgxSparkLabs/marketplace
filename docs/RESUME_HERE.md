@@ -17,9 +17,9 @@ Updated 2026-06-03.
 | [`LESSONS.md`](LESSONS.md) | Hard-won working rules — read before touching the generator, CI, or any layout/name change |
 | [`INVENTORY.md`](INVENTORY.md) | Generated, drift-checked plugin-entry inventory (authoritative counts) |
 | [`ARCHITECTURE.md`](ARCHITECTURE.md) | Generator architecture — Construct/Platform/Bundle protocols + generation phases |
-| [`PLATFORMS.md`](PLATFORMS.md) | Per-platform install / support / discovery / CI reference (6 platforms + `agents` CLI) |
+| [`PLATFORMS.md`](PLATFORMS.md) | Per-platform install / support / discovery / CI reference (the platforms + `agents` CLI) |
 | [`USER_GUIDE.md`](USER_GUIDE.md) | End-user plugin management (install/list/enable/uninstall/scope) across platforms |
-| [`ADDING_A_CONSTRUCT.md`](ADDING_A_CONSTRUCT.md) | How to add a new construct of any of the 10 types |
+| [`ADDING_A_CONSTRUCT.md`](ADDING_A_CONSTRUCT.md) | How to add a new construct of any of the supported types |
 | [`CONSTRUCT_TYPES.md`](CONSTRUCT_TYPES.md) | What each construct type is + the full plugin inventory |
 | [`SKILL_FORMAT.md`](SKILL_FORMAT.md) | `SKILL.md` authoring reference |
 | [`RULE_FORMAT.md`](RULE_FORMAT.md) | Rule authoring + activation reference |
@@ -31,7 +31,7 @@ Project-level context lives at repo root: [`../HANDOFF.md`](../HANDOFF.md) (long
 
 ## Repo layout — what lives where
 
-- **`src/`** — operator-authored source content. Ten construct dirs (`src/skills/`, `src/rules/`, `src/commands/`, …) plus `src/MARKETPLACE.toml` and `src/catalog.toml`. Anything that becomes a plugin lives here.
+- **`src/`** — operator-authored source content. One construct dir per construct type (`src/skills/`, `src/rules/`, `src/commands/`, …) plus `src/MARKETPLACE.toml` and `src/catalog.toml`. Anything that becomes a plugin lives here.
 - **`scripts/`** — generator code (Python). Reads from `src/`, emits to `_generated/` and per-platform mirrors.
 - **`tests/`** — test suites for the generator + per-plugin schema.
 - **`docs/`** — human-facing reference + research artifacts.
@@ -47,7 +47,7 @@ Two-field decoupling:
 
 Composed in `scripts/constructs.py` `_base_plugin_shape` as `f"{brand}-{construct.prefix}-{name}"`. The brand prefix is derived from `src/MARKETPLACE.toml` `name` by stripping `-marketplace`.
 
-Representative slash forms from the 27 reference plugins:
+Representative slash forms from the reference plugins:
 
 | Plugin | Slash form |
 |---|---|
@@ -59,7 +59,7 @@ Representative slash forms from the 27 reference plugins:
 | `output-style-example-multi` | `/output-style Lab Notebook Voice` · `Concise Engineer` · `Tutoring` |
 | `theme-example-multi` | `/theme Lab Notebook` · `Nord` · `Solarized Dark` |
 
-For the full 27-plugin inventory see `docs/CONSTRUCT_TYPES.md`.
+For the full plugin inventory see `docs/CONSTRUCT_TYPES.md`.
 
 History: an earlier shared-namespace attempt called Path A (`d641f92`, 2026-05-27) collapsed all skill plugins under one slash namespace `/dgxsparklabs-skill:`; it was reverted on 2026-05-28 because `claude plugin details` couldn't separate the per-plugin component lists. See [`docs/archive/multi-instance-claude-only-2026-05-27/PLAN.md`](./archive/multi-instance-claude-only-2026-05-27/PLAN.md) for the revert rationale.
 
@@ -101,11 +101,11 @@ Working directory:     C:\Users\devic\source\marketplace
 
 ## Architecture
 
-The generator now orchestrates **7 platforms** through its generation phases plus per-plugin native-manifest emission:
+The generator now orchestrates **the platforms** through its generation phases plus per-plugin native-manifest emission:
 
 ```
 scripts/utils.py        — shared helpers
-scripts/constructs.py   — 10 Construct classes
+scripts/constructs.py   — Construct classes
 scripts/platforms.py    — 7 Platform classes (Claude, Codex, Gemini, Cursor, Windsurf, Devin, AgentsPlatform)
                           + Platform.build_plugin_json(construct, name) protocol method
 scripts/bundles.py      — Bundle dataclass + load_bundles
@@ -125,7 +125,7 @@ catalog.toml — bundle definitions ONLY
 | C1 | CI assertions + generator additions shipped in same PR (#1 expanded scope) | Same |
 | Q2 | All work on `feat/claude-plugin-compliance`; no new branch | Same |
 
-DI refactor decisions (prior round) still hold — see [`archive/di-refactor/PLAN_DI_REFACTOR.md`](./archive/di-refactor/PLAN_DI_REFACTOR.md) for the 25 there.
+DI refactor decisions (prior round) still hold — see [`archive/di-refactor/PLAN_DI_REFACTOR.md`](./archive/di-refactor/PLAN_DI_REFACTOR.md) for the full set there.
 
 ---
 
@@ -206,7 +206,7 @@ Catalog bundle: bundle-<bundle-name>      e.g., bundle-communication-skills, bun
 | 90s | This file | Get oriented |
 | 5min | [`archive/phase-5-cross-platform-install/VERIFICATION_2026-05/SUMMARY.md`](./archive/phase-5-cross-platform-install/VERIFICATION_2026-05/SUMMARY.md) | Single-page ground truth: what works per platform |
 | 10min | [`archive/phase-5-cross-platform-install/PLAN_CROSS_PLATFORM_INSTALL_FIX.md`](./archive/phase-5-cross-platform-install/PLAN_CROSS_PLATFORM_INSTALL_FIX.md) | This round's plan + locked decisions A1/B2/C1/Q2 |
-| 15min | [`archive/di-refactor/PLAN_DI_REFACTOR.md`](./archive/di-refactor/PLAN_DI_REFACTOR.md) Locked Decisions table | 25 prior-round decisions still in force |
+| 15min | [`archive/di-refactor/PLAN_DI_REFACTOR.md`](./archive/di-refactor/PLAN_DI_REFACTOR.md) Locked Decisions table | prior-round decisions still in force |
 | 30min | Above + [`archive/phase-5-cross-platform-install/VERIFICATION_2026-05/empirical_act_verification.md`](./archive/phase-5-cross-platform-install/VERIFICATION_2026-05/empirical_act_verification.md) + [`archive/phase-5-cross-platform-install/VERIFICATION_2026-05/IMPLEMENTATION_VALIDATION.md`](./archive/phase-5-cross-platform-install/VERIFICATION_2026-05/IMPLEMENTATION_VALIDATION.md) | Full architecture + per-claim evidence + validator's verdict |
 
 ---
@@ -222,7 +222,7 @@ Catalog bundle: bundle-<bundle-name>      e.g., bundle-communication-skills, bun
 - **`members_from_construct` field in catalog.toml** — removed (DI refactor decision #24).
 - **`[bundle.<prefix>-all]` reserved-name check** — retired 2026-05-27 along with the catch-alls themselves; the catalog may now use any name.
 - **`example-<construct>` directory naming** — renamed to `example/` (DI refactor decision #18).
-- **Hardcoding plugin count (e.g., `== 81`)** — test suite uses a computed formula.
+- **Hardcoding the plugin count** — test suite uses a computed formula.
 
 ---
 

@@ -20,13 +20,13 @@ Rule: for every guard you add, run the adversarial case once. "Unfalsified" ≠ 
 
 ## 2. A layout/name change has a blast radius far beyond the generator
 
-The `src/` reorg + single/multi rename (`cd7a7d8`) was "handled by the generator" — yet it silently broke **four** places nobody tracked: the `agents` CLI handlers (`scripts/agents_cli/constructs/*.py` still pointed at top-level dirs), **9 compat CI workflows** (installed pre-rename plugin names), `compat-headless-claude.yml`, and a pile of docs/counts.
+The `src/` reorg + single/multi rename (`cd7a7d8`) was "handled by the generator" — yet it silently broke several places nobody tracked: the `agents` CLI handlers (`scripts/agents_cli/constructs/*.py` still pointed at top-level dirs), the compat CI workflows (installed pre-rename plugin names), `compat-headless-claude.yml`, and a pile of docs/counts.
 
 Rule: after any layout or published-name change, grep the **whole repo** — not just `scripts/` — for the old names: `grep -rn "<construct>-example" .github/ scripts/ docs/`. Assume nothing auto-propagated.
 
 ## 3. Unit tests ≠ CI ≠ reality
 
-`uv run scripts/tasks.py verify` was fully green while 9 GitHub workflows were red. The suites validate the generator and the `agents` CLI against a **local checkout**; they never install the **published** plugin by name and never drive the Codex/Gemini/Devin CLIs. Those are different claims.
+`uv run scripts/tasks.py verify` was fully green while a batch of GitHub workflows were red. The suites validate the generator and the `agents` CLI against a **local checkout**; they never install the **published** plugin by name and never drive the Codex/Gemini/Devin CLIs. Those are different claims.
 
 Rule: anything touching published plugin names or a platform CLI must be exercised by the real workflow bytes — locally via `act`, then on GitHub. See lesson 4.
 
@@ -76,7 +76,7 @@ Cursor/Windsurf/Devin read the mirror dirs (`.cursor/`, `.windsurf/`, `.agents/`
 ```bash
 uv run scripts/new_construct.py <type> <name>   # scaffold from the example
 # edit the copied files
-uv run scripts/tasks.py verify                           # --check + 4 suites + claude plugin validate
+uv run scripts/tasks.py verify                           # --check + test suites + claude plugin validate
 git add . && git commit && open a PR             # NO catalog.toml edit needed
 ```
 

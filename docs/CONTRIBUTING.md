@@ -20,7 +20,7 @@ cd marketplace
 # Windows (PS):   irm https://astral.sh/uv/install.ps1 | iex
 
 # 3. Run the test suite (should all pass)
-uv run scripts/tasks.py test            # runs all four suites at once
+uv run scripts/tasks.py test            # runs all the suites at once
 
 # 4. Regenerate manifests + mirrors from sources
 uv run scripts/generate_manifest.py
@@ -45,11 +45,11 @@ Copy `src/rules/example/` to `src/rules/<your-rule-name>/`, edit `rule.md` (and 
 
 ### Add a new MCP server / hook / agent / etc.
 
-Same pattern — copy `src/<construct>/<name>/`, edit, regenerate. The full per-construct table (source dir, example template, description source) is in [[CONSTRUCT_TYPES]]; the workflow is identical for all 10 construct types per [[ADDING_A_CONSTRUCT]].
+Same pattern — copy `src/<construct>/<name>/`, edit, regenerate. The full per-construct table (source dir, example template, description source) is in [[CONSTRUCT_TYPES]]; the workflow is identical for all the supported construct types per [[ADDING_A_CONSTRUCT]].
 
 ### Add a new construct type
 
-Adding an 11th construct type means writing a new class in `scripts/constructs.py` implementing the `Construct` protocol (`prefix`, `source_directory`, `category`, `build_plugin_json`, `emit`) and registering it in the `CONSTRUCTS` dict. Then declare `supports` membership in any `Platform` class that should host it (see [[ARCHITECTURE#The two protocols]]). Phase 1 picks up the new construct automatically; Phase 1.5 emits per-platform manifests via the `supports` gate. No generator-loop changes needed.
+Adding another construct type means writing a new class in `scripts/constructs.py` implementing the `Construct` protocol (`prefix`, `source_directory`, `category`, `build_plugin_json`, `emit`) and registering it in the `CONSTRUCTS` dict. Then declare `supports` membership in any `Platform` class that should host it (see [[ARCHITECTURE#The two protocols]]). Phase 1 picks up the new construct automatically; Phase 1.5 emits per-platform manifests via the `supports` gate. No generator-loop changes needed.
 
 ### Add a new platform
 
@@ -64,7 +64,7 @@ When you're ready to contribute changes back upstream:
 3. **Make your changes** per the [[#Adding things]] section above.
 4. **Regenerate and check for drift**: `uv run scripts/generate_manifest.py --check`. This must exit 0.
 5. **Validate generated plugin manifests** (see [[#Running `claude plugin validate`]] below): `claude plugin validate _generated/<your-plugin>` for each plugin you added or changed, AND `claude plugin validate ./` for the marketplace as a whole. Both must produce zero warnings — CI gates on this via `.github/workflows/compat-validate.yml`.
-6. **Run the test suite**: `uv run scripts/tasks.py test` (runs all four suites — `test_marketplace`, `test_schema_fitness`, `test_agents_cli`, `test_tooling`). All must exit 0.
+6. **Run the test suite**: `uv run scripts/tasks.py test` (runs all the suites — `test_marketplace`, `test_schema_fitness`, `test_agents_cli`, `test_tooling`). All must exit 0.
 7. **Open a PR** against `main`. See the [[#PR-only flow (never push to main)]] convention below.
 
 ## Testing
@@ -72,7 +72,7 @@ When you're ready to contribute changes back upstream:
 ### Running the test suite
 
 ```bash
-uv run scripts/tasks.py test            # all four suites at once (recommended)
+uv run scripts/tasks.py test            # all the suites at once (recommended)
 uv run tests/test_marketplace.py        # marketplace tests
 uv run tests/test_schema_fitness.py     # platform-schema-fitness tests
 uv run tests/test_agents_cli.py         # agents-cli tests
@@ -81,14 +81,14 @@ uv run tests/test_marketplace.py -v     # verbose
 uv run tests/test_marketplace.py -k rule  # only rule-related tests
 ```
 
-Tests live in four files:
+Tests live in the suite files:
 
 - `tests/test_marketplace.py`: directory structure, YAML frontmatter parity, catalog consistency, generator drift, manifest schema, per-platform per-plugin manifest emission, mirror dir hygiene (no leaked `.claude-plugin/`), secret scanning.
 - `tests/test_schema_fitness.py`: per-platform schema fitness — validates emitted manifests against reference JSON Schemas captured directly from each platform's docs (Cursor `SkillConstruct` plugin.json, Gemini `AgentConstruct` frontmatter, Windsurf hooks event names + shape, Cursor hooks shape + `version` presence, Gemini hooks event-name vocabulary, marketplace.json description presence, LSP / monitor / theme / hook example schemas).
 - `tests/test_agents_cli.py`: the agents-CLI surface.
 - `tests/test_tooling.py`: the contributor tooling — `new_construct.py` scaffolder and `validate_source.py` pre-commit check.
 
-Always run all four before committing (or just `uv run scripts/tasks.py test`).
+Always run all the suites before committing (or just `uv run scripts/tasks.py test`).
 
 The drift gate (`uv run scripts/generate_manifest.py --check`) runs in CI and exits 1 if regenerated output differs from committed output. Run it before pushing if you've changed anything under `scripts/`, `src/<construct>/`, or `src/MARKETPLACE.toml`/`src/catalog.toml`.
 
@@ -141,7 +141,7 @@ For hermetic local-container CI re-verification before pushing:
 docs/archive/phase-5-cross-platform-install/VERIFICATION_2026-05/reproduce.ps1
 ```
 
-The script runs four verification workflows (`verify-codex.yml`, `verify-gemini.yml`, `verify-cursor.yml`, `verify-claude.yml`) via nektos/act 0.2.63+ in Docker containers. Each workflow's full stdout/stderr lands in `docs/archive/phase-5-cross-platform-install/VERIFICATION_2026-05/logs/verify-<platform>-run.log`; per-claim snippets are extracted to `logs/<ID>.txt`. Prerequisites: act + Docker Desktop + the `catthehacker/ubuntu:act-latest` image pulled. See the script for the full command sequence.
+The script runs the per-platform verification workflows (`verify-codex.yml`, `verify-gemini.yml`, `verify-cursor.yml`, `verify-claude.yml`) via nektos/act 0.2.63+ in Docker containers. Each workflow's full stdout/stderr lands in `docs/archive/phase-5-cross-platform-install/VERIFICATION_2026-05/logs/verify-<platform>-run.log`; per-claim snippets are extracted to `logs/<ID>.txt`. Prerequisites: act + Docker Desktop + the `catthehacker/ubuntu:act-latest` image pulled. See the script for the full command sequence.
 
 ## Conventions
 
@@ -210,7 +210,7 @@ Rules consume agent context in every session. Verbose rules dilute attention and
 - [[ARCHITECTURE#Things worth knowing]] — system invariants worth knowing when contributing (bundle dependency auto-install, kebab-case validation, mirror hygiene)
 - [[PLATFORMS]] — per-platform install/support reference
 - [[ADDING_A_CONSTRUCT]] — primary contributor walkthrough
-- [[CONSTRUCT_TYPES]] — 10-construct reference table
+- [[CONSTRUCT_TYPES]] — per-construct reference table
 - [[RULE_FORMAT]] — rule format spec (rule.md + Windsurf + Cursor + AGENTS.md)
 - [[SKILL_FORMAT]] — SKILL.md frontmatter and body spec
 

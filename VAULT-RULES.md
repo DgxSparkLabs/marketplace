@@ -9,7 +9,7 @@ audience: anyone (human or agent) editing .md files here
 This repo is read **primarily in Obsidian**, secondarily on GitHub. Obsidian and GitHub resolve
 in-document heading links by **different** algorithms and **no single syntax jumps in both**. We author
 **Obsidian-first**: links jump in Obsidian; on GitHub they still render as links but do not navigate
-(accepted trade-off). These rules exist because the TEST_YOURSELF.md table of contents cost three
+(accepted trade-off). These rules exist because the TEST_YOURSELF.md table of contents cost several
 debugging rounds — follow them and intra-doc links work on the first try.
 
 ## TL;DR

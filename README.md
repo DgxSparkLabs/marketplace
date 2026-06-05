@@ -2,9 +2,9 @@
 
 A multi-platform marketplace of agent skills, rules, and other constructs. Install natively on Claude Code, Codex, and Gemini with one-command GitHub fetches; import directly from GitHub into Cursor's team marketplace (IDE); or clone-and-open on Windsurf and Devin. Operator-authored source content lives under `src/`; the generator (`scripts/`) emits platform-native manifests (`.claude-plugin/`, `.codex-plugin/`, `.cursor-plugin/`) plus a shared `.agents/skills/` mirror that Windsurf, Cursor, and Devin all read natively.
 
-> **2026-05-28 expanded reference set.** The marketplace currently ships **27 plugin entries**: 26 Claude-supported individuals (each construct demonstrates paired `example-single` + `example-multi` layouts; hooks expand further to nine per-event references plus an all-events `example-multi`) plus the `bundle-examples` catalog bundle. One additional `rule-example` is emitted for Cursor/Windsurf/Codex (not a Claude plugin component per F8). The 26 production skills and 21 production rules that previously shipped were archived under `docs/archive/skills-pre-stable-2026-05-26/` and `docs/archive/rules-pre-stable-2026-05-26/` and are re-added one at a time after per-platform verification. See `CHANGELOG.md` for the full transition note.
+> **2026-05-28 expanded reference set.** The marketplace currently ships a catalog of plugin entries: Claude-supported individuals (each construct demonstrates paired `example-single` + `example-multi` layouts; hooks expand further to per-event references plus an all-events `example-multi`) plus the `bundle-examples` catalog bundle. One additional `rule-example` is emitted for Cursor/Windsurf/Codex (not a Claude plugin component per F8). The production skills and rules that previously shipped were archived under `docs/archive/skills-pre-stable-2026-05-26/` and `docs/archive/rules-pre-stable-2026-05-26/` and are re-added one at a time after per-platform verification. See `CHANGELOG.md` for the full transition note.
 
-> **Stability — Claude-first.** The reference set is stable and verified on Claude Code (the QA'd platform). The other five platforms emit, with parity tracked in [`docs/ROADMAP.md`](docs/ROADMAP.md) (#9–#14). New construct PRs are accepted now and validated Claude-first — drop a construct under `src/<construct>/`, open a PR, and on merge it is available to anyone pulling the marketplace.
+> **Stability — Claude-first.** The reference set is stable and verified on Claude Code (the QA'd platform). The other platforms emit, with parity tracked in [`docs/ROADMAP.md`](docs/ROADMAP.md) (#9–#14). New construct PRs are accepted now and validated Claude-first — drop a construct under `src/<construct>/`, open a PR, and on merge it is available to anyone pulling the marketplace.
 
 ## Table of Contents
 
@@ -37,11 +37,11 @@ At-a-glance: which platforms install this marketplace directly from a GitHub URL
 
 ## Quick Start
 
-Pick your platform, copy the block, and you're running. For end-to-end management (install, list, enable/disable, uninstall, scope semantics) across all six platforms plus the `agents` CLI, see [`docs/USER_GUIDE.md`](docs/USER_GUIDE.md) — one document instead of chasing each vendor's docs separately.
+Pick your platform, copy the block, and you're running. For end-to-end management (install, list, enable/disable, uninstall, scope semantics) across all the platforms plus the `agents` CLI, see [`docs/USER_GUIDE.md`](docs/USER_GUIDE.md) — one document instead of chasing each vendor's docs separately.
 
 ### Claude Code
 
-Register the marketplace and install. The `bundle-examples` plugin auto-installs every reference example (one per construct type, plus the two skill examples):
+Register the marketplace and install. The `bundle-examples` plugin auto-installs every reference example (one per construct type, plus the paired skill examples):
 
 ```bash
 claude plugin marketplace add DgxSparkLabs/marketplace
@@ -71,7 +71,7 @@ claude plugin list --json --available \
        '[.. | objects | select(.marketplaceName? == $mp)]'
 ```
 
-Invoke. Every plugin's slash form follows `/dgxsparklabs-<construct>-<plugin>:<component>`. A representative sample of the 27 entries the marketplace ships:
+Invoke. Every plugin's slash form follows `/dgxsparklabs-<construct>-<plugin>:<component>`. A representative sample of the entries the marketplace ships:
 
 | Installed plugin | Slash form | What it does |
 |---|---|---|
@@ -189,7 +189,7 @@ The CLI supports all `.agents/` constructs (skill, rule, agent, hook, mcp, comma
 
 ## Construct Types Available
 
-Every Claude-supported construct ships paired `example-single` + `example-multi` reference plugins so contributors can study both layouts. Hooks expand further to nine per-event reference plugins plus an all-events `example-multi`. Production skills and rules were archived 2026-05-26 — see the expanded-reference-set note above and `CHANGELOG.md`.
+Every Claude-supported construct ships paired `example-single` + `example-multi` reference plugins so contributors can study both layouts. Hooks expand further to the per-event reference plugins plus an all-events `example-multi`. Production skills and rules were archived 2026-05-26 — see the expanded-reference-set note above and `CHANGELOG.md`.
 
 | Type | Prefix | Description | Reference plugins |
 |------|--------|-------------|-------|
@@ -197,7 +197,7 @@ Every Claude-supported construct ships paired `example-single` + `example-multi`
 | [rule](src/rules/) | `rule-` | Always-on context loaded every session | `example` (one only — rule is not a Claude plugin component) |
 | [command](src/commands/) | `command-` | Slash command definitions | `example-single` (1 command) + `example-multi` (3 commands) |
 | [agent](src/agents/) | `agent-` | Sub-agent personas | `example-single` (1 agent) + `example-multi` (3 agents) |
-| [hook](src/hooks/) | `hook-` | Event-triggered automation | 9 per-event (`example-userpromptsubmit`, `example-pretooluse`, …) + `example-multi` (all events) |
+| [hook](src/hooks/) | `hook-` | Event-triggered automation | per-event (`example-userpromptsubmit`, `example-pretooluse`, …) + `example-multi` (all events) |
 | [mcp](src/mcp-servers/) | `mcp-` | Model Context Protocol servers | `example-single` (1 server) + `example-multi` (3 servers) |
 | [lsp](src/lsp-servers/) | `lsp-` | Language Server Protocol integrations | `example-single` (1 LSP) + `example-multi` (3 LSPs) |
 | [monitor](src/monitors/) | `monitor-` | Session-start observation hooks | `example-single` (1 monitor) + `example-multi` (3 monitors) |
@@ -224,9 +224,9 @@ These examples show Claude Code's `/plugin install` slash-command syntax (most e
 
 ### Domain bundles — related items grouped
 
-> **2026-05-26 minimal-stable-state.** The 8 skill domain bundles and 5 rule domain bundles that previously lived here were removed alongside the source archive (see CHANGELOG). They will be re-introduced one at a time as production skills and rules return to the marketplace. The cross-construct `bundle-examples` is still available for studying every construct type from a single install.
+> **2026-05-26 minimal-stable-state.** The skill domain bundles and rule domain bundles that previously lived here were removed alongside the source archive (see CHANGELOG). They will be re-introduced one at a time as production skills and rules return to the marketplace. The cross-construct `bundle-examples` is still available for studying every construct type from a single install.
 
-### Cross-construct examples bundle — study all 10 construct types
+### Cross-construct examples bundle — study all the construct types
 
 ```bash
 # One of each construct type, useful for contributors and integrators
@@ -406,7 +406,7 @@ git clone https://github.com/DgxSparkLabs/marketplace
 # Invoke any skill via @skill-name in Cascade chat
 ```
 
-**Skills story:** The generator emits `.agents/skills/<name>/SKILL.md` for every skill via `AgentsPlatform`. Windsurf Cascade picks these up automatically. As of 2026-05-26 the marketplace ships one example skill; production skills return one at a time from `docs/archive/skills-pre-stable-2026-05-26/` as each is re-verified.
+**Skills story:** The generator emits `.agents/skills/<name>/SKILL.md` for every skill via `AgentsPlatform`. Windsurf Cascade picks these up automatically. As of 2026-05-26 the marketplace ships the example skills; production skills return one at a time from `docs/archive/skills-pre-stable-2026-05-26/` as each is re-verified.
 
 **Limitations:** No headless CLI. No install command.
 
@@ -439,7 +439,7 @@ devin skills paths
 devin rules paths
 ```
 
-**Notable behavior:** Devin reads `.cursor/rules/` and `.windsurf/rules/` natively — every rule emitted to those mirror directories is auto-discovered (the marketplace currently ships the one example rule). Skills come from `.agents/skills/` — the cross-platform convergence point shared with Windsurf and Cursor. `devin auth login` says "Log in to Windsurf" — Devin is built on Windsurf/Codeium infrastructure.
+**Notable behavior:** Devin reads `.cursor/rules/` and `.windsurf/rules/` natively — every rule emitted to those mirror directories is auto-discovered (currently the example rules). Skills come from `.agents/skills/` — the cross-platform convergence point shared with Windsurf and Cursor. `devin auth login` says "Log in to Windsurf" — Devin is built on Windsurf/Codeium infrastructure.
 
 ---
 
@@ -472,8 +472,8 @@ marketplace/
 ├── .cursor/  .windsurf/  .devin/ # Cross-platform mirrors (Cursor, Windsurf, Devin)
 ├── scripts/
 │   ├── generate_manifest.py      # Generator entry point (multi-phase orchestrator; see docs/ARCHITECTURE.md)
-│   ├── constructs.py             # 10 Construct classes
-│   ├── platforms.py              # 7 Platform classes (incl. AgentsPlatform)
+│   ├── constructs.py             # Construct classes
+│   ├── platforms.py              # Platform classes (incl. AgentsPlatform)
 │   ├── bundles.py                # Bundle + BundleMember dataclasses
 │   └── utils.py                  # Shared helpers
 └── docs/                         # Architecture docs, platform findings, plans
@@ -489,7 +489,7 @@ uv run scripts/generate_manifest.py
 
 ## Contributing
 
-To add a new construct, see [`docs/ADDING_A_CONSTRUCT.md`](docs/ADDING_A_CONSTRUCT.md). The guide covers all 10 construct types with a step-by-step checklist per type. For the full contributor workflow see [`CONTRIBUTING.md`](docs/CONTRIBUTING.md), and for what's planned next (including per-platform parity status) see [`docs/ROADMAP.md`](docs/ROADMAP.md).
+To add a new construct, see [`docs/ADDING_A_CONSTRUCT.md`](docs/ADDING_A_CONSTRUCT.md). The guide covers the supported construct types with a step-by-step checklist per type. For the full contributor workflow see [`CONTRIBUTING.md`](docs/CONTRIBUTING.md), and for what's planned next (including per-platform parity status) see [`docs/ROADMAP.md`](docs/ROADMAP.md).
 
 ---
 
@@ -497,7 +497,7 @@ To add a new construct, see [`docs/ADDING_A_CONSTRUCT.md`](docs/ADDING_A_CONSTRU
 
 | Document | Purpose |
 |----------|---------|
-| [`docs/USER_GUIDE.md`](docs/USER_GUIDE.md) | End-user reference for managing plugins/extensions (install, list, enable/disable, uninstall, scope) across all 6 platforms + the `agents` CLI |
+| [`docs/USER_GUIDE.md`](docs/USER_GUIDE.md) | End-user reference for managing plugins/extensions (install, list, enable/disable, uninstall, scope) across all the platforms + the `agents` CLI |
 | [`docs/PLATFORMS.md`](docs/PLATFORMS.md) | Per-platform install, support, discovery, and CI reference (Claude/Codex/Gemini/Cursor/Windsurf/Devin/Agents) |
 | [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) | Generator architecture — Construct/Platform/Bundle protocols, generation phases |
 | [`docs/RESUME_HERE.md`](docs/RESUME_HERE.md) | Project orientation for new agents and contributors |

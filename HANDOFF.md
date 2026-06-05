@@ -2,9 +2,9 @@
 
 > **First file to read on re-entry:** [`docs/RESUME_HERE.md`](./docs/RESUME_HERE.md) — 90-second orientation. This document is the longer state tracker + history; it complements RESUME_HERE rather than duplicating it.
 
-> **2026-05-26 minimal-stable-state transition.** The marketplace was reduced to a minimal reference set (was 81 entries). The 26 production skills and 21 production rules that previously shipped were **archived, not deleted**, into `docs/archive/skills-pre-stable-2026-05-26/` and `docs/archive/rules-pre-stable-2026-05-26/`. Source preserved via `git mv` so every commit history is intact. Real content returns one plugin at a time after each is verified across every platform (the current entry count is generated into `docs/INVENTORY.md`). See `CHANGELOG.md` for the full transition rationale.
+> **2026-05-26 minimal-stable-state transition.** The marketplace was reduced to a minimal reference set. The production skills and rules that previously shipped were **archived, not deleted**, into `docs/archive/skills-pre-stable-2026-05-26/` and `docs/archive/rules-pre-stable-2026-05-26/`. Source preserved via `git mv` so every commit history is intact. Real content returns one plugin at a time after each is verified across every platform (the current entry count is generated into `docs/INVENTORY.md`). See `CHANGELOG.md` for the full transition rationale.
 
-**Status (2026-06-03):** `v1.0.0` is published and `main` is green ([release](https://github.com/DgxSparkLabs/marketplace/releases/tag/v1.0.0)). Install: `claude plugin marketplace add DgxSparkLabs/marketplace`. The marketplace is genuinely installable on all 6 platforms via each platform's native mechanism; end-to-end CI verifies registration → enumeration → install → use for the CLI-native platforms (Claude/Codex/Gemini). Ships reference/example plugins (Claude-first, verified); production skills/rules return per `docs/ROADMAP.md` #16–#18.
+**Status (2026-06-03):** `v1.0.0` is published and `main` is green ([release](https://github.com/DgxSparkLabs/marketplace/releases/tag/v1.0.0)). Install: `claude plugin marketplace add DgxSparkLabs/marketplace`. The marketplace is genuinely installable on all the platforms via each platform's native mechanism; end-to-end CI verifies registration → enumeration → install → use for the CLI-native platforms (Claude/Codex/Gemini). Ships reference/example plugins (Claude-first, verified); production skills/rules return per `docs/ROADMAP.md` #16–#18.
 **Doc-consolidation (2026-06-03):** the post-v1.0.0 cleanup landed on `docs/consolidation` — settled research archived under `docs/archive/` (history preserved via `git mv`), the two archive orphans removed, and entry-doc links de-drifted.
 
 ---
@@ -25,23 +25,23 @@ Current inventory — see [`docs/INVENTORY.md`](./docs/INVENTORY.md) (generated,
 - Example skills/rules ship under `src/<construct>/`; pre-stable production content is archived under `docs/archive/skills-pre-stable-2026-05-26/` and `docs/archive/rules-pre-stable-2026-05-26/`.
 - `.claude-plugin/marketplace.json` lists Claude-supported individuals + catalog bundles. Per-construct catch-alls retired 2026-05-27.
 - `.cursor-plugin/marketplace.json` lists Cursor's supported subset (rules + skills + agent + command + hook + mcp).
-- Tests: run all four suites via `uv run scripts/tasks.py test` (`test_marketplace` + `test_schema_fitness` + `test_agents_cli` + `test_tooling`).
+- Tests: run all the suites via `uv run scripts/tasks.py test` (`test_marketplace` + `test_schema_fitness` + `test_agents_cli` + `test_tooling`).
 
 ---
 
-## Completed Work Phases (5 total)
+## Completed Work Phases
 
 ### Phase 1 — Plugin Compliance Migration (DONE)
 Migrated from curl-bash + Textual TUI installer to native Claude Code `/plugin marketplace add`. Built v1 of `scripts/generate_manifest.py`. See [`docs/archive/phase-1-compliance/INVESTIGATION_PLUGIN_DEPENDENCIES.md`](./docs/archive/phase-1-compliance/INVESTIGATION_PLUGIN_DEPENDENCIES.md).
 
 ### Phase 2 — Multi-Platform Validation Implementation (DONE)
-Built 10 `compat-*.yml` workflows + 5 composite actions. All green. Wave 4 promoted Codex/Gemini matrix entries from `continue-on-error: true` to `false`. See [`docs/archive/phase-2-validation/VERIFICATION_REPORT.md`](./docs/archive/phase-2-validation/VERIFICATION_REPORT.md), [`docs/archive/phase-2-validation/FIX_REPORT.md`](./docs/archive/phase-2-validation/FIX_REPORT.md), [`docs/archive/phase-2-validation/FINALIZATION_REPORT.md`](./docs/archive/phase-2-validation/FINALIZATION_REPORT.md).
+Built the `compat-*.yml` workflows + composite actions. All green. Wave 4 promoted Codex/Gemini matrix entries from `continue-on-error: true` to `false`. See [`docs/archive/phase-2-validation/VERIFICATION_REPORT.md`](./docs/archive/phase-2-validation/VERIFICATION_REPORT.md), [`docs/archive/phase-2-validation/FIX_REPORT.md`](./docs/archive/phase-2-validation/FIX_REPORT.md), [`docs/archive/phase-2-validation/FINALIZATION_REPORT.md`](./docs/archive/phase-2-validation/FINALIZATION_REPORT.md).
 
 ### Phase 3 — Examples In Native Folders (DONE)
 Restructured `examples/example-<construct>/` → `<construct>/example/`. Eliminated catalog/code asymmetry. See [`docs/archive/restructure/RESTRUCTURE_REPORT.md`](./docs/archive/restructure/RESTRUCTURE_REPORT.md).
 
 ### Phase 4 — Dependency-Injection Refactor (DONE)
-Refactored generator from procedural per-construct code (~600 lines of special cases) to a strategy-pattern architecture: `scripts/utils.py`, `scripts/constructs.py` (10 Construct classes), `scripts/platforms.py` (initially 6 Platform classes), `scripts/bundles.py`, `scripts/generate_manifest.py` (thin orchestrator, 5 phases). 25 locked decisions in [`docs/archive/di-refactor/PLAN_DI_REFACTOR.md`](./docs/archive/di-refactor/PLAN_DI_REFACTOR.md). Implementation: [`docs/archive/di-refactor/DI_REFACTOR_REPORT.md`](./docs/archive/di-refactor/DI_REFACTOR_REPORT.md). Validation: [`docs/archive/di-refactor/DI_REFACTOR_VALIDATION_REPORT.md`](./docs/archive/di-refactor/DI_REFACTOR_VALIDATION_REPORT.md).
+Refactored generator from procedural per-construct code (~600 lines of special cases) to a strategy-pattern architecture: `scripts/utils.py`, `scripts/constructs.py` (the Construct classes), `scripts/platforms.py` (the Platform classes), `scripts/bundles.py`, `scripts/generate_manifest.py` (thin multi-phase orchestrator). Locked decisions in [`docs/archive/di-refactor/PLAN_DI_REFACTOR.md`](./docs/archive/di-refactor/PLAN_DI_REFACTOR.md). Implementation: [`docs/archive/di-refactor/DI_REFACTOR_REPORT.md`](./docs/archive/di-refactor/DI_REFACTOR_REPORT.md). Validation: [`docs/archive/di-refactor/DI_REFACTOR_VALIDATION_REPORT.md`](./docs/archive/di-refactor/DI_REFACTOR_VALIDATION_REPORT.md).
 
 ### Phase 5 — Cross-Platform Native Install Compliance (DONE — most recent session)
 
@@ -62,14 +62,14 @@ Verification round exposed that the README documented install commands that didn
 
 **Generator changes** (commits 534cfac through 654bfca on the feature branch, merged as `bfb476d`):
 - Extended Platform protocol with `build_plugin_json(construct, name) -> dict`
-- Added `AgentsPlatform` class (7th platform) emitting `.agents/skills/` (read by Windsurf, Cursor, Devin natively)
+- Added `AgentsPlatform` class emitting `.agents/skills/` (read by Windsurf, Cursor, Devin natively)
 - Added per-plugin native manifest emission gated on `platform.supports`:
   - `_generated/<plugin>/.codex-plugin/plugin.json` per Codex-supported plugin
   - `_generated/<plugin>/.cursor-plugin/plugin.json` per Cursor-supported plugin
 - New generator Phase 1.5 (per-plugin manifests), Phase 4.5 (root-level `gemini-extension.json`), Phase 6 (root-level `.cursor-plugin/marketplace.json`)
 - Mirror dir hygiene: `shutil.copytree` ignore patterns exclude cross-platform manifest dirs
 - CI extensions: `compat-marketplace-add.yml` Codex job now asserts enumeration + install; Claude job asserts install + list; `compat-extension.yml` has new `gemini-github-url-install` job
-- 18 new tests in `tests/test_marketplace.py`
+- New tests in `tests/test_marketplace.py`
 
 **End-to-end empirical proof** (real GHA on main, post-merge):
 - Claude install chain (registration → install → list): PASS
@@ -101,13 +101,13 @@ The goal is met. Remaining is polish / future-proofing:
 ```bash
 uv run scripts/generate_manifest.py           # regenerate everything from sources
 uv run scripts/generate_manifest.py --check   # CI gate: drift-detection mode
-uv run scripts/tasks.py test                  # the four test suites (must all pass)
+uv run scripts/tasks.py test                  # the test suites (must all pass)
 ```
 
 For hermetic CI re-verification before pushing:
 
 ```powershell
-# From repo root, runs all 4 verify workflows in Docker containers via act:
+# From repo root, runs all the verify workflows in Docker containers via act:
 docs/archive/phase-5-cross-platform-install/VERIFICATION_2026-05/reproduce.ps1
 ```
 
@@ -139,10 +139,10 @@ marketplace/
 │   ├── workflows/compat-*.yml          Per-construct multi-platform validation
 │   │   - compat-marketplace-add.yml: Claude+Codex registration+enum+install (Phase 5 extensions)
 │   │   - compat-extension.yml: Gemini local install + GitHub URL install (Phase 5 extension)
-│   └── actions/setup-<platform>/ (5)   Composite actions per platform
+│   └── actions/setup-<platform>/       Composite actions per platform
 ├── scripts/
 │   ├── utils.py                        Shared helpers
-│   ├── constructs.py                   10 Construct classes
+│   ├── constructs.py                   Construct classes
 │   ├── platforms.py                    7 Platform classes (Claude, Codex, Gemini, Cursor, Windsurf, Devin, AgentsPlatform)
 │   ├── bundles.py                      Bundle dataclass + load_bundles
 │   ├── generate_manifest.py            Multi-phase orchestrator (phases 1–7; see docs/ARCHITECTURE.md)
@@ -158,16 +158,16 @@ marketplace/
 │   ├── CONSTRUCT_TYPES.md, ADDING_A_CONSTRUCT.md   Reference
 │   ├── SKILL_FORMAT.md, RULE_FORMAT.md  Format references
 │   └── archive/                        Historical arc material (audit trail; preserved via git mv)
-│       ├── di-refactor/                Phase 4 plan + critiques + report + validation (5 files)
-│       ├── phase-1-compliance/         Phase 1 plan + goal + implementer prompt + dependency investigation (4 files)
-│       ├── phase-2-validation/         Phase 2 CI plan + 3 cycle reports + catalog + org-policy investigation (7 files)
+│       ├── di-refactor/                Phase 4 plan + critiques + report + validation
+│       ├── phase-1-compliance/         Phase 1 plan + goal + implementer prompt + dependency investigation
+│       ├── phase-2-validation/         Phase 2 CI plan + cycle reports + catalog + org-policy investigation
 │       ├── phase-5-cross-platform-install/  Phase 5 plan + VERIFICATION_2026-05/ tree (logs, workflows, reports, reproduce.ps1)
-│       ├── empirical-cli-findings/     Phase 2 raw per-platform CLI research (6 files)
+│       ├── empirical-cli-findings/     Phase 2 raw per-platform CLI research
 │       ├── restructure/                RESTRUCTURE_REPORT (Phase 3 outcome)
 │       ├── processes/                  REENTRY_TEST_PROTOCOL (orientation-kit test process)
 │       ├── consolidation-2026-05/      DOC_INVENTORY_2026-05-24.md (this consolidation arc)
 │       ├── claude-tmux-qa-2026-06/     2026-06 live-tmux construct QA notes
-│       ├── research-market-intel-2026-05/  Archived market-intelligence library (12 rounds, 107 files)
+│       ├── research-market-intel-2026-05/  Archived market-intelligence library
 │       ├── naming-conventions-2026-05-26/ shared-namespace-2026-05-27/ multi-instance-claude-only-2026-05-27/ qa-bug-fixes-2026-05/  Settled research arcs
 │       ├── CONTRIBUTING_pre-consolidation.md  Pre-rewrite copy of CONTRIBUTING.md
 │       └── pre-1.0-pitfalls.md         Pre-DI-refactor pitfalls knowledge base
@@ -181,12 +181,12 @@ marketplace/
 
 - **Sources of truth**: `MARKETPLACE.toml`, `catalog.toml`, source content under `src/<construct>/<name>/` (cd7a7d8 reorg). Humans edit these.
 - **Generated**: `_generated/`, `.codex/`, `.gemini/`, `.cursor/`, `.windsurf/`, `.devin/`, `.agents/`, `.claude-plugin/marketplace.json`, `.cursor-plugin/marketplace.json`, `gemini-extension.json` (root). Generator produces all from sources.
-- **Construct classes** (10, in `scripts/constructs.py`) encapsulate per-construct build + emit. New construct = new class + registry entry.
-- **Platform classes** (7, in `scripts/platforms.py`) encapsulate per-platform mirror + `build_plugin_json` + `supports`. New platform = new class + registry entry.
+- **Construct classes** (in `scripts/constructs.py`) encapsulate per-construct build + emit. New construct = new class + registry entry.
+- **Platform classes** (in `scripts/platforms.py`) encapsulate per-platform mirror + `build_plugin_json` + `supports`. New platform = new class + registry entry.
 - **`supports`-gated emission** (Phase 5 / Decision B2): per-platform per-plugin manifests are written only where `type(construct) in platform.supports`. Adding a platform/construct automatically updates manifest emission via the protocol; no special cases.
 - **Bundles**: catalog only (`catalog.toml [bundle.*]` → Phase 2a). Per-construct code-generated catch-alls (Phase 2b) retired 2026-05-27 — they cluttered the marketplace listing without curation value.
 - **Rules**: not a Claude plugin component (F8). Claude reads them from `.claude/rules/` via its memory subsystem — copy `src/rules/<name>/rule.md` in; Cursor/Codex/Windsurf get generated mirrors. See `docs/RULE_FORMAT.md`.
-- **Multi-platform validation**: 10 compat workflows on push/PR; Phase 5 added enumeration + install assertions for Claude/Codex/Gemini. Verified end-to-end on main at `4b00faa`.
+- **Multi-platform validation**: the compat workflows on push/PR; Phase 5 added enumeration + install assertions for Claude/Codex/Gemini. Verified end-to-end on main at `4b00faa`.
 
 ---
 
@@ -211,7 +211,7 @@ See [`docs/ADDING_A_CONSTRUCT.md`](./docs/ADDING_A_CONSTRUCT.md). General workfl
 2. Edit the copied content
 3. (Optional) Add to a bundle in `catalog.toml` — bundles are optional curation; a construct is installable without bundle membership (the requirement was removed)
 4. `uv run scripts/generate_manifest.py`
-5. Run the test suites: `uv run scripts/tasks.py test` (all four)
+5. Run the test suites: `uv run scripts/tasks.py test` (all of them)
 6. Commit (no AI co-author attribution)
 
 The new per-platform per-plugin manifests (`.codex-plugin/`, `.cursor-plugin/`) are auto-generated; you don't write them by hand.

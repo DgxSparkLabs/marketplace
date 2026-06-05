@@ -17,7 +17,7 @@ my-rule/
     └── cursor.md       # Cursor format (alwaysApply: true)
 ```
 
-The generator (`scripts/generate_manifest.py`) copies `rule.md` into `_generated/rule-<name>/rules/<name>.md` so the per-platform Cursor/Codex manifests can point at it. Rules are **not** a Claude plugin component, so no `plugin.json` or `activate.sh` is emitted — on Claude Code you copy the rule into `.claude/rules/` yourself (see Installation Mechanism below). See [[ADDING_A_CONSTRUCT]] for the workflow (the single contributor walkthrough covers rules along with the other 9 construct types).
+The generator (`scripts/generate_manifest.py`) copies `rule.md` into `_generated/rule-<name>/rules/<name>.md` so the per-platform Cursor/Codex manifests can point at it. Rules are **not** a Claude plugin component, so no `plugin.json` or `activate.sh` is emitted — on Claude Code you copy the rule into `.claude/rules/` yourself (see Installation Mechanism below). See [[ADDING_A_CONSTRUCT]] for the workflow (the single contributor walkthrough covers rules along with the other construct types).
 
 ---
 

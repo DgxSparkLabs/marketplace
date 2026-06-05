@@ -1,6 +1,6 @@
 # Adding a New Plugin (Skill, Rule, Command, ...)
 
-The marketplace supports 10 plugin construct types. The contribution workflow is identical for each — copy the example, edit the content, add to a bundle, regenerate, test, commit.
+The marketplace supports the full set of plugin construct types. The contribution workflow is identical for each — copy the example, edit the content, add to a bundle, regenerate, test, commit.
 
 ## Quick start — three patterns, pick one
 
@@ -232,7 +232,7 @@ The walked example: the marketplace already ships `skills/example/` as a multi-s
 
 | Fragment | Defined at | What it does |
 |---|---|---|
-| `skill-` (the **install** construct prefix) | `scripts/constructs.py` — `prefix = "skill"` inside `class SkillConstruct` | Literal string. Used by the generator to build the `_generated/<plugin>/` directory name and the marketplace.json `plugins[].name` entry. Each of the 10 construct classes has its own `prefix` attribute. |
+| `skill-` (the **install** construct prefix) | `scripts/constructs.py` — `prefix = "skill"` inside `class SkillConstruct` | Literal string. Used by the generator to build the `_generated/<plugin>/` directory name and the marketplace.json `plugins[].name` entry. Each construct class has its own `prefix` attribute. |
 | `example` (the directory name) | Filesystem — `skills/example/` is the directory. Discovered by `scripts/utils.py` `scan_source_dir`. | Any kebab-case subdir of `skills/` becomes a candidate plugin. No central registry. |
 | `skill-example` (install-time plugin name) | Composed in `scripts/generate_manifest.py` — `plugin_dir = GENERATED / f"{construct.prefix}-{name}"`. The directory NAME is what `_make_marketplace_entry` reads via `plugin_dir.name` to populate `marketplace.json` `plugins[].name`. | One f-string. The on-disk dir `_generated/skill-example/` and the marketplace entry `name` are guaranteed to match. |
 | `@` (separator) | Claude CLI convention. Per [code.claude.com/docs/en/plugins](https://code.claude.com/docs/en/plugins). | Splits `<plugin>@<marketplace>` at install time. |
@@ -358,7 +358,7 @@ Cursor / Windsurf / Codex / Gemini still install rule plugins via their respecti
 
 ## Architecture context
 
-- `scripts/constructs.py` — the 10 Construct classes. Each knows how to build plugin.json and emit the generated plugin directory.
+- `scripts/constructs.py` — the Construct classes. Each knows how to build plugin.json and emit the generated plugin directory.
 - `scripts/platforms.py` — the 7 Platform classes (Claude, Codex, Gemini, Cursor, Windsurf, Devin, Agents). Each knows which constructs it mirrors and how.
 - `scripts/bundles.py` — Bundle loader/parser for `catalog.toml`.
 - `scripts/utils.py` — shared helpers.

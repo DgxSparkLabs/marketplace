@@ -11,10 +11,10 @@ status: live
 
 ## TL;DR — where we are
 
-- **Done:** PRs #3–#9 landed. Marketplace reduced to a minimal reference set across 10 construct types (current count in `docs/INVENTORY.md`, generated/authoritative). Claude verified clean (9/9 hermetic findings PASS, F4 deferred). Hermetic Claude CI runs on every PR.
+- **Done:** PRs #3–#9 landed. Marketplace reduced to a minimal reference set across the supported construct types (current count in `docs/INVENTORY.md`, generated/authoritative). Claude verified clean (all hermetic findings PASS, F4 deferred). Hermetic Claude CI runs on every PR.
 - **Now:** Next platform's QA cycle. Recommended start: **Cursor IDE** (biggest emission surface delta).
-- **Sequencing constraint:** all 6 platforms must verify clean on the minimal example set before any real skill or rule returns from `docs/archive/`.
-- **What the constraint gates:** this 6-platform-parity sequencing gates RE-ADDING the archived real skills/rules (#16–#18) — it does **not** gate accepting *new* construct PRs. New constructs are accepted now and validated Claude-first; the other 5 platforms still emit and their parity is tracked here.
+- **Sequencing constraint:** all the platforms must verify clean on the minimal example set before any real skill or rule returns from `docs/archive/`.
+- **What the constraint gates:** this platform-parity sequencing gates RE-ADDING the archived real skills/rules (#16–#18) — it does **not** gate accepting *new* construct PRs. New constructs are accepted now and validated Claude-first; the other platforms still emit and their parity is tracked here.
 
 ## Status legend
 
@@ -31,21 +31,21 @@ status: live
 
 | # | Task | Artifact |
 |---|---|---|
-| 1 | `[DONE]` Doc consolidation: 45 docs → hub-and-spoke masters | PR #3 |
+| 1 | `[DONE]` Doc consolidation: scattered docs → hub-and-spoke masters | PR #3 |
 | 2 | `[DONE]` Platform-feature-routing refactor + `agents` CLI shim | PR #4 |
-| 3 | `[DONE]` Cross-platform emission bug fixes (6 example plugins) | PR #5 |
+| 3 | `[DONE]` Cross-platform emission bug fixes (example plugins) | PR #5 |
 | 4 | `[DONE]` Claude QA + `docs/USER_GUIDE.md` | PR #6 |
 | 5 | `[DONE]` `TEST_YOURSELF.md` branch-staleness fix | PR #7 |
 | 6 | `[DONE]` Hermetic Claude stub + CI workflow (F5/F7/F9 auto-verify) | PR #8 |
-| 7 | `[DONE]` Minimal-stable transition: archive 26 skills + 21 rules; entries 81 → 19 | PR #9 @ `1237ec4` |
+| 7 | `[DONE]` Minimal-stable transition: archive the real skills + rules; reduce to the minimal entry set | PR #9 @ `1237ec4` |
 
 ## Active arc — per-platform QA cycles on minimal-stable set
 
-Each platform must pass its `docs/TEST_YOURSELF.md` cells on the 10 example plugins. Same depth as the Claude QA arc: find bugs, fix via PR, document Known Issues, defer interactive-only cells.
+Each platform must pass its `docs/TEST_YOURSELF.md` cells on the example plugins. Same depth as the Claude QA arc: find bugs, fix via PR, document Known Issues, defer interactive-only cells.
 
 | # | Task | Status | Blocker | Done when |
 |---|---|---|---|---|
-| 8 | Claude Code QA cycle | `[DONE]` | — | 9/9 hermetic PASS, F4 deferred |
+| 8 | Claude Code QA cycle | `[DONE]` | — | all hermetic findings PASS, F4 deferred |
 | 9 | **Cursor IDE QA cycle** | `[NEXT]` | — | `compat-cursor-ide` cells pass; bugs landed |
 | 10 | Cursor CLI QA cycle | `[BLOCKED]` | #9 | `.agents/` + cursor-agent skills work |
 | 11 | Gemini CLI QA cycle | `[BLOCKED]` | #10 | Extensions install + hook conversion verified |
@@ -63,9 +63,9 @@ Each platform must pass its `docs/TEST_YOURSELF.md` cells on the 10 example plug
 
 | # | Task | Status | Blocker | Done when |
 |---|---|---|---|---|
-| 16 | Pick first real skill from `docs/archive/skills-pre-stable-*/`; re-add + cross-platform verify | `[BLOCKED]` | #9–14 green | Works on all 6 platforms, no regressions |
-| 17 | Continue re-adding real skills | `[BLOCKED]` | #16 | All 26 either restored or explicitly retired |
-| 18 | Re-add real rules (Claude-deprecated; verify on Cursor/Codex/Gemini/Windsurf/Devin) | `[BLOCKED]` | #17 (or parallel) | All 21 either restored or explicitly retired |
+| 16 | Pick first real skill from `docs/archive/skills-pre-stable-*/`; re-add + cross-platform verify | `[BLOCKED]` | #9–14 green | Works on all the platforms, no regressions |
+| 17 | Continue re-adding real skills | `[BLOCKED]` | #16 | All the archived skills either restored or explicitly retired |
+| 18 | Re-add real rules (Claude-deprecated; verify on Cursor/Codex/Gemini/Windsurf/Devin) | `[BLOCKED]` | #17 (or parallel) | All the archived rules either restored or explicitly retired |
 
 ## Infrastructure follow-ups
 
@@ -81,7 +81,7 @@ Each platform must pass its `docs/TEST_YOURSELF.md` cells on the 10 example plug
 | 39 | **Gemini — per-skill mirror flattening** in `GeminiPlatform.emit` for multi-instance skill plugins | `[BLOCKED]` | Blocker: #11 Gemini QA. The current `shutil.copytree` produces nested mirrors that Gemini discovery doesn't recurse into |
 | 40 | **Windsurf — per-skill mirror flattening** (via the `.windsurf/skills/` mirror) | `[BLOCKED]` | Blocker: #12 Windsurf QA |
 | 41 | **Devin — per-skill mirror flattening** (via the `.agents/skills/` mirror Devin reads; `.devin/skills/` retired 2026-05-25) | `[BLOCKED]` | Blocker: #13 Devin QA |
-| 42 | **`.agents/` shim — per-skill mirror flattening** in `AgentsPlatform.emit` (consumed by Cursor CLI + Windsurf + Devin via convergence path) | `[BLOCKED]` | Blocker: any of #10/#12/#13/#14. Highest leverage fix because 3 platforms read from `.agents/`. |
+| 42 | **`.agents/` shim — per-skill mirror flattening** in `AgentsPlatform.emit` (consumed by Cursor CLI + Windsurf + Devin via convergence path) | `[BLOCKED]` | Blocker: any of #10/#12/#13/#14. Highest leverage fix because multiple platforms read from `.agents/`. |
 
 ## Housekeeping — pre-existing untracked state
 
@@ -100,8 +100,8 @@ Each platform must pass its `docs/TEST_YOURSELF.md` cells on the 10 example plug
 |---|---|---|---|
 | 28 | `mcp-example` plugin alignment (three-name mismatch) | `[DONE]` | PR #10 — marketplace + plugin.json + server key all align as `mcp-example`/`example` family |
 | 29 | `skill-example` `name:` field — keep `/example-skill` or shorten to `/example`? | `[DONE]` | PR #10 — SKILL.md `name:` is now `lab-notebook`. Slash form `/skill-example:lab-notebook` (proven via Docker research). |
-| 33 | **Systemic name-chain mismatch across 9 example plugins** (Scheme B+) | `[DONE]` | PR #10 — empirical Docker research (`docs/archive/naming-conventions-2026-05-26/`) revealed the visible mismatch was narrower than feared (source-vs-marketplace; never reaches `/plugins`), and the real awkward slash form was just `/skill-example:example-skill` doubled. Applied Scheme B+: align 9 `plugin.json` names + rename SKILL.md `name:` to `lab-notebook` + rename monitor `example-disk` to `disk-usage`. |
-| 34 | Extend per-construct reference cards to remaining 5 platforms in `docs/TEST_YOURSELF.md` | `[BACKLOG]` | Claude section now has exact-strings-to-type + expected-output card (PR #10). Cursor IDE / Cursor CLI / Gemini / Windsurf / Devin / agents CLI sections still terse — apply same depth as part of each platform's QA cycle (#9–#14). |
+| 33 | **Systemic name-chain mismatch across the example plugins** (Scheme B+) | `[DONE]` | PR #10 — empirical Docker research (`docs/archive/naming-conventions-2026-05-26/`) revealed the visible mismatch was narrower than feared (source-vs-marketplace; never reaches `/plugins`), and the real awkward slash form was just `/skill-example:example-skill` doubled. Applied Scheme B+: align the `plugin.json` names + rename SKILL.md `name:` to `lab-notebook` + rename monitor `example-disk` to `disk-usage`. |
+| 34 | Extend per-construct reference cards to the remaining platforms in `docs/TEST_YOURSELF.md` | `[BACKLOG]` | Claude section now has exact-strings-to-type + expected-output card (PR #10). Cursor IDE / Cursor CLI / Gemini / Windsurf / Devin / agents CLI sections still terse — apply same depth as part of each platform's QA cycle (#9–#14). |
 | 43 | **Trim/split `docs/TEST_YOURSELF.md`** (2751 lines) — non-Claude sections are stale post-Claude-first; keep the Claude path, prune or split out the rest | `[BACKLOG]` | Deferred from the 2026-06 doc-consolidation (OQ3). Also repair the pre-existing intra-doc TOC heading-links the bundled LSP flags (lines 30–38). |
 
 ## Durable methodology threads

@@ -5,13 +5,13 @@ This is a Claude Code plugin marketplace. Not a software project — no build sy
 ## Where to find things
 
 - `README.md` — user-facing install + Quick Start.
-- `HANDOFF.md` — long-form project state tracker (5 completed phases, layout, next steps).
+- `HANDOFF.md` — long-form project state tracker (completed phases, layout, next steps).
 - `docs/RESUME_HERE.md` — 30-second re-entry orientation.
 - `docs/CONTRIBUTING.md` — contributor workflow + conventions + output discipline (the canonical "how do I work in this repo" doc — see it before duplicating content here).
 - `docs/ARCHITECTURE.md` — generator architecture: Construct + Platform protocols, generation phases.
 - `docs/PLATFORMS.md` — per-platform install/support reference.
-- `docs/ADDING_A_CONSTRUCT.md` — the single contributor walkthrough for all 10 construct types.
-- `docs/CONSTRUCT_TYPES.md` — reference table for the 10 constructs.
+- `docs/ADDING_A_CONSTRUCT.md` — the single contributor walkthrough for all the construct types.
+- `docs/CONSTRUCT_TYPES.md` — reference table for the supported construct types.
 
 For project-wide conventions and contributor discipline, see `docs/CONTRIBUTING.md`.
 
@@ -33,7 +33,7 @@ This file (`AGENTS.md`) is the per-project AI-agent rule set: only project-speci
 Run the test suite to validate all skills, rules, manifests, and generator drift:
 
 ```bash
-uv run scripts/tasks.py test            # all four suites
+uv run scripts/tasks.py test            # all the suites
 uv run tests/test_marketplace.py        # just the marketplace suite
 uv run tests/test_marketplace.py -v     # verbose
 uv run tests/test_marketplace.py -k rule  # only rule tests
@@ -52,7 +52,7 @@ For full per-platform act verification (Codex/Gemini/Cursor/Claude install + enu
 
 ## Research Directory
 
-The market-intelligence research library (12 rounds, 100+ files) is **archived** at
+The market-intelligence research library (many rounds across many files) is **archived** at
 [`docs/archive/research-market-intel-2026-05/`](docs/archive/research-market-intel-2026-05/). It is
 historical context for the project's direction — not load-bearing for the v1.0.0 reference
 marketplace — and is no longer actively maintained. A separate, gitignored local stash lives at

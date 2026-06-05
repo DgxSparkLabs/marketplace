@@ -6,13 +6,13 @@ status: live
 
 # Platforms
 
-This marketplace targets six AI coding platforms — Claude Code, Codex, Gemini, Cursor, Windsurf, and Devin. Three of them (Claude, Codex, Gemini) support a one-command GitHub install; the other three install via IDE import or `git clone`. A shared `.agents/skills/` directory is read natively by Windsurf, Cursor, and Devin — the only true cross-platform convergence point. For end-user install commands, start with `README.md`. This document is the canonical reference for how each platform installs, how it discovers content, what the CI workflows assert about it, and where the gaps are.
+This marketplace targets six AI coding platforms — Claude Code, Codex, Gemini, Cursor, Windsurf, and Devin. Three of them (Claude, Codex, Gemini) support a one-command GitHub install; the rest install via IDE import or `git clone`. A shared `.agents/skills/` directory is read natively by Windsurf, Cursor, and Devin — the only true cross-platform convergence point. For end-user install commands, start with `README.md`. This document is the canonical reference for how each platform installs, how it discovers content, what the CI workflows assert about it, and where the gaps are.
 
 > **2026-05-28 multi-instance scope (non-Claude platforms in active QA cycles).** Skill plugins can now use either a solo layout (`<plugin>/SKILL.md`) or a multi-skill layout (`<plugin>/skills/<skill>/SKILL.md`). The multi-instance source layout is **verified on Claude only** as of 2026-05-28. On the other five platforms (Cursor IDE, Codex, Gemini, Windsurf, Devin) and the `.agents/` cross-platform shim, multi-skill discovery is **unverified — paused until each platform's QA cycle lands**. The generator still emits content to the per-platform mirrors, but the nested `skills/<skill>/SKILL.md` shape may not be discovered by downstream consumers. See ROADMAP #37-#42 for the per-platform follow-up tasks and the NOTE comments in `scripts/platforms.py` for the source-level acknowledgement.
 
 ## How to read these docs
 
-This file is one of three hub docs in the pyramid:
+This file is one of the hub docs in the pyramid:
 
 - `README.md` — user-facing entry point (install + Quick Start)
 - `[[PLATFORMS]]` (this file) — per-platform reference
@@ -25,7 +25,7 @@ The four detail-reference docs ([[ADDING_A_CONSTRUCT]], [[CONSTRUCT_TYPES]], [[R
 
 | Platform | Install command (one-liner) | Native CLI? | Plugin install via CLI? | Skills auto-discovery? | Status |
 |---|---|:--:|:--:|:--:|---|
-| Claude Code | `/plugin marketplace add DgxSparkLabs/marketplace` | yes | yes (9 of 10 constructs — rules via filesystem) | via plugin install | fully working |
+| Claude Code | `/plugin marketplace add DgxSparkLabs/marketplace` | yes | yes (all constructs except rule — rules via filesystem) | via plugin install | fully working |
 | Codex | `codex plugin marketplace add DgxSparkLabs/marketplace` | yes | yes | via plugin install | fully working |
 | Gemini | `gemini extensions install https://github.com/DgxSparkLabs/marketplace --consent` | yes | extensions, not plugins | `.gemini/skills/` (via extension) | fully working |
 | Cursor | Dashboard → Settings → Plugins → Import → paste GitHub URL | yes (`agent`) | no — IDE-only install | `.agents/skills/` | IDE install only |
@@ -101,7 +101,7 @@ Bundles auto-install their dependencies. The install output reports `(+ N depend
 | rule | **NO (filesystem-only)** | Rules are not a Claude plugin component per `code.claude.com/docs/en/plugins-reference#plugin-components-reference` (fetched 2026-05-26). Claude consumes rules via its memory subsystem at `.claude/rules/*.md` (project) and `~/.claude/rules/*.md` (user) per `code.claude.com/docs/en/memory#organize-rules-with-claude-rules`. `RuleConstruct` was removed from `ClaudeCodePlatform.supports` on 2026-05-26 — see "Claude rule discovery" below for the install path. |
 | command, agent, hook, mcp, lsp, monitor, output-style, theme | yes | native plugin install |
 
-Nine construct types declared in `ClaudeCodePlatform.supports` at `scripts/platforms.py:128-132` (RuleConstruct intentionally absent — see the inline comment at `scripts/platforms.py:112-123`).
+The construct types declared in `ClaudeCodePlatform.supports` at `scripts/platforms.py:128-132` (RuleConstruct intentionally absent — see the inline comment at `scripts/platforms.py:112-123`).
 
 ### Claude rule discovery
 
@@ -775,7 +775,7 @@ Note all `gemini` list commands need `2>&1` because Gemini writes list output to
 ## References
 
 - [[archive/phase-5-cross-platform-install/VERIFICATION_2026-05/SUMMARY]] — ground-truth synthesis (most current single doc)
-- [[archive/phase-5-cross-platform-install/VERIFICATION_2026-05/empirical_act_verification]] — per-claim act-based evidence (18 claims)
+- [[archive/phase-5-cross-platform-install/VERIFICATION_2026-05/empirical_act_verification]] — per-claim act-based evidence
 - [[archive/phase-5-cross-platform-install/VERIFICATION_2026-05/cursor]] — Cursor IDE + CLI May 2026 WebFetch research
 - [[archive/empirical-cli-findings/devin]] — Devin CLI subcommand tree
 - [[archive/empirical-cli-findings/windsurf]] — Windsurf CLI verification (no CLI exists)
@@ -783,7 +783,7 @@ Note all `gemini` list commands need `2>&1` because Gemini writes list output to
 - [[archive/empirical-cli-findings/gemini]] — Gemini npm metadata
 - [[ARCHITECTURE]] — generator architecture (Construct + Platform protocols, generation phases)
 - [[CONTRIBUTING]] — how to add things and test
-- [[CONSTRUCT_TYPES]] — 10-construct reference table
+- [[CONSTRUCT_TYPES]] — construct-type reference table
 - [[RULE_FORMAT]] — rule format spec
 - [[SKILL_FORMAT]] — SKILL.md format spec
 - [[ADDING_A_CONSTRUCT]] — primary contributor walkthrough

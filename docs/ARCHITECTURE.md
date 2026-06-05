@@ -13,8 +13,8 @@ The generator turns canonical source content (skills, rules, ...) into platform-
 Start with the section that matches what you want to do:
 
 - **Adding a new construct type** (a new plugin kind like `skill` or `rule`): jump to *The two protocols → Construct*, then *How to extend → Adding a new construct type*.
-- **Adding a new platform** (a new emission target like Claude or Codex): jump to *The two protocols → Platform*, then *The seven platform classes* and *How to extend → Adding a new platform*.
-- **Understanding why an output file exists**: read *The six generation phases* end-to-end; each phase output is annotated with its trigger.
+- **Adding a new platform** (a new emission target like Claude or Codex): jump to *The two protocols → Platform*, then *The platform classes* and *How to extend → Adding a new platform*.
+- **Understanding why an output file exists**: read *The generation phases* end-to-end; each phase output is annotated with its trigger.
 - **Debugging a stray file in the wrong directory**: jump to *Mirror hygiene*.
 - **Writing CI assertions**: read *The `supports` gate*, then cross-check against the CI tables in [[PLATFORMS]].
 - **Just trying to orient**: read *The two protocols* and *Things worth knowing*, in that order.
@@ -43,7 +43,7 @@ class Construct(Protocol):
 
 Ten concrete implementations live in the same file: `SkillConstruct`, `RuleConstruct`, `CommandConstruct`, `AgentConstruct`, `HookConstruct`, `MCPConstruct`, `LSPConstruct`, `MonitorConstruct`, `OutputStyleConstruct`, `ThemeConstruct`. Each knows where its source content lives and how to build its plugin.json shape. The `CONSTRUCTS` registry (a `dict[str, Construct]`) is the single source of truth.
 
-For the user-facing reference table of all 10 construct types, see [[CONSTRUCT_TYPES]].
+For the user-facing reference table of the supported construct types, see [[CONSTRUCT_TYPES]].
 
 ### Platform
 
@@ -64,7 +64,7 @@ class Platform(Protocol):
         type(construct) in self.supports. Return {} to skip emission."""
 ```
 
-`build_plugin_json` is the mechanism for emitting per-plugin native manifests at `_generated/<plugin>/.<platform>-plugin/plugin.json` only where the platform actually hosts that construct type. Seven concrete implementations live in `scripts/platforms.py`; the `PLATFORMS` registry at `scripts/platforms.py:344-352` is the single source of truth.
+`build_plugin_json` is the mechanism for emitting per-plugin native manifests at `_generated/<plugin>/.<platform>-plugin/plugin.json` only where the platform actually hosts that construct type. Concrete implementations live in `scripts/platforms.py`; the `PLATFORMS` registry at `scripts/platforms.py:344-352` is the single source of truth.
 
 ## How to extend
 
@@ -106,11 +106,11 @@ Phases run sequentially in `main()` in `scripts/generate_manifest.py`. Reasons t
 
 Phases interact through two shared structures: `marketplace_entries: list[dict]` (Phase 1/2a/2b append; Phase 5 writes) and `individual_plugins: list[tuple[Path, Construct, str]]` (Phase 1 populates; Phase 1.5 and Phase 6 iterate).
 
-## The seven platform classes
+## The platform classes
 
 | Class | File:line | `supports` | Mirror dir | Why it exists |
 |---|---|---|---|---|
-| `ClaudeCodePlatform` | `scripts/platforms.py:102-139` | 9 of 10 constructs (RuleConstruct intentionally excluded per `code.claude.com/docs/en/plugins-reference#plugin-components-reference`, 2026-05-26 — rules are a memory feature, not a plugin component) | none (no separate mirror) | Canonical platform; `marketplace.json` + per-plugin `.claude-plugin/plugin.json` are written by main flow. `build_plugin_json` delegates to the construct so Claude schema stays a single source of truth. |
+| `ClaudeCodePlatform` | `scripts/platforms.py:102-139` | all constructs except rule (RuleConstruct intentionally excluded per `code.claude.com/docs/en/plugins-reference#plugin-components-reference`, 2026-05-26 — rules are a memory feature, not a plugin component) | none (no separate mirror) | Canonical platform; `marketplace.json` + per-plugin `.claude-plugin/plugin.json` are written by main flow. `build_plugin_json` delegates to the construct so Claude schema stays a single source of truth. |
 | `CodexPlatform` | `scripts/platforms.py:128-191` | skill, mcp, hook, agent | `.codex/` | Codex reuses our `.claude-plugin/marketplace.json` (legacy-compatible). Emits `.codex-plugin/plugin.json` per supported plugin. Skill mirror retired (D-1, 2026-05-25); only `.codex/agents/<n>.toml` is emitted to the mirror dir (sub-agent TOML converted from Claude-style markdown via `scripts/converters/md_to_toml.py`). |
 | `GeminiPlatform` | `scripts/platforms.py:194-256` | skill, agent, hook | `.gemini/` | Mirrors skills to `.gemini/skills/`, sub-agents to `.gemini/agents/<n>.md`, and hooks to `.gemini/hooks/hooks.json` (per Gemini extensions reference, 2026-05-25). Emits the repo-level `.gemini/gemini-extension.json` via `emit_extension_manifest` (Phase 4). Returns `{}` from `build_plugin_json` — Gemini's install unit is extensions, not plugins. |
 | `CursorPlatform` | `scripts/platforms.py:259-330` | rule, skill, agent, command, hook, mcp | `.cursor/` | Emits `.cursor/rules/<name>.md` from per-rule format files and `.cursor/agents/<n>.md` for workspace-level sub-agents (Cursor 2.4 schema). Command/Hook/MCP are surfaced via per-plugin `.cursor-plugin/plugin.json` pointer fields (auto-discovered by Cursor). Skills served from `.agents/` — no `.cursor/skills/`. |
@@ -245,12 +245,12 @@ Phase 3 also wipes every `platform.mirror_directory` before re-emitting (`script
 
 ## References
 
-- `scripts/platforms.py:64-352` — Platform protocol + 7 Platform classes + registry
-- `scripts/constructs.py:38-56` — Construct protocol; 10 Construct classes follow
-- `scripts/generate_manifest.py:110-244` — `main()`, the nine-phase orchestrator
+- `scripts/platforms.py:64-352` — Platform protocol + Platform classes + registry
+- `scripts/constructs.py:38-56` — Construct protocol; Construct classes follow
+- `scripts/generate_manifest.py:110-244` — `main()`, the phase orchestrator
 - `scripts/bundles.py` — `Bundle` dataclass + `load_bundles`
 - `scripts/utils.py` — shared helpers (`scan_source_dir`, `_marketplace_*`, `write_plugin_json`)
-- [[CONSTRUCT_TYPES]] — 10-construct reference table
+- [[CONSTRUCT_TYPES]] — construct reference table
 - [[RULE_FORMAT]] — rule authoring + how rules install (Claude memory subsystem; mirrors on other platforms)
 - [[SKILL_FORMAT]] — SKILL.md format spec
 - [[ADDING_A_CONSTRUCT]] — primary contributor walkthrough
