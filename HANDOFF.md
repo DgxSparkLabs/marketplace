@@ -1,31 +1,11 @@
 # Handoff
 
-> **2026-06-01 SESSION END — NEXT: live-tmux verification of the remaining constructs.** The LSP construct
-> was fully built, fixed (incremental-`didChange` bug), made observable (`--always-error` marker + input
-> log), and proven LIVE in the container tmux; it's documented in `docs/TEST_YOURSELF.md` cell 4.8.7 (human
-> walkthrough + agent tmux operator guide). **Continuation prompt:** [`docs/.research/CONTINUATION-construct-tmux-verification.md`](./docs/.research/CONTINUATION-construct-tmux-verification.md)
-> — read it cold to do the same live-tmux proof for command/skill/agent/hook/mcp/monitor/output-style/theme.
-> NOTE: this LSP work + several STRAY non-LSP modified files (`CHANGELOG.md`, `scripts/utils.py`,
-> `src/MARKETPLACE.toml`, two research docs) are **uncommitted** — do not commit blindly; the stray files are
-> not from this work.
-
-> **2026-05-27 SESSION END — NEXT SESSION HAS EXECUTION READY.** Three artifacts at [`docs/research/multi-instance-claude-only-2026-05-27/`](./docs/research/multi-instance-claude-only-2026-05-27/) prepare the next session for direct implementation:
-> 1. [`IMPLEMENTOR_PROMPT.md`](./docs/research/multi-instance-claude-only-2026-05-27/IMPLEMENTOR_PROMPT.md) — self-contained brief for a fresh agent to execute cold.
-> 2. [`PLAN.md`](./docs/research/multi-instance-claude-only-2026-05-27/PLAN.md) — full execution plan (~440 lines, ~2 hours of work).
-> 3. [`OBJECTIVE_CHECKLIST.md`](./docs/research/multi-instance-claude-only-2026-05-27/OBJECTIVE_CHECKLIST.md) — boolean verification checklist for every change.
->
-> **What the next session implements**: revert Path A (shared slash namespace) → adopt multi-instance-capable plugins for Claude only; the 5 non-Claude platforms continue emitting unchanged but their multi-instance correctness is acknowledged-unverified via NOTE comments + ROADMAP follow-ups #37-#42. One commit on the existing PR #10 (currently at 12 commits → 13).
->
-> **First file to read on re-entry:** [`docs/research/multi-instance-claude-only-2026-05-27/IMPLEMENTOR_PROMPT.md`](./docs/research/multi-instance-claude-only-2026-05-27/IMPLEMENTOR_PROMPT.md). That brief contains everything else you need to read.
-
-> **First file to read on re-entry (general project):** [`docs/RESUME_HERE.md`](./docs/RESUME_HERE.md) — 90-second orientation. This document is the longer state tracker; complements RESUME_HERE rather than duplicating it.
+> **First file to read on re-entry:** [`docs/RESUME_HERE.md`](./docs/RESUME_HERE.md) — 90-second orientation. This document is the longer state tracker + history; it complements RESUME_HERE rather than duplicating it.
 
 > **2026-05-26 minimal-stable-state transition.** The marketplace was reduced to 10 reference plugins (one per construct type) + 1 cross-construct examples bundle + 8 catch-all bundles = **19 plugin entries** (was 81). The 26 production skills and 21 production rules that previously shipped were **archived, not deleted**, into `docs/archive/skills-pre-stable-2026-05-26/` and `docs/archive/rules-pre-stable-2026-05-26/`. Source preserved via `git mv` so every commit history is intact. Real content returns one plugin at a time after each is verified across every platform. See `CHANGELOG.md` for the full transition rationale.
 
-**Last updated:** 2026-05-24, after PR #1 merged to main (cross-platform native install compliance).
-**Branch state:** `main` at `4b00faa`. All 11 CI workflows green on main. Feature branch `feat/claude-plugin-compliance` preserved per user direction.
-**Active cleanup branch:** `chore/housekeeping-and-roadmap` (audit-trail commits + footnote drops + this HANDOFF refresh). PR follow-up pending.
-**Net status:** Marketplace is genuinely installable on all 6 platforms via each platform's native mechanism. End-to-end CI assertions verify registration → enumeration → install → use for the CLI-native platforms (Claude/Codex/Gemini). Goal met.
+**Status (2026-06-03):** `v1.0.0` is published and `main` is green ([release](https://github.com/DgxSparkLabs/marketplace/releases/tag/v1.0.0)). Install: `claude plugin marketplace add DgxSparkLabs/marketplace`. The marketplace is genuinely installable on all 6 platforms via each platform's native mechanism; end-to-end CI verifies registration → enumeration → install → use for the CLI-native platforms (Claude/Codex/Gemini). Ships reference/example plugins (Claude-first, verified); production skills/rules return per `docs/ROADMAP.md` #16–#18.
+**Doc-consolidation (2026-06-03):** the post-v1.0.0 cleanup landed on `docs/consolidation` — settled research archived under `docs/archive/` (history preserved via `git mv`), the two archive orphans removed, and entry-doc links de-drifted.
 
 ---
 
@@ -104,7 +84,7 @@ Verification round exposed that the README documented install commands that didn
 
 The goal is met. Remaining is polish / future-proofing:
 
-1. **(In progress) Merge the post-merge cleanup PR** (`docs/post-merge-cleanup` branch) which commits the verification audit trail + drops `--ref` footnotes + refreshes this HANDOFF.md.
+1. **(Done) v1.0.0 published; docs consolidated.** The cross-platform install work and the post-v1.0.0 doc-consolidation (PR #15) both landed. For current priorities (per-platform QA parity, re-adding production content) see [`docs/RESUME_HERE.md`](./docs/RESUME_HERE.md) and [`docs/ROADMAP.md`](./docs/ROADMAP.md).
 
 2. **(Optional) Retire `.devin/skills/` mirror** in favor of `.agents/skills/` alone — Devin reads both per `devin skills paths` empirical evidence; collapse is byte-saving cleanup.
 
@@ -186,11 +166,14 @@ marketplace/
 │       ├── restructure/                RESTRUCTURE_REPORT (Phase 3 outcome)
 │       ├── processes/                  REENTRY_TEST_PROTOCOL (orientation-kit test process)
 │       ├── consolidation-2026-05/      DOC_INVENTORY_2026-05-24.md (this consolidation arc)
-│       ├── ONBOARDING.md, pr1-body.md  Orphans
+│       ├── claude-tmux-qa-2026-06/     2026-06 live-tmux construct QA notes
+│       ├── research-market-intel-2026-05/  Archived market-intelligence library (12 rounds, 107 files)
+│       ├── naming-conventions-2026-05-26/ shared-namespace-2026-05-27/ multi-instance-claude-only-2026-05-27/ qa-bug-fixes-2026-05/  Settled research arcs
 │       ├── CONTRIBUTING_pre-consolidation.md  Pre-rewrite copy of CONTRIBUTING.md
 │       └── pre-1.0-pitfalls.md         Pre-DI-refactor pitfalls knowledge base
-└── research/                           Market intelligence
 ```
+
+(Root `research/` is gone — the market-intelligence library was archived to `docs/archive/research-market-intel-2026-05/`.)
 
 ---
 
@@ -215,7 +198,7 @@ marketplace/
 - No project-level Python deps.
 - `author` in plugin.json is always `{ "name": "...", "url": "..." }`.
 - `source` paths in marketplace.json start with `./`.
-- Commit messages: no AI co-author attribution (see `rules/no-ai-credit/`).
+- Commit messages: no AI co-author attribution (see `docs/archive/rules-pre-stable-2026-05-26/no-ai-credit/`).
 - New verification rounds get their own `docs/VERIFICATION_<YYYY-MM>/` subdirectory.
 
 ---

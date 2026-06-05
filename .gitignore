@@ -7,15 +7,6 @@ __pycache__/
 # Obsidian vault personal config (workspace state, plugin layout, etc.)
 .obsidian/
 
-# Research raw artifacts (intermediate data, not canonical)
-research/raw_scrape_*.txt
-research/raw_kaggle_full_output.txt
-research/nb*_content.txt
-research/batch*_results.md
-research/fetch_notebooks.py
-research/scrape_*.md
-research/scraped_*.md
-
 # Local canonical research stash (107 files, 2 MB).
 # See AGENTS.md "Research Directory" rules. Files preserved on disk
 # but not version-controlled to keep repo lean. Promote individual

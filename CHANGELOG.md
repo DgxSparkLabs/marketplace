@@ -131,7 +131,7 @@ This decoupling means the operator types:
 
 ### Empirical evidence
 
-Two Docker research rounds at `docs/research/shared-namespace-2026-05-27/RESEARCH.md` validated that Claude Code 2.1.152:
+Two Docker research rounds at `docs/archive/shared-namespace-2026-05-27/RESEARCH.md` validated that Claude Code 2.1.152:
 
 1. Accepts multiple plugins sharing one `plugin.json` `name`
 2. Routes slash invocations by `plugin.json` `name` (so `/dgxsparklabs-skill:foo` and `/dgxsparklabs-skill:bar` both resolve from two different plugins under the same namespace)
@@ -157,7 +157,7 @@ The one known degradation: `claude plugin details dgxsparklabs-skill` resolves t
 
 ### Known follow-ups (not blocking merge)
 
-- **Manual TUI verification of tab-completion**: the resolver-internals trace from Probe C (`claude --debug-file`) shows the candidate set is well-formed, but the actual TUI render path was not exercised. Operator runs the 6-step recipe at `docs/research/shared-namespace-2026-05-27/RESEARCH.md` section Probe C before merging PR #10.
+- **Manual TUI verification of tab-completion**: the resolver-internals trace from Probe C (`claude --debug-file`) shows the candidate set is well-formed, but the actual TUI render path was not exercised. Operator runs the 6-step recipe at `docs/archive/shared-namespace-2026-05-27/RESEARCH.md` section Probe C before merging PR #10.
 - **`/agents` TUI behavior with shared namespace** not yet captured empirically — predicted to work per Probe C trace but operator should verify.
 - **Cursor / Codex plugin manifests are untouched** by this change. Their `build_plugin_json` implementations in `scripts/platforms.py` compose names independently. Whether to apply the same shared-namespace pattern there is a separate decision, deferred to each platform's QA cycle.
 
@@ -209,7 +209,7 @@ claude plugin list --json --available \
 
 ## 2026-05-26 — Scheme B+ naming alignment across all example plugins
 
-Empirical Docker research (`docs/research/naming-conventions-2026-05-26/`) revealed that:
+Empirical Docker research (`docs/archive/naming-conventions-2026-05-26/`) revealed that:
 
 1. The `docs/TEST_YOURSELF.md` reference card was wrong about what Claude displays — the generator already rewrites `plugin.json` `name` from `example-<construct>` to `<construct>-example` during emission, so `/plugins` always shows `<construct>-example`, never `example-<construct>`.
 2. The actual awkward slash form was narrowly `/skill-example:example-skill` (doubled "example") and the monitor component `example-disk` — everything else was already clean.
@@ -237,7 +237,7 @@ Each `plugin.json` also had its `homepage` field updated from the obsolete `exam
 
 ### Component renames (Scheme B+ portion — 2 files)
 
-- `skills/example/SKILL.md`: frontmatter `name: example-skill` → `name: lab-notebook`. Slash invocation changes from `/skill-example:example-skill` (doubled) to `/skill-example:lab-notebook` (proven via `docs/research/naming-conventions-2026-05-26/logs/18-rename-proof.log:2-3`). Flat form `/lab-notebook` also resolves.
+- `skills/example/SKILL.md`: frontmatter `name: example-skill` → `name: lab-notebook`. Slash invocation changes from `/skill-example:example-skill` (doubled) to `/skill-example:lab-notebook` (proven via `docs/archive/naming-conventions-2026-05-26/logs/18-rename-proof.log:2-3`). Flat form `/lab-notebook` also resolves.
 - `monitors/example/monitors/monitors.json`: monitor `name: "example-disk"` → `"disk-usage"`. Eliminates the redundant "example" prefix on a config artifact.
 
 ### Documentation corrections
@@ -346,7 +346,7 @@ Per the user's direct words: *"really, really hard to follow all the too many sk
 
 ## 2026-05-26 — Hermetic Claude QA via stub server
 
-The four interactive-auth cells (F4 / F5 / F7 / F9) previously required a human-driven Claude session to verify. Empirical research (`docs/research/claude-headless-qa/RESEARCH.md`) confirmed that Claude Code accepts a custom `ANTHROPIC_BASE_URL` pointing at a local stub server returning Anthropic-shape responses — no remote auth check at startup, no version validation, no licensing phone-home. This PR lands the stub as a canonical test fixture and wires it into CI for automated F5 / F7 / F9 verification on every PR.
+The four interactive-auth cells (F4 / F5 / F7 / F9) previously required a human-driven Claude session to verify. Empirical research (`docs/archive/claude-headless-qa-2026-05-26/RESEARCH.md`) confirmed that Claude Code accepts a custom `ANTHROPIC_BASE_URL` pointing at a local stub server returning Anthropic-shape responses — no remote auth check at startup, no version validation, no licensing phone-home. This PR lands the stub as a canonical test fixture and wires it into CI for automated F5 / F7 / F9 verification on every PR.
 
 ### Added
 
@@ -392,7 +392,7 @@ Hands-on Docker QA on 2026-05-25 surfaced 6 example-plugin bugs and 3 investigat
 - **`docs/TEST_YOURSELF.md` Claude section**: 16 hands-on validation methods covering hook firing per event type (6 sub-validations), slash command namespacing (3 forms: skill, agent, MCP tool), output-style observability with A/B compare, theme distinctiveness check, LSP / monitor / MCP / agent / command verifications, marketplace validate-no-warnings check, and rule-deprecation count check. Each validation specifies an operator-runnable action + the expected observation. Master matrix's Claude rule cell updated to N/A (was TEST³); footnote 3 reflects the deprecation rationale and points at USER_GUIDE.
 - **`.github/workflows/compat-validate.yml`** (NEW) — CI workflow promoting `claude plugin validate ./` warnings to errors via a portable grep-based fallback (since `--strict` is not yet available in all Claude CLI versions).
 - **Schema-fitness tests**: `tests/test_schema_fitness.py` extended with 6 new validators (marketplace description, LSP shape, monitor shape, theme schema, hook event coverage, hook event observability). Total schema-fitness tests: 21 (up from 15).
-- **`docs/research/claude-qa-2026-05-26/`** (research dossier) — 9-finding diagnosis report with 16 validation methods in Appendix A. Cites every claim against `code.claude.com/docs/en/...` URLs with fetch dates.
+- **`docs/archive/claude-qa-2026-05-26/`** (research dossier) — 9-finding diagnosis report with 16 validation methods in Appendix A. Cites every claim against `code.claude.com/docs/en/...` URLs with fetch dates.
 - **`CONTRIBUTING.md`** — new "Running `claude plugin validate`" section under Testing covering what / when / how-CI-enforces + a common-warnings remediation table; submission-flow checklist updated to require validate + schema-fitness tests; stale "52 tests" claim updated to "99 tests".
 
 ### Documentation
@@ -433,11 +433,11 @@ Hands-on QA verification of the platform-feature-routing refactor (merged at `a8
 - `scripts/converters/hooks_to_gemini.py` — Claude → Gemini hook event-name rewrite (same nested structure; only vocabulary differs).
 - `tests/test_schema_fitness.py` — validates emitted per-platform manifests against reference JSON Schemas captured directly from the platforms' docs. Coverage: Cursor `SkillConstruct` plugin.json, Gemini `AgentConstruct` frontmatter, Windsurf hooks event names + shape, Cursor hooks shape + `version` presence, Gemini hooks event-name vocabulary. Uses an inline ~30-line JSON Schema subset validator to avoid adding a runtime `jsonschema` dependency. Initial: 9 tests; this PR brings it to 15.
 - `docs/TEST_YOURSELF.md` — 53 per-construct × per-platform hands-on operator-QA cells (up from ~5 in the prior revision). Comprehensive verification doc covering all 6 platforms + the `agents` CLI; flags 8 specific UNKNOWN-method gaps for the next research round.
-- `docs/research/qa-bug-fixes-2026-05/` — research artifacts that diagnosed the bugs fixed in this PR: `RESEARCH.md` (32 KB, two-round investigation + empirical verification), `logs/` (community-plugin manifests + hermetic install probe outputs for Codex and Gemini).
+- `docs/archive/qa-bug-fixes-2026-05/` — research artifacts that diagnosed the bugs fixed in this PR: `RESEARCH.md` (32 KB, two-round investigation + empirical verification), `logs/` (community-plugin manifests + hermetic install probe outputs for Codex and Gemini).
 
 ### Known limitations (NOT fixed in this PR)
 
-- **Codex sub-agent install** — `.codex/agents/<name>.toml` emission is kept (forward-looking) but does not currently install. Per `developers.openai.com/codex/plugins/build` (2026-05-25), Codex's plugin.json schema has only `skills`, `mcpServers`, `apps`, `hooks` — no `agents` field exists. Empirical probe (`docs/research/qa-bug-fixes-2026-05/logs/codex-probe-output.log`) confirms `codex plugin add` installs the plugin's source `agent.md` but does NOT copy our generated `.codex/agents/notebook-reviewer.toml` into any path Codex discovers at runtime (`~/.codex/agents/` is never created). The install pathway for plugin-shipped sub-agents appears to not yet be implemented upstream. Our TOML emission remains in place for the day Codex adds support; until then, Codex users can install sub-agents by manually copying the TOML to `~/.codex/agents/notebook-reviewer.toml`.
+- **Codex sub-agent install** — `.codex/agents/<name>.toml` emission is kept (forward-looking) but does not currently install. Per `developers.openai.com/codex/plugins/build` (2026-05-25), Codex's plugin.json schema has only `skills`, `mcpServers`, `apps`, `hooks` — no `agents` field exists. Empirical probe (`docs/archive/qa-bug-fixes-2026-05/logs/codex-probe-output.log`) confirms `codex plugin add` installs the plugin's source `agent.md` but does NOT copy our generated `.codex/agents/notebook-reviewer.toml` into any path Codex discovers at runtime (`~/.codex/agents/` is never created). The install pathway for plugin-shipped sub-agents appears to not yet be implemented upstream. Our TOML emission remains in place for the day Codex adds support; until then, Codex users can install sub-agents by manually copying the TOML to `~/.codex/agents/notebook-reviewer.toml`.
 - 8 specific UNKNOWN-method gaps are flagged in `docs/TEST_YOURSELF.md` for the next research round (Codex hook listing, Gemini hook listing, Cursor command/hook/MCP enumeration, Cursor CLI dispatch, Windsurf hook triggers, `agents` CLI default spray policy, LSP/Monitor/OutputStyle/Theme observability).
 
 ### Tests

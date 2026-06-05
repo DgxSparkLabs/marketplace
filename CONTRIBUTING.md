@@ -129,7 +129,7 @@ If CI fails here but the drift check passed, the offending file is one of: top-l
 |---|---|---|
 | `description: No marketplace description provided` | Top-level `description` missing from `marketplace.json` | Add a `description` field to `MARKETPLACE.toml` — the generator propagates it to the top-level `.claude-plugin/marketplace.json`. |
 | `Unrecognized field "<name>"` in a `plugin.json` | Typo or stale field name | Compare against the [Claude plugin manifest schema](https://code.claude.com/docs/en/plugins-reference#manifest-schema); fix at the source file the generator copies. |
-| LSP / monitor / theme / hook schema errors | Source content uses an invented schema shape | See `docs/research/claude-qa-2026-05-26/RESEARCH.md` Findings 2-5 for canonical schemas with examples. |
+| LSP / monitor / theme / hook schema errors | Source content uses an invented schema shape | See `docs/archive/claude-qa-2026-05-26/RESEARCH.md` Findings 2-5 for canonical schemas with examples. |
 
 ### Running act-based verification
 
@@ -146,7 +146,7 @@ The script runs four verification workflows (`verify-codex.yml`, `verify-gemini.
 
 ### No AI co-author attribution in commits
 
-Never attribute work to any AI agent, tool, or assistant in commits, PRs, code comments, documentation, READMEs, changelogs, or any other output. No "Co-Authored-By" lines referencing an AI/bot. No "Generated with", "Created by", "Built with", "Powered by" followed by an AI tool name. No `noreply@` email addresses for AI bots. The repo's own [`rules/no-ai-credit/`](../rules/no-ai-credit/) rule documents this; check for and remove any such lines before finishing a task.
+Never attribute work to any AI agent, tool, or assistant in commits, PRs, code comments, documentation, READMEs, changelogs, or any other output. No "Co-Authored-By" lines referencing an AI/bot. No "Generated with", "Created by", "Built with", "Powered by" followed by an AI tool name. No `noreply@` email addresses for AI bots. The repo's own [`no-ai-credit`](docs/archive/rules-pre-stable-2026-05-26/no-ai-credit/) rule (archived pending re-add per ROADMAP #16–18) documents this; check for and remove any such lines before finishing a task.
 
 ### PR-only flow (never push to main)
 
@@ -190,7 +190,7 @@ The user explicitly distrusts narration-without-artifacts. The work product is t
 - **Document lifecycle.** Three tiers, no more. Rules in `AGENTS.md` (conventions; max ~200 lines; no changelogs). Reference in `HANDOFF.md` (current state; updated in-place after behavior-changing commits). History in `CHANGELOG.md` (append-only).
 - **Autonomous persistence.** Don't pause to ask "should I keep going?" The human may be away. Only pause for what you genuinely cannot provide yourself.
 
-For the longer-form versions of these rules (Verification Ladder, Improve the Process, Session Resilience, Stay Motivated, Task Formation, Continuous Improvement), see the user-global excerpts imported into [`../AGENTS.md`](../AGENTS.md) — they apply project-wide and are not duplicated here.
+For the longer-form versions of these rules (Verification Ladder, Improve the Process, Session Resilience, Stay Motivated, Task Formation, Continuous Improvement), see the user-global excerpts imported into [`AGENTS.md`](AGENTS.md) — they apply project-wide and are not duplicated here.
 
 ### Writing rules — keep them concise
 

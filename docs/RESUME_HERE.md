@@ -8,7 +8,26 @@ Updated 2026-06-03.
 
 `v1.0.0` is released and `main` is green ([release](https://github.com/DgxSparkLabs/marketplace/releases/tag/v1.0.0)). Install: `claude plugin marketplace add DgxSparkLabs/marketplace`. Ships reference/example plugins; production skills/rules return per [`ROADMAP.md`](ROADMAP.md) #16–#18. **Read [`LESSONS.md`](LESSONS.md) before touching the generator, CI, or doing any layout/name change** — it captures the traps that cost us most.
 
-**Next planned task — documentation consolidation/cleanup.** A ready-to-execute brief (tiered plan + fresh-clone orientation for a picking-up agent) is at [`.research/NEXT-doc-consolidation.md`](.research/NEXT-doc-consolidation.md). Start there.
+**Doc-consolidation — complete; up as PR #15 (open, CI green, pending merge).** It archived settled research under [`archive/`](archive/), removed the two orphans, and de-drifted entry-doc links. The executed plan + launch prompt are archived at [`archive/doc-consolidation-2026-06/`](archive/doc-consolidation-2026-06/).
+
+## Canonical docs (find everything from here)
+
+| Doc | What it's for |
+|---|---|
+| [`LESSONS.md`](LESSONS.md) | Hard-won working rules — read before touching the generator, CI, or any layout/name change |
+| [`INVENTORY.md`](INVENTORY.md) | Generated, drift-checked plugin-entry inventory (authoritative counts) |
+| [`ARCHITECTURE.md`](ARCHITECTURE.md) | Generator architecture — Construct/Platform/Bundle protocols + generation phases |
+| [`PLATFORMS.md`](PLATFORMS.md) | Per-platform install / support / discovery / CI reference (6 platforms + `agents` CLI) |
+| [`USER_GUIDE.md`](USER_GUIDE.md) | End-user plugin management (install/list/enable/uninstall/scope) across platforms |
+| [`ADDING_A_CONSTRUCT.md`](ADDING_A_CONSTRUCT.md) | How to add a new construct of any of the 10 types |
+| [`CONSTRUCT_TYPES.md`](CONSTRUCT_TYPES.md) | What each construct type is + the full plugin inventory |
+| [`SKILL_FORMAT.md`](SKILL_FORMAT.md) | `SKILL.md` authoring reference |
+| [`RULE_FORMAT.md`](RULE_FORMAT.md) | Rule authoring + activation reference |
+| [`ROADMAP.md`](ROADMAP.md) | Sequenced task list — per-platform QA parity (#9–#14), production-content re-add (#16–#18) |
+| [`TEST_YOURSELF.md`](TEST_YOURSELF.md) | Hands-on per-construct × per-platform QA cells |
+| [`CLAUDE_QA_RUNBOOK.md`](CLAUDE_QA_RUNBOOK.md) | The Claude-path QA runbook |
+
+Project-level context lives at repo root: [`../HANDOFF.md`](../HANDOFF.md) (longer state + history), [`../STATE.md`](../STATE.md) (within-session truth), [`../PITFALLS.md`](../PITFALLS.md) (bug→fix log), [`../README.md`](../README.md) (user-facing install), [`../CHANGELOG.md`](../CHANGELOG.md), [`../CONTRIBUTING.md`](../CONTRIBUTING.md).
 
 ## Repo layout — what lives where
 
@@ -42,7 +61,7 @@ Representative slash forms from the 27 reference plugins:
 
 For the full 27-plugin inventory see `docs/CONSTRUCT_TYPES.md`.
 
-History: an earlier shared-namespace attempt called Path A (`d641f92`, 2026-05-27) collapsed all skill plugins under one slash namespace `/dgxsparklabs-skill:`; it was reverted on 2026-05-28 because `claude plugin details` couldn't separate the per-plugin component lists. See [`research/multi-instance-claude-only-2026-05-27/PLAN.md`](./research/multi-instance-claude-only-2026-05-27/PLAN.md) for the revert rationale.
+History: an earlier shared-namespace attempt called Path A (`d641f92`, 2026-05-27) collapsed all skill plugins under one slash namespace `/dgxsparklabs-skill:`; it was reverted on 2026-05-28 because `claude plugin details` couldn't separate the per-plugin component lists. See [`docs/archive/multi-instance-claude-only-2026-05-27/PLAN.md`](./archive/multi-instance-claude-only-2026-05-27/PLAN.md) for the revert rationale.
 
 ---
 
@@ -52,20 +71,18 @@ Updated 2026-05-24 after the cross-platform native install fix (Phase 1 generato
 
 ## 30-Second TLDR
 
-This repo (`DgxSparkLabs/marketplace`) is a **multi-platform plugin marketplace** for Claude Code, Codex, Gemini, Cursor, Windsurf, and Devin. The generator emits **platform-native** per-plugin manifests (`.claude-plugin/`, `.codex-plugin/`, `.cursor-plugin/`) plus a shared `.agents/skills/` mirror — so each platform's native install command actually works end-to-end. PR #1 is open against `main`, all 11 CI workflows green, ready to merge.
+This repo (`DgxSparkLabs/marketplace`) is a **multi-platform plugin marketplace** for Claude Code, Codex, Gemini, Cursor, Windsurf, and Devin. The generator emits **platform-native** per-plugin manifests (`.claude-plugin/`, `.codex-plugin/`, `.cursor-plugin/`) plus a shared `.agents/skills/` mirror — so each platform's native install command actually works end-to-end. As of `v1.0.0` (published; `main` green), the reference set is verified Claude-first; the other five platforms emit, with parity tracked in [`ROADMAP.md`](ROADMAP.md) #9–#14.
 
 ---
 
 ## You Are Here
 
 ```
-Active branch:         feat/claude-plugin-compliance
-Tip commit:            70e55d6 (docs(readme): add GitHub-direct install support matrix + reframe opener)
-Open PRs:              #1 at https://github.com/DgxSparkLabs/marketplace/pull/1 — MERGEABLE
-CI status:             ALL 11 WORKFLOWS GREEN on 70e55d6 (including new Gemini GitHub URL install assertion)
-Status:                Phase 1 + Phase 2 complete. End-to-end install proven for Claude/Codex/Gemini in real GHA. Awaiting merge call.
+Released:              v1.0.0 — main is green (https://github.com/DgxSparkLabs/marketplace/releases/tag/v1.0.0)
+Install:               claude plugin marketplace add DgxSparkLabs/marketplace
+Ships:                 reference/example plugins (Claude-first, verified); production skills/rules return per ROADMAP #16–#18
+Doc cleanup:           complete on branch docs/consolidation; up as PR #15 (open, CI green, pending merge) — archived settled research, removed orphans, de-drifted entry-doc links
 Working directory:     C:\Users\devic\source\marketplace
-Last session ended:    2026-05-24, after cross-platform install fix verification + push to main awaited
 ```
 
 **Cross-references for context-loading:**
@@ -164,17 +181,11 @@ Catalog bundle: bundle-<bundle-name>      e.g., bundle-communication-skills, bun
 
 ## Next Concrete Actions (in priority order)
 
-1. **Merge PR #1** — CI all green on `70e55d6`; this is the only remaining gate. Options:
-   - `gh pr merge 1 --squash` — collapses all commits into one (cleanest main history)
-   - `gh pr merge 1 --merge` — preserves full commit history with a merge commit (most accurate audit trail)
-   - `gh pr merge 1 --rebase` — replays commits linearly (clean linear history, rewrites SHAs)
-   - User direction pending as of this writing.
+1. **Per-platform QA parity** — verify the reference set on the five non-Claude platforms, one cycle at a time (Cursor IDE → Cursor CLI → Gemini → Windsurf → Devin). Tracked in [`ROADMAP.md`](ROADMAP.md) #9–#14.
 
-2. **Post-merge follow-up commit (small)** — drop the `--ref feat/claude-plugin-compliance` footnotes from the README; the no-ref forms work post-merge for Codex/Gemini.
+2. **Re-add production content** — return the archived skills/rules (`docs/archive/skills-pre-stable-2026-05-26/`, `docs/archive/rules-pre-stable-2026-05-26/`) one at a time, after each verifies across platforms. ROADMAP #16–#18.
 
-3. **(Optional) Verify C2 in real GHA post-merge** — `codex plugin marketplace add DgxSparkLabs/marketplace` (no ref) should now succeed against main. Either spot-test manually or add a one-shot CI job.
-
-4. **(Optional) Maintenance** — retire `.devin/skills/` once Devin's `.agents/skills/` reading is confirmed live (Devin docs say yes; existing `devin skills paths` empirical from May 22 says yes).
+3. **Accept new construct PRs** — validated Claude-first: drop a construct under `src/<construct>/`, open a PR, merge on green (the regen-bot commits regenerated artifacts on same-repo branches).
 
 ---
 
@@ -213,7 +224,7 @@ Catalog bundle: bundle-<bundle-name>      e.g., bundle-communication-skills, bun
 - **Codex per-plugin install with only `.claude-plugin/plugin.json`** — fails with `missing or invalid plugin.json`. Codex needs its own `.codex-plugin/plugin.json` (now emitted by Phase 1.5).
 - **Gemini GitHub URL install with `gemini-extension.json` only in `.gemini/`** — fails because Gemini looks for it at the cloned repo root. Now also emitted at repo root by Phase 4.5.
 - **Cursor binary name `cursor` in headless tests** — the headless CLI is `agent` (with `cursor-agent` as alias). Don't probe for `cursor --version`; probe for `agent --version`.
-- **Codex marketplace shortform without `--ref` against main pre-merge** — fails because main lacks the manifest. Auto-resolves on PR #1 merge.
+- **Codex marketplace shortform without `--ref` against main pre-merge** — failed before the manifest was on `main`; resolved once it merged (now on `main` at v1.0.0).
 - **Per-plugin manifest emission unconditional across all platforms** — rejected via decision B2; emission is gated on `platform.supports`.
 - **CI assertions that test only registration without enumeration/install** — caused real defects to go undetected for weeks; new assertions in `compat-marketplace-add.yml` and `compat-extension.yml` close this gap.
 - **`members_from_construct` field in catalog.toml** — removed (DI refactor decision #24).
