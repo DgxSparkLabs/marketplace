@@ -70,6 +70,31 @@ class TestValidateSource(unittest.TestCase):
             )
             self.assertTrue(any("N2.2" in p for p in validate_source.validate([d])))
 
+    def test_stray_source_manifest_key_flagged(self):
+        with tempfile.TemporaryDirectory() as t:
+            d = Path(t) / "skills" / "straykey"
+            (d / ".claude-plugin").mkdir(parents=True)
+            (d / "SKILL.md").write_text(
+                "---\nname: straykey\ndescription: x\n---\nbody\n",
+                encoding="utf-8",
+            )
+            (d / ".claude-plugin" / "plugin.json").write_text(
+                '{"name": "stale-name", "description": "x"}', encoding="utf-8"
+            )
+            self.assertTrue(any("R6" in p for p in validate_source.validate([d])))
+
+    def test_multi_layout_name_mismatch_flagged(self):
+        with tempfile.TemporaryDirectory() as t:
+            sd = Path(t) / "skills" / "mismatch" / "skills" / "folder-name"
+            sd.mkdir(parents=True)
+            (sd / "SKILL.md").write_text(
+                "---\nname: other-name\ndescription: x\n---\nbody\n",
+                encoding="utf-8",
+            )
+            self.assertTrue(
+                any("R8" in p for p in validate_source.validate([sd.parent.parent]))
+            )
+
     def test_real_marketplace_identity_passes(self):
         # N1 runs on the repo's real MARKETPLACE.toml in every validate() call;
         # the good-skill test above passing proves N1 is clean, but assert
