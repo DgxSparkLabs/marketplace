@@ -6,18 +6,15 @@
 """
 generate_manifest.py — thin orchestrator for the marketplace generator.
 
-Phases:
+Phases (post scope-down, issue #18 — Claude Code is the only platform):
   1.  Individual construct plugins: emit one _generated/<prefix>-<name>/ per source
-  1.5 Per-platform per-plugin manifests: emit .<platform>-plugin/plugin.json
-       inside each _generated/<plugin>/ dir, gated on platform.supports (Decision B2)
   2a. Catalog bundles: emit one _generated/bundle-<name>/ per [bundle.*] in catalog.toml
-  2b. Code-generated catch-alls: emit bundle-<prefix>-all per construct with sources
-  3.  Cross-platform mirrors: call Platform.emit for each construct instance
-  4.  Gemini extension manifest: write .gemini/gemini-extension.json
-  4.5 Root-level gemini-extension.json: copy .gemini/gemini-extension.json → repo root
   5.  Top-level marketplace.json: write from in-memory entries (decision #17)
-  5.5 Codex canonical marketplace at .agents/plugins/marketplace.json (D-14)
-  6.  Root-level .cursor-plugin/marketplace.json: write Cursor multi-plugin manifest
+  7.  docs/INVENTORY.md: authoritative generated plugin list (FR-12)
+
+(Phase numbering is kept sparse deliberately — the retired phases 1.5/3/4/4.5/
+5.5/6 emitted per-platform manifests and mirrors for the removed platforms;
+see git history and issues #28–#36 for what they were.)
 
 Usage:
   uv run scripts/generate_manifest.py          # write everything
@@ -36,7 +33,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 from bundles import _auto_description, load_bundles
 from constructs import CONSTRUCTS
-from platforms import ClaudeCodePlatform, CursorPlatform, GeminiPlatform, PLATFORMS
+from platforms import ClaudeCodePlatform
 from utils import (
     CATALOG,
     GENERATED,
@@ -166,8 +163,8 @@ def _write_inventory(entries: list[dict]) -> None:
 def main() -> None:
     marketplace_entries: list[dict] = []
 
-    # Track (plugin_dir, construct, name) tuples for Phase 1.5
-    individual_plugins: list[tuple[Path, object, str]] = []
+    # Count of individual (non-bundle) plugins for the summary line.
+    individual_plugin_count = 0
 
     # Constructs that emit a Claude plugin (== entry in
     # ``.claude-plugin/marketplace.json``). RuleConstruct is intentionally
@@ -197,31 +194,7 @@ def main() -> None:
                 marketplace_entries.append(
                     _make_marketplace_entry(plugin_json, plugin_dir, construct.category)
                 )
-            individual_plugins.append((plugin_dir, construct, name))
-
-    # ── Phase 1.5: Per-platform per-plugin manifests (Decision B2) ────────────
-    # For each (plugin × platform) pair where type(construct) in platform.supports,
-    # write _generated/<plugin>/.<platform>-plugin/plugin.json. Platforms that
-    # return {} from build_plugin_json (e.g. AgentsPlatform, GeminiPlatform) are
-    # skipped. ClaudeCodePlatform is also skipped here because the Claude manifest
-    # is already written by Phase 1 (via construct.emit → write_plugin_json).
-    for plugin_dir, construct, name in individual_plugins:
-        construct_type = type(construct)
-        for platform in PLATFORMS.values():
-            if platform.name == "claude-code":
-                # Already emitted by Phase 1; skip to avoid overwriting.
-                continue
-            if construct_type not in platform.supports:
-                continue
-            manifest = platform.build_plugin_json(construct, name)
-            if not manifest:
-                # Platforms that don't host plugin manifests return {}; skip.
-                continue
-            target = plugin_dir / f".{platform.name}-plugin" / "plugin.json"
-            target.parent.mkdir(parents=True, exist_ok=True)
-            target.write_text(
-                json.dumps(manifest, indent=2) + "\n", encoding="utf-8", newline=""
-            )
+            individual_plugin_count += 1
 
     # ── Phase 2a: User-declared catalog bundles ────────────────────────────────
     # F8: filter rule-* out of every bundle's dependencies — those plugins
@@ -252,75 +225,8 @@ def main() -> None:
     # already done in Phase 1. The cross-construct `bundle-examples` (from
     # catalog.toml) remains as the one curated multi-member bundle.
 
-    # ── Phase 3: Cross-platform mirrors ───────────────────────────────────────
-    # Wipe all mirror roots first for a clean slate. Platforms whose
-    # ``mirror_directory`` is None (DevinPlatform after D-1; ClaudeCodePlatform)
-    # are filtered both here and below. CodexPlatform still has a mirror_directory
-    # because Unit 4 emits .codex/agents/<n>.toml; only its skill mirror was
-    # retired (D-1) — the emit method short-circuits non-Agent construct types.
-    for platform in PLATFORMS.values():
-        if platform.mirror_directory is not None and platform.mirror_directory.exists():
-            shutil.rmtree(platform.mirror_directory)
-
-    for platform in PLATFORMS.values():
-        if platform.mirror_directory is None:
-            continue
-        for construct_cls in platform.supports:
-            construct = next(
-                c for c in CONSTRUCTS.values() if isinstance(c, construct_cls)
-            )
-            for name in scan_source_dir(construct.source_directory):
-                platform.emit(construct, name)
-
-    # ── Phase 4: Gemini extension manifest ────────────────────────────────────
-    gemini = next(p for p in PLATFORMS.values() if isinstance(p, GeminiPlatform))
-    gemini.emit_extension_manifest()
-
-    # ── Phase 4.5: Root-level gemini-extension.json (Issue 3 fix) ─────────────
-    # gemini extensions install <github-url> clones the repo and looks for
-    # gemini-extension.json at the repo root (not in .gemini/). Copy the
-    # already-generated manifest to root so both install paths work.
-    shutil.copy2(
-        REPO_ROOT / ".gemini" / "gemini-extension.json",
-        REPO_ROOT / "gemini-extension.json",
-    )
-
     # ── Phase 5: Top-level marketplace.json (from in-memory entries) ──────────
     _write_marketplace_json(marketplace_entries)
-
-    # ── Phase 5.5: Codex canonical marketplace at .agents/plugins/ (D-14) ─────
-    # developers.openai.com/codex/plugins/build (2026-05-25) documents this as
-    # the canonical path. .claude-plugin/marketplace.json remains the legacy-
-    # compat path (Codex still reads it as a fallback). Both files are
-    # byte-identical; this is a copy, not a re-emit.
-    agents_plugins_dir = REPO_ROOT / ".agents" / "plugins"
-    agents_plugins_dir.mkdir(parents=True, exist_ok=True)
-    shutil.copy2(MARKETPLACE_JSON, agents_plugins_dir / "marketplace.json")
-
-    # ── Phase 6: Root-level .cursor-plugin/marketplace.json (Issue 5 fix) ─────
-    # Cursor team-marketplace import (Dashboard → Settings → Plugins → Import)
-    # expects .cursor-plugin/marketplace.json at repo root listing all plugins.
-    # Schema per cursor.com/docs/plugins: {name, plugins: [{name, source}]}.
-    cursor_platform = next(p for p in PLATFORMS.values() if isinstance(p, CursorPlatform))
-    cursor_plugin_entries = []
-    for plugin_dir, construct, name in individual_plugins:
-        if type(construct) in cursor_platform.supports:
-            full_name = f"{construct.prefix}-{name}"
-            cursor_plugin_entries.append({
-                "name": full_name,
-                "source": f"./{plugin_dir.relative_to(REPO_ROOT).as_posix()}",
-            })
-    cursor_plugin_entries.sort(key=lambda e: e["name"])
-    cursor_marketplace = {
-        "name": _marketplace_name(),
-        "description": _marketplace_description(),
-        "plugins": cursor_plugin_entries,
-    }
-    cursor_plugin_dir = REPO_ROOT / ".cursor-plugin"
-    cursor_plugin_dir.mkdir(parents=True, exist_ok=True)
-    (cursor_plugin_dir / "marketplace.json").write_text(
-        _to_json(cursor_marketplace), encoding="utf-8", newline=""
-    )
 
     # ── Phase 7: docs/INVENTORY.md (drift-checked single source of truth, FR-12) ─
     _write_inventory(marketplace_entries)
@@ -331,7 +237,7 @@ def main() -> None:
     print(f"Generated {len(marketplace_entries)} plugin entries in marketplace.json")
     for cat, count in sorted(cats.items()):
         print(f"  {cat}: {count}")
-    print(f"  per-platform manifests emitted for {len(individual_plugins)} individual plugins")
+    print(f"  {individual_plugin_count} individual plugins")
 
 
 def _check_drift() -> int:
@@ -352,19 +258,11 @@ def _check_drift() -> int:
                     out[str(p.relative_to(REPO_ROOT))] = p.read_bytes()
         return out
 
-    mirror_dirs = [
-        p.mirror_directory
-        for p in PLATFORMS.values()
-        if p.mirror_directory is not None
-    ]
-    # Also snapshot root-level generated files
+    # Root-level generated files (no mirror dirs remain post scope-down)
     root_generated = [
-        REPO_ROOT / "gemini-extension.json",
-        REPO_ROOT / ".cursor-plugin",
-        REPO_ROOT / ".agents" / "plugins",  # Phase 5.5 (D-14)
         REPO_ROOT / "docs" / "INVENTORY.md",  # Phase 7 (FR-12)
     ]
-    targets = [GENERATED, MARKETPLACE_JSON.parent] + mirror_dirs + root_generated
+    targets = [GENERATED, MARKETPLACE_JSON.parent] + root_generated
 
     before = snapshot_tree(targets)
     main()

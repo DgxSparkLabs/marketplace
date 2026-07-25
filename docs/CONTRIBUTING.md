@@ -64,7 +64,7 @@ When you're ready to contribute changes back upstream:
 3. **Make your changes** per the [[#Adding things]] section above.
 4. **Regenerate and check for drift**: `uv run scripts/generate_manifest.py --check`. This must exit 0.
 5. **Validate generated plugin manifests** (see [[#Running `claude plugin validate`]] below): `claude plugin validate _generated/<your-plugin>` for each plugin you added or changed, AND `claude plugin validate ./` for the marketplace as a whole. Both must produce zero warnings — CI gates on this via `.github/workflows/compat-validate.yml`.
-6. **Run the test suite**: `uv run scripts/tasks.py test` (runs all the suites — `test_marketplace`, `test_schema_fitness`, `test_agents_cli`, `test_tooling`). All must exit 0.
+6. **Run the test suite**: `uv run scripts/tasks.py test` (runs all the suites — `test_marketplace`, `test_schema_fitness`, `test_tooling`). All must exit 0.
 7. **Open a PR** against `main`. See the [[#PR-only flow (never push to main)]] convention below.
 
 ## Testing
@@ -75,7 +75,6 @@ When you're ready to contribute changes back upstream:
 uv run scripts/tasks.py test            # all the suites at once (recommended)
 uv run tests/test_marketplace.py        # marketplace tests
 uv run tests/test_schema_fitness.py     # platform-schema-fitness tests
-uv run tests/test_agents_cli.py         # agents-cli tests
 uv run tests/test_tooling.py            # contributor-tooling tests
 uv run tests/test_marketplace.py -v     # verbose
 uv run tests/test_marketplace.py -k rule  # only rule-related tests
@@ -84,8 +83,7 @@ uv run tests/test_marketplace.py -k rule  # only rule-related tests
 Tests live in the suite files:
 
 - `tests/test_marketplace.py`: directory structure, YAML frontmatter parity, catalog consistency, generator drift, manifest schema, per-platform per-plugin manifest emission, mirror dir hygiene (no leaked `.claude-plugin/`), secret scanning.
-- `tests/test_schema_fitness.py`: per-platform schema fitness — validates emitted manifests against reference JSON Schemas captured directly from each platform's docs (Cursor `SkillConstruct` plugin.json, Gemini `AgentConstruct` frontmatter, Windsurf hooks event names + shape, Cursor hooks shape + `version` presence, Gemini hooks event-name vocabulary, marketplace.json description presence, LSP / monitor / theme / hook example schemas).
-- `tests/test_agents_cli.py`: the agents-CLI surface.
+- `tests/test_schema_fitness.py`: Claude schema fitness — validates emitted config files against reference JSON Schemas captured from the Claude Code docs (LSP / monitor / hook example schemas).
 - `tests/test_tooling.py`: the contributor tooling — `new_construct.py` scaffolder and `validate_source.py` pre-commit check.
 
 Always run all the suites before committing (or just `uv run scripts/tasks.py test`).

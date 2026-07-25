@@ -26,3 +26,7 @@ user_resource_dump/
 
 # Local Claude Code config (operator-specific)
 .claude/
+
+# session/orchestration artifacts (not marketplace content)
+.agent-mail/
+.research/
