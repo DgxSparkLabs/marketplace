@@ -77,7 +77,7 @@ Cursor/Windsurf/Devin read the mirror dirs (`.cursor/`, `.windsurf/`, `.agents/`
 uv run scripts/new_construct.py <type> <name>   # scaffold from the example
 # edit the copied files
 uv run scripts/tasks.py verify                           # --check + test suites + claude plugin validate
-git add . && git commit && open a PR             # NO catalog.toml edit needed
+git add . && git commit && open a PR
 ```
 
 Same-repo PRs get manifests regenerated + committed by `.github/workflows/regen-bot.yml`. Forks run `scripts/regen.{sh,ps1}` and commit the output (the drift gate enforces it). Install pre-commit: `pre-commit install`.

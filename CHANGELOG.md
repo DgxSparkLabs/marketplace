@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-07-25 — Skills-only, Claude-only template scope-down (#18)
+
+The marketplace was reduced from ten construct types x six platforms to **one construct (skills) on one platform (Claude Code)** and rebuilt as a **fork-ready template**: contributors touch `src/skills/` only; `regen-bot` CI validates (naming standard #19), regenerates, and commits all install artifacts on push to main. Executed as PR #37 (platform shrink), PR #38 (construct shrink), PR #39 (CI inversion + naming enforcement), and the template-polish PR (docs). The fork->commit->CI->install contract was proven end-to-end on a real fork (evidence on #18). Every removed capability has a `status:someday` re-expansion issue (#20-#36); nothing is archived in-tree — recover concepts from git history.
+
+Incident recorded: PR #38 silently dropped both test suites' `unittest.main` blocks, making the suite gate vacuously green until caught and fixed (`32fedd5`, hardened in `8b19b12` — suites now run via `-m unittest` with a nonzero-test-count assertion). See PITFALLS.md.
+
 ## 2026-06-03 — Claude-first stable / PR-friendly groundwork (in progress)
 
 Preparing the first Claude-first stable cut and making the repo friendly to outside contributors. Landed so far:
