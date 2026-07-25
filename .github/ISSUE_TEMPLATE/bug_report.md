@@ -22,4 +22,4 @@ labels: bug
 1.
 2.
 
-<!-- A known quirk may already be documented in PITFALLS.md — worth a quick check. -->
+<!-- A known quirk may already be documented in a closed issue — worth a quick search. -->
