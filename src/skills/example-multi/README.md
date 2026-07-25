@@ -19,7 +19,7 @@ The bare flat forms `/notebook` and `/status` also resolve when unambiguous.
 claude plugin install skill-example-multi@dgxsparklabs-marketplace --scope project
 ```
 
-(Install auto-enables on current CLIs. On a fork, the part after `@` is your `src/MARKETPLACE.toml` `name`.)
+(Install auto-enables on current CLIs. On a fork, the part after `@` is your `src/.metadata-MARKETPLACE.toml` `name`.)
 
 ## File-by-file walkthrough
 

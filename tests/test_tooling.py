@@ -120,7 +120,7 @@ class TestValidateSource(unittest.TestCase):
             )
 
     def test_real_marketplace_identity_passes(self):
-        # N1 runs on the repo's real MARKETPLACE.toml in every validate() call;
+        # N1 runs on the repo's real .metadata-MARKETPLACE.toml in every validate() call;
         # the good-skill test above passing proves N1 is clean, but assert
         # explicitly so an identity regression names the right rule.
         self.assertFalse(

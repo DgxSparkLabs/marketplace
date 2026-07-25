@@ -17,7 +17,7 @@ The contract: **you touch `src/skills/` only; CI owns everything generated.** A 
 
 1. Create the folder — scaffold (`uv run scripts/new_construct.py skill my-skill`) or by hand:
    - **Solo layout**: `src/skills/my-skill/SKILL.md` — frontmatter `description:` required; `name:` optional (defaults to the folder name)
-   - **Multi layout**: `src/skills/my-plugin/skills/<skill-name>/SKILL.md` per skill, optionally plus a one-liner in `src/skills/my-plugin/.claude-plugin/plugin.json` (`description` is the ONLY allowed key — anything else fails validation, rule R6; without the file the plugin description falls back to the folder name)
+   - **Multi layout**: `src/skills/my-plugin/skills/<skill-name>/SKILL.md` per skill, plus a one-liner in `src/skills/my-plugin/.metadata-SKILL.toml` (`description = "..."` — the only key the generator reads; anything else, or any source `.claude-plugin/` directory, fails validation per rule R6; without the file the plugin description falls back to the folder name)
 2. Follow the naming rules (CI-enforced, full rationale in issue #19): kebab-case everywhere, folder name ≤ 32 chars, in the multi layout, a skill folder's name must equal its frontmatter `name:` when one is set (rule R8).
 3. Commit and push / open a PR. That's it — same-repo PRs and pushes to main get manifests regenerated and committed by `regen-bot`; fork PRs are checked by the drift gate (run `uv run scripts/generate_manifest.py` and commit the output, or use `scripts/regen.sh`/`.ps1`).
 
