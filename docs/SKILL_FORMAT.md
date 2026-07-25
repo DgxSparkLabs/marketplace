@@ -2,7 +2,7 @@
 
 The format for skills in this marketplace, as the toolchain actually enforces and Claude Code actually consumes it. Everything here is checkable against `scripts/validate_source.py` (the CI gate) and the shipped examples under `src/skills/`.
 
-> **You never write `plugin.json` for the marketplace** — the generator derives the plugin wrapper at `_generated/skill-<name>/` from your `SKILL.md` + `src/MARKETPLACE.toml`. See [CONTRIBUTING](CONTRIBUTING.md) for the workflow.
+> **You never write `plugin.json` for the marketplace** — the generator derives the plugin wrapper at `_generated/claude-code/skill-<name>/` from your `SKILL.md` + `src/.metadata-MARKETPLACE.toml`. See [CONTRIBUTING](CONTRIBUTING.md) for the workflow.
 
 ## Layouts
 

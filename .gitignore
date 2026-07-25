@@ -10,6 +10,3 @@ __pycache__/
 .claude/
 user_resource_dump/
 
-# Session/orchestration artifacts (not marketplace content)
-.agent-mail/
-.research/

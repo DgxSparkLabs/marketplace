@@ -12,7 +12,7 @@ Provides:
   - _load_plugin_json — cached JSON read of a source plugin.json
   - _frontmatter      — YAML frontmatter parser for markdown files
   - _to_json          — deterministic JSON pretty-print
-  - _marketplace_*    — MARKETPLACE.toml field accessors
+  - _marketplace_*    — .metadata-MARKETPLACE.toml field accessors
   - write_plugin_json — write .claude-plugin/plugin.json under a target dir
 """
 
@@ -25,9 +25,12 @@ from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 SRC = REPO_ROOT / "src"
-GENERATED = REPO_ROOT / "_generated"
+# Generated output is namespaced per platform; Claude Code is the only
+# platform today. A revived platform (issues #28-#36) gets a sibling dir
+# (_generated/<platform>/), never mixes into this one.
+GENERATED = REPO_ROOT / "_generated" / "claude-code"
 MARKETPLACE_JSON = REPO_ROOT / ".claude-plugin" / "marketplace.json"
-MARKETPLACE_TOML = SRC / "MARKETPLACE.toml"
+MARKETPLACE_TOML = SRC / ".metadata-MARKETPLACE.toml"
 
 
 def scan_source_dir(source_dir: Path) -> list[str]:
@@ -66,30 +69,33 @@ def _is_candidate_subdir(d: Path) -> bool:
 
 
 def _read_source_plugin_description(src_plugin_dir: Path, fallback: str) -> str:
-    """Read the plugin-level description from ``<src>/.claude-plugin/plugin.json``.
+    """Read the plugin-level description from ``<src>/.metadata-SKILL.toml``.
 
     This is the marketplace-listing one-liner, distinct from per-component
-    descriptions (which live in each SKILL.md frontmatter for skills, or
-    each agent .md frontmatter for sub-agents, etc.). Skills under the
+    descriptions (which live in each SKILL.md frontmatter). Skills under the
     multi-skill layout have no single SKILL.md to pull a description from,
-    so the operator authors it at the plugin level.
+    so the operator authors it in the plugin's metadata file:
 
-    Falls back to ``fallback`` (typically the plugin directory name) when:
-      - the source plugin.json is missing
-      - the file is unparseable (json / unicode / OS error)
-      - the ``description`` field is missing, ``null``, or empty string
+        description = "One-line marketplace listing for this plugin."
 
-    Reads with ``utf-8-sig`` so a UTF-8 BOM written by a Windows editor
-    doesn't crash the generator.
+    ``.metadata-*.toml`` files are operator-edited source intent (dot-prefixed
+    like ``.env`` — a fork edits them and ships its own); the generator turns
+    them into the platform-shaped ``.claude-plugin/plugin.json`` under
+    ``_generated/``. Source trees never contain ``.claude-plugin/`` (rule R6).
+
+    Falls back to ``fallback`` (typically the plugin directory name) when the
+    file is missing, unparseable, or has no non-empty ``description``.
     """
-    src_pj_path = src_plugin_dir / ".claude-plugin" / "plugin.json"
-    if not src_pj_path.exists():
+    meta_path = src_plugin_dir / ".metadata-SKILL.toml"
+    if not meta_path.exists():
         return fallback
     try:
-        data = json.loads(src_pj_path.read_text(encoding="utf-8-sig"))
-    except (json.JSONDecodeError, UnicodeDecodeError, OSError):
+        with open(meta_path, "rb") as f:
+            data = tomllib.load(f)
+    except (tomllib.TOMLDecodeError, OSError):
         return fallback
-    return data.get("description") or fallback
+    desc = data.get("description")
+    return desc if isinstance(desc, str) and desc else fallback
 
 
 def _frontmatter(path: Path) -> dict:
@@ -124,28 +130,28 @@ def _to_json(obj: dict) -> str:
 
 @cache
 def _load_marketplace_toml() -> dict:
-    """Load and cache MARKETPLACE.toml."""
+    """Load and cache src/.metadata-MARKETPLACE.toml."""
     with open(MARKETPLACE_TOML, "rb") as f:
         return tomllib.load(f)
 
 
 def _marketplace_version() -> str:
-    """Read the marketplace version from MARKETPLACE.toml."""
+    """Read the marketplace version from the marketplace metadata file."""
     return _load_marketplace_toml()["marketplace"]["version"]
 
 
 def _marketplace_author() -> dict:
-    """Build author dict (name + url) from MARKETPLACE.toml."""
+    """Build author dict (name + url) from the marketplace metadata file."""
     mp = _load_marketplace_toml()
     return {"name": mp["owner"]["name"], "url": mp["owner"]["url"]}
 
 
 def _marketplace_name() -> str:
-    """Read the marketplace name from MARKETPLACE.toml.
+    """Read the marketplace name from the marketplace metadata file.
 
     This is the string after the ``@`` in
     ``claude plugin install <plugin>@<marketplace>``. Single source of
-    truth at MARKETPLACE.toml line 12. Written into the top-level
+    truth in src/.metadata-MARKETPLACE.toml. Written into the top-level
     ``.claude-plugin/marketplace.json`` ``name`` field by
     ``_write_marketplace_json`` in ``scripts/generate_manifest.py``.
     See docs/ARCHITECTURE.md ("The name chain").
@@ -154,7 +160,7 @@ def _marketplace_name() -> str:
 
 
 def _marketplace_description() -> str:
-    """Read the marketplace description from MARKETPLACE.toml.
+    """Read the marketplace description from the marketplace metadata file.
 
         """
     return _load_marketplace_toml()["marketplace"]["description"]

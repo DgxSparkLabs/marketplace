@@ -70,17 +70,41 @@ class TestValidateSource(unittest.TestCase):
             )
             self.assertTrue(any("N2.2" in p for p in validate_source.validate([d])))
 
-    def test_stray_source_manifest_key_flagged(self):
+    def test_source_claude_plugin_dir_flagged(self):
+        with tempfile.TemporaryDirectory() as t:
+            d = Path(t) / "skills" / "strayshape"
+            (d / ".claude-plugin").mkdir(parents=True)
+            (d / "SKILL.md").write_text(
+                "---\nname: strayshape\ndescription: x\n---\nbody\n",
+                encoding="utf-8",
+            )
+            (d / ".claude-plugin" / "plugin.json").write_text(
+                '{"description": "x"}', encoding="utf-8"
+            )
+            self.assertTrue(any("R6" in p for p in validate_source.validate([d])))
+
+    def test_metadata_toml_stray_key_flagged(self):
         with tempfile.TemporaryDirectory() as t:
             d = Path(t) / "skills" / "straykey"
-            (d / ".claude-plugin").mkdir(parents=True)
+            d.mkdir(parents=True)
             (d / "SKILL.md").write_text(
                 "---\nname: straykey\ndescription: x\n---\nbody\n",
                 encoding="utf-8",
             )
-            (d / ".claude-plugin" / "plugin.json").write_text(
-                '{"name": "stale-name", "description": "x"}', encoding="utf-8"
+            (d / ".metadata-SKILL.toml").write_text(
+                'description = "x"\nname = "stale-name"\n', encoding="utf-8"
             )
+            self.assertTrue(any("R6" in p for p in validate_source.validate([d])))
+
+    def test_metadata_toml_invalid_flagged(self):
+        with tempfile.TemporaryDirectory() as t:
+            d = Path(t) / "skills" / "badtoml"
+            d.mkdir(parents=True)
+            (d / "SKILL.md").write_text(
+                "---\nname: badtoml\ndescription: x\n---\nbody\n",
+                encoding="utf-8",
+            )
+            (d / ".metadata-SKILL.toml").write_text("not = = toml", encoding="utf-8")
             self.assertTrue(any("R6" in p for p in validate_source.validate([d])))
 
     def test_multi_layout_name_mismatch_flagged(self):
@@ -100,7 +124,7 @@ class TestValidateSource(unittest.TestCase):
         # the good-skill test above passing proves N1 is clean, but assert
         # explicitly so an identity regression names the right rule.
         self.assertFalse(
-            [p for p in validate_source.validate([]) if p.startswith("MARKETPLACE")]
+            [p for p in validate_source.validate([]) if p.startswith(".metadata-MARKETPLACE")]
         )
 
     def test_missing_description_flagged(self):

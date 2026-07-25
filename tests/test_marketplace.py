@@ -7,10 +7,10 @@
 
 Validates:
   - Source layout: src/skills/<name>/ instances are well-formed
-  - Generated plugins: _generated/<plugin>/ plugin.json fields + naming
+  - Generated plugins: _generated/claude-code/<plugin>/ plugin.json fields + naming
   - marketplace.json: shape, sort order, entry/name invariants
   - Construct registry integrity, plugin count, secrets scan, drift,
-    MARKETPLACE.toml identity fields
+    .metadata-MARKETPLACE.toml identity fields
 
 Run via `uv run scripts/tasks.py test` (module invocation + nonzero-count
 assertion) — not by direct file execution.
@@ -40,8 +40,8 @@ from platforms import (
 )
 from utils import MARKETPLACE_JSON, scan_source_dir
 
-MARKETPLACE_TOML = REPO_ROOT / "src" / "MARKETPLACE.toml"
-GENERATED_DIR = REPO_ROOT / "_generated"
+MARKETPLACE_TOML = REPO_ROOT / "src" / ".metadata-MARKETPLACE.toml"
+GENERATED_DIR = REPO_ROOT / "_generated" / "claude-code"
 
 
 # ─── helpers ─────────────────────────────────────────────────────────────────
@@ -144,7 +144,7 @@ class TestGeneratedPlugins(unittest.TestCase):
                     )
 
     def test_individual_plugin_name_is_unique_brand_namespace(self):
-        """Each plugin's ``_generated/<plugin>/.claude-plugin/plugin.json``
+        """Each plugin's ``_generated/claude-code/<plugin>/.claude-plugin/plugin.json``
         ``name`` field is ``<brand>-<construct.prefix>-<source-dir-name>`` —
         unique per plugin (e.g. ``dgxsparklabs-skill-example``).
 
@@ -176,7 +176,7 @@ class TestGeneratedPlugins(unittest.TestCase):
                 continue
             for source_name in scan_source_dir(construct.source_directory):
                 expected = f"{brand}-{construct.prefix}-{source_name}"
-                plugin_path = REPO_ROOT / "_generated" / f"{construct.prefix}-{source_name}" / ".claude-plugin" / "plugin.json"
+                plugin_path = GENERATED_DIR / f"{construct.prefix}-{source_name}" / ".claude-plugin" / "plugin.json"
                 with self.subTest(construct=construct.prefix, name=source_name):
                     data = json.loads(plugin_path.read_text(encoding="utf-8"))
                     self.assertEqual(
@@ -199,7 +199,7 @@ class TestGeneratedPlugins(unittest.TestCase):
         skill = next(c for c in CONSTRUCTS.values() if isinstance(c, SkillConstruct))
         for source_name in scan_source_dir(skill.source_directory):
             src = skill.source_directory / source_name
-            gen_dir = REPO_ROOT / "_generated" / f"skill-{source_name}"
+            gen_dir = GENERATED_DIR / f"skill-{source_name}"
             gen_pj = gen_dir / ".claude-plugin" / "plugin.json"
             with self.subTest(plugin=source_name):
                 data = json.loads(gen_pj.read_text(encoding="utf-8"))
@@ -241,7 +241,7 @@ class TestMarketplaceJson(unittest.TestCase):
         """Per code.claude.com/docs/en/plugin-marketplaces#marketplace-schema
         (fetched 2026-05-26), ``description`` is an optional top-level field;
         omitting it triggers ``claude plugin validate`` warning. We always
-        emit it (sourced from MARKETPLACE.toml) so the validator is clean."""
+        emit it (sourced from the marketplace metadata file) so the validator is clean."""
         data = load_marketplace_json()
         self.assertIn(
             "description", data,
@@ -375,7 +375,7 @@ class TestGeneratorDrift(unittest.TestCase):
 # ─── TestMarketplaceToml ──────────────────────────────────────────────────────
 
 class TestMarketplaceToml(unittest.TestCase):
-    """MARKETPLACE.toml integrity — contract tests."""
+    """.metadata-MARKETPLACE.toml integrity — contract tests."""
 
     def test_marketplace_toml_parses(self):
         mp = load_toml(MARKETPLACE_TOML)

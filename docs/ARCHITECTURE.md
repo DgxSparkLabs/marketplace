@@ -10,15 +10,30 @@ The generator turns skill sources under `src/skills/` into Claude Code install a
 
 ## Sources of truth vs. generated
 
-- **Humans edit**: `src/MARKETPLACE.toml` (identity), `src/skills/<plugin>/` (content).
-- **Generator owns** (regenerated from scratch every run — hand-edits are lost): `_generated/<plugin>/`, `.claude-plugin/marketplace.json`, `docs/INVENTORY.md`.
+Everything in the repo is one of two things; nothing is both.
+
+**Humans edit (source intent):**
+
+- `src/.metadata-MARKETPLACE.toml` — marketplace identity (name, owner, repo URL, description). The one file a forker must edit.
+- `src/skills/<plugin>/` — skill content: `SKILL.md` (solo layout) or `skills/<name>/SKILL.md` (multi layout).
+- `src/skills/<plugin>/.metadata-SKILL.toml` — optional plugin-level metadata; required for the multi layout, where no single SKILL.md can supply the marketplace-listing `description`. Only `description` is read (rule R6).
+
+`.metadata-*.toml` is the convention for all operator-edited metadata: dot-prefixed like `.env` — a fork edits these files and ships its own values. Source trees never contain `.claude-plugin/`; that shape belongs exclusively to generated output (R6 rejects a source `.claude-plugin/` outright).
+
+**Generator owns (regenerated from scratch every run — hand-edits are lost):**
+
+- `_generated/claude-code/<plugin>/` — the installable plugins, platform-namespaced. Claude Code is the only platform today; a revived platform (issues #28–#36) gets a sibling `_generated/<platform>/` and never mixes.
+- `.claude-plugin/marketplace.json` — the manifest `claude plugin marketplace add` reads.
+- `docs/INVENTORY.md` — the authoritative plugin list.
+
+**Neither (plumbing, hand-maintained but not content):** `scripts/` (generator, validators, task runner), `tests/`, `.github/` (CI), `docs/` prose.
 - In CI, `regen-bot.yml` runs the generator and commits the result (identity `marketplace-generator`) on pushes to main and same-repo PRs; `ci.yml`'s `--check` drift gate rejects any tree where regeneration is not a no-op.
 
 ## The generation phases
 
 | Phase | Output | Notes |
 |---|---|---|
-| 1 | `_generated/skill-<name>/` + its `.claude-plugin/plugin.json` | one per source plugin; `Construct.emit` copies content, composes plugin.json |
+| 1 | `_generated/claude-code/skill-<name>/` + its `.claude-plugin/plugin.json` | one per source plugin; `Construct.emit` copies content, composes plugin.json |
 | 5 | `.claude-plugin/marketplace.json` | from in-memory entries, sorted for deterministic diffs |
 | 7 | `docs/INVENTORY.md` | generated authoritative plugin list; drift-checked like the manifests |
 
@@ -26,7 +41,7 @@ Phase numbering is deliberately sparse: the retired phases (1.5/2a/3/4/4.5/5.5/6
 
 ## The name chain (see issue #19 for the enforced standard)
 
-`src/MARKETPLACE.toml` `name` → marketplace identity (after `@` in install commands); minus its `-marketplace` suffix → the **brand**. Install name = `skill-<srcdir>` (`generate_manifest.py`, marketplace entry). Slash namespace = `<brand>-skill-<srcdir>` (`constructs.py`, `_base_plugin_shape`). Component name = SKILL.md frontmatter `name:`. Enforcement: `scripts/validate_source.py` (rules N1/N2/N4/R6/R8 on sources) + `tests/test_marketplace.py` `TestGeneratedPlugins.test_individual_plugin_name_is_unique_brand_namespace` (N3/N5 on generated output).
+`src/.metadata-MARKETPLACE.toml` `name` → marketplace identity (after `@` in install commands); minus its `-marketplace` suffix → the **brand**. Install name = `skill-<srcdir>` (`generate_manifest.py`, marketplace entry). Slash namespace = `<brand>-skill-<srcdir>` (`constructs.py`, `_base_plugin_shape`). Component name = SKILL.md frontmatter `name:`. Enforcement: `scripts/validate_source.py` (rules N1/N2/N4/R6/R8 on sources) + `tests/test_marketplace.py` `TestGeneratedPlugins.test_individual_plugin_name_is_unique_brand_namespace` (N3/N5 on generated output).
 
 ## Verification chain
 

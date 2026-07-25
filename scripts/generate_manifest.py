@@ -145,7 +145,7 @@ def main() -> None:
     # Clear and recreate _generated/ (clean slate each run)
     if GENERATED.exists():
         shutil.rmtree(GENERATED)
-    GENERATED.mkdir()
+    GENERATED.mkdir(parents=True)
 
     # ── Phase 1: Individual construct plugins ──────────────────────────────────
     # The marketplace entry is added when the construct is in

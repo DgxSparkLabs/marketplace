@@ -27,7 +27,7 @@ jobs:
       - name: Derive marketplace identity (fork-safe)
         id: mp
         run: |
-          echo "name=$(uv run python -c 'import tomllib;print(tomllib.load(open("src/MARKETPLACE.toml","rb"))["marketplace"]["name"])')" >> "$GITHUB_OUTPUT"
+          echo "name=$(uv run python -c 'import tomllib;print(tomllib.load(open("src/.metadata-MARKETPLACE.toml","rb"))["marketplace"]["name"])')" >> "$GITHUB_OUTPUT"
       - uses: ./.github/actions/setup-claude
         id: claude
 

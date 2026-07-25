@@ -8,8 +8,8 @@
   "plugins": [
     {
       "name": "skill-example-multi",
-      "source": "./_generated/skill-example-multi",
-      "description": "Two reference skills demonstrating the multi-skill plugin layout.",
+      "source": "./_generated/claude-code/skill-example-multi",
+      "description": "Two reference skills (notebook, status) demonstrating the multi-skill plugin layout.",
       "version": "1.0.0",
       "author": {
         "name": "DgxSparkLabs",
@@ -19,7 +19,7 @@
     },
     {
       "name": "skill-example-single",
-      "source": "./_generated/skill-example-single",
+      "source": "./_generated/claude-code/skill-example-single",
       "description": "Prints a minimal greeting plus a UTC timestamp. The smallest possible single-skill reference plugin.",
       "version": "1.0.0",
       "author": {

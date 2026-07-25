@@ -38,6 +38,19 @@ Runs, in order: `validate_source.py` (structure + naming standard) → drift che
 - After fixing any bug worth remembering, record it in the fixing PR/issue so the next person can find it by search.
 - Install the pre-push hook once: `pre-commit install` (runs `validate_source.py` on `src/` before each commit).
 
+## Session-local ignores
+
+Working files that belong to your machine, not the template (agent scratch dirs, research caches), do not go in the tracked `.gitignore`. Use a repo-local excludes file instead:
+
+```bash
+git config --local core.excludesFile .mygitignore
+printf '.mygitignore
+<your-dirs>/
+' > .mygitignore
+```
+
+`.mygitignore` ignores itself, so it never shows up in `git status` and never ships to forks.
+
 ## Testing notes
 
 - `tests/test_marketplace.py` — source layout, generated-output invariants, naming composition (`TestGeneratedPlugins.test_individual_plugin_name_is_unique_brand_namespace`), drift, secrets scan.

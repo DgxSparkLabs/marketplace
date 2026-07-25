@@ -4,16 +4,16 @@ Releases are optional for a skills marketplace — users always install from `ma
 
 ## Checklist
 
-1. **Set the version.** Edit `version` in `src/MARKETPLACE.toml` (semver). It propagates into every generated `plugin.json` and marketplace entry.
+1. **Set the version.** Edit `version` in `src/.metadata-MARKETPLACE.toml` (semver). It propagates into every generated `plugin.json` and marketplace entry.
 2. **Push a PR.** On a same-repo branch, `regen-bot` regenerates and commits the manifests for you; running `uv run scripts/generate_manifest.py` locally is optional.
 3. **Verify.** `uv run scripts/tasks.py verify` — source validation, drift-clean, the test suites (`test_marketplace`, `test_tooling`), `claude plugin validate ./`.
-4. **Record.** Add release notes to [`CHANGELOG.md`](CHANGELOG.md).
+4. **Record.** Write the release notes into the annotated tag message (and the GitHub Release, step 6).
 5. **Ship.** Merge, then tag:
    ```bash
    git tag vX.Y.Z
    git push origin vX.Y.Z
    ```
-6. **(Optional)** Create a GitHub Release from the tag, pasting the CHANGELOG section.
+6. **(Optional)** Create a GitHub Release from the tag, pasting the release notes. Project history lives in git log and the GitHub Releases page (pre-template history: the `project-memory` branch).
 
 ## Dependency hygiene
 

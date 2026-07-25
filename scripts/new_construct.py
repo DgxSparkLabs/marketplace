@@ -13,7 +13,7 @@ lsp, monitor, output-style, theme). <name> is kebab-case. The chosen example
 (example-single by default, example-multi with --multi; rule has a single
 'example') is copied to src/<construct>/<name>/. Then edit the copied files,
 push (CI regenerates all manifests; running the generator locally is optional), and
-the plugin <prefix>-<name> becomes installable. No src/MARKETPLACE.toml edit needed.
+the plugin <prefix>-<name> becomes installable. No marketplace-metadata edit needed.
 """
 from __future__ import annotations
 
@@ -85,7 +85,7 @@ def main() -> int:
     print(f"  2. uv run scripts/validate_source.py {rel}")
     print(f"  3. git add/commit/push - CI regenerates all manifests for you")
     print(f"     (optional local preview: uv run scripts/tasks.py verify)")
-    print(f"  -> plugin '{plugin}' appears in the marketplace; no src/MARKETPLACE.toml edit needed.")
+    print(f"  -> plugin '{plugin}' appears in the marketplace; no marketplace-metadata edit needed.")
     return 0
 
 
