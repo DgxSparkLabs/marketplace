@@ -13,7 +13,7 @@ Executed after the scope-down, from a three-lane evidence pass (full-file invent
 
 The marketplace was reduced from ten construct types x six platforms to **one construct (skills) on one platform (Claude Code)** and rebuilt as a **fork-ready template**: contributors touch `src/skills/` only; `regen-bot` CI validates (naming standard #19), regenerates, and commits all install artifacts on push to main. Executed as PR #37 (platform shrink), PR #38 (construct shrink), PR #39 (CI inversion + naming enforcement), and the template-polish PR (docs). The fork->commit->CI->install contract was proven end-to-end on a real fork (evidence on #18). Every removed capability has a `status:someday` re-expansion issue (#20-#36); no removed code is archived in-tree — recover concepts from git history or the `project-memory` branch.
 
-Incident recorded: PR #38 silently dropped both test suites' `unittest.main` blocks, making the suite gate vacuously green until caught and fixed (`32fedd5`, hardened in `8b19b12` — suites now run via `-m unittest` with a nonzero-test-count assertion). See PITFALLS.md.
+Incident recorded: PR #38 silently dropped both test suites' `unittest.main` blocks, making the suite gate vacuously green until caught and fixed (`32fedd5`, hardened in `8b19b12` — suites now run via `-m unittest` with a nonzero-test-count assertion). see the `project-memory` branch (PITFALLS entry).
 
 ---
 
