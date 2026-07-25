@@ -46,7 +46,7 @@ from platforms import (
     PLATFORMS,
     ClaudeCodePlatform,
 )
-from utils import CATALOG, MARKETPLACE_JSON, scan_source_dir
+from utils import MARKETPLACE_JSON, scan_source_dir
 
 MARKETPLACE_TOML = REPO_ROOT / "src" / "MARKETPLACE.toml"
 GENERATED_DIR = REPO_ROOT / "_generated"

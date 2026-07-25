@@ -1,77 +1,44 @@
-# skill-example
+# skill-example-multi
 
-A working reference plugin demonstrating the **multi-skill layout** for the skill construct. One plugin ships two skills side-by-side: `notebook` and `status`. Copy this directory and modify to scaffold your own multi-skill plugin.
+A working reference plugin demonstrating the **multi-skill layout**: one plugin ships two skills side-by-side (`notebook` and `status`), each in its own folder under `skills/`. Copy this directory to scaffold a plugin that groups thematic siblings.
 
 ## What it does
 
-After install + enable, the plugin exposes two slash commands:
+After install, the plugin exposes two slash commands:
 
 | Slash form | What it does |
 |---|---|
-| `/dgxsparklabs-skill-example:notebook <topic>` | Prints a short markdown block tagged as a lab-notebook status update |
-| `/dgxsparklabs-skill-example:status` | Prints `df -h .` for the current directory plus a UTC timestamp |
+| `/dgxsparklabs-skill-example-multi:notebook <topic>` | Prints a short markdown block tagged as a lab-notebook status update |
+| `/dgxsparklabs-skill-example-multi:status` | Prints `df -h .` for the current directory plus a UTC timestamp |
 
-The bare flat forms `/notebook` and `/status` also resolve.
+The bare flat forms `/notebook` and `/status` also resolve when unambiguous.
 
 ## Install
 
 ```
-claude plugin install skill-example@dgxsparklabs-marketplace --scope project
-claude plugin enable  skill-example@dgxsparklabs-marketplace
+claude plugin install skill-example-multi@dgxsparklabs-marketplace --scope project
 ```
 
-Install and enable are SEPARATE steps. If you skip enable, Claude reports "Plugin not found in any editable settings scope."
+(Install auto-enables on current CLIs. On a fork, the part after `@` is your `src/MARKETPLACE.toml` `name`.)
 
 ## File-by-file walkthrough
 
 ```
-skills/example/
+skills/example-multi/
 ├── .claude-plugin/
-│   └── plugin.json          ← plugin manifest; name "dgxsparklabs-skill-example", marketplace description
+│   └── plugin.json          ← ONE optional key: "description" (the marketplace one-liner).
+│                               Everything else is generated — extra keys fail validation (R6).
 ├── skills/
-│   ├── notebook/SKILL.md    ← the "notebook" skill; frontmatter name: notebook
-│   └── status/SKILL.md      ← the "status" skill;   frontmatter name: status
+│   ├── notebook/SKILL.md    ← folder name must equal frontmatter name: (rule R8)
+│   └── status/SKILL.md
 └── README.md                ← you are here
 ```
 
-### `.claude-plugin/plugin.json`
+The generator detects the `skills/` subdir and emits `skills: ["./skills/"]` in the *generated* plugin manifest. The solo counterpart lives at `skills/example-single/`.
 
-Operator-authored. The generator reads:
+## Make your own
 
-- `name` — plugin identifier; must be `dgxsparklabs-skill-example` (kebab-case, `<brand>-<construct.prefix>-<plugin-dir-name>`). Don't typo the brand prefix; copy from any other plugin's plugin.json.
-- `description` — the marketplace-listing one-liner shown in `claude plugin list --available`.
-
-The generator overwrites `version` and `author` from `MARKETPLACE.toml`; you can omit those locally.
-
-### `skills/<skill>/SKILL.md`
-
-One SKILL.md per skill, each in its own subdir. The directory name (`notebook`, `status`) does NOT have to match the frontmatter `name:` — but having them match keeps things readable.
-
-Per-skill frontmatter:
-
-- `name` — slash-component suffix. `/dgxsparklabs-skill-example:notebook` ← this `notebook`.
-- `description` — slash-autocomplete tooltip (distinct from the plugin-level description above).
-- `argument-hint` — placeholder text shown after the command name.
-- `allowed-tools` — restricts which tools the skill can call. Be minimal.
-
-The body (everything after the closing `---`) is the prompt Claude runs when the skill fires.
-
-## To make your own multi-skill plugin from this template
-
-1. Copy this directory: `cp -r skills/example skills/<your-plugin>`
-2. Edit `.claude-plugin/plugin.json` — replace `dgxsparklabs-skill-example` with `dgxsparklabs-skill-<your-plugin>` and rewrite the description.
-3. Rename / add / delete `skills/<skill>/SKILL.md` files as needed. Each child dir needs its own SKILL.md.
-4. Add your plugin to a `[bundle.*]` member list in `catalog.toml` (or skip — bundles are optional).
-5. `uv run scripts/generate_manifest.py`
-6. `uv run tests/test_marketplace.py`
-7. Commit.
-
-## Solo (single-skill) layout
-
-If your plugin has only one skill, prefer the **solo layout** instead. See `skills/example-single/` for the canonical example. Both layouts coexist in this marketplace; pick by which fits.
-
-## Related
-
-- Full naming convention + the three contributor patterns (solo, multi-instance, bundle): `docs/ADDING_A_CONSTRUCT.md`
-- Other example plugins demonstrating different construct types: `agents/example/`, `commands/example/`, `hooks/example/`, etc.
-- The single-skill counterpart: `skills/example-single/`
+1. Copy this directory to `src/skills/<your-plugin>/` (kebab-case, ≤32 chars) — or run `uv run scripts/new_construct.py skill <your-plugin> --multi`.
+2. Add one folder per skill under `skills/`, each with a `SKILL.md` whose frontmatter `name:` equals the folder name and whose `description:` is non-empty (both CI-enforced).
+3. Commit and push — CI regenerates and publishes everything.
+4. Optional local gate first: `uv run scripts/tasks.py verify`.

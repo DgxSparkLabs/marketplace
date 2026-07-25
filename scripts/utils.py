@@ -7,7 +7,7 @@
 utils.py — shared helpers for the marketplace generator.
 
 Provides:
-  - GENERATED, MARKETPLACE_JSON, CATALOG constants
+  - GENERATED, MARKETPLACE_JSON constants
   - scan_source_dir   — list instance names under a source directory
   - _load_plugin_json — cached JSON read of a source plugin.json
   - _frontmatter      — YAML frontmatter parser for markdown files
@@ -27,7 +27,6 @@ REPO_ROOT = Path(__file__).resolve().parent.parent
 SRC = REPO_ROOT / "src"
 GENERATED = REPO_ROOT / "_generated"
 MARKETPLACE_JSON = REPO_ROOT / ".claude-plugin" / "marketplace.json"
-CATALOG = SRC / "catalog.toml"
 MARKETPLACE_TOML = SRC / "MARKETPLACE.toml"
 
 

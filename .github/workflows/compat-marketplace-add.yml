@@ -1,4 +1,4 @@
-name: Compat — Marketplace Add (Claude + Codex)
+name: Compat — Marketplace Add (Claude)
 
 on:
   pull_request:
@@ -24,6 +24,10 @@ jobs:
       - name: Regenerate manifests from sources
         run: uv run scripts/generate_manifest.py
 
+      - name: Derive marketplace identity (fork-safe)
+        id: mp
+        run: |
+          echo "name=$(uv run python -c 'import tomllib;print(tomllib.load(open("src/MARKETPLACE.toml","rb"))["marketplace"]["name"])')" >> "$GITHUB_OUTPUT"
       - uses: ./.github/actions/setup-claude
         id: claude
 
@@ -32,12 +36,12 @@ jobs:
         run: claude plugin marketplace add ./
 
       - name: Assert marketplace is listed
-        # Match mode: grep substring — catalog row: claude plugin marketplace list shows dgxsparklabs-marketplace row
-        run: claude plugin marketplace list | grep -F "dgxsparklabs-marketplace"
+        # Match mode: grep substring — marketplace list shows the identity row
+        run: claude plugin marketplace list | grep -F "${{ steps.mp.outputs.name }}"
 
       - name: Assert plugin install succeeds
         # CL2: per-plugin install must succeed after marketplace registration
-        run: claude plugin install skill-example-multi@dgxsparklabs-marketplace --scope project
+        run: claude plugin install skill-example-multi@${{ steps.mp.outputs.name }} --scope project
 
       - name: Assert plugin appears in list
         # CL3: installed plugin must appear in plugin list. Use grep -Fx (exact line)
@@ -49,5 +53,5 @@ jobs:
         if: always()
         run: |
           claude plugin uninstall skill-example-multi --scope project || true
-          claude plugin marketplace remove dgxsparklabs-marketplace || true
+          claude plugin marketplace remove ${{ steps.mp.outputs.name }} || true
 

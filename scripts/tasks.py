@@ -11,7 +11,7 @@ Usage:
 Tasks:
     regen    regenerate manifests / mirrors / docs/INVENTORY.md from src/
     check    drift-check only (no writes; exit 1 on drift)
-    test     run all three test suites
+    test     run all the test suites (SUITES below)
     verify   check + test + `claude plugin validate ./`
              (the validate step is skipped with a warning if the `claude`
              CLI is not on PATH, so `verify` is usable on any dev box)
