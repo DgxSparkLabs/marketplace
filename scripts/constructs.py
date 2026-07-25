@@ -87,7 +87,7 @@ def _base_plugin_shape(construct: Construct, name: str) -> dict:
     construct shared a slash namespace; ``claude plugin details`` then
     collapsed to a single first-installed-wins view of the components.
     Path A was reverted on 2026-05-28 per
-    ``docs/research/multi-instance-claude-only-2026-05-27/PLAN.md``.
+    ``the project-memory branch (multi-instance PLAN)``.
     """
     mp_name = _marketplace_name()
     brand = mp_name.removesuffix("-marketplace") if mp_name.endswith("-marketplace") else mp_name

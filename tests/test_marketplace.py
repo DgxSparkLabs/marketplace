@@ -162,14 +162,14 @@ class TestGeneratedPlugins(unittest.TestCase):
         The install-time marketplace entry name in ``marketplace.json``
         ``plugins[].name`` (e.g. ``skill-example``) is a separate, unprefixed
         identifier; that contract is asserted by
-        ``test_marketplace_lists_all_expected_plugins`` below.
+        ``test_individual_plugin_name_is_unique_brand_namespace`` below.
 
         History: an earlier attempt (Path A, ``d641f92``, 2026-05-27) used a
         shared ``<brand>-<construct.category>`` name so multiple plugins of
         one construct shared a slash namespace; ``claude plugin details``
         collapsed components to a single first-installed-wins view. Path A
         was reverted on 2026-05-28 per
-        ``docs/research/multi-instance-claude-only-2026-05-27/PLAN.md``.
+        ``the project-memory branchPLAN.md``.
 
         RuleConstruct is excluded per F8 — rules don't get a
         .claude-plugin/plugin.json since they are not a Claude plugin
@@ -317,7 +317,7 @@ class TestPluginCount(unittest.TestCase):
     construct-expansion wave). Every Claude-supported non-skill, non-rule
     construct ships paired example-single + example-multi; hooks ship 9
     per-event plugins + example-multi (10 total); skill ships its existing
-    two. The lone catalog bundle is ``bundle-examples``.
+    two (the example skill plugins; bundles were retired in the #18 scope-down).
     """
 
 class TestNoSecrets(unittest.TestCase):

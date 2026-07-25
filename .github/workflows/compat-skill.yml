@@ -1,4 +1,4 @@
-name: Compat — Skill (Claude + Devin + Codex + Gemini)
+name: Compat — Skill (Claude)
 
 on:
   pull_request:

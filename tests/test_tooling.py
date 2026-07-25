@@ -148,6 +148,42 @@ class TestValidateSource(unittest.TestCase):
         self.assertEqual(validate_source.validate([SRC]), [])
 
 
+class TestDriftGateReadOnly(unittest.TestCase):
+    """Regression: --check must be read-only and deterministic (fail twice).
+
+    Three independent newcomer walkthroughs hit the old behavior where a
+    failing --check regenerated the tree in place, so the SECOND run passed
+    with zero user action (fail-once-then-pass). The fix restores the
+    pre-check tree on drift; this test injects drift and asserts BOTH runs
+    fail and the tampered byte survives the check untouched.
+    """
+
+    def test_check_fails_twice_and_restores_tree(self):
+        import subprocess
+
+        inv = REPO_ROOT / "docs" / "INVENTORY.md"
+        original = inv.read_bytes()
+        try:
+            inv.write_bytes(original + b"tampered\n")
+            for run_no in (1, 2):
+                proc = subprocess.run(
+                    ["uv", "run", "scripts/generate_manifest.py", "--check"],
+                    cwd=REPO_ROOT, capture_output=True, text=True,
+                )
+                self.assertEqual(
+                    proc.returncode, 1,
+                    f"run {run_no}: --check must fail on drift every time "
+                    f"(got {proc.returncode}); fail-once-then-pass means the "
+                    f"check wrote to the tree",
+                )
+            self.assertEqual(
+                inv.read_bytes(), original + b"tampered\n",
+                "--check must leave the drifted file exactly as it found it",
+            )
+        finally:
+            inv.write_bytes(original)
+
+
 class TestNewConstruct(unittest.TestCase):
     def test_kebab_regex(self):
         self.assertTrue(new_construct.KEBAB.match("telegram-notify"))
