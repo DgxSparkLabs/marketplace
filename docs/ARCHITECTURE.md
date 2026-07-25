@@ -30,7 +30,7 @@ Phase numbering is deliberately sparse: the retired phases (1.5/2a/3/4/4.5/5.5/6
 
 ## Verification chain
 
-`uv run scripts/tasks.py verify` = `validate_source.py` → `--check` drift gate → test suites (invoked via `-m unittest` with a nonzero-test-count assertion — see PITFALLS "vacuous green") → `claude plugin validate ./`. CI mirrors the same steps; compat workflows additionally exercise registration → install → listing against the real CLI.
+`uv run scripts/tasks.py verify` = `validate_source.py` → `--check` drift gate → test suites (invoked via `-m unittest` with a nonzero-test-count assertion — see the `project-memory` branch (PITFALLS, "vacuous green")) → `claude plugin validate ./`. CI mirrors the same steps; compat workflows additionally exercise registration → install → listing against the real CLI.
 
 ## How to extend
 

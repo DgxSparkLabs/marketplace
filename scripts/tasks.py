@@ -48,7 +48,8 @@ def test() -> int:
         # Run via `-m unittest` AND assert a nonzero test count. Direct
         # execution (`uv run tests/<suite>.py`) imports-and-exits-0 when a
         # suite file loses its __main__ block — that turned this gate
-        # vacuously green once (PR #38, commit 5078a5a; see PITFALLS.md).
+        # vacuously green once (PR #38, commit 5078a5a; PITFALLS entry
+        # preserved on the project-memory branch).
         cmd = ["uv", "run", "-m", "unittest", "-v", f"tests.{suite}"]
         print(f"\n$ {' '.join(cmd)}", flush=True)
         proc = subprocess.run(cmd, cwd=ROOT, capture_output=True, text=True)
