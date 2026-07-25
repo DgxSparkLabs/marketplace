@@ -8,7 +8,6 @@ generate_manifest.py — thin orchestrator for the marketplace generator.
 
 Phases (post scope-down, issue #18 — Claude Code is the only platform):
   1.  Individual construct plugins: emit one _generated/<prefix>-<name>/ per source
-  2a. Catalog bundles: emit one _generated/bundle-<name>/ per [bundle.*] in catalog.toml
   5.  Top-level marketplace.json: write from in-memory entries (decision #17)
   7.  docs/INVENTORY.md: authoritative generated plugin list (FR-12)
 
@@ -31,11 +30,9 @@ from pathlib import Path
 # Add scripts/ to sys.path so sibling modules resolve correctly
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
-from bundles import _auto_description, load_bundles
 from constructs import CONSTRUCTS
 from platforms import ClaudeCodePlatform
 from utils import (
-    CATALOG,
     GENERATED,
     MARKETPLACE_JSON,
     REPO_ROOT,
@@ -97,33 +94,6 @@ def _write_marketplace_json(entries: list[dict]) -> None:
     }
     MARKETPLACE_JSON.parent.mkdir(parents=True, exist_ok=True)
     MARKETPLACE_JSON.write_text(_to_json(manifest), encoding="utf-8", newline="")
-
-
-def _emit_bundle_plugin(
-    name: str,
-    description: str,
-    deps: list[str],
-    category: str = "bundle",
-) -> dict:
-    """Write a single bundle plugin under _generated/bundle-<name>/.
-
-    Returns the marketplace.json entry for in-memory aggregation.
-
-    Shared by Phase 2a (catalog bundles) and Phase 2b (code-generated
-    catch-alls). Phase 2a callers resolve description fallback before calling.
-    """
-    plugin_name = f"bundle-{name}"
-    plugin_json = {
-        "name": plugin_name,
-        "version": _marketplace_version(),
-        "description": description,
-        "author": _marketplace_author(),
-        "dependencies": deps,
-    }
-    plugin_dir = GENERATED / plugin_name
-    plugin_dir.mkdir(parents=True, exist_ok=True)
-    write_plugin_json(plugin_dir, plugin_json)
-    return _make_marketplace_entry(plugin_json, plugin_dir, category)
 
 
 def _write_inventory(entries: list[dict]) -> None:
@@ -195,35 +165,6 @@ def main() -> None:
                     _make_marketplace_entry(plugin_json, plugin_dir, construct.category)
                 )
             individual_plugin_count += 1
-
-    # ── Phase 2a: User-declared catalog bundles ────────────────────────────────
-    # F8: filter rule-* out of every bundle's dependencies — those plugins
-    # no longer exist in the Claude marketplace, so a bundle install would
-    # fail at the dependency resolution step. Catalog bundles whose entire
-    # membership was rule-* (bundle.quality-rules, bundle.workflow-rules,
-    # bundle.documentation-rules, bundle.environment-rules,
-    # bundle.notifications-rules) become empty post-filter and are dropped.
-    # Mixed bundles (bundle.examples) shed only their rule member.
-    # Cursor / Codex consumers still see the full rule set via the
-    # _generated/rule-<name>/ dirs + per-platform manifests in Phase 1.5.
-    bundles = load_bundles(CATALOG, CONSTRUCTS)
-    for bundle in bundles:
-        raw_deps = bundle.resolve_dependencies(CONSTRUCTS)
-        deps = [d for d in raw_deps if not d.startswith("rule-")]
-        if not deps:
-            # Bundle was entirely rule-*; nothing left for Claude.
-            continue
-        description = bundle.description or _auto_description(deps)
-        marketplace_entries.append(
-            _emit_bundle_plugin(bundle.name, description, deps)
-        )
-
-    # ── Phase 2b: Code-generated catch-all bundles — RETIRED 2026-05-27 ────────
-    # Previously emitted bundle-<prefix>-all per Claude-supported construct.
-    # Removed because they cluttered the marketplace listing with one bundle per
-    # construct that provided no curation value over the per-construct emission
-    # already done in Phase 1. The cross-construct `bundle-examples` (from
-    # catalog.toml) remains as the one curated multi-member bundle.
 
     # ── Phase 5: Top-level marketplace.json (from in-memory entries) ──────────
     _write_marketplace_json(marketplace_entries)

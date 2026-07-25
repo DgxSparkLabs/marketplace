@@ -1,8 +1,0 @@
-{
-  "mcpServers": {
-    "example": {
-      "command": "uv",
-      "args": ["run", "--no-project", "${CLAUDE_PLUGIN_ROOT}/mcp_logging_proxy.py", "--name", "example", "--", "uvx", "mcp-server-fetch"]
-    }
-  }
-}

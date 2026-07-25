@@ -28,16 +28,8 @@ from pathlib import Path
 from typing import Protocol
 
 from constructs import (
-    AgentConstruct,
-    CommandConstruct,
     Construct,
-    HookConstruct,
-    LSPConstruct,
-    MCPConstruct,
-    MonitorConstruct,
-    OutputStyleConstruct,
     SkillConstruct,
-    ThemeConstruct,
 )
 
 
@@ -71,15 +63,8 @@ class ClaudeCodePlatform:
     name = "claude-code"
     mirror_directory = None
     supports: set[type[Construct]] = {
-        SkillConstruct, CommandConstruct, AgentConstruct,
-        HookConstruct, MCPConstruct, LSPConstruct, MonitorConstruct,
-        OutputStyleConstruct, ThemeConstruct,
+        SkillConstruct,
     }
-
-    # Note: RuleConstruct is intentionally absent. Per
-    # code.claude.com/docs/en/plugins-reference (fetched 2026-05-26), rules
-    # are NOT a Claude plugin component — they are a memory feature consumed
-    # via ``.claude/rules/*.md``. See issue #25 for the re-expansion gate.
 
     def emit(self, construct: Construct, name: str) -> None:
         pass  # no-op; marketplace.json is written by main flow
