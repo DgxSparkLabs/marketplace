@@ -2,237 +2,39 @@
 
 **This is the first file to read when returning to this project after any break.** Don't read anything else first.
 
-Updated 2026-06-03.
+Updated 2026-07-25.
 
-## Status (2026-06-03) — v1.0.0 published
+## Status (2026-07-25) — skills-only, Claude-only template marketplace
 
-`v1.0.0` is released and `main` is green ([release](https://github.com/DgxSparkLabs/marketplace/releases/tag/v1.0.0)). Install: `claude plugin marketplace add DgxSparkLabs/marketplace`. Ships reference/example plugins; production skills/rules return per [`ROADMAP.md`](ROADMAP.md) #16–#18. **Read [`LESSONS.md`](LESSONS.md) before touching the generator, CI, or doing any layout/name change** — it captures the traps that cost us most.
+The repo completed the scope-down governed by issue [#18](https://github.com/DgxSparkLabs/marketplace/issues/18): it is now a **fork-ready template marketplace for Claude Code skills**. One construct (skills), one platform (Claude Code), and an inverted CI: contributors touch `src/skills/` only; `regen-bot` regenerates and commits all install artifacts on push to main. The naming standard (issue [#19](https://github.com/DgxSparkLabs/marketplace/issues/19), rules N1–N6 + R6/R8) is enforced by `scripts/validate_source.py` + composition tests. Executed as PRs #37 (platform shrink), #38 (construct shrink), #39 (CI inversion) plus the docs/template-polish PR.
 
-**Doc-consolidation — complete; up as PR #15 (open, CI green, pending merge).** It archived settled research under [`archive/`](archive/), removed the two orphans, and de-drifted entry-doc links. The executed plan + launch prompt are archived at [`archive/doc-consolidation-2026-06/`](archive/doc-consolidation-2026-06/).
+**Read [`LESSONS.md`](LESSONS.md) before touching the generator, CI, or doing any layout/name change**, and `PITFALLS.md` for specific traps (including the vacuous-green suite incident).
 
-## Canonical docs (find everything from here)
+## What was deferred, not abandoned
+
+Every removed capability has a `status:someday` re-expansion issue: constructs #20–#27, formerly-supported platforms #28–#32, new platforms #33–#36. All are indexed and governed from #18; reviving one = reopening its issue and passing #19's naming gate. There is no in-tree archive of removed code — recover concepts (not code) from git history.
+
+## Canonical docs
 
 | Doc | What it's for |
 |---|---|
-| [`LESSONS.md`](LESSONS.md) | Hard-won working rules — read before touching the generator, CI, or any layout/name change |
-| [`INVENTORY.md`](INVENTORY.md) | Generated, drift-checked plugin-entry inventory (authoritative counts) |
-| [`ARCHITECTURE.md`](ARCHITECTURE.md) | Generator architecture — Construct/Platform/Bundle protocols + generation phases |
-| [`PLATFORMS.md`](PLATFORMS.md) | Per-platform install / support / discovery / CI reference (the platforms + `agents` CLI) |
-| [`USER_GUIDE.md`](USER_GUIDE.md) | End-user plugin management (install/list/enable/uninstall/scope) across platforms |
-| [`ADDING_A_CONSTRUCT.md`](ADDING_A_CONSTRUCT.md) | How to add a new construct of any of the supported types |
-| [`CONSTRUCT_TYPES.md`](CONSTRUCT_TYPES.md) | What each construct type is + the full plugin inventory |
-| [`SKILL_FORMAT.md`](SKILL_FORMAT.md) | `SKILL.md` authoring reference |
-| [`RULE_FORMAT.md`](RULE_FORMAT.md) | Rule authoring + activation reference |
-| [`ROADMAP.md`](ROADMAP.md) | Sequenced task list — per-platform QA parity (#9–#14), production-content re-add (#16–#18) |
-| [`TEST_YOURSELF.md`](TEST_YOURSELF.md) | Hands-on per-construct × per-platform QA cells |
-| [`CLAUDE_QA_RUNBOOK.md`](CLAUDE_QA_RUNBOOK.md) | The Claude-path QA runbook |
+| `README.md` | forker + user audience: install, make-it-yours checklist, add-a-skill |
+| `docs/CONTRIBUTING.md` | the one-folder contract, local gate, conventions |
+| `docs/ARCHITECTURE.md` | generator phases + protocols (skills-only) |
+| `docs/SKILL_FORMAT.md` | SKILL.md format reference |
+| `docs/INVENTORY.md` | generated, authoritative plugin list — never hardcode counts |
+| `docs/LESSONS.md` · `PITFALLS.md` | working-practice lessons · bug→fix knowledge base |
+| `STATE.md` · `HANDOFF.md` | session-state + between-session tracker |
 
-Project-level context lives at repo root: [`../HANDOFF.md`](../HANDOFF.md) (longer state + history), [`../STATE.md`](../STATE.md) (within-session truth), [`../PITFALLS.md`](../PITFALLS.md) (bug→fix log), [`../README.md`](../README.md) (user-facing install), [`../CHANGELOG.md`](../CHANGELOG.md). The contributor guide [`CONTRIBUTING.md`](CONTRIBUTING.md) and [`CODE_OF_CONDUCT.md`](CODE_OF_CONDUCT.md) now live here in `docs/`.
+## Next concrete actions
 
-## Repo layout — what lives where
+1. ~~End-to-end fork proof~~ — **PASSED 2026-07-25** (evidence on #18: fork + one skill push → fork CI regenerated once, no loop → marketplace add + install green on CLI 2.1.220).
+2. Normal operation — add real skills, or pick up a re-expansion issue (#20–#36) when demand appears.
+3. Housekeeping: delete the test fork `YoraiLevi/marketplace` (needs `delete_repo` scope — human action); consider enabling branch protection on `main`.
 
-- **`src/`** — operator-authored source content. One construct dir per construct type (`src/skills/`, `src/rules/`, `src/commands/`, …) plus `src/MARKETPLACE.toml` and `src/catalog.toml`. Anything that becomes a plugin lives here.
-- **`scripts/`** — generator code (Python). Reads from `src/`, emits to `_generated/` and per-platform mirrors.
-- **`tests/`** — test suites for the generator + per-plugin schema.
-- **`docs/`** — human-facing reference + research artifacts.
-- **`_generated/`, `.agents/`, `.gemini/`, `.cursor/`, `.codex/`, `.claude-plugin/`, `.cursor-plugin/`, `gemini-extension.json`** — generator output; spec-mandated paths.
-- Root files (`README.md`, `CHANGELOG.md`, `HANDOFF.md`, `STATE.md`, `install.sh`, etc.) — operational metadata + user-facing one-line installers.
+## Glossary (60 seconds)
 
-## Plugin-naming pattern (as of 2026-05-28)
-
-Two-field decoupling:
-
-- **Install identifier** (what you type in `claude plugin install …@dgxsparklabs-marketplace`): `<construct.prefix>-<source-dir-name>` — e.g. `skill-example-multi`, `skill-example-single`, `command-example-multi`.
-- **Slash namespace** (what appears in `/…` invocations and in `claude plugin details …`): `<brand>-<construct.prefix>-<source-dir-name>` — e.g. `dgxsparklabs-skill-example-multi`, `dgxsparklabs-skill-example-single`. **Unique per plugin.**
-
-Composed in `scripts/constructs.py` `_base_plugin_shape` as `f"{brand}-{construct.prefix}-{name}"`. The brand prefix is derived from `src/MARKETPLACE.toml` `name` by stripping `-marketplace`.
-
-Representative slash forms from the reference plugins:
-
-| Plugin | Slash form |
-|---|---|
-| `skill-example-multi` (multi) | `/dgxsparklabs-skill-example-multi:notebook` · `:status` |
-| `skill-example-single` (solo) | `/dgxsparklabs-skill-example-single:hello` |
-| `command-example-multi` | `/dgxsparklabs-command-example-multi:hello` · `:goodbye` · `:ping` |
-| `agent-example-multi` | `/agents` → `dgxsparklabs-agent-example-multi:notebook-reviewer` (or `:summarizer`, `:validator`) |
-| `hook-example-userpromptsubmit` | (passive, fires per prompt) |
-| `output-style-example-multi` | `/output-style Lab Notebook Voice` · `Concise Engineer` · `Tutoring` |
-| `theme-example-multi` | `/theme Lab Notebook` · `Nord` · `Solarized Dark` |
-
-For the full plugin inventory see `docs/CONSTRUCT_TYPES.md`.
-
-History: an earlier shared-namespace attempt called Path A (`d641f92`, 2026-05-27) collapsed all skill plugins under one slash namespace `/dgxsparklabs-skill:`; it was reverted on 2026-05-28 because `claude plugin details` couldn't separate the per-plugin component lists. See [`docs/archive/multi-instance-claude-only-2026-05-27/PLAN.md`](./archive/multi-instance-claude-only-2026-05-27/PLAN.md) for the revert rationale.
-
----
-
-Updated 2026-05-24 after the cross-platform native install fix (Phase 1 generator additions + Phase 2 README rewrite + CI all green in real GHA). Previous version documented the post-DI-refactor state before this round.
-
----
-
-## 30-Second TLDR
-
-This repo (`DgxSparkLabs/marketplace`) is a **multi-platform plugin marketplace** for Claude Code, Codex, Gemini, Cursor, Windsurf, and Devin. The generator emits **platform-native** per-plugin manifests (`.claude-plugin/`, `.codex-plugin/`, `.cursor-plugin/`) plus a shared `.agents/skills/` mirror — so each platform's native install command actually works end-to-end. As of `v1.0.0` (published; `main` green), the reference set is verified Claude-first; the other five platforms emit, with parity tracked in [`ROADMAP.md`](ROADMAP.md) #9–#14.
-
----
-
-## You Are Here
-
-```
-Released:              v1.0.0 — main is green (https://github.com/DgxSparkLabs/marketplace/releases/tag/v1.0.0)
-Install:               claude plugin marketplace add DgxSparkLabs/marketplace
-Ships:                 reference/example plugins (Claude-first, verified); production skills/rules return per ROADMAP #16–#18
-Doc cleanup:           complete on branch docs/consolidation; up as PR #15 (open, CI green, pending merge) — archived settled research, removed orphans, de-drifted entry-doc links
-Working directory:     C:\Users\devic\source\marketplace
-```
-
-**Cross-references for context-loading:**
-- Project state (longer): [`../HANDOFF.md`](../HANDOFF.md)
-- This round's plan + locked decisions: [`archive/phase-5-cross-platform-install/PLAN_CROSS_PLATFORM_INSTALL_FIX.md`](./archive/phase-5-cross-platform-install/PLAN_CROSS_PLATFORM_INSTALL_FIX.md)
-- Ground-truth verification synthesis: [`archive/phase-5-cross-platform-install/VERIFICATION_2026-05/SUMMARY.md`](./archive/phase-5-cross-platform-install/VERIFICATION_2026-05/SUMMARY.md)
-- Per-claim act evidence: [`archive/phase-5-cross-platform-install/VERIFICATION_2026-05/empirical_act_verification.md`](./archive/phase-5-cross-platform-install/VERIFICATION_2026-05/empirical_act_verification.md)
-- Cursor (IDE + CLI) May 2026 research: [`archive/phase-5-cross-platform-install/VERIFICATION_2026-05/cursor.md`](./archive/phase-5-cross-platform-install/VERIFICATION_2026-05/cursor.md)
-- Implementer's commit-by-commit report: [`archive/phase-5-cross-platform-install/VERIFICATION_2026-05/IMPLEMENTATION_REPORT.md`](./archive/phase-5-cross-platform-install/VERIFICATION_2026-05/IMPLEMENTATION_REPORT.md)
-- Validator's APPROVED verdict: [`archive/phase-5-cross-platform-install/VERIFICATION_2026-05/IMPLEMENTATION_VALIDATION.md`](./archive/phase-5-cross-platform-install/VERIFICATION_2026-05/IMPLEMENTATION_VALIDATION.md)
-- Phase 2 README rewrite report: [`archive/phase-5-cross-platform-install/VERIFICATION_2026-05/README_REWRITE_REPORT.md`](./archive/phase-5-cross-platform-install/VERIFICATION_2026-05/README_REWRITE_REPORT.md)
-- DI refactor (prior round): [`archive/di-refactor/PLAN_DI_REFACTOR.md`](./archive/di-refactor/PLAN_DI_REFACTOR.md)
-- User-facing install/use: [`../README.md`](../README.md)
-
----
-
-## Architecture
-
-The generator now orchestrates **the platforms** through its generation phases plus per-plugin native-manifest emission:
-
-```
-scripts/utils.py        — shared helpers
-scripts/constructs.py   — Construct classes
-scripts/platforms.py    — 7 Platform classes (Claude, Codex, Gemini, Cursor, Windsurf, Devin, AgentsPlatform)
-                          + Platform.build_plugin_json(construct, name) protocol method
-scripts/bundles.py      — Bundle dataclass + load_bundles
-scripts/generate_manifest.py — orchestrator. Runs the generation phases
-                          (1, 1.5, 2a, 2b[retired], 3, 4, 4.5, 5, 5.5, 6, 7) to emit
-                          per-plugin manifests, cross-platform mirrors, marketplace.json,
-                          and docs/INVENTORY.md. See docs/ARCHITECTURE.md for what each emits.
-catalog.toml — bundle definitions ONLY
-```
-
-### Key architectural decisions (cross-platform install round)
-
-| # | Decision | Where |
-|---|----------|-------|
-| A1 | `AgentsPlatform` is a proper Platform class (not a special-case step) | [`archive/phase-5-cross-platform-install/PLAN_CROSS_PLATFORM_INSTALL_FIX.md`](./archive/phase-5-cross-platform-install/PLAN_CROSS_PLATFORM_INSTALL_FIX.md) |
-| B2 | Per-plugin native manifests gated on `platform.supports` (e.g., theme plugins get no `.codex-plugin/` because ThemeConstruct ∉ CodexPlatform.supports) | Same |
-| C1 | CI assertions + generator additions shipped in same PR (#1 expanded scope) | Same |
-| Q2 | All work on `feat/claude-plugin-compliance`; no new branch | Same |
-
-DI refactor decisions (prior round) still hold — see [`archive/di-refactor/PLAN_DI_REFACTOR.md`](./archive/di-refactor/PLAN_DI_REFACTOR.md) for the full set there.
-
----
-
-## What Each Platform Reads (post-Phase-1)
-
-| Platform | Marketplace manifest | Per-plugin manifest | Skill content path | Rule content path |
-|----------|---------------------|---------------------|--------------------|--------------------|
-| Claude Code | `.claude-plugin/marketplace.json` | `_generated/<plugin>/.claude-plugin/plugin.json` | (via plugin install) | (via plugin install) |
-| Codex | `.claude-plugin/marketplace.json` (legacy-compatible) or `.agents/plugins/marketplace.json` | `_generated/<plugin>/.codex-plugin/plugin.json` | `.codex/skills/` (mirror) | reads `AGENTS.md`, `.cursor/rules/`, `.windsurf/rules/` |
-| Gemini | `gemini-extension.json` at repo root (for GitHub URL install) or `.gemini/gemini-extension.json` (for local install) | n/a (extensions, not plugins) | `.gemini/skills/` (mirror) | reads `GEMINI.md`, `AGENTS.md` |
-| Cursor IDE | `.cursor-plugin/marketplace.json` (team-marketplace import) | `_generated/<plugin>/.cursor-plugin/plugin.json` | `.agents/skills/` (primary, per Cursor docs) | `.cursor/rules/` (auto-load) |
-| Windsurf | n/a (no marketplace) | n/a (no CLI) | `.windsurf/skills/` AND `.agents/skills/` (both auto-discovered by Cascade) | `.windsurf/rules/` (auto-load) |
-| Devin | n/a (no marketplace) | n/a (no CLI) | `.agents/skills/` (auto-discovered; `.devin/skills/` retired 2026-05-25) | reads `.cursor/rules/`, `.windsurf/rules/`, `AGENTS.md` |
-
----
-
-## Source Structure
-
-```
-skills/<name>/          — real skill content + skills/example/
-rules/<name>/           — real rule content + rules/example/
-commands/<name>/        — commands/example/ (only example today)
-agents/<name>/          — agents/example/
-hooks/<name>/           — hooks/example/
-mcp-servers/<name>/     — mcp-servers/example/
-lsp-servers/<name>/     — lsp-servers/example/
-monitors/<name>/        — monitors/example/
-output-styles/<name>/   — output-styles/example/
-themes/<name>/          — themes/example/
-```
-
-Examples are `example/` (not `example-<construct>/`).
-
----
-
-## Plugin Naming
-
-```
-Individual:     <prefix>-<name>           e.g., skill-telegram-notify
-Catalog bundle: bundle-<bundle-name>      e.g., bundle-communication-skills, bundle-examples
-```
-(Per-construct catch-alls `bundle-<prefix>-all` were retired 2026-05-27.)
-
----
-
-## Next Concrete Actions (in priority order)
-
-1. **Per-platform QA parity** — verify the reference set on the five non-Claude platforms, one cycle at a time (Cursor IDE → Cursor CLI → Gemini → Windsurf → Devin). Tracked in [`ROADMAP.md`](ROADMAP.md) #9–#14.
-
-2. **Re-add production content** — return the archived skills/rules (`docs/archive/skills-pre-stable-2026-05-26/`, `docs/archive/rules-pre-stable-2026-05-26/`) one at a time, after each verifies across platforms. ROADMAP #16–#18.
-
-3. **Accept new construct PRs** — validated Claude-first: drop a construct under `src/<construct>/`, open a PR, merge on green (the regen-bot commits regenerated artifacts on same-repo branches).
-
----
-
-## Project Glossary
-
-| Term | Meaning here |
-|------|--------------|
-| **marketplace** | Curated index of installable plugins, declared in platform-native manifest at repo root. |
-| **plugin** | A `_generated/<name>/` directory containing per-platform manifests (`.claude-plugin/`, `.codex-plugin/`, `.cursor-plugin/` where applicable) plus construct content. |
-| **construct** | One of 10 construct types: skill, rule, command, agent, hook, mcp, lsp, monitor, output-style, theme. |
-| **Construct class** | A class in `scripts/constructs.py` implementing the Construct protocol. |
-| **Platform class** | A class in `scripts/platforms.py` implementing the Platform protocol (which now includes `build_plugin_json` for per-plugin native manifests). |
-| **bundle** | A dep-only plugin declaring dependencies on other plugins. Declared in `catalog.toml`. Per-construct catch-alls retired 2026-05-27. |
-| **mirror** | An auto-generated directory under `.codex/`, `.gemini/`, `.cursor/`, `.windsurf/`, `.devin/`, or `.agents/` that copies generated content to the layout each platform expects. |
-| **`.agents/` standard** | Cross-platform skill (`.agents/skills/`) and plugin (`.agents/plugins/`) directory convention. Read by Windsurf, Cursor, Devin natively; Codex accepts `.claude-plugin/marketplace.json` as legacy-compatible. |
-| **generator** | `scripts/generate_manifest.py` — multi-phase orchestrator (see ARCHITECTURE.md). |
-| **act-based verification** | Hermetic local-container CI runs via nektos/act for verification before pushing. Scaffolds at `docs/archive/phase-5-cross-platform-install/VERIFICATION_2026-05/workflows/`. |
-| **compat workflow** | A `.github/workflows/compat-<construct>.yml` file verifying our marketplace works for that construct across applicable platforms. |
-
----
-
-## Reading Order (with time budgets)
-
-| Time | Read | Why |
-|------|------|-----|
-| 90s | This file | Get oriented |
-| 5min | [`archive/phase-5-cross-platform-install/VERIFICATION_2026-05/SUMMARY.md`](./archive/phase-5-cross-platform-install/VERIFICATION_2026-05/SUMMARY.md) | Single-page ground truth: what works per platform |
-| 10min | [`archive/phase-5-cross-platform-install/PLAN_CROSS_PLATFORM_INSTALL_FIX.md`](./archive/phase-5-cross-platform-install/PLAN_CROSS_PLATFORM_INSTALL_FIX.md) | This round's plan + locked decisions A1/B2/C1/Q2 |
-| 15min | [`archive/di-refactor/PLAN_DI_REFACTOR.md`](./archive/di-refactor/PLAN_DI_REFACTOR.md) Locked Decisions table | prior-round decisions still in force |
-| 30min | Above + [`archive/phase-5-cross-platform-install/VERIFICATION_2026-05/empirical_act_verification.md`](./archive/phase-5-cross-platform-install/VERIFICATION_2026-05/empirical_act_verification.md) + [`archive/phase-5-cross-platform-install/VERIFICATION_2026-05/IMPLEMENTATION_VALIDATION.md`](./archive/phase-5-cross-platform-install/VERIFICATION_2026-05/IMPLEMENTATION_VALIDATION.md) | Full architecture + per-claim evidence + validator's verdict |
-
----
-
-## Dead Ends (Don't Re-litigate)
-
-- **Codex per-plugin install with only `.claude-plugin/plugin.json`** — fails with `missing or invalid plugin.json`. Codex needs its own `.codex-plugin/plugin.json` (now emitted by Phase 1.5).
-- **Gemini GitHub URL install with `gemini-extension.json` only in `.gemini/`** — fails because Gemini looks for it at the cloned repo root. Now also emitted at repo root by Phase 4.5.
-- **Cursor binary name `cursor` in headless tests** — the headless CLI is `agent` (with `cursor-agent` as alias). Don't probe for `cursor --version`; probe for `agent --version`.
-- **Codex marketplace shortform without `--ref` against main pre-merge** — failed before the manifest was on `main`; resolved once it merged (now on `main` at v1.0.0).
-- **Per-plugin manifest emission unconditional across all platforms** — rejected via decision B2; emission is gated on `platform.supports`.
-- **CI assertions that test only registration without enumeration/install** — caused real defects to go undetected for weeks; new assertions in `compat-marketplace-add.yml` and `compat-extension.yml` close this gap.
-- **`members_from_construct` field in catalog.toml** — removed (DI refactor decision #24).
-- **`[bundle.<prefix>-all]` reserved-name check** — retired 2026-05-27 along with the catch-alls themselves; the catalog may now use any name.
-- **`example-<construct>` directory naming** — renamed to `example/` (DI refactor decision #18).
-- **Hardcoding the plugin count** — test suite uses a computed formula.
-
----
-
-## When You Forget Everything
-
-Re-read this file. Then:
-
-1. What to do next → "Next Concrete Actions" above
-2. Why a decision was made → [`archive/phase-5-cross-platform-install/PLAN_CROSS_PLATFORM_INSTALL_FIX.md`](./archive/phase-5-cross-platform-install/PLAN_CROSS_PLATFORM_INSTALL_FIX.md) or [`archive/di-refactor/PLAN_DI_REFACTOR.md`](./archive/di-refactor/PLAN_DI_REFACTOR.md)
-3. About to repeat a mistake → "Dead Ends" above
-4. Don't recognize a term → "Project Glossary" above
-5. Need full ground-truth on what works → [`archive/phase-5-cross-platform-install/VERIFICATION_2026-05/SUMMARY.md`](./archive/phase-5-cross-platform-install/VERIFICATION_2026-05/SUMMARY.md)
-6. Implementing a new construct or bundle → [`ADDING_A_CONSTRUCT.md`](./ADDING_A_CONSTRUCT.md)
+- **Solo / multi layout**: one `SKILL.md` at plugin root vs. `skills/<name>/SKILL.md` children.
+- **Install name**: `skill-<srcdir>` (what you type after `plugin install`). **Slash namespace**: `<brand>-skill-<srcdir>` (plugin.json name). **Brand**: `MARKETPLACE.toml` name minus `-marketplace`.
+- **regen-bot**: the workflow that regenerates + commits generated artifacts (identity `marketplace-generator`); the only sanctioned writer to `_generated/` and `.claude-plugin/`.
+- **Drift gate**: `generate_manifest.py --check` — regenerating must be a no-op against the committed tree.

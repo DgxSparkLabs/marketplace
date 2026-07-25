@@ -18,6 +18,7 @@ Tasks:
 """
 from __future__ import annotations
 
+import re
 import shutil
 import subprocess
 import sys
@@ -44,7 +45,21 @@ def check() -> int:
 def test() -> int:
     rc = 0
     for suite in SUITES:
-        rc |= run(["uv", "run", f"tests/{suite}.py"])
+        # Run via `-m unittest` AND assert a nonzero test count. Direct
+        # execution (`uv run tests/<suite>.py`) imports-and-exits-0 when a
+        # suite file loses its __main__ block — that turned this gate
+        # vacuously green once (PR #38, commit 5078a5a; see PITFALLS.md).
+        cmd = ["uv", "run", "-m", "unittest", "-v", f"tests.{suite}"]
+        print(f"\n$ {' '.join(cmd)}", flush=True)
+        proc = subprocess.run(cmd, cwd=ROOT, capture_output=True, text=True)
+        sys.stdout.write(proc.stdout)
+        sys.stderr.write(proc.stderr)
+        combined = proc.stdout + proc.stderr
+        m = re.search(r"Ran (\d+) tests?", combined)
+        if not m or int(m.group(1)) == 0:
+            print(f"[test] FAIL: {suite} ran ZERO tests — vacuous green rejected")
+            rc |= 1
+        rc |= proc.returncode
     return rc
 
 
