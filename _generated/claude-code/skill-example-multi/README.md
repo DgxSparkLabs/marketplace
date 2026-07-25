@@ -25,9 +25,9 @@ claude plugin install skill-example-multi@dgxsparklabs-marketplace --scope proje
 
 ```
 skills/example-multi/
-├── .claude-plugin/
-│   └── plugin.json          ← ONE optional key: "description" (the marketplace one-liner).
-│                               Everything else is generated — extra keys fail validation (R6).
+├── .metadata-SKILL.toml     ← optional; ONE allowed key: "description" (the marketplace
+│                               one-liner). Extra keys, or a source .claude-plugin/ dir,
+│                               fail validation (rule R6).
 ├── skills/
 │   ├── notebook/SKILL.md    ← folder name must equal frontmatter name: (rule R8)
 │   └── status/SKILL.md

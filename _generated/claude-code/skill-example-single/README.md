@@ -24,10 +24,9 @@ claude plugin install skill-example-single@dgxsparklabs-marketplace --scope proj
 
 ```
 skills/example-single/
-├── .claude-plugin/
-│   └── plugin.json   ← ONE optional key: "description" (the marketplace one-liner).
-│                        Everything else (name, version, author) is generated —
-│                        any extra key here fails validation (rule R6).
+├── .metadata-SKILL.toml  ← optional; ONE allowed key: "description" (the marketplace
+│                            one-liner). Everything else is generated; extra keys — or a
+│                            source .claude-plugin/ dir — fail validation (rule R6).
 ├── SKILL.md          ← the skill: frontmatter (name: hello, description: …) + prompt body
 └── README.md         ← you are here
 ```
@@ -37,6 +36,6 @@ The generator detects "no `skills/` subdir + one root `SKILL.md`" and emits `ski
 ## Make your own
 
 1. Copy this directory to `src/skills/<your-plugin>/` (kebab-case, ≤32 chars) — or run `uv run scripts/new_construct.py skill <your-plugin>`.
-2. Edit `SKILL.md` (frontmatter `description:` is required) and, optionally, the one-line `description` in `.claude-plugin/plugin.json`.
+2. Edit `SKILL.md` (frontmatter `description:` is required) and, optionally, the one-line `description` in `.metadata-SKILL.toml`.
 3. Commit and push — CI regenerates and publishes everything.
 4. Optional local gate first: `uv run scripts/tasks.py verify`.
