@@ -71,7 +71,7 @@ def _base_plugin_shape(construct: Construct, name: str) -> dict:
     The ``name`` field is the **Claude plugin identifier** — unique per
     plugin, composed as ``<brand>-<construct.prefix>-<source-dir-name>``
     (e.g. ``dgxsparklabs-skill-example``). ``<brand>`` is derived from
-    ``MARKETPLACE.toml`` ``name`` by stripping the trailing ``-marketplace``
+    ``.metadata-MARKETPLACE.toml`` ``name`` by stripping the trailing ``-marketplace``
     suffix. Slash invocations follow the same pattern
     ``/<brand>-<construct.prefix>-<plugin>:<component>`` —
     e.g. ``/dgxsparklabs-skill-example:notebook``.
@@ -87,7 +87,7 @@ def _base_plugin_shape(construct: Construct, name: str) -> dict:
     construct shared a slash namespace; ``claude plugin details`` then
     collapsed to a single first-installed-wins view of the components.
     Path A was reverted on 2026-05-28 per
-    ``docs/research/multi-instance-claude-only-2026-05-27/PLAN.md``.
+    ``the project-memory branch (multi-instance PLAN)``.
     """
     mp_name = _marketplace_name()
     brand = mp_name.removesuffix("-marketplace") if mp_name.endswith("-marketplace") else mp_name
@@ -112,7 +112,7 @@ class SkillConstruct:
     #   2. Multi: skills/<plugin>/skills/<a>/SKILL.md
     #             skills/<plugin>/skills/<b>/SKILL.md  ...        → skills: ["./skills/"]
     # The plugin-level description for the multi layout is operator-authored
-    # at skills/<plugin>/.claude-plugin/plugin.json (read by
+    # at skills/<plugin>/.metadata-SKILL.toml (read by
     # _read_source_plugin_description), since there's no single SKILL.md to
     # pull it from.
     prefix = "skill"
@@ -179,7 +179,7 @@ class SkillConstruct:
             self.source_directory / name,
             target_dir,
             dirs_exist_ok=True,
-            ignore=shutil.ignore_patterns("__pycache__", "*.pyc"),
+            ignore=shutil.ignore_patterns("__pycache__", "*.pyc", ".metadata-*"),
         )
         # Write plugin.json under .claude-plugin/ (overrides any source copy)
         write_plugin_json(target_dir, self.build_plugin_json(name))

@@ -24,6 +24,7 @@ from __future__ import annotations
 
 import json
 import re
+import tomllib
 import sys
 from pathlib import Path
 
@@ -55,29 +56,29 @@ BUILTIN_SLASH_NAMES = {
 
 
 def _check_marketplace_identity(problems: list[str]) -> None:
-    """N1 — marketplace identity rules on src/MARKETPLACE.toml [marketplace] name."""
+    """N1 — marketplace identity rules on src/.metadata-MARKETPLACE.toml [marketplace] name."""
     name = _marketplace_name()
     if not KEBAB.match(name):
-        problems.append(f"MARKETPLACE.toml name '{name}': not kebab-case (N1.1)")
+        problems.append(f".metadata-MARKETPLACE.toml name '{name}': not kebab-case (N1.1)")
     if not name.endswith("-marketplace"):
         problems.append(
-            f"MARKETPLACE.toml name '{name}': must end in '-marketplace' — the "
+            f".metadata-MARKETPLACE.toml name '{name}': must end in '-marketplace' — the "
             f"brand prefix is derived by stripping that suffix (N1.2)"
         )
     else:
         brand = name.removesuffix("-marketplace")
         if not brand or not KEBAB.match(brand):
             problems.append(
-                f"MARKETPLACE.toml name '{name}': stripped brand '{brand}' is "
+                f".metadata-MARKETPLACE.toml name '{name}': stripped brand '{brand}' is "
                 f"empty or not kebab-case (N1.3)"
             )
     if name in RESERVED_MARKETPLACES:
         problems.append(
-            f"MARKETPLACE.toml name '{name}': reserved marketplace identity (N1.4)"
+            f".metadata-MARKETPLACE.toml name '{name}': reserved marketplace identity (N1.4)"
         )
     if not (3 <= len(name) <= 64):
         problems.append(
-            f"MARKETPLACE.toml name '{name}': length {len(name)} outside 3-64 (N1.5)"
+            f".metadata-MARKETPLACE.toml name '{name}': length {len(name)} outside 3-64 (N1.5)"
         )
 
 
@@ -122,28 +123,47 @@ def _check_component_names(plugin_dir: Path, problems: list[str]) -> None:
             )
 
 
-def _check_source_plugin_json(plugin_dir: Path, problems: list[str]) -> None:
-    """R6 — source .claude-plugin/plugin.json key allowlist.
+def _check_source_metadata(plugin_dir: Path, problems: list[str]) -> None:
+    """R6 — source metadata hygiene.
 
-    The generator reads ONLY ``description`` from a source plugin.json and
-    composes every other field itself; any extra key (e.g. a stale ``name``
-    from before a rename) looks authoritative but is dead — and confuses the
-    next reader. Evidence: src/skills/example-multi carried a pre-rename
-    ``name`` for two months (removed in this change, issue #19).
+    Source trees carry intent, not platform shapes: the generator alone
+    writes ``.claude-plugin/`` (into ``_generated/``). Two checks:
+
+    1. A source ``.claude-plugin/`` directory must NOT exist at all — it is
+       always dead weight wearing a generated file's costume (the pre-refactor
+       key-allowlist version of this rule caught a stale ``name`` that had
+       misled readers for two months).
+    2. ``.metadata-SKILL.toml``, if present, must parse as TOML and contain
+       only the keys the generator reads (``description``, non-empty string).
     """
-    pj = plugin_dir / ".claude-plugin" / "plugin.json"
-    if not pj.exists():
+    stray = plugin_dir / ".claude-plugin"
+    if stray.exists():
+        problems.append(
+            f"{stray}: source trees must not contain .claude-plugin/ — plugin "
+            f"metadata belongs in .metadata-SKILL.toml; the generator emits "
+            f".claude-plugin/ under _generated/ (R6)"
+        )
+    meta = plugin_dir / ".metadata-SKILL.toml"
+    if not meta.exists():
         return
     try:
-        keys = set(json.loads(pj.read_text(encoding="utf-8-sig")))
-    except (json.JSONDecodeError, UnicodeDecodeError, OSError):
-        return  # malformed JSON already reported by _check_json
-    extra = keys - {"description"}
+        with open(meta, "rb") as f:
+            data = tomllib.load(f)
+    except tomllib.TOMLDecodeError as exc:
+        problems.append(f"{meta}: invalid TOML ({exc}) (R6)")
+        return
+    except OSError as exc:
+        problems.append(f"{meta}: unreadable ({exc}) (R6)")
+        return
+    extra = set(data) - {"description"}
     if extra:
         problems.append(
-            f"{pj}: keys {sorted(extra)} are not read by the generator — "
-            f"only 'description' is allowed in a SOURCE plugin.json (R6)"
+            f"{meta}: keys {sorted(extra)} are not read by the generator — "
+            f"only 'description' is allowed (R6)"
         )
+    desc = data.get("description")
+    if desc is not None and (not isinstance(desc, str) or not desc):
+        problems.append(f"{meta}: 'description' must be a non-empty string (R6)")
 
 
 def _check_multi_layout_folder_names(plugin_dir: Path, problems: list[str]) -> None:
@@ -234,7 +254,7 @@ def validate(paths: list[Path]) -> list[str]:
                     f"{d}: instance directory name length {len(d.name)} exceeds 32 (N2.2)"
                 )
             _check_component_names(d, problems)
-            _check_source_plugin_json(d, problems)
+            _check_source_metadata(d, problems)
             _check_multi_layout_folder_names(d, problems)
     _check_marketplace_identity(problems)
     return problems

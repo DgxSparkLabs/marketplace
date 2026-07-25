@@ -17,4 +17,4 @@ labels: enhancement
 
 <!-- Prior art, links, constraints. -->
 
-<!-- Want to contribute it yourself? See docs/ADDING_A_CONSTRUCT.md (and `uv run scripts/new_construct.py <type> <name>` to scaffold). Sequenced work lives in docs/ROADMAP.md. -->
+<!-- Want to contribute it yourself? See docs/SKILL_FORMAT.md and docs/CONTRIBUTING.md (`uv run scripts/new_construct.py skill <name>` scaffolds). Roadmap = GitHub issues, start at #18. -->

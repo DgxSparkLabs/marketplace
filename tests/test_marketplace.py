@@ -3,25 +3,17 @@
 # requires-python = ">=3.11"
 # dependencies = []
 # ///
-"""
-Marketplace test suite — post DI-refactor.
+"""Tests for the marketplace generator's inputs and outputs.
 
 Validates:
-  - Source layout (10 construct source dirs + examples)
-  - Generated plugins at correct paths with correct schemas
-  - Code-generated catch-all bundles (bundle-<prefix>-all)
-  - Platform mirror coverage (Codex, Gemini, Cursor, Windsurf, Devin)
-  - marketplace.json schema, sorting, and completeness
-  - Bundle validation (reserved names, empty bundles, syntax)
-  - CONSTRUCTS registry invariants
-  - Plugin count formula
-  - No secrets in tracked files
-  - Generator drift check
+  - Source layout: src/skills/<name>/ instances are well-formed
+  - Generated plugins: _generated/claude-code/<plugin>/ plugin.json fields + naming
+  - marketplace.json: shape, sort order, entry/name invariants
+  - Construct registry integrity, plugin count, secrets scan, drift,
+    .metadata-MARKETPLACE.toml identity fields
 
-Run:
-    uv run tests/test_marketplace.py          # all tests
-    uv run tests/test_marketplace.py -v       # verbose
-    uv run tests/test_marketplace.py -k Name  # filter
+Run via `uv run scripts/tasks.py test` (module invocation + nonzero-count
+assertion) — not by direct file execution.
 """
 
 from __future__ import annotations
@@ -46,10 +38,10 @@ from platforms import (
     PLATFORMS,
     ClaudeCodePlatform,
 )
-from utils import CATALOG, MARKETPLACE_JSON, scan_source_dir
+from utils import MARKETPLACE_JSON, scan_source_dir
 
-MARKETPLACE_TOML = REPO_ROOT / "src" / "MARKETPLACE.toml"
-GENERATED_DIR = REPO_ROOT / "_generated"
+MARKETPLACE_TOML = REPO_ROOT / "src" / ".metadata-MARKETPLACE.toml"
+GENERATED_DIR = REPO_ROOT / "_generated" / "claude-code"
 
 
 # ─── helpers ─────────────────────────────────────────────────────────────────
@@ -69,7 +61,7 @@ class TestSourceLayout(unittest.TestCase):
     """Source directory conventions — contract tests."""
 
     def test_construct_source_dirs_exist(self):
-        """Each of the 10 construct source directories must exist."""
+        """Every registered construct's source directory must exist."""
         for construct_id, construct in CONSTRUCTS.items():
             with self.subTest(construct=construct_id):
                 self.assertTrue(
@@ -152,7 +144,7 @@ class TestGeneratedPlugins(unittest.TestCase):
                     )
 
     def test_individual_plugin_name_is_unique_brand_namespace(self):
-        """Each plugin's ``_generated/<plugin>/.claude-plugin/plugin.json``
+        """Each plugin's ``_generated/claude-code/<plugin>/.claude-plugin/plugin.json``
         ``name`` field is ``<brand>-<construct.prefix>-<source-dir-name>`` —
         unique per plugin (e.g. ``dgxsparklabs-skill-example``).
 
@@ -162,14 +154,14 @@ class TestGeneratedPlugins(unittest.TestCase):
         The install-time marketplace entry name in ``marketplace.json``
         ``plugins[].name`` (e.g. ``skill-example``) is a separate, unprefixed
         identifier; that contract is asserted by
-        ``test_marketplace_lists_all_expected_plugins`` below.
+        ``test_individual_plugin_name_is_unique_brand_namespace`` below.
 
         History: an earlier attempt (Path A, ``d641f92``, 2026-05-27) used a
         shared ``<brand>-<construct.category>`` name so multiple plugins of
         one construct shared a slash namespace; ``claude plugin details``
         collapsed components to a single first-installed-wins view. Path A
         was reverted on 2026-05-28 per
-        ``docs/research/multi-instance-claude-only-2026-05-27/PLAN.md``.
+        ``the project-memory branchPLAN.md``.
 
         RuleConstruct is excluded per F8 — rules don't get a
         .claude-plugin/plugin.json since they are not a Claude plugin
@@ -184,7 +176,7 @@ class TestGeneratedPlugins(unittest.TestCase):
                 continue
             for source_name in scan_source_dir(construct.source_directory):
                 expected = f"{brand}-{construct.prefix}-{source_name}"
-                plugin_path = REPO_ROOT / "_generated" / f"{construct.prefix}-{source_name}" / ".claude-plugin" / "plugin.json"
+                plugin_path = GENERATED_DIR / f"{construct.prefix}-{source_name}" / ".claude-plugin" / "plugin.json"
                 with self.subTest(construct=construct.prefix, name=source_name):
                     data = json.loads(plugin_path.read_text(encoding="utf-8"))
                     self.assertEqual(
@@ -207,7 +199,7 @@ class TestGeneratedPlugins(unittest.TestCase):
         skill = next(c for c in CONSTRUCTS.values() if isinstance(c, SkillConstruct))
         for source_name in scan_source_dir(skill.source_directory):
             src = skill.source_directory / source_name
-            gen_dir = REPO_ROOT / "_generated" / f"skill-{source_name}"
+            gen_dir = GENERATED_DIR / f"skill-{source_name}"
             gen_pj = gen_dir / ".claude-plugin" / "plugin.json"
             with self.subTest(plugin=source_name):
                 data = json.loads(gen_pj.read_text(encoding="utf-8"))
@@ -249,7 +241,7 @@ class TestMarketplaceJson(unittest.TestCase):
         """Per code.claude.com/docs/en/plugin-marketplaces#marketplace-schema
         (fetched 2026-05-26), ``description`` is an optional top-level field;
         omitting it triggers ``claude plugin validate`` warning. We always
-        emit it (sourced from MARKETPLACE.toml) so the validator is clean."""
+        emit it (sourced from the marketplace metadata file) so the validator is clean."""
         data = load_marketplace_json()
         self.assertIn(
             "description", data,
@@ -317,7 +309,7 @@ class TestPluginCount(unittest.TestCase):
     construct-expansion wave). Every Claude-supported non-skill, non-rule
     construct ships paired example-single + example-multi; hooks ship 9
     per-event plugins + example-multi (10 total); skill ships its existing
-    two. The lone catalog bundle is ``bundle-examples``.
+    two (the example skill plugins; bundles were retired in the #18 scope-down).
     """
 
 class TestNoSecrets(unittest.TestCase):
@@ -383,7 +375,7 @@ class TestGeneratorDrift(unittest.TestCase):
 # ─── TestMarketplaceToml ──────────────────────────────────────────────────────
 
 class TestMarketplaceToml(unittest.TestCase):
-    """MARKETPLACE.toml integrity — contract tests."""
+    """.metadata-MARKETPLACE.toml integrity — contract tests."""
 
     def test_marketplace_toml_parses(self):
         mp = load_toml(MARKETPLACE_TOML)

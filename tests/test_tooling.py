@@ -70,17 +70,41 @@ class TestValidateSource(unittest.TestCase):
             )
             self.assertTrue(any("N2.2" in p for p in validate_source.validate([d])))
 
-    def test_stray_source_manifest_key_flagged(self):
+    def test_source_claude_plugin_dir_flagged(self):
+        with tempfile.TemporaryDirectory() as t:
+            d = Path(t) / "skills" / "strayshape"
+            (d / ".claude-plugin").mkdir(parents=True)
+            (d / "SKILL.md").write_text(
+                "---\nname: strayshape\ndescription: x\n---\nbody\n",
+                encoding="utf-8",
+            )
+            (d / ".claude-plugin" / "plugin.json").write_text(
+                '{"description": "x"}', encoding="utf-8"
+            )
+            self.assertTrue(any("R6" in p for p in validate_source.validate([d])))
+
+    def test_metadata_toml_stray_key_flagged(self):
         with tempfile.TemporaryDirectory() as t:
             d = Path(t) / "skills" / "straykey"
-            (d / ".claude-plugin").mkdir(parents=True)
+            d.mkdir(parents=True)
             (d / "SKILL.md").write_text(
                 "---\nname: straykey\ndescription: x\n---\nbody\n",
                 encoding="utf-8",
             )
-            (d / ".claude-plugin" / "plugin.json").write_text(
-                '{"name": "stale-name", "description": "x"}', encoding="utf-8"
+            (d / ".metadata-SKILL.toml").write_text(
+                'description = "x"\nname = "stale-name"\n', encoding="utf-8"
             )
+            self.assertTrue(any("R6" in p for p in validate_source.validate([d])))
+
+    def test_metadata_toml_invalid_flagged(self):
+        with tempfile.TemporaryDirectory() as t:
+            d = Path(t) / "skills" / "badtoml"
+            d.mkdir(parents=True)
+            (d / "SKILL.md").write_text(
+                "---\nname: badtoml\ndescription: x\n---\nbody\n",
+                encoding="utf-8",
+            )
+            (d / ".metadata-SKILL.toml").write_text("not = = toml", encoding="utf-8")
             self.assertTrue(any("R6" in p for p in validate_source.validate([d])))
 
     def test_multi_layout_name_mismatch_flagged(self):
@@ -96,11 +120,11 @@ class TestValidateSource(unittest.TestCase):
             )
 
     def test_real_marketplace_identity_passes(self):
-        # N1 runs on the repo's real MARKETPLACE.toml in every validate() call;
+        # N1 runs on the repo's real .metadata-MARKETPLACE.toml in every validate() call;
         # the good-skill test above passing proves N1 is clean, but assert
         # explicitly so an identity regression names the right rule.
         self.assertFalse(
-            [p for p in validate_source.validate([]) if p.startswith("MARKETPLACE")]
+            [p for p in validate_source.validate([]) if p.startswith(".metadata-MARKETPLACE")]
         )
 
     def test_missing_description_flagged(self):
@@ -146,6 +170,42 @@ class TestValidateSource(unittest.TestCase):
     def test_real_src_is_clean(self):
         # The shipped sources must pass their own validator.
         self.assertEqual(validate_source.validate([SRC]), [])
+
+
+class TestDriftGateReadOnly(unittest.TestCase):
+    """Regression: --check must be read-only and deterministic (fail twice).
+
+    Three independent newcomer walkthroughs hit the old behavior where a
+    failing --check regenerated the tree in place, so the SECOND run passed
+    with zero user action (fail-once-then-pass). The fix restores the
+    pre-check tree on drift; this test injects drift and asserts BOTH runs
+    fail and the tampered byte survives the check untouched.
+    """
+
+    def test_check_fails_twice_and_restores_tree(self):
+        import subprocess
+
+        inv = REPO_ROOT / "docs" / "INVENTORY.md"
+        original = inv.read_bytes()
+        try:
+            inv.write_bytes(original + b"tampered\n")
+            for run_no in (1, 2):
+                proc = subprocess.run(
+                    ["uv", "run", "scripts/generate_manifest.py", "--check"],
+                    cwd=REPO_ROOT, capture_output=True, text=True,
+                )
+                self.assertEqual(
+                    proc.returncode, 1,
+                    f"run {run_no}: --check must fail on drift every time "
+                    f"(got {proc.returncode}); fail-once-then-pass means the "
+                    f"check wrote to the tree",
+                )
+            self.assertEqual(
+                inv.read_bytes(), original + b"tampered\n",
+                "--check must leave the drifted file exactly as it found it",
+            )
+        finally:
+            inv.write_bytes(original)
 
 
 class TestNewConstruct(unittest.TestCase):
