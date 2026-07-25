@@ -28,13 +28,145 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from utils import SRC, _frontmatter  # noqa: E402
+from utils import SRC, _frontmatter, _marketplace_name  # noqa: E402
 
 KEBAB = re.compile(r"^[a-z0-9]+(-[a-z0-9]+)*$")
 PLUGIN_ROOT_REF = re.compile(r"\$\{CLAUDE_PLUGIN_ROOT\}/([^\"'\s]+)")
 CONSTRUCT_DIRS = {
     "skills",
 }
+
+# ─── naming standard (issue #19, rules N1/N2/N4; probed on CLI 2.1.220) ──────
+# The CLI hard-rejects only {skills-dir, builtin} as marketplace names; every
+# other reserved word below passed `claude plugin validate` in live probes, so
+# CI is the ONLY gate for them. Composition invariants (N3/N5) live in
+# tests/test_marketplace.py next to the drift check.
+RESERVED_MARKETPLACES = {
+    "skills-dir", "builtin",                      # CLI-enforced (exact errors probed)
+    "claude-plugins-official",                    # preinstalled official marketplace
+    "local", "user", "project", "claude", "anthropic",  # scope words / vendor
+}
+# Built-in slash commands a component name SHOULD not shadow (warning only —
+# components always surface as /<plugin>:<component>, never bare).
+BUILTIN_SLASH_NAMES = {
+    "config", "theme", "agents", "mcp", "plugin", "help", "init", "clear",
+    "compact", "resume", "fast", "code-review", "review", "security-review",
+}
+
+
+def _check_marketplace_identity(problems: list[str]) -> None:
+    """N1 — marketplace identity rules on src/MARKETPLACE.toml [marketplace] name."""
+    name = _marketplace_name()
+    if not KEBAB.match(name):
+        problems.append(f"MARKETPLACE.toml name '{name}': not kebab-case (N1.1)")
+    if not name.endswith("-marketplace"):
+        problems.append(
+            f"MARKETPLACE.toml name '{name}': must end in '-marketplace' — the "
+            f"brand prefix is derived by stripping that suffix (N1.2)"
+        )
+    else:
+        brand = name.removesuffix("-marketplace")
+        if not brand or not KEBAB.match(brand):
+            problems.append(
+                f"MARKETPLACE.toml name '{name}': stripped brand '{brand}' is "
+                f"empty or not kebab-case (N1.3)"
+            )
+    if name in RESERVED_MARKETPLACES:
+        problems.append(
+            f"MARKETPLACE.toml name '{name}': reserved marketplace identity (N1.4)"
+        )
+    if not (3 <= len(name) <= 64):
+        problems.append(
+            f"MARKETPLACE.toml name '{name}': length {len(name)} outside 3-64 (N1.5)"
+        )
+
+
+def _skill_component_names(plugin_dir: Path) -> list[tuple[Path, str]]:
+    """Yield (source, component-name) pairs for a skill plugin (solo or multi)."""
+    out: list[tuple[Path, str]] = []
+    root_skill = plugin_dir / "SKILL.md"
+    if root_skill.exists():
+        fm = _frontmatter(root_skill)
+        out.append((root_skill, fm.get("name") or plugin_dir.name))
+    subdir = plugin_dir / "skills"
+    if subdir.is_dir():
+        for d in sorted(subdir.iterdir()):
+            sk = d / "SKILL.md"
+            if sk.exists():
+                fm = _frontmatter(sk)
+                out.append((sk, fm.get("name") or d.name))
+    return out
+
+
+def _check_component_names(plugin_dir: Path, problems: list[str]) -> None:
+    """N4 — component names: kebab, 1-32 chars, unique within the plugin."""
+    seen: dict[str, Path] = {}
+    for src_file, comp in _skill_component_names(plugin_dir):
+        if not KEBAB.match(comp):
+            problems.append(f"{src_file}: component name '{comp}' not kebab-case (N4.1)")
+        if not (1 <= len(comp) <= 32):
+            problems.append(
+                f"{src_file}: component name '{comp}' length {len(comp)} outside 1-32 (N4.2)"
+            )
+        if comp in seen:
+            problems.append(
+                f"{src_file}: component name '{comp}' duplicates {seen[comp]} "
+                f"within the same plugin (N4.3)"
+            )
+        seen[comp] = src_file
+        if comp in BUILTIN_SLASH_NAMES:
+            print(
+                f"  WARN: {src_file}: component name '{comp}' shadows a "
+                f"built-in slash command (N4.4 — warning only)",
+                file=sys.stderr,
+            )
+
+
+def _check_source_plugin_json(plugin_dir: Path, problems: list[str]) -> None:
+    """R6 — source .claude-plugin/plugin.json key allowlist.
+
+    The generator reads ONLY ``description`` from a source plugin.json and
+    composes every other field itself; any extra key (e.g. a stale ``name``
+    from before a rename) looks authoritative but is dead — and confuses the
+    next reader. Evidence: src/skills/example-multi carried a pre-rename
+    ``name`` for two months (removed in this change, issue #19).
+    """
+    pj = plugin_dir / ".claude-plugin" / "plugin.json"
+    if not pj.exists():
+        return
+    try:
+        keys = set(json.loads(pj.read_text(encoding="utf-8-sig")))
+    except (json.JSONDecodeError, UnicodeDecodeError, OSError):
+        return  # malformed JSON already reported by _check_json
+    extra = keys - {"description"}
+    if extra:
+        problems.append(
+            f"{pj}: keys {sorted(extra)} are not read by the generator — "
+            f"only 'description' is allowed in a SOURCE plugin.json (R6)"
+        )
+
+
+def _check_multi_layout_folder_names(plugin_dir: Path, problems: list[str]) -> None:
+    """R8 — multi-layout skill folder name must equal its frontmatter name.
+
+    Mirrors are keyed by folder name while the CLI surfaces the frontmatter
+    name; they agree by convention only, and drift would give the same skill
+    two user-visible names. Multi-layout only: a solo plugin's dir names the
+    PLUGIN, its frontmatter names the component — those differ by design.
+    """
+    subdir = plugin_dir / "skills"
+    if not subdir.is_dir():
+        return
+    for d in sorted(subdir.iterdir()):
+        sk = d / "SKILL.md"
+        if not sk.exists():
+            continue
+        fm_name = _frontmatter(sk).get("name")
+        if fm_name and fm_name != d.name:
+            problems.append(
+                f"{sk}: frontmatter name '{fm_name}' != folder name "
+                f"'{d.name}' (R8 — they must match)"
+            )
 
 
 def _check_md(path: Path, problems: list[str]) -> None:
@@ -96,7 +228,15 @@ def validate(paths: list[Path]) -> list[str]:
                 _check_json(f, problems)
         for d in _iter_instance_dirs(root):
             if not KEBAB.match(d.name):
-                problems.append(f"{d}: instance directory name is not kebab-case")
+                problems.append(f"{d}: instance directory name is not kebab-case (N2.1)")
+            if len(d.name) > 32:
+                problems.append(
+                    f"{d}: instance directory name length {len(d.name)} exceeds 32 (N2.2)"
+                )
+            _check_component_names(d, problems)
+            _check_source_plugin_json(d, problems)
+            _check_multi_layout_folder_names(d, problems)
+    _check_marketplace_identity(problems)
     return problems
 
 

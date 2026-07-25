@@ -49,7 +49,8 @@ def test() -> int:
 
 
 def verify() -> int:
-    rc = check()
+    rc = run(["uv", "run", "scripts/validate_source.py"])
+    rc |= check()
     rc |= test()
     if shutil.which("claude"):
         rc |= run(["claude", "plugin", "validate", "./"])
