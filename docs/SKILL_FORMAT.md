@@ -1,276 +1,58 @@
-# SKILL.md Format Reference
+# SKILL.md format reference
 
-Complete specification for the `SKILL.md` file format used by agent skills.
+The format for skills in this marketplace, as the toolchain actually enforces and Claude Code actually consumes it. Everything here is checkable against `scripts/validate_source.py` (the CI gate) and the shipped examples under `src/skills/`.
 
-> **Marketplace note**: When you add a skill to this marketplace (in `src/skills/<name>/SKILL.md`), the generator (`scripts/generate_manifest.py`) automatically produces a Claude Code plugin wrapper at `_generated/skill-<name>/` containing a `.claude-plugin/plugin.json` and a copy of your skill content. You never write `plugin.json` yourself for a skill — it's derived from `SKILL.md` frontmatter + `MARKETPLACE.toml` identity. See [[CONTRIBUTING]] for the contributor workflow.
+> **You never write `plugin.json` for the marketplace** — the generator derives the plugin wrapper at `_generated/skill-<name>/` from your `SKILL.md` + `src/MARKETPLACE.toml`. See [CONTRIBUTING](CONTRIBUTING.md) for the workflow.
 
-## File Structure
+## Layouts
 
-A `SKILL.md` file has two parts:
+A skill plugin folder under `src/skills/<plugin>/` is one of exactly two shapes:
 
-1. **YAML frontmatter** — metadata between `---` delimiters (optional but recommended)
-2. **Prompt body** — Markdown content that gets injected into the agent's context when the skill is invoked
+```
+solo                                multi
+src/skills/<plugin>/                src/skills/<plugin>/
+└── SKILL.md                        ├── .claude-plugin/plugin.json   (optional; "description" is the ONLY allowed key — rule R6)
+                                    └── skills/
+                                        ├── <skill-a>/SKILL.md
+                                        └── <skill-b>/SKILL.md
+```
+
+Having both a root `SKILL.md` and a `skills/` subdir is a generator error — pick one. Supporting files (scripts, references) may sit next to any `SKILL.md` and are copied into the plugin verbatim.
+
+## Frontmatter
 
 ```markdown
 ---
-# YAML frontmatter (metadata)
 name: my-skill
-description: What this skill does
+description: One sentence saying when Claude should use this skill.
+allowed-tools: Bash
 ---
 
-# Prompt body (Markdown)
-Instructions for the agent go here.
+The skill body: the instructions Claude follows when the skill is invoked.
 ```
 
----
+| Field | Required? | Rules (CI-enforced where marked) |
+|---|---|---|
+| `description` | **Yes**, whenever frontmatter is present (CI) | Non-empty; this is both the model's invocation hint and the marketplace listing line. Keep it one sentence. |
+| `name` | Optional | Defaults to the folder name (solo: the plugin folder; multi: the skill folder). If set: kebab-case, 1–32 chars (CI); in the multi layout it must equal the skill folder name (CI, rule R8). Avoid names of built-in slash commands (CI warns). |
+| `allowed-tools` | Optional | Claude Code tool names (e.g. `Bash`, `Read`). Claude-only — this marketplace targets no other platform. |
 
-## Frontmatter Fields
+Other Claude Code SKILL.md fields (e.g. `disable-model-invocation`) pass through untouched; the validator neither requires nor rejects them. The authoritative field list is Claude Code's own skills documentation: https://code.claude.com/docs/en/skills
 
-All fields are optional. Frontmatter itself is optional (the file can be just Markdown).
+## Referencing bundled files
 
-| Field | Type | Default | Description |
-|-------|------|---------|-------------|
-| `name` | string | directory name | Display name of the skill. Used in UI and completions. |
-| `description` | string | none | Short description shown in slash-command completions. Keep under 80 characters. |
-| `argument-hint` | string | none | Hint shown after the command name, e.g. `[file]`, `[url] [format]`. |
-| `model` | string | current model | Override the model used when this skill runs. Examples: `sonnet`, `opus`. |
-| `allowed-tools` | list of strings | all tools | Restrict which tools the skill can use. If omitted, the skill can use all tools. |
-| `permissions` | object | inherit session | Permission overrides for this skill (see Permissions section). |
-| `triggers` | list of strings | `[user, model]` | How the skill can be invoked (see Triggers section). |
-
-### `allowed-tools` values
-
-Built-in tools differ by platform. List **both** aliases so the skill works across all platforms (each platform matches the names it recognizes and ignores the rest):
-
-| Devin | Claude Code | Description |
-|-------|-------------|-------------|
-| `exec` | `Bash` | Execute shell commands |
-| `read` | `Read` | Read files |
-| `edit` | `Edit` | Edit files |
-| `grep` | `Grep` | Search file contents with regex |
-| `glob` | `Glob` | Find files by name pattern |
-
-Always list both aliases in `allowed-tools`:
-```yaml
-allowed-tools:
-  - exec
-  - Bash
-  - read
-  - Read
-```
-
-MCP tools use the naming convention `mcp__<server>__<tool>`:
-```yaml
-allowed-tools:
-  - read
-  - Read
-  - mcp__github__list_issues
-  - mcp__github__create_issue
-```
-
-### `permissions` object
-
-```yaml
-permissions:
-  allow:          # Auto-approved during skill execution
-    - Read(src/**)
-    - Exec(npm run test)
-    - Write(output/**)
-  deny:           # Blocked during skill execution
-    - Write(/etc/**)
-    - exec
-  ask:            # Always prompt the user
-    - Write(src/**)
-```
-
-Permission scopes use glob patterns:
-- `Read(<glob>)` — file read access
-- `Write(<glob>)` — file write access
-- `Exec(<command-prefix>)` — shell command execution
-
-Permissions are **additive** to the session's base permissions. A skill cannot grant permissions that are denied at a higher level (project or organization config).
-
-### `triggers` values
-
-| Value | Description |
-|-------|-------------|
-| `user` | User can invoke with `/skill-name` in the chat |
-| `model` | Agent can invoke the skill autonomously when it deems relevant |
-
-Default is both: `[user, model]`. Set `[user]` to prevent autonomous invocation.
-
----
-
-## Prompt Body
-
-The Markdown content after the frontmatter closing `---`. This is what the agent sees when the skill is invoked.
-
-### Writing effective prompts
-
-- Use imperative/verb-first instructions ("Run the test suite", "Check for errors")
-- State prerequisites clearly (required env vars, tools, services)
-- Provide exact commands the agent should run
-- Describe how to handle errors and edge cases
-- Include examples of expected output when helpful
-
-### Dynamic content
-
-Four substitution mechanisms are available in the prompt body:
-
-#### 1. User arguments
-
-When a user invokes `/my-skill arg1 arg2`, the arguments are available as:
-
-| Variable | Value |
-|----------|-------|
-| `$1` | First positional argument (`arg1`) |
-| `$2` | Second positional argument (`arg2`) |
-| `$ARGUMENTS` | All arguments as a single string (`arg1 arg2`) |
-
-Example:
-```markdown
-Explain the code in $1 in detail.
-
-Full user input: $ARGUMENTS
-```
-
-#### 2. Skill directory
-
-Use `$SKILL_DIR` to reference scripts and files within the skill's own directory:
-
-| Variable | Value |
-|----------|-------|
-| `$SKILL_DIR` | Absolute path to the installed skill directory |
-
-`$SKILL_DIR` is resolved at **install time** by the marketplace installer, which replaces it with the actual install path (e.g., `~/.claude/skills/my-skill` or `.agents/skills/my-skill`). This ensures commands work regardless of which platform or scope the skill is installed to.
-
-Example:
-```markdown
-uv run $SKILL_DIR/scripts/send_email.py --to "user@example.com" --subject "Hello" --body "Hi"
-```
-
-After installing to Claude Code, this becomes:
-```markdown
-uv run ~/.claude/skills/send-email/scripts/send_email.py --to "user@example.com" --subject "Hello" --body "Hi"
-```
-
-**Always use `$SKILL_DIR` for script paths.** Do not hardcode platform-specific paths like `~/.claude/skills/my-skill/`.
-
-#### 3. File inclusion
-
-Include the contents of a file using `@` syntax. Paths are **relative to the config directory** (e.g., `.windsurf/`, `.agents/`, or `.cursor/`), not relative to the skill directory.
+Use `${CLAUDE_PLUGIN_ROOT}` for paths to files shipped with the skill — Claude Code sets it to the installed plugin's root at runtime:
 
 ```markdown
-Check the code against our style guide:
-
-@style-guide.md
-
-Apply these rules to the current file.
+Run: uv run ${CLAUDE_PLUGIN_ROOT}/scripts/helper.py
 ```
 
-To include a file from within the skill's own directory, use the `references/` subdirectory convention and reference from the config root:
-```markdown
-@.agents/skills/my-skill/references/guide.md
-```
+The validator checks every `${CLAUDE_PLUGIN_ROOT}/<file>` reference in bundled JSON actually resolves to a file in the plugin (the "config references a missing script" class). There is **no** other substitution mechanism — nothing rewrites paths at install time.
 
-#### 4. Command output
+## How a skill surfaces after install
 
-Execute a shell command at invocation time and inject its stdout:
+- Slash form: `/<brand>-skill-<plugin>:<name>` (e.g. `/dgxsparklabs-skill-example-multi:notebook`)
+- Flat shortcut: `/<name>` when unambiguous
+- The model can also invoke the skill autonomously based on `description`.
 
-```markdown
-Review these staged changes:
-
-!`git diff --staged`
-
-Provide feedback on code quality.
-```
-
-The command runs once when the skill is invoked. Its output is included verbatim in the prompt.
-
----
-
-## Complete Examples
-
-### Minimal skill (no frontmatter)
-
-```markdown
-Search the codebase for the given term and summarize what you find.
-
-$ARGUMENTS
-```
-
-### Skill with all frontmatter fields
-
-```yaml
----
-name: deploy
-description: Run the deployment checklist
-argument-hint: "[environment]"
-model: sonnet
-allowed-tools:
-  - read
-  - Read
-  - exec
-  - Bash
-  - grep
-  - Grep
-permissions:
-  allow:
-    - Exec(npm run)
-    - Exec(git)
-  deny:
-    - Write(/etc/**)
-triggers:
-  - user
----
-
-Run the deployment checklist for the $1 environment:
-
-1. Run tests: `npm run test`
-2. Run linter: `npm run lint`
-3. Check git status: `git status`
-4. Build: `npm run build`
-5. Show current branch and last commit
-
-Report the status of each step. If anything fails, stop and explain the issue.
-```
-
-### Skill with a supporting script
-
-```yaml
----
-name: send-email
-description: Send an email to someone using the Resend API
-argument-hint: "[recipient] [subject]"
-allowed-tools:
-  - exec
-  - Bash
-  - read
-  - Read
-permissions:
-  allow:
-    - Exec(uv run)
-triggers:
-  - user
-  - model
----
-
-# Send Email
-
-Send an email using the Resend API via a self-contained Python script.
-
-## Prerequisites
-
-The `RESEND_API_KEY` environment variable must be set.
-
-## Usage
-
-uv run $SKILL_DIR/scripts/send_email.py --to "recipient@example.com" --subject "Subject" --body "Body"
-
-## Instructions
-
-Parse the user's request to extract recipient, subject, and body.
-Then run the script with the appropriate arguments.
-
-User arguments: $ARGUMENTS
-```
+Naming chain and rules in full: [ARCHITECTURE](ARCHITECTURE.md) "Names" + issue #19.

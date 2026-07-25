@@ -13,23 +13,29 @@ you fork this repo
 
 Governance and history: umbrella issue [#18](https://github.com/DgxSparkLabs/marketplace/issues/18) (the skills-only, Claude-only scope-down) and [#19](https://github.com/DgxSparkLabs/marketplace/issues/19) (the naming standard CI enforces). Other construct types and other agent platforms are deliberately deferred with tracked re-expansion issues — see #18's index.
 
+## Prerequisites
+
+- [Claude Code](https://code.claude.com) (`claude` CLI; behavior below verified on 2.1.220)
+- `git`; and [`uv`](https://docs.astral.sh/uv/) only if you want to run the optional local gate
+
 ## Install skills from this marketplace
 
 ```bash
 claude plugin marketplace add DgxSparkLabs/marketplace
 claude plugin install skill-example-multi@dgxsparklabs-marketplace --scope project
-claude plugin enable  skill-example-multi@dgxsparklabs-marketplace
 ```
 
-Install and enable are separate steps — skipping enable yields `Plugin not found in any editable settings scope.` Browse what's installable with `claude plugin list --available | grep dgxsparklabs`. The authoritative plugin list is generated at [`docs/INVENTORY.md`](docs/INVENTORY.md).
+Install auto-enables the plugin on current CLIs. Two sharp edges worth knowing: `--scope project` writes `.claude/settings.json` in your **current directory** — run it from the project you mean to configure; and uninstalling needs the same flag (`claude plugin uninstall skill-example-multi --scope project`).
 
-Skills invoke as `/<brand>-skill-<plugin>:<component>` (e.g. `/dgxsparklabs-skill-example-multi:notebook`) or via the flat shortcut (`/notebook`) when unambiguous.
+Browse what's installable with `claude plugin list --available --json` (the `--available` flag requires `--json`) — or just read the generated list at [`docs/INVENTORY.md`](docs/INVENTORY.md).
+
+Skills invoke as `/<brand>-skill-<plugin-folder>:<skill-name>` (e.g. `/dgxsparklabs-skill-example-multi:notebook`) or via the flat shortcut (`/notebook`) when unambiguous.
 
 ## Make it yours (forking checklist, ~5 minutes)
 
 1. **Fork** this repo on GitHub.
 2. **Enable Actions** in your fork (Actions tab → enable — one click; forks start with workflows off).
-3. **Edit `src/MARKETPLACE.toml`**: set `name` (must be kebab-case and end in `-marketplace` — e.g. `acme-marketplace`; CI enforces this, and the part before `-marketplace` becomes the brand prefix on every skill), plus `owner` and the repo URL.
+3. **Edit `src/MARKETPLACE.toml`**: set `name` (kebab-case, must end in `-marketplace` — e.g. `acme-marketplace`; CI enforces this, and the part before `-marketplace` becomes the brand prefix on every skill), `description`, `owner`, and the repo URL.
 4. **Push to main.** CI regenerates every manifest with your identity — nothing else needs renaming; install commands, plugin names, and slash namespaces all derive from that one file plus your repo slug.
 5. Tell users: `claude plugin marketplace add <you>/<your-fork>`.
 
@@ -45,7 +51,7 @@ git add src/skills/my-skill && git commit && git push
 
 A skill folder is either **solo** (`src/skills/<plugin>/SKILL.md`) or **multi** (`src/skills/<plugin>/skills/<a>/SKILL.md`, one subfolder per skill — folder name must equal the SKILL.md frontmatter `name:`). Format details: [`docs/SKILL_FORMAT.md`](docs/SKILL_FORMAT.md); the full naming rules CI enforces: issue #19 and `scripts/validate_source.py`.
 
-Working locally and want the full gate before pushing? `uv run scripts/tasks.py verify` runs source validation → drift check → test suites → `claude plugin validate`.
+Working locally and want the full gate before pushing? `uv run scripts/tasks.py verify` runs source validation → drift check → test suites → `claude plugin validate`. If the drift check fails it tells you what's out of sync and leaves your tree untouched; commit only `src/` and let CI regenerate, or run `uv run scripts/generate_manifest.py` and commit everything — both work.
 
 ## Repo map
 
@@ -53,4 +59,4 @@ Working locally and want the full gate before pushing? `uv run scripts/tasks.py 
 - `src/skills/<plugin>/` — skill sources (the only contributor surface)
 - `_generated/`, `.claude-plugin/` — CI-generated install artifacts; never hand-edit
 - `scripts/` — generator + validators + task runner; `tests/` — the suites
-- `docs/` — [`RESUME_HERE.md`](docs/RESUME_HERE.md) (orientation) · [`ARCHITECTURE.md`](docs/ARCHITECTURE.md) (how generation works) · [`CONTRIBUTING.md`](docs/CONTRIBUTING.md)
+- `docs/` — [`ARCHITECTURE.md`](docs/ARCHITECTURE.md) (how generation works) · [`CONTRIBUTING.md`](docs/CONTRIBUTING.md) · [`SKILL_FORMAT.md`](docs/SKILL_FORMAT.md)

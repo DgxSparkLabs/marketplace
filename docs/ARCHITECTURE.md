@@ -22,15 +22,15 @@ The generator turns skill sources under `src/skills/` into Claude Code install a
 | 5 | `.claude-plugin/marketplace.json` | from in-memory entries, sorted for deterministic diffs |
 | 7 | `docs/INVENTORY.md` | generated authoritative plugin list; drift-checked like the manifests |
 
-Phase numbering is deliberately sparse: the retired phases (1.5/2a/2b/3/4/4.5/5.5/6) emitted per-platform manifests, bundles, and mirrors for removed capabilities — see git history and #18's child issues.
+Phase numbering is deliberately sparse: the retired phases (1.5/2a/3/4/4.5/5.5/6 — per-platform manifests, bundles, mirrors) emitted per-platform manifests, bundles, and mirrors for removed capabilities — see git history and #18's child issues.
 
 ## The name chain (see issue #19 for the enforced standard)
 
-`src/MARKETPLACE.toml` `name` → marketplace identity (after `@` in install commands); minus its `-marketplace` suffix → the **brand**. Install name = `skill-<srcdir>` (`generate_manifest.py`, marketplace entry). Slash namespace = `<brand>-skill-<srcdir>` (`constructs.py`, `_base_plugin_shape`). Component name = SKILL.md frontmatter `name:`. Enforcement: `scripts/validate_source.py` (rules N1/N2/N4/R6/R8 on sources) + `tests/test_marketplace.py` `TestNamingInvariants` (N3/N5 on generated output).
+`src/MARKETPLACE.toml` `name` → marketplace identity (after `@` in install commands); minus its `-marketplace` suffix → the **brand**. Install name = `skill-<srcdir>` (`generate_manifest.py`, marketplace entry). Slash namespace = `<brand>-skill-<srcdir>` (`constructs.py`, `_base_plugin_shape`). Component name = SKILL.md frontmatter `name:`. Enforcement: `scripts/validate_source.py` (rules N1/N2/N4/R6/R8 on sources) + `tests/test_marketplace.py` `TestGeneratedPlugins.test_individual_plugin_name_is_unique_brand_namespace` (N3/N5 on generated output).
 
 ## Verification chain
 
-`uv run scripts/tasks.py verify` = `validate_source.py` → `--check` drift gate → test suites (invoked via `-m unittest` with a nonzero-test-count assertion — see PITFALLS "vacuous green") → `claude plugin validate ./`. CI mirrors the same steps; compat workflows additionally exercise registration → install → use against the real CLI.
+`uv run scripts/tasks.py verify` = `validate_source.py` → `--check` drift gate → test suites (invoked via `-m unittest` with a nonzero-test-count assertion — see PITFALLS "vacuous green") → `claude plugin validate ./`. CI mirrors the same steps; compat workflows additionally exercise registration → install → listing against the real CLI.
 
 ## How to extend
 
