@@ -1,13 +1,13 @@
 ---
 name: Construct request
-about: Propose a new skill / command / agent / hook / mcp / lsp / monitor / output-style / theme / rule
+about: Propose a new skill (skills-only marketplace — see issue #18 for other construct types)
 title: "[construct] "
 labels: enhancement
 ---
 
 **Construct type**
 
-<!-- skill / command / agent / hook / mcp / lsp / monitor / output-style / theme / rule -->
+<!-- skill (the only supported construct type; re-expansion tracked in #18) -->
 
 **What it should do**
 

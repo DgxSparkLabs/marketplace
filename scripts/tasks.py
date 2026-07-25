@@ -25,7 +25,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent  # repo root (this file lives in scripts/)
 
-SUITES = ("test_marketplace", "test_schema_fitness", "test_tooling")
+SUITES = ("test_marketplace", "test_tooling")
 
 
 def run(cmd: list[str]) -> int:

@@ -33,8 +33,7 @@ from utils import SRC, _frontmatter  # noqa: E402
 KEBAB = re.compile(r"^[a-z0-9]+(-[a-z0-9]+)*$")
 PLUGIN_ROOT_REF = re.compile(r"\$\{CLAUDE_PLUGIN_ROOT\}/([^\"'\s]+)")
 CONSTRUCT_DIRS = {
-    "skills", "rules", "commands", "agents", "hooks", "mcp-servers",
-    "lsp-servers", "monitors", "output-styles", "themes",
+    "skills",
 }
 
 

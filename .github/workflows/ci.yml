@@ -19,11 +19,8 @@ jobs:
       - name: Validate generated manifests are in sync with sources
         run: uv run scripts/generate_manifest.py --check
 
-      - name: Run marketplace test suite
-        run: uv run tests/test_marketplace.py -v
-
-      - name: Run schema-fitness test suite
-        run: uv run tests/test_schema_fitness.py
-
-      - name: Run contributor-tooling test suite
-        run: uv run tests/test_tooling.py
+      # Single entrypoint: scripts/tasks.py SUITES is the one source of truth
+      # for which suites exist — hardcoding them here drifted twice (PR #37,
+      # PR #38) when suites were removed.
+      - name: Run all test suites
+        run: uv run scripts/tasks.py test

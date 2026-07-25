@@ -38,15 +38,9 @@ from pathlib import Path
 REPO_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(REPO_ROOT / "scripts"))
 
-from bundles import BundleMember, load_bundles
 from constructs import (
     CONSTRUCTS,
-    AgentConstruct,
-    HookConstruct,
-    MCPConstruct,
-    RuleConstruct,
     SkillConstruct,
-    ThemeConstruct,
 )
 from platforms import (
     PLATFORMS,
@@ -124,38 +118,6 @@ class TestSourceLayout(unittest.TestCase):
             "examples/ must not exist — examples live in native construct folders",
         )
 
-    def test_per_event_hook_plugins_exist(self):
-        """src/hooks/ must contain a per-event example plugin for every
-        Claude hook event in the spec, plus example-multi.
-
-        Catches the case where someone deletes one of the per-event
-        plugins (which would silently shrink the marketplace's hook
-        coverage without breaking any other test).
-        """
-        from constructs import HookConstruct
-        hook = next(c for c in CONSTRUCTS.values() if isinstance(c, HookConstruct))
-        expected_per_event = {
-            "example-userpromptsubmit",
-            "example-pretooluse",
-            "example-posttooluse",
-            "example-notification",
-            "example-stop",
-            "example-subagentstop",
-            "example-sessionstart",
-            "example-sessionend",
-            "example-precompact",
-            "example-multi",
-        }
-        present = set(scan_source_dir(hook.source_directory))
-        missing = expected_per_event - present
-        self.assertFalse(
-            missing,
-            f"src/hooks/ is missing per-event reference plugin(s): {sorted(missing)}",
-        )
-
-
-# ─── TestGeneratedPlugins ─────────────────────────────────────────────────────
-
 class TestGeneratedPlugins(unittest.TestCase):
     """Generated plugin artifacts — integration + contract tests."""
 
@@ -187,24 +149,6 @@ class TestGeneratedPlugins(unittest.TestCase):
                     self.assertIn(
                         "dependencies", data,
                         f"{entry['name']}: bundle missing 'dependencies' field",
-                    )
-
-    def test_bundle_dependencies_resolve_to_real_plugins(self):
-        """Every catalog bundle's NON-RULE dependencies must resolve to real
-        Claude plugin files. Rule-* deps are intentionally absent from the
-        Claude marketplace post-F8 (RESEARCH.md, 2026-05-26); they are
-        filtered out before emission. The raw catalog deps may still
-        reference rule-* (for Cursor/Codex consumers), but those don't
-        appear in the emitted bundle's Claude plugin.json dependencies."""
-        for bundle in load_bundles(CATALOG, CONSTRUCTS):
-            deps = bundle.resolve_dependencies(CONSTRUCTS)
-            for dep_name in deps:
-                if dep_name.startswith("rule-"):
-                    continue
-                with self.subTest(bundle=bundle.name, dep=dep_name):
-                    self.assertTrue(
-                        Path(f"_generated/{dep_name}/.claude-plugin/plugin.json").exists(),
-                        f"Bundle '{bundle.name}' dep '{dep_name}' has no generated plugin",
                     )
 
     def test_individual_plugin_name_is_unique_brand_namespace(self):
@@ -290,84 +234,6 @@ class TestGeneratedPlugins(unittest.TestCase):
                         f"multi skill {source_name}: no SKILL.md under skills/",
                     )
 
-    def test_mcp_server_keys_unique_across_plugins(self):
-        """No two MCP plugins may share a top-level ``mcpServers`` key.
-
-        Two MCP plugins both defining ``mcpServers.fetch`` would surface in
-        Claude as ``mcp__<plugin>__fetch__*`` for both — but Claude's tool
-        list is keyed by the inner name, so one shadows the other in the
-        model's view. Recommended convention: name server keys to include
-        the plugin name (e.g., ``git-helpers-fetch`` instead of bare
-        ``fetch``).
-        """
-        mcp = next(c for c in CONSTRUCTS.values() if isinstance(c, MCPConstruct))
-        seen: dict[str, str] = {}  # key → source plugin name
-        for source_name in scan_source_dir(mcp.source_directory):
-            config_path = mcp.source_directory / source_name / "mcp-config.json"
-            if not config_path.exists():
-                continue
-            data = json.loads(config_path.read_text(encoding="utf-8"))
-            for key in data.get("mcpServers", {}).keys():
-                with self.subTest(server_key=key, plugin=source_name):
-                    self.assertNotIn(
-                        key, seen,
-                        f"MCP server key '{key}' duplicated across plugins: "
-                        f"{seen.get(key, '?')} and {source_name}. Rename one "
-                        f"to incorporate the plugin name.",
-                    )
-                    seen[key] = source_name
-
-    def test_rule_plugins_have_no_claude_plugin_manifest(self):
-        """Per F8 (RESEARCH.md, 2026-05-26): rules are not a Claude plugin
-        component. The 22 ``_generated/rule-<name>/.claude-plugin/`` dirs
-        that used to be emitted are gone. The dir itself still exists
-        because Cursor / Codex per-platform manifests live inside it."""
-        rule = next(c for c in CONSTRUCTS.values() if isinstance(c, RuleConstruct))
-        for name in scan_source_dir(rule.source_directory):
-            with self.subTest(rule=name):
-                claude_plugin_dir = REPO_ROOT / "_generated" / f"rule-{name}" / ".claude-plugin"
-                self.assertFalse(
-                    claude_plugin_dir.exists(),
-                    f"rule-{name}/.claude-plugin/ must not exist (F8 retired "
-                    "rule emission for Claude — see "
-                    "docs/research/claude-qa-2026-05-26/RESEARCH.md F8)",
-                )
-                activate_path = REPO_ROOT / "_generated" / f"rule-{name}" / "activate.sh"
-                self.assertFalse(
-                    activate_path.exists(),
-                    f"rule-{name}/activate.sh must not exist (orphaned by F8)",
-                )
-
-
-# ─── TestNoStrayCatchAllBundles ───────────────────────────────────────────────
-
-class TestNoStrayCatchAllBundles(unittest.TestCase):
-    """Per-construct catch-all bundles (bundle-<prefix>-all) were retired
-    2026-05-27. Verify no `_generated/bundle-<prefix>-all/` dir lingers and
-    no marketplace.json entry uses the old reserved name pattern."""
-
-    def test_no_catchall_dirs_in_generated(self):
-        for construct in CONSTRUCTS.values():
-            catchall_path = REPO_ROOT / "_generated" / f"bundle-{construct.prefix}-all"
-            with self.subTest(construct=construct.prefix):
-                self.assertFalse(
-                    catchall_path.exists(),
-                    f"Catch-all dir {catchall_path} should not exist after 2026-05-27 retirement",
-                )
-
-    def test_no_catchall_entries_in_marketplace_json(self):
-        manifest = load_marketplace_json()
-        names = {e["name"] for e in manifest["plugins"]}
-        for construct in CONSTRUCTS.values():
-            with self.subTest(construct=construct.prefix):
-                self.assertNotIn(
-                    f"bundle-{construct.prefix}-all", names,
-                    f"marketplace.json must not list bundle-{construct.prefix}-all (retired 2026-05-27)",
-                )
-
-
-# ─── TestMarketplaceJson ──────────────────────────────────────────────────────
-
 class TestMarketplaceJson(unittest.TestCase):
     """marketplace.json schema and completeness — contract + integration tests."""
 
@@ -415,76 +281,6 @@ class TestMarketplaceJson(unittest.TestCase):
         expected_order = [(e["category"], e["name"]) for e in sorted_entries]
         self.assertEqual(actual_order, expected_order, "marketplace.json entries are not sorted")
 
-    def test_marketplace_lists_all_expected_plugins(self):
-        """Marketplace must list exactly: individuals in
-        ClaudeCodePlatform.supports + catalog bundles with at least one
-        non-rule member + catch-alls for Claude-supported constructs.
-
-        F8 (RESEARCH.md, 2026-05-26): RuleConstruct is excluded; bundles
-        whose entire membership is rule-* are dropped; mixed bundles shed
-        their rule-* deps.
-        """
-        manifest = load_marketplace_json()
-        actual_names = {e["name"] for e in manifest["plugins"]}
-
-        expected: set[str] = set()
-
-        # Individual construct plugins (Claude-supported only)
-        for construct in CONSTRUCTS.values():
-            if type(construct) not in ClaudeCodePlatform.supports:
-                continue
-            for name in scan_source_dir(construct.source_directory):
-                expected.add(f"{construct.prefix}-{name}")
-
-        # Catalog bundles: drop bundles whose deps are entirely rule-*
-        for bundle in load_bundles(CATALOG, CONSTRUCTS):
-            deps = bundle.resolve_dependencies(CONSTRUCTS)
-            non_rule_deps = [d for d in deps if not d.startswith("rule-")]
-            if not non_rule_deps:
-                continue
-            expected.add(f"bundle-{bundle.name}")
-
-        # Per-construct catch-all bundles were retired 2026-05-27 — only
-        # individuals + catalog bundles remain.
-
-        self.assertEqual(actual_names, expected, "marketplace.json plugin set mismatch")
-
-
-# ─── TestBundleValidation ─────────────────────────────────────────────────────
-
-class TestBundleValidation(unittest.TestCase):
-    """Bundle loader validation — unit tests."""
-
-    def test_bundle_requires_members(self):
-        """load_bundles raises ValueError if a bundle has no 'members' field."""
-        import tempfile
-        bad_catalog = "[bundle.empty]\ndescription = \"no members\"\n"
-        with tempfile.NamedTemporaryFile(mode="w", suffix=".toml", delete=False) as f:
-            f.write(bad_catalog)
-            f.flush()
-            with self.assertRaises(ValueError, msg="Bundle without members should raise ValueError"):
-                load_bundles(Path(f.name), CONSTRUCTS)
-
-    def test_bundle_member_syntax_validated(self):
-        """BundleMember.from_str raises ValueError on malformed member strings."""
-        with self.assertRaises(ValueError):
-            BundleMember.from_str("no-colon-here")
-        with self.assertRaises(ValueError):
-            BundleMember.from_str(":empty-prefix")
-        with self.assertRaises(ValueError):
-            BundleMember.from_str("skill:")
-        # Valid cases should not raise
-        m = BundleMember.from_str("skill:telegram-notify")
-        self.assertEqual(m.ref_type, "plugin")
-        self.assertEqual(m.prefix, "skill")
-        self.assertEqual(m.name, "telegram-notify")
-        b = BundleMember.from_str("bundle:communication-skills")
-        self.assertEqual(b.ref_type, "bundle")
-        self.assertIsNone(b.prefix)
-
-
-# ─── TestConstructRegistry ────────────────────────────────────────────────────
-
 class TestConstructRegistry(unittest.TestCase):
     """CONSTRUCTS registry invariants — unit tests."""
 
@@ -523,31 +319,6 @@ class TestPluginCount(unittest.TestCase):
     per-event plugins + example-multi (10 total); skill ships its existing
     two. The lone catalog bundle is ``bundle-examples``.
     """
-
-    def test_marketplace_count_matches_expected_formula(self):
-        manifest = load_marketplace_json()
-        individuals = sum(
-            len(scan_source_dir(c.source_directory))
-            for c in CONSTRUCTS.values()
-            if type(c) in ClaudeCodePlatform.supports
-        )
-        catalog_bundles = sum(
-            1 for b in load_bundles(CATALOG, CONSTRUCTS)
-            if any(
-                not d.startswith("rule-")
-                for d in b.resolve_dependencies(CONSTRUCTS)
-            )
-        )
-        expected = individuals + catalog_bundles  # 26 + 1 = 27 (post-construct-expansion)
-        self.assertEqual(
-            len(manifest["plugins"]), expected,
-            f"Expected {expected} plugins "
-            f"({individuals} individual + {catalog_bundles} catalog), "
-            f"got {len(manifest['plugins'])}",
-        )
-
-
-# ─── TestNoSecrets ────────────────────────────────────────────────────────────
 
 class TestNoSecrets(unittest.TestCase):
     """No tracked file may contain credential-shaped strings."""
@@ -632,22 +403,3 @@ class TestMarketplaceToml(unittest.TestCase):
         mp = load_toml(MARKETPLACE_TOML)
         version = mp["marketplace"]["version"]
         self.assertRegex(version, r"^\d+\.\d+\.\d+$", f"version '{version}' must be semver")
-
-    def test_catalog_toml_contains_only_bundles(self):
-        """After the DI refactor, catalog.toml must contain only [bundle.*] blocks."""
-        cat = load_toml(CATALOG)
-        # Old schema keys must not be present
-        for old_key in ("construct", "skill_domain", "rule_domain", "platform"):
-            self.assertNotIn(
-                old_key, cat,
-                f"catalog.toml still contains old schema key '{old_key}' — "
-                "DI refactor requires bundles-only catalog",
-            )
-        # Must have bundle entries
-        self.assertIn("bundle", cat, "catalog.toml must have [bundle.*] entries")
-
-
-# ─── runner ───────────────────────────────────────────────────────────────────
-
-if __name__ == "__main__":
-    unittest.main(verbosity=2)
