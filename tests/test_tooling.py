@@ -38,6 +38,46 @@ class TestValidateSource(unittest.TestCase):
             )
             self.assertEqual(validate_source.validate([d]), [])
 
+    def test_bad_component_name_flagged(self):
+        with tempfile.TemporaryDirectory() as t:
+            d = Path(t) / "skills" / "bad-comp"
+            d.mkdir(parents=True)
+            (d / "SKILL.md").write_text(
+                "---\nname: My Bad Skill\ndescription: x\n---\nbody\n",
+                encoding="utf-8",
+            )
+            self.assertTrue(any("N4.1" in p for p in validate_source.validate([d])))
+
+    def test_duplicate_component_names_flagged(self):
+        with tempfile.TemporaryDirectory() as t:
+            d = Path(t) / "skills" / "dup"
+            for sub in ("a", "b"):
+                sd = d / "skills" / sub
+                sd.mkdir(parents=True)
+                (sd / "SKILL.md").write_text(
+                    "---\nname: same\ndescription: x\n---\nbody\n",
+                    encoding="utf-8",
+                )
+            self.assertTrue(any("N4.3" in p for p in validate_source.validate([d])))
+
+    def test_overlong_instance_dir_flagged(self):
+        with tempfile.TemporaryDirectory() as t:
+            d = Path(t) / "skills" / ("x" * 33)
+            d.mkdir(parents=True)
+            (d / "SKILL.md").write_text(
+                "---\nname: x\ndescription: x\n---\nbody\n",
+                encoding="utf-8",
+            )
+            self.assertTrue(any("N2.2" in p for p in validate_source.validate([d])))
+
+    def test_real_marketplace_identity_passes(self):
+        # N1 runs on the repo's real MARKETPLACE.toml in every validate() call;
+        # the good-skill test above passing proves N1 is clean, but assert
+        # explicitly so an identity regression names the right rule.
+        self.assertFalse(
+            [p for p in validate_source.validate([]) if p.startswith("MARKETPLACE")]
+        )
+
     def test_missing_description_flagged(self):
         with tempfile.TemporaryDirectory() as t:
             d = Path(t) / "skills" / "bad"
