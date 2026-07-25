@@ -158,3 +158,7 @@ class TestNewConstruct(unittest.TestCase):
         src = CONSTRUCTS["skill"].source_directory
         self.assertEqual(new_construct._pick_example(src, multi=False), "example-single")
         self.assertEqual(new_construct._pick_example(src, multi=True), "example-multi")
+
+
+if __name__ == "__main__":
+    unittest.main(verbosity=2)

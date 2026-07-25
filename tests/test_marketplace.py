@@ -403,3 +403,9 @@ class TestMarketplaceToml(unittest.TestCase):
         mp = load_toml(MARKETPLACE_TOML)
         version = mp["marketplace"]["version"]
         self.assertRegex(version, r"^\d+\.\d+\.\d+$", f"version '{version}' must be semver")
+
+
+# ─── runner ───────────────────────────────────────────────────────────────────
+
+if __name__ == "__main__":
+    unittest.main(verbosity=2)
