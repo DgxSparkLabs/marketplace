@@ -194,7 +194,7 @@ def _check_drift() -> int:
             if not root.exists():
                 continue
             if root.is_file():
-                # Individual file targets (gemini-extension.json, docs/INVENTORY.md).
+                # Individual file targets (docs/INVENTORY.md).
                 # rglob("*") yields nothing for a file, so these must be read directly.
                 out[str(root.relative_to(REPO_ROOT))] = root.read_bytes()
                 continue

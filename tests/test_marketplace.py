@@ -3,25 +3,17 @@
 # requires-python = ">=3.11"
 # dependencies = []
 # ///
-"""
-Marketplace test suite — post DI-refactor.
+"""Tests for the marketplace generator's inputs and outputs.
 
 Validates:
-  - Source layout (10 construct source dirs + examples)
-  - Generated plugins at correct paths with correct schemas
-  - Code-generated catch-all bundles (bundle-<prefix>-all)
-  - Platform mirror coverage (Codex, Gemini, Cursor, Windsurf, Devin)
-  - marketplace.json schema, sorting, and completeness
-  - Bundle validation (reserved names, empty bundles, syntax)
-  - CONSTRUCTS registry invariants
-  - Plugin count formula
-  - No secrets in tracked files
-  - Generator drift check
+  - Source layout: src/skills/<name>/ instances are well-formed
+  - Generated plugins: _generated/<plugin>/ plugin.json fields + naming
+  - marketplace.json: shape, sort order, entry/name invariants
+  - Construct registry integrity, plugin count, secrets scan, drift,
+    MARKETPLACE.toml identity fields
 
-Run:
-    uv run tests/test_marketplace.py          # all tests
-    uv run tests/test_marketplace.py -v       # verbose
-    uv run tests/test_marketplace.py -k Name  # filter
+Run via `uv run scripts/tasks.py test` (module invocation + nonzero-count
+assertion) — not by direct file execution.
 """
 
 from __future__ import annotations
@@ -69,7 +61,7 @@ class TestSourceLayout(unittest.TestCase):
     """Source directory conventions — contract tests."""
 
     def test_construct_source_dirs_exist(self):
-        """Each of the 10 construct source directories must exist."""
+        """Every registered construct's source directory must exist."""
         for construct_id, construct in CONSTRUCTS.items():
             with self.subTest(construct=construct_id):
                 self.assertTrue(

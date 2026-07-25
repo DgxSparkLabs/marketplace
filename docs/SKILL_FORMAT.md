@@ -11,10 +11,11 @@ A skill plugin folder under `src/skills/<plugin>/` is one of exactly two shapes:
 ```
 solo                                multi
 src/skills/<plugin>/                src/skills/<plugin>/
-└── SKILL.md                        ├── .claude-plugin/plugin.json   (optional; "description" is the ONLY allowed key — rule R6)
-                                    └── skills/
-                                        ├── <skill-a>/SKILL.md
-                                        └── <skill-b>/SKILL.md
+├── SKILL.md                        ├── .claude-plugin/plugin.json
+└── .claude-plugin/plugin.json      └── skills/
+    (optional in BOTH layouts; "description" is the ONLY allowed key — rule R6)
+                                            ├── <skill-a>/SKILL.md
+                                            └── <skill-b>/SKILL.md
 ```
 
 Having both a root `SKILL.md` and a `skills/` subdir is a generator error — pick one. Supporting files (scripts, references) may sit next to any `SKILL.md` and are copied into the plugin verbatim.
@@ -55,4 +56,4 @@ The validator checks every `${CLAUDE_PLUGIN_ROOT}/<file>` reference in bundled J
 - Flat shortcut: `/<name>` when unambiguous
 - The model can also invoke the skill autonomously based on `description`.
 
-Naming chain and rules in full: [ARCHITECTURE](ARCHITECTURE.md) "Names" + issue #19.
+Naming chain and rules in full: [ARCHITECTURE](ARCHITECTURE.md) "The name chain" + issue #19.

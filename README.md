@@ -16,7 +16,7 @@ Governance and history: umbrella issue [#18](https://github.com/DgxSparkLabs/mar
 ## Prerequisites
 
 - [Claude Code](https://code.claude.com) (`claude` CLI; behavior below verified on 2.1.220)
-- `git`; and [`uv`](https://docs.astral.sh/uv/) only if you want to run the optional local gate
+- `git`; and [`uv`](https://docs.astral.sh/uv/) for the scaffold command and the optional local gate
 
 ## Install skills from this marketplace
 

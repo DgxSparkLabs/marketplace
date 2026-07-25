@@ -148,7 +148,7 @@ def _marketplace_name() -> str:
     truth at MARKETPLACE.toml line 12. Written into the top-level
     ``.claude-plugin/marketplace.json`` ``name`` field by
     ``_write_marketplace_json`` in ``scripts/generate_manifest.py``.
-    See docs/ARCHITECTURE.md section "Trace each fragment to its source".
+    See docs/ARCHITECTURE.md ("The name chain").
     """
     return _load_marketplace_toml()["marketplace"]["name"]
 
@@ -156,9 +156,7 @@ def _marketplace_name() -> str:
 def _marketplace_description() -> str:
     """Read the marketplace description from MARKETPLACE.toml.
 
-    Used by GeminiPlatform.emit_extension_manifest() for the
-    .gemini/gemini-extension.json file.
-    """
+        """
     return _load_marketplace_toml()["marketplace"]["description"]
 
 
