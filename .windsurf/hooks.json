@@ -1,9 +1,0 @@
-{
-  "hooks": {
-    "pre_user_prompt": [
-      {
-        "command": "p=\"$(cat)\"; ts=\"$(date -u +%FT%TZ)\"; echo \"[Lab Notebook context: timestamp=$ts]\"; { echo \"$ts userPromptSubmit fired\"; echo \"$p\"; echo; } >> /tmp/hook-fired-userpromptsubmit.log"
-      }
-    ]
-  }
-}

@@ -1,0 +1,167 @@
+{
+  "schema_version": 1,
+  "skill": "duckduckgo-search",
+  "kind": "list",
+  "query": "Grok Build xAI coding agent CLI",
+  "args": {
+    "region": "wt-wt",
+    "time": null,
+    "min_results": 15
+  },
+  "generated_at": "2026-07-25T13:14:39.821756+0300",
+  "status": "ok",
+  "message": null,
+  "count": 30,
+  "payload": [
+    {
+      "title": "Grok Build - xAI Docs - SpaceXAI",
+      "url": "https://docs.x.ai/build/overview",
+      "snippet": "3 weeks ago - The TUI provides a rich, mouse-interactive, fullscreen experience for coding with agents. macOS / Linux / WSLWindows (PowerShell) curl -fsSL https://x.ai/cli/install.sh | bash · irm https://x.ai/cli/install.ps1 | iex · Bash · cd your-project grok · On first launch, Grok opens a browser for authentication. In non-browser environments, use an API key: Bash · export XAI_API_KEY=\"xai-...\" grok · Useful first prompts: Text · Explain this repo. @src/main.rs Walk me through this file. Bash · grok -p \"Explain this codebase\" grok -p \"Explain the architecture\" --output-format streaming-json ·"
+    },
+    {
+      "title": "Grok Build | SpaceXAI",
+      "url": "https://x.ai/cli",
+      "snippet": "1 week ago - Grok Build is now powered by Grok 4.5, our new model — with a native subagent view, Plan Mode integration, mouse support, and a fullscreen terminal UI. Install with curl -fsSL https://x.ai/cli/install.sh | bash."
+    },
+    {
+      "title": "GitHub - superagent-ai/grok-cli: An open-source coding agent for the Grok API · GitHub",
+      "url": "https://github.com/superagent-ai/grok-cli",
+      "snippet": "1 week ago - \"Grok\" is a trademark of xAI Corp. This tool uses the publicly available Grok API. An open-source terminal coding agent that connects to xAI’s Grok API — real-time X search, web search, the full Grok model lineup, sub-agents on by default, remote control via Telegram (pair once, drive the agent from your phone while the CLI runs), and a terminal UI built with Bun and OpenTUI."
+    },
+    {
+      "title": "Grok Build: How to Install and Run xAI's New Coding Agent (2026)",
+      "url": "https://codersera.com/blog/how-to-install-grok-build-cli-2026/",
+      "snippet": "3 weeks ago - Install xAI's Grok Build with curl -fsSL https://x.ai/cli/install.sh | bash, then run grok inside a repo. First launch opens a browser to sign in with a SuperGrok Heavy account; for headless use set GROK_CODE_XAI_API_KEY=\"xai-...\"."
+    },
+    {
+      "title": "Grok Build CLI: xAI's Developer Terminal Tool Explained",
+      "url": "https://www.eigent.ai/blog/grok-build-cli",
+      "snippet": "May 19, 2026 - Like its peers in the AI CLI space, Grok Build CLI operates as a conversational coding agent — you describe what you want, and the model reads your files, reasons about your codebase, and proposes or applies changes."
+    },
+    {
+      "title": "Introducing Grok Build | SpaceXAI",
+      "url": "https://x.ai/news/grok-build-cli",
+      "snippet": "May 25, 2026 - Today we're launching an early beta of Grok Build, a powerful new coding agent and CLI for professional software engineering and complex coding work. Available now to all SuperGrok and X Premium Plus subscribers."
+    },
+    {
+      "title": "xAI: Grok Build Launches Early Beta Coding Agent CLI",
+      "url": "https://pulse2.com/xai-grok-build-launches-early-beta-coding-agent-cli/",
+      "snippet": "May 15, 2026 - xAI today announced the launch of Grok Build, a new agentic coding CLI designed for professional software engineering, application development, and workflow automation. The product is now available in early beta for SuperGrok Heavy subscribers."
+    },
+    {
+      "title": "GitHub - xai-org/grok-build: SpaceXAI's coding agent harness ...",
+      "url": "https://github.com/xai-org/grok-build",
+      "snippet": "Grok Build (grok) Grok Build is SpaceXAI's terminal-based AI coding agent. It runs as a full-screen TUI that understands your codebase, edits files, executes shell commands, searches the web, and manages long-running tasks — interactively, headlessly for scripting/CI, or embedded in editors via the Agent Client Protocol (ACP)."
+    },
+    {
+      "title": "Grok Build — A New Coding Agent CLI from xAI",
+      "url": "https://grokbuild.homes/",
+      "snippet": "Grok Build is a powerful new coding agent and CLI for professional software engineering. Plan, review, approve — runs right from your terminal with subagent parallelism, headless mode, and full ACP support."
+    },
+    {
+      "title": "Grok Build CLI - Cobus Greyling - Medium",
+      "url": "https://cobusgreyling.medium.com/grok-build-cli-b1c069393483",
+      "snippet": "27 May 2026 ... grok-build is not the general-purpose Grok 4.3 that people use on grok.com or the mobile apps. It's a specialised variant that xAI tuned ..."
+    },
+    {
+      "title": "xAI released Grok Build — an agentic CLI for developers - Reddit",
+      "url": "https://www.reddit.com/r/rpgc_official/comments/1tiglhp/xai_released_grok_build_an_agentic_cli_for/",
+      "snippet": "20 May 2026 ... xAI opened early beta testing for Grok Build — a command-line AI agent for development. Currently only available to SuperGrok Heavy subscribers."
+    },
+    {
+      "title": "Grok Build: xAI's Agent CLI Reviewed (2026)",
+      "url": "https://www.buildfastwithai.com/blogs/grok-build-xai-cli-ai-agents-2026",
+      "snippet": "May 26, 2026 - Grok Build is xAI's new agentic coding CLI with plan mode, 8 parallel sub-agents, MCP support, and 70.8% on SWE-Bench. Setup, pricing, and how it compares to"
+    },
+    {
+      "title": "Grok Build: xAI’s Coding Agent CLI Enters the Race — Honest Review | byteiota",
+      "url": "https://byteiota.com/grok-build-coding-agent-review-2026/",
+      "snippet": "May 26, 2026 - xAI shipped Grok Build on May 14 — a terminal-native coding agent that goes directly after Claude Code and Codex CLI. It runs parallel subagents, defaults to a Plan Mode that blocks edits until you approve, and supports MCP out of the box."
+    },
+    {
+      "title": "Open Source: Grok Build Coding Agent & CLI | SpaceXAI",
+      "url": "https://x.ai/open-source",
+      "snippet": "1 week ago - SpaceXAI's coding agent and CLI. ... cargo run -p xai-grok-pager-bin # build cargo check -p xai-grok-pager-bin # validate cargo clippy -p # lint cargo fmt --all # format"
+    },
+    {
+      "title": "Grok Build Complete Guide: xAI's Multi-Agent Coding CLI (2026)",
+      "url": "https://www.aimadetools.com/blog/grok-build-complete-guide/",
+      "snippet": "May 21, 2026 - Launched May 14, 2026 in early beta, it brings multi-agent architecture, a Skills/Plugins marketplace, and native CLAUDE.md support to a CLI that feels immediately familiar if you’ve used Claude Code or Codex CLI."
+    },
+    {
+      "title": "Grok — Delegate coding to xAI Grok Build CLI (features, PRs) | Hermes Agent",
+      "url": "https://hermes-agent.nousresearch.com/docs/user-guide/skills/optional/autonomous-ai-agents/autonomous-ai-agents-grok",
+      "snippet": "Delegate coding tasks to Grok Build (xAI's autonomous coding agent CLI, the grok command) via the Hermes terminal. Grok can read files, write code, run shell commands, spawn subagents, and manage git workflows."
+    },
+    {
+      "title": "Grok Build Developer Guide: xAI's Terminal Coding Agent (June 2026) - Developers Digest",
+      "url": "https://www.developersdigest.tech/blog/grok-build-developer-guide-2026",
+      "snippet": "1 month ago - Grok Build is xAI's agentic CLI with 8 parallel subagents, a plan-first workflow, and Arena Mode for competing outputs. Installation, pricing, real commands, and how it compares to Claude Code and Codex."
+    },
+    {
+      "title": "xAI Launches Grok Build Beta: Agentic Coding CLI Explained",
+      "url": "https://www.basenor.com/blogs/news/xai-launches-grok-build-beta-agentic-coding-cli-explained",
+      "snippet": "May 14, 2026 - Grok Build is an agentic CLI — meaning it doesn't just answer questions, it takes actions. According to xAI, it can plan projects, write and edit files, execute shell commands, and build complete applications from natural language prompts."
+    },
+    {
+      "title": "SpaceXAI Open-Sources Grok Build: The Rust Agent Harness, TUI, and Tool Layer Behind Its Coding CLI - MarkTechPost",
+      "url": "https://www.marktechpost.com/2026/07/15/spacexai-open-sources-grok-build-the-rust-agent-harness-tui-and-tool-layer-behind-its-coding-cli/",
+      "snippet": "1 week ago - Audit before adoption: Read xai-grok-tools before letting an agent run shell commands in a regulated repo. Fork for an internal harness: Apache 2.0 permits it; upstream merge is not on offer. Air-gapped runs: Compile locally, set base_url to an internal endpoint, and skip api.x.ai. CI automation: Headless mode feeds structured output into a pipeline step. ... # Prebuilt binary (macOS, Linux, Windows) curl -fsSL https://x.ai/cli/install.sh | bash grok --version # Or build from source (needs protoc and the pinned Rust toolchain) cargo build -p xai-grok-pager-bin --release # -> target/release/xai"
+    },
+    {
+      "title": "How to Use Grok Build: xAI's CLI Agent Guide | The AI Dude",
+      "url": "https://theaidude.net/blog/how-to-use-grok-build-xais-new-cli-coding-agent-guide",
+      "snippet": "May 26, 2026 - When xAI launched Grok Build CLI in early beta on May 14, 2026, it was locked behind SuperGrok Heavy — their most expensive subscription tier. As of May 25, that's changed. xAI expanded access to all SuperGrok subscribers and X Premium+ users, opening the door for a much larger pool of developers to try their terminal-native coding agent."
+    },
+    {
+      "title": "Grok Build Review: xAI's Agentic Coding CLI Takes On Claude Code and Codex — ChatForest",
+      "url": "https://chatforest.com/reviews/xai-grok-build-coding-agent-cli-review-2026/",
+      "snippet": "May 22, 2026 - xAI launched Grok Build on May 14, 2026 — an agentic coding CLI with 8 parallel sub-agents, plan mode, and MCP compatibility. 70.8% SWE-Bench Verified. Priced at $99/mo introductory (normally $299/mo SuperGrok Heavy)."
+    },
+    {
+      "title": "Grok Build: xAI's Agentic Coding CLI Takes On Claude Code (May 2026)",
+      "url": "https://pasqualepillitteri.it/en/news/2584/grok-build-xai-cli-2026",
+      "snippet": "June 16, 2026 - Grok Build by xAI: agentic CLI with Grok 4.3 Heavy, 2M token context, 8 parallel sub-agents, plan mode. Rival to Claude Code, Codex CLI. SuperGrok Heavy beta."
+    },
+    {
+      "title": "grok-build/README.md at main · xai-org/grok-build · GitHub",
+      "url": "https://github.com/xai-org/grok-build/blob/main/README.md",
+      "snippet": "Grok Build (grok) Grok Build is SpaceXAI's terminal-based AI coding agent. It runs as a full-screen TUI that understands your codebase, edits files, executes shell commands, searches the web, and manages long-running tasks — interactively, headlessly for scripting/CI, or embedded in editors via the Agent Client Protocol (ACP)."
+    },
+    {
+      "title": "Grok Build",
+      "url": "https://grok.com/build",
+      "snippet": "The coding agent that runs from your terminal, now powered by Grok 4.5 — our new model. Early access for SuperGrok and X Premium+ subscribers."
+    },
+    {
+      "title": "Grok Build turns xAI into an AI coding-agent contender | TECHi",
+      "url": "https://www.techi.com/grok-build-xai-coding-agent/",
+      "snippet": "Grok Build is a coding agent and CLI. xAI's documentation describes it as usable through an interactive terminal UI, through headless scripts, or through the Agent Client Protocol in other apps, with the same grok-build-0.1 model also exposed through the xAI API in early access..."
+    },
+    {
+      "title": "Exclusive: Grok Build hides a Doom-like 'easter egg... - RuntimeWire",
+      "url": "https://runtimewire.com/article/exclusive-grok-build-hides-a-doom-like-easter-egg-game-behind-the-gboom-command",
+      "snippet": "Grok Build, xAI's terminal coding agent, has an undocumented Doom-like mini-game that opens when a user types /gboom inside the interactive CLI, RuntimeWire confirmed in testing on July 10th."
+    },
+    {
+      "title": "Grok Build 0.1: xAI Coding Agent for Developers - 4sAPI Blog",
+      "url": "https://blog.4sapi.com/blog/grok-build-0-1-xai-coding-agent-guide",
+      "snippet": "CLI Installation and Initial Setup. Grok Build 0.1 is available through a terminal-based CLI. The installation process is similar to other modern AI coding tools, making adoption straightforward for developers already familiar with terminal-first workflows."
+    },
+    {
+      "title": "Grok's Data Leak, DeepSeek's $71B Round, AI Jobs Warning",
+      "url": "https://www.nicolasailab.com/p/daily-pulse-grok-data-leak-deepseek-funding-ai-jobs-warning",
+      "snippet": "xAI's coding agent Grok Build was caught quietly uploading entire codebases and .env secrets to the cloud, no matter what privacy setting you picked. DeepSeek is already back raising money at a $71 billion valuation, just a month after its last round closed."
+    },
+    {
+      "title": "xAI Grok CLI Mermaid Unicode Tool Turns a Hidden Renderer Into...",
+      "url": "https://www.remio.ai/post/xai-grok-cli-mermaid-unicode-tool-turns-a-hidden-renderer-into-a-browser-app",
+      "snippet": "xAI open-sourced Grok Build on July 15, exposing a Mermaid renderer that an independent developer turned into a working browser tool within one day. The xAI Grok CLI Mermaid Unicode tool converts diagram source into terminal-style box art without relying on an image or a server-side..."
+    },
+    {
+      "title": "OpenAB Grok Deploy Guide",
+      "url": "https://zeabur.cn/templates/HR8YS3",
+      "snippet": "OpenAB Grok. Open Agent Broker — a lightweight Rust harness that bridges Discord and Slack to any ACP-compatible coding CLI over stdio JSON-RPC. This template uses Grok Build (xAI's official coding agent CLI) as the backend via `grok agent stdio`."
+    }
+  ]
+}

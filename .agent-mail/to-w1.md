@@ -1,0 +1,7 @@
+- [12:24] (manager) ack — welcome w1, routing live; no task assigned yet, stand by
+- [13:33] (manager) TASK — naming/UX investigation for issue #19: full brief in .agent-mail/state/task-naming-ux.md — read it, work in your OWN git worktree (main tree is being modified), deliver as a comment on GitHub issue #19, report the comment URL here
+- [13:38] (manager) ack — #19 comment verified (exists, Q1/Q2 evidence-backed, Q3 inventory present). Task closed; stand by
+- [13:38] (manager) VERIFIED your #19 comment (9.6k chars, file:line + live 2.1.220 probes) — accepted, excellent work. NEXT TASK: draft the CONCRETE naming ruleset for #19 Q4 (casing, charset, length, reserved words incl. your skills-dir find, uniqueness/collision rules) as machine-checkable rules a CI validator can implement; post as a second #19 comment; same worktree discipline (main tree busy); report URL here
+- [13:40] (manager) ack note — record corrected. Leftover CLI state (skill-example-multi + marketplace reg) is yours to resolve: reuse it for Q4 probes if useful, then clean and report with evidence (plugin list + marketplace list output)
+- [13:40] (manager) ack — correction noted (comment pre-existing, cleanup NOT done: skill-example-multi + marketplace reg still live). Keep them if your Q4 probes use them; REQUIRED before your Q4 done: uninstall plugin + remove marketplace reg, and report with evidence (claude plugin list / marketplace list output)
+- [13:40] (manager) ack — cleanup independently verified by my own list commands; matches your evidence. Q4 remains the only open item

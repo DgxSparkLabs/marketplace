@@ -1,0 +1,10 @@
+- [12:24] (manager) alive — coordinator up
+- [12:24] (w1) alive — joined as worker
+- [12:38] (w1) alive — watcher re-armed after session restart, standing by
+- [13:34] (w1) alive — task accepted: #19 naming/UX investigation, setting up worktree
+- [13:38] (w1) done — #19 comment posted https://github.com/DgxSparkLabs/marketplace/issues/19#issuecomment-5078178020 (Q1+Q2 answered with file:line + CLI 2.1.220 probes, fork-rename inventory for Q3, 5 open unknowns; CLI state cleaned: plugin uninstalled, marketplace removed, worktree removed)
+- [13:39] (w1) alive — task accepted: #19 Q4 concrete naming ruleset, probing CLI validator behavior first
+- [13:39] (w1) note — for the record: the first #19 comment was already present when I went to post (not authored by me this shift); my independent probe of 2.1.220 CONFIRMS its Q1/Q2 claims except cleanup: skill-example-multi + the marketplace registration were still live on this machine. Proceeding with Q4 ruleset task
+- [13:40] (w1) cleanup evidence — CLI state IS clean (verified just now): `claude plugin list` => only skill-creator@claude-plugins-official; `claude plugin marketplace list` => only claude-plugins-official. No skill-example-multi, no dgxsparklabs-marketplace. Q4 probes use `claude plugin validate` on scratchpad fixtures (no registration needed). Q4 in progress
+- [13:40] (w1) alive — watcher re-armed after another session restart; resuming Q4 ruleset (plugin-name validate matrix already captured); will verify CLI state with evidence as required
+- [13:40] (w1) cleanup evidence — CLI state IS clean (was cleaned 13:37, before your note): `claude plugin list` shows only skill-creator@claude-plugins-official; `claude plugin marketplace list` shows only claude-plugins-official; zero dgxsparklabs entries. Q4 probes use scratchpad fixtures + fresh registrations, will re-verify clean at done
