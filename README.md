@@ -11,7 +11,7 @@ you fork this repo
                  └▶ /plugin install <your-skill>
 ```
 
-Governance and history: umbrella issue [#18](https://github.com/DgxSparkLabs/marketplace/issues/18) (the skills-only, Claude-only scope-down) and [#19](https://github.com/DgxSparkLabs/marketplace/issues/19) (the naming standard CI enforces). Other construct types and other agent platforms are deliberately deferred with tracked re-expansion issues — see #18's index.
+Governance and history: umbrella issue [#18](https://github.com/DgxSparkLabs/marketplace-template/issues/18) (the skills-only, Claude-only scope-down) and [#19](https://github.com/DgxSparkLabs/marketplace-template/issues/19) (the naming standard CI enforces). Other construct types and other agent platforms are deliberately deferred with tracked re-expansion issues — see #18's index.
 
 ## Prerequisites
 
@@ -21,7 +21,7 @@ Governance and history: umbrella issue [#18](https://github.com/DgxSparkLabs/mar
 ## Install skills from this marketplace
 
 ```bash
-claude plugin marketplace add DgxSparkLabs/marketplace
+claude plugin marketplace add DgxSparkLabs/marketplace-template
 claude plugin install skill-example-multi@dgxsparklabs-marketplace --scope project
 ```
 

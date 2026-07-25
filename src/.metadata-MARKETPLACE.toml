@@ -25,6 +25,6 @@ name = "DgxSparkLabs"
 url = "https://github.com/DgxSparkLabs"
 
 [repository]
-url = "https://github.com/DgxSparkLabs/marketplace"
-homepage = "https://github.com/DgxSparkLabs/marketplace"
+url = "https://github.com/DgxSparkLabs/marketplace-template"
+homepage = "https://github.com/DgxSparkLabs/marketplace-template"
 license = "MIT"
