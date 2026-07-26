@@ -1,33 +1,11 @@
 {
-  "name": "dgxsparklabs-template-marketplace",
+  "name": "dgxsparklabs-marketplace",
   "owner": {
     "name": "DgxSparkLabs",
     "url": "https://github.com/DgxSparkLabs"
   },
   "description": "The fork-ready template for agentic-capability marketplaces - the reference marketplace that ships the template itself.",
   "plugins": [
-    {
-      "name": "skill-example-multi",
-      "source": "./_generated/claude-code/skill-example-multi",
-      "description": "Two reference skills (notebook, status) demonstrating the multi-skill plugin layout.",
-      "version": "1.0.0",
-      "author": {
-        "name": "DgxSparkLabs",
-        "url": "https://github.com/DgxSparkLabs"
-      },
-      "category": "skill"
-    },
-    {
-      "name": "skill-example-single",
-      "source": "./_generated/claude-code/skill-example-single",
-      "description": "Prints a minimal greeting plus a UTC timestamp. The smallest possible single-skill reference plugin - copy this layout for your own solo skill.",
-      "version": "1.0.0",
-      "author": {
-        "name": "DgxSparkLabs",
-        "url": "https://github.com/DgxSparkLabs"
-      },
-      "category": "skill"
-    },
     {
       "name": "skill-marketplace-operations",
       "source": "./_generated/claude-code/skill-marketplace-operations",
