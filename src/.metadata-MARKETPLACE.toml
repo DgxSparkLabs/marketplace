@@ -18,7 +18,7 @@
 name = "dgxsparklabs-template-marketplace"
 display_name = "DgxSparkLabs Marketplace Template"
 version = "1.0.0"
-description = "The fork-ready template for agentic-capability marketplaces - the reference marketplace that ships the template itself."
+description = "TEMPLATE marketplace - fork this to run your own agentic-capability marketplace. This is not the official DgxSparkLabs marketplace; official capabilities ship from dgxsparklabs-marketplace (github.com/DgxSparkLabs/marketplace)."
 
 [owner]
 name = "DgxSparkLabs"
