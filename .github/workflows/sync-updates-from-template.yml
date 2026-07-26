@@ -1,4 +1,4 @@
-name: sync-template
+name: sync-updates-from-template
 
 # The template-update channel for FORKS (docs/UPDATING.md): daily, pull the
 # upstream template's machinery improvements into this marketplace without
@@ -102,7 +102,7 @@ jobs:
             echo ""
             echo '```bash'
             echo "git fetch https://github.com/${TEMPLATE_REPO} main"
-            echo "git checkout FETCH_HEAD -- .github/workflows"
+            echo "git rm -rq .github/workflows && git checkout FETCH_HEAD -- .github/workflows"
             echo "git commit -m 'chore: apply template workflow updates' && git push"
             echo '```'
             echo ""
