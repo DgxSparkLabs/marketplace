@@ -15,8 +15,8 @@
 # followed by `uv run scripts/generate_manifest.py` (or just push — CI regenerates).
 
 [marketplace]
-name = "dgxsparklabs-template-marketplace"
-display_name = "DgxSparkLabs Marketplace Template"
+name = "dgxsparklabs-marketplace"
+display_name = "DgxSparkLabs Marketplace"
 version = "1.0.0"
 description = "The fork-ready template for agentic-capability marketplaces - the reference marketplace that ships the template itself."
 
@@ -25,6 +25,6 @@ name = "DgxSparkLabs"
 url = "https://github.com/DgxSparkLabs"
 
 [repository]
-url = "https://github.com/DgxSparkLabs/marketplace-template"
-homepage = "https://github.com/DgxSparkLabs/marketplace-template"
+url = "https://github.com/DgxSparkLabs/marketplace"
+homepage = "https://github.com/DgxSparkLabs/marketplace"
 license = "MIT"
