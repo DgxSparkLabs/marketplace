@@ -2,11 +2,11 @@ name: sync-template
 
 # The template-update channel for FORKS (docs/UPDATING.md): daily, pull the
 # upstream template's machinery improvements into this marketplace without
-# touching the fork's content (src/skills/ + src/.metadata-MARKETPLACE.toml).
+# touching the fork's content (all of src/ — forks own that tree outright).
 #
 # Design notes:
 # - `-X ours` conflict policy is safe BY CONSTRUCTION here: forks only edit
-#   src/ + metadata, so conflicts can only be (a) generated files — the merge
+#   src/ (which they own outright), so conflicts can only be (a) generated files — the merge
 #   resolution is irrelevant because this workflow regenerates them from
 #   source right after — or (b) the fork's metadata file, where "ours" is
 #   correct by definition.

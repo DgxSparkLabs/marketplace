@@ -8,14 +8,16 @@ audience: forkers (marketplace owners)
 Your fork is **your content on top of the template's machinery**, and the split is
 strict by design:
 
-- **Yours**: `src/skills/` and `src/.metadata-MARKETPLACE.toml`. Nothing else needs
-  your edits, ever.
+- **Yours**: all of `src/` — your skills, your metadata, and the shipped examples,
+  which you may freely edit or **delete**. Nothing outside `src/` needs your
+  edits, ever.
 - **The template's**: scripts, workflows, tests, docs, and all generated output.
   These receive fixes and improvements upstream — and your fork is *supposed* to
   pull them in, like software updates.
 
-Because you never edit machinery files, updates merge underneath your content
-without touching it.
+Updates merge underneath your content without touching it, and every conflict
+resolves in your favor — so template updates can never resurrect an example you
+deleted or overwrite a skill you changed.
 
 ## Automatic updates (default — you do nothing)
 
