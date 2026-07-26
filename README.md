@@ -1,77 +1,45 @@
-# DgxSparkLabs Marketplace Template
+# DgxSparkLabs Marketplace
 
-<!-- This README is yours on first edit — template updates never overwrite it (see .gitattributes + docs/UPDATING.md). -->
+The **official DgxSparkLabs marketplace** — agentic capabilities, shipped and
+maintained by DgxSparkLabs, installable in your Claude tooling in under a minute.
 
-**This is the template** — fork it to run your own marketplace of agentic
-capabilities; it automates all the packaging, publishing, and updating for you.
-Its published capabilities are working references (and the `marketplace-operations`
-suite). Looking for DgxSparkLabs' official capabilities? They ship from
-[DgxSparkLabs/marketplace](https://github.com/DgxSparkLabs/marketplace).
-
-**New here? Pick your path:**
-
-| You want to… | Start here |
-|---|---|
-| **Install** a capability from this marketplace | [Install a capability](#install-a-capability) — two commands |
-| **Contribute** a capability to this marketplace | [Contribute a capability](#contribute-a-capability) — one folder, one push |
-| **Run your own** marketplace | [Run your own marketplace](#run-your-own-marketplace) — fork it, ~5 minutes |
-
-## Install a capability
+## Get started now
 
 ```bash
-claude plugin marketplace add DgxSparkLabs/marketplace-template     # register (once)
-claude plugin install skill-example-single@dgxsparklabs-template-marketplace
+claude plugin marketplace add DgxSparkLabs/marketplace
+claude plugin install skill-marketplace-operations@dgxsparklabs-marketplace
 ```
 
-Browse everything this marketplace publishes — every capability, every install
-and invocation path, copy-pasteable:
+That's it — the capability is live in your next Claude session.
+
+## What's on the shelf
+
+| Capability | What it gives you |
+|---|---|
+| **`marketplace-operations`** | Four skills that teach your AI assistant to run capability marketplaces: `create-marketplace` (spin up your own from the template, interactively), `add-capability`, `ship-update`, and `sync-updates-from-template`. |
+
+More official capabilities ship here as they mature. The complete, always-current
+reference — every capability, every install/remove/invoke path, copy-pasteable:
 **[Catalog & installation instructions →](_generated/CATALOG_AND_INSTALLATION_INSTRUCTIONS.md)**
 
-Featured: **`marketplace-operations`** — skills that teach your AI assistant to
-run a marketplace like this one (create your own, add capabilities, ship
-updates, pull template upgrades).
+## Using an installed capability
 
-## Contribute a capability
+Skills surface as slash commands — e.g. `/create-marketplace` (or the fully
+qualified `/dgxsparklabs-skill-marketplace-operations:create-marketplace` when
+names collide). Each capability's invocation table is in the catalog above.
 
-One folder, one push — CI validates, packages, and publishes; you never run the
-generator:
+## Contributing
 
-```bash
-mkdir -p src/skills/my-skill
-$EDITOR src/skills/my-skill/SKILL.md     # name + description + instructions
-git add src/skills/my-skill && git commit && git push    # or open a PR
-```
+Official capabilities are curated by DgxSparkLabs, but contributions are
+welcome: one folder under `src/skills/`, one PR — CI validates, packages, and
+publishes; you never touch anything generated.
+Start here: [`docs/CONTRIBUTING.md`](docs/CONTRIBUTING.md) · something broke?
+[`docs/troubleshooting/`](docs/troubleshooting/)
 
-Start from the guide: [`docs/CONTRIBUTING.md`](docs/CONTRIBUTING.md) — the
-capability types and their format references live under
-[`docs/capabilities/`](docs/capabilities/) (skills today, more types planned).
+---
 
-## Run your own marketplace
-
-This whole repo is a template — fork it and you own a marketplace with the same
-automation, in about 5 minutes:
-
-1. **Fork** this repo on GitHub.
-2. **Enable Actions** in your fork (Actions tab → enable — one click).
-3. **Set your identity**: edit [`src/.metadata-MARKETPLACE.toml`](src/.metadata-MARKETPLACE.toml)
-   — your marketplace name, your URLs — and push.
-4. **Done.** CI republishes everything under your identity: install commands,
-   namespaces, the catalog. Tell users: `claude plugin marketplace add <you>/<your-fork>`.
-
-Or let your AI assistant drive it: install the `marketplace-operations`
-capability above and ask for a new marketplace — its `create-marketplace` skill
-walks through these steps interactively.
-
-Then make it yours: **this README is your storefront** — rewrite it freely; it
-becomes permanently yours on first edit, and template updates will never
-overwrite it. Everything else keeps improving underneath you automatically:
-the template ships updates like software (daily sync, your content always
-wins) — [`docs/UPDATING.md`](docs/UPDATING.md) · what's generated vs. what you
-edit: [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md).
-
-## Roadmap
-
-Skills on Claude Code ship today. More capability types (commands, agents,
-hooks, MCP servers, …) and more platforms (Codex, Gemini, Cursor, …) are
-planned and tracked in
-[governed re-expansion issues](https://github.com/DgxSparkLabs/marketplace-template/issues/18).
+*Want a marketplace like this of your own?* This one is built on our fork-ready
+[**marketplace-template**](https://github.com/DgxSparkLabs/marketplace-template)
+— fork it, edit one metadata file, push, and you own a self-updating capability
+marketplace too. (Or just install `marketplace-operations` above and ask your
+assistant to create one for you.)
