@@ -32,7 +32,15 @@ The `sync-template` workflow ships in this repo. In your fork it:
    pushes. (The regeneration happens inside this workflow because pushes made
    with the CI token do not trigger the separate `regen-bot` run.)
 
-Two GitHub platform caveats:
+**Workflow-file updates — the one GitHub restriction.** The default CI token
+may not push changes under `.github/workflows/`. When a template update touches
+workflow files, the sync ships everything else and opens an issue in your fork
+with the single command that completes it. To make even that automatic (fully
+zero-touch forever), add a repository secret named **`SYNC_TOKEN`** containing a
+fine-grained PAT for your fork with **Contents: write** and **Workflows: write**
+— the sync uses it automatically when present.
+
+Two more GitHub platform caveats:
 
 - Scheduled workflows only run in forks after you enable Actions (the same
   one-click as in the README checklist).
