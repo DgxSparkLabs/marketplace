@@ -16,7 +16,7 @@ The bare flat forms `/notebook` and `/status` also resolve when unambiguous.
 ## Install
 
 ```
-claude plugin install skill-example-multi@dgxsparklabs-marketplace --scope project
+claude plugin install skill-example-multi@dgxsparklabs-template-marketplace --scope project
 ```
 
 (Install auto-enables on current CLIs. On a fork, the part after `@` is your `src/.metadata-MARKETPLACE.toml` `name`.)
