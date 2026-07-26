@@ -54,6 +54,7 @@ Two more GitHub platform caveats:
 
 ```bash
 git remote add template https://github.com/DgxSparkLabs/marketplace-template  # once
+git config merge.ours.driver true                                             # once - honors the fork-owned file list
 git fetch template
 git merge -X ours --no-edit template/main
 git push
@@ -61,6 +62,14 @@ git push
 
 After pushing, your fork's `regen-bot` regenerates the manifests (your push
 triggers it; CI-token pushes don't) — `git pull` a minute later to see its commit.
+
+## Files that become yours on first edit
+
+`.gitattributes` lists **fork-owned** files (`README.md`, `SECURITY.md` by
+default): while you leave one untouched it keeps receiving template updates;
+the moment you customize it, every sync keeps your version whole-file — no
+half-merged text, ever. Claim more files by adding your own `merge=ours`
+lines to `.gitattributes`; the sync preserves your additions.
 
 ## What NOT to do
 
