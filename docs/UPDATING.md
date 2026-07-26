@@ -34,8 +34,11 @@ The `sync-template` workflow ships in this repo. In your fork it:
 
 **Workflow-file updates — the one GitHub restriction.** The default CI token
 may not push changes under `.github/workflows/`. When a template update touches
-workflow files, the sync ships everything else and opens an issue in your fork
-with the single command that completes it. To make even that automatic (fully
+workflow files, the sync ships everything else and tells you the single command
+that completes it — in the sync run's **summary** (Actions → the run) and as a
+warning annotation, plus an auto-opened issue **if your fork has Issues enabled**
+(GitHub disables Issues on forks by default — enable it in Settings for the
+most visible notification). To make even that automatic (fully
 zero-touch forever), add a repository secret named **`SYNC_TOKEN`** containing a
 fine-grained PAT for your fork with **Contents: write** and **Workflows: write**
 — the sync uses it automatically when present.
