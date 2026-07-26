@@ -1,4 +1,4 @@
-# Example Marketplace
+# DgxSparkLabs Marketplace Template
 
 <!-- This README is yours on first edit — template updates never overwrite it (see .gitattributes + docs/UPDATING.md). -->
 
@@ -18,7 +18,7 @@ publishing, and updating for you.
 
 ```bash
 claude plugin marketplace add DgxSparkLabs/marketplace-template     # register (once)
-claude plugin install skill-example-single@dgxsparklabs-marketplace # install anything
+claude plugin install skill-example-single@dgxsparklabs-template-marketplace
 ```
 
 Browse everything this marketplace publishes — every capability, every install
