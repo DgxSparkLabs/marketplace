@@ -15,10 +15,10 @@
 # followed by `uv run scripts/generate_manifest.py` (or just push — CI regenerates).
 
 [marketplace]
-name = "dgxsparklabs-marketplace"
-display_name = "DgxSparkLabs Marketplace"
+name = "dgxsparklabs-template-marketplace"
+display_name = "DgxSparkLabs Marketplace Template"
 version = "1.0.0"
-description = "A fork-ready template marketplace for Claude Code skills - contributors drop a folder into src/skills/, CI packages and publishes it."
+description = "The fork-ready template for agentic-capability marketplaces - the reference marketplace that ships the template itself."
 
 [owner]
 name = "DgxSparkLabs"
